@@ -1,0 +1,14 @@
+apply plugin: 'groovy'
+
+sourceCompatibility = 1.5
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile "org.codehaus.sonar:sonar-plugin-api:4.3"
+
+    compile "org.codehaus.groovy:groovy-all:2.2.1"
+    testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
+}

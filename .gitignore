@@ -1,0 +1,6 @@
+.idea/
+build/*
+sonar-puppet-plugin/build/*
+.gradle/*
+.DS_Store
+*.iml
