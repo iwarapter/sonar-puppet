@@ -1,2 +1,9 @@
 version = '0.1'
-group = 'com.iadams.sonarqube'
+group = 'com.iadams.sonarqube.puppet'
+
+subprojects {
+    apply plugin: 'groovy'
+    apply from: '../gradle/jacoco.gradle'
+
+    version = '0.1'
+}

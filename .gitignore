@@ -1,6 +1,7 @@
 .idea/
 build/*
 sonar-puppet-plugin/build/*
+puppet-squid/build/*
 .gradle/*
 .DS_Store
 *.iml

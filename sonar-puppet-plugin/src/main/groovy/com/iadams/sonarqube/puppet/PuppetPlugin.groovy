@@ -1,32 +1,42 @@
 package com.iadams.sonarqube.puppet
 
+import com.google.common.collect.ImmutableList
+import com.iadams.sonarqube.puppet.pplint.PplintConfiguration
+import com.iadams.sonarqube.puppet.pplint.PplintRuleRepository
+import com.iadams.sonarqube.puppet.core.Puppet
+import com.iadams.sonarqube.puppet.core.PuppetSourceImporter
+import com.iadams.sonarqube.puppet.PuppetDefaultProfile
 import org.sonar.api.SonarPlugin
+import org.sonar.api.config.PropertyDefinition
+import org.sonar.api.resources.Qualifiers
 
 /**
- * Created by iwarapter on 04/12/14.
+ * Created by iwarapter
  */
 class PuppetPlugin extends SonarPlugin {
 
-    // Global JavaScript constants
-    public static final String FALSE = "false"
+    static final String FILE_SUFFIXES_KEY = "sonar.puppet.file.suffixes"
 
-    public static final String PROPERTY_PREFIX = "sonar.puppet"
-
-    public static final String FILE_SUFFIXES_KEY = "${PROPERTY_PREFIX}.file.suffixes"
-    public static final String FILE_SUFFIXES_DEFVALUE = ".pp"
-
-    public List getExtensions() {
+    List getExtensions() {
         return ImmutableList.of(
-            Puppet.class,
-            PuppetMetrics.class,
-            PuppetSensor.class,
-            PuppetDashboardWidget.class,
 
-        PropertyDefinition.builder(FILE_SUFFIXES_KEY)
-                .defaultValue(FILE_SUFFIXES_DEFVALUE)
-                .name("File Suffixes")
-                .description("Comma-separated list of suffixes for files to analyze.")
-                .build()
-        );
+            PropertyDefinition.builder(FILE_SUFFIXES_KEY)
+                    .name("File Suffixes")
+                    .description("Comma-separated list of suffixes of Puppet files to analyze.")
+                    .category("Puppet")
+                    .onQualifiers(Qualifiers.PROJECT)
+                    .defaultValue("pp")
+                    .build(),
+
+                Puppet.class,
+                PuppetSourceImporter.class,
+
+                //PuppetDefaultProfile.class,
+
+                // pplint
+                PplintConfiguration.class,
+                //PplintSensor.class,
+                PplintRuleRepository.class
+        )
     }
 }
