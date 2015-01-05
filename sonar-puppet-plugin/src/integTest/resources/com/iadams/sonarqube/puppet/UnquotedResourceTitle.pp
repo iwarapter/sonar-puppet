@@ -1,0 +1,3 @@
+service { apache:
+  ensure => running,
+}

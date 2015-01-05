@@ -3,9 +3,9 @@ package com.iadams.sonarqube.puppet
 import com.google.common.collect.ImmutableList
 import com.iadams.sonarqube.puppet.pplint.PplintConfiguration
 import com.iadams.sonarqube.puppet.pplint.PplintRuleRepository
+import com.iadams.sonarqube.puppet.pplint.PplintSensor
 import com.iadams.sonarqube.puppet.core.Puppet
 import com.iadams.sonarqube.puppet.core.PuppetSourceImporter
-import com.iadams.sonarqube.puppet.PuppetDefaultProfile
 import org.sonar.api.SonarPlugin
 import org.sonar.api.config.PropertyDefinition
 import org.sonar.api.resources.Qualifiers
@@ -31,11 +31,11 @@ class PuppetPlugin extends SonarPlugin {
                 Puppet.class,
                 PuppetSourceImporter.class,
 
-                //PuppetDefaultProfile.class,
+                PuppetDefaultProfile.class,
 
                 // pplint
                 PplintConfiguration.class,
-                //PplintSensor.class,
+                PplintSensor.class,
                 PplintRuleRepository.class
         )
     }

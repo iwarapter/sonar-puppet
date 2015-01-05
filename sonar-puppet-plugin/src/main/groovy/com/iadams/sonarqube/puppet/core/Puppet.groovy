@@ -1,6 +1,5 @@
 package com.iadams.sonarqube.puppet.core
 
-import org.apache.commons.lang.StringUtils
 import org.sonar.api.config.Settings
 import org.sonar.api.resources.AbstractLanguage
 import com.iadams.sonarqube.puppet.PuppetPlugin

@@ -1,8 +1,6 @@
 package com.iadams.sonarqube.puppet
 
-import com.iadams.sonarqube.puppet.core.Puppet
-import com.iadams.sonarqube.puppet.pplint.PplintRuleRepository
-import org.sonar.api.profiles.AnnotationProfileParser
+import org.sonar.api.profiles.XMLProfileParser
 import org.sonar.api.profiles.ProfileDefinition
 import org.sonar.api.profiles.RulesProfile
 import org.sonar.api.utils.ValidationMessages
@@ -12,17 +10,15 @@ import org.sonar.api.utils.ValidationMessages
  */
 public class PuppetDefaultProfile extends ProfileDefinition {
 
-    static final String DEFAULT_PUPPET_PROFILE = "Puppet Lint"
+    private final XMLProfileParser xmlProfileParser
 
-    private final AnnotationProfileParser annotationProfileParser;
-
-    public PuppetDefaultProfile(AnnotationProfileParser annotationProfileParser) {
-        this.annotationProfileParser = annotationProfileParser;
+    public PuppetDefaultProfile(XMLProfileParser xmlProfileParser) {
+        this.xmlProfileParser = xmlProfileParser
     }
 
     @Override
     public RulesProfile createProfile(ValidationMessages messages) {
-        return annotationProfileParser.parse(PplintRuleRepository.REPOSITORY_KEY, DEFAULT_PUPPET_PROFILE, Puppet.KEY,messages)
+        return xmlProfileParser.parseResource(getClass().getClassLoader(),'com/iadams/sonarqube/puppet/pplint/PuppetLintProfile.xml' , messages)
     }
 
 }

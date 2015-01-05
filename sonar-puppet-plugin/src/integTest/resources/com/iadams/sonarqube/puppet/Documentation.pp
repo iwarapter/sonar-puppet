@@ -1,0 +1,5 @@
+define config() { }
+
+class foo{
+
+}

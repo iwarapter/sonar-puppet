@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rules>
   <rule>
-    <key>2SpaceSoftTabs</key>
+    <key>2sp_soft_tabs</key>
     <name><![CDATA[2 Space Soft Tabs]]></name>
-    <configKey>2SpaceSoftTabs</configKey>
+    <configKey>2sp_soft_tabs</configKey>
     <description>
       <![CDATA[<p>In order to comply with the style guide, manifests must use 2 space characters when indenting.</p>
 
@@ -24,9 +24,9 @@ file { '/tmp/foo':
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>HardTabs</key>
+    <key>hard_tabs</key>
     <name><![CDATA[Hard Tabs]]></name>
-    <configKey>HardTabs</configKey>
+    <configKey>hard_tabs</configKey>
     <description>
       <![CDATA[<p>In order to comply with the style guide, manifests must not use hard tab characters (\t) in the whitespace.</p>
 
@@ -47,27 +47,27 @@ file { '/tmp/foo':
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>TrailingWhitespace</key>
+    <key>trailing_whitespace</key>
     <name><![CDATA[Trailing Whitespace]]></name>
-    <configKey>TrailingWhitespace</configKey>
+    <configKey>trailing_whitespace</configKey>
     <description>
       <![CDATA[Your manifests must not contain any trailing whitespace on any line.]]>
     </description>
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>80CharacterLineLimit</key>
+    <key>80chars</key>
     <name><![CDATA[80 Character Line Limit]]></name>
-    <configKey>80CharacterLineLimit</configKey>
+    <configKey>80chars</configKey>
     <description>
       <![CDATA[Your manifests should not contain any lines longer than 80 characters.]]>
     </description>
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>ArrowAlignment</key>
+    <key>arrow_alignment</key>
     <name><![CDATA[Arrow Alignment]]></name>
-    <configKey>ArrowAlignment</configKey>
+    <configKey>arrow_alignment</configKey>
     <description>
       <![CDATA[<p>Arrows (=>) within blocks of attributes (like resource declarations, selectors, hashes, etc) should be aligned with the other arrows in that block.</p>
 
@@ -90,9 +90,9 @@ file { '/tmp/foo':
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>SlashComment</key>
+    <key>slash_comments</key>
     <name><![CDATA[Slash Comment]]></name>
-    <configKey>SlashComment</configKey>
+    <configKey>slash_comments</configKey>
     <description>
       <![CDATA[<p>Although the Puppet language allows you to use // style comments, it is recommended that you use # style comments.</p>
 
@@ -111,9 +111,9 @@ file { '/tmp/foo':
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>SlashAsteriskComment</key>
+    <key>star_comments</key>
     <name><![CDATA[Slash-asterisk Comment]]></name>
-    <configKey>SlashAsteriskComment</configKey>
+    <configKey>star_comments</configKey>
     <description>
       <![CDATA[<p>Although the Puppet language allows you to use /* */ style multiline comments, it is recommended that you use multiple # style comments instead.</p>
 
@@ -134,9 +134,9 @@ file { '/tmp/foo':
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>DoubleQuotedStrings</key>
+    <key>double_quoted_strings</key>
     <name><![CDATA[Double Quoted Strings]]></name>
-    <configKey>DoubleQuotedStrings</configKey>
+    <configKey>double_quoted_strings</configKey>
     <description>
       <![CDATA[<p>All strings that do not contain variables or escape characters like \n or \t should be enclosed in single quotes.</p>
 
@@ -155,9 +155,9 @@ $foo = 'bar'
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>VariablesNotEnclosed</key>
+    <key>variables_not_enclosed</key>
     <name><![CDATA[Variables Not Enclosed]]></name>
-    <configKey>VariablesNotEnclosed</configKey>
+    <configKey>variables_not_enclosed</configKey>
     <description>
       <![CDATA[<p>All variables should be enclosed in in braces ({}) when being interpolated in a string.</p>
 
@@ -176,9 +176,9 @@ $foo = "bar ${baz}"
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>OnlyVariableString</key>
+    <key>only_variable_string</key>
     <name><![CDATA[Only Variable String]]></name>
-    <configKey>OnlyVariableString</configKey>
+    <configKey>only_variable_string</configKey>
     <description>
       <![CDATA[<p>Variables standing by themselves should not be quoted. To put it another way, strings should not contain just a single variable.</p>
 
@@ -199,9 +199,9 @@ file { '/tmp/foo':
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>SingleQuotedStringWithVariables</key>
+    <key>single_quote_string_with_variables</key>
     <name><![CDATA[Single Quoted String Containing Variables]]></name>
-    <configKey>SingleQuotedStringWithVariables</configKey>
+    <configKey>single_quote_string_with_variables</configKey>
     <description>
       <![CDATA[<p>Single quoted strings do not get interpolated, so you should not attempt to embed variables in one. This is not a style issue, rather a common mistake.</p>
 
@@ -220,9 +220,9 @@ $foo = "bar ${baz}"
     <priority>CRITICAL</priority>
   </rule>
   <rule>
-    <key>QuotedBooleans</key>
+    <key>quoted_booleans</key>
     <name><![CDATA[Quoted Booleans]]></name>
-    <configKey>QuotedBooleans</configKey>
+    <configKey>quoted_booleans</configKey>
     <description>
       <![CDATA[<p>Boolean values (true and false) behave differently when quoted ('true' and 'false'), which can lead to a fair bit of confusion. As a general rule, you should never quote booleans. This is not a style issue, rather a common mistake.</p>
 
@@ -243,9 +243,9 @@ file { '/tmp/foo':
     <priority>CRITICAL</priority>
   </rule>
   <rule>
-    <key>PuppetUrlWithoutModules</key>
+    <key>puppet_url_without_modules</key>
     <name><![CDATA[puppet:// URL without modules/]]></name>
-    <configKey>PuppetUrlWithoutModules</configKey>
+    <configKey>puppet_url_without_modules</configKey>
     <description>
       <![CDATA[<p>When using puppet:// URLs, you should ensure that the path starts with modules/ (as the most commonly used mount point in the Puppet fileserver).</p>
 
@@ -266,9 +266,9 @@ file { '/etc/apache/apache2.conf':
     <priority>CRITICAL</priority>
   </rule>
   <rule>
-    <key>UnquotedResourceTitles</key>
+    <key>unquoted_resource_title</key>
     <name><![CDATA[Unquoted Resource Titles]]></name>
-    <configKey>UnquotedResourceTitles</configKey>
+    <configKey>unquoted_resource_title</configKey>
     <description>
       <![CDATA[<p>All resource titles should be quoted.</p>
 
@@ -289,9 +289,9 @@ service { 'apache':
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>AttributeOrdering</key>
+    <key>ensure_first_param</key>
     <name><![CDATA[Attribute Ordering]]></name>
-    <configKey>AttributeOrdering</configKey>
+    <configKey>ensure_first_param</configKey>
     <description>
       <![CDATA[<p>If a resource declaration includes an ensure parameter, it should be the first parameter specified.</p>
 
@@ -316,9 +316,9 @@ file { '/tmp/foo':
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>EnsureNotSymlinkTarget</key>
+    <key>ensure_not_symlink_target</key>
     <name><![CDATA[Ensure Parameter Not A Symlink Target]]></name>
-    <configKey>EnsureNotSymlinkTarget</configKey>
+    <configKey>ensure_not_symlink_target</configKey>
     <description>
       <![CDATA[<p>In the interest of clarity, symbolic links should be declared by using an ensure value of ensure => link and explicitly specifying a value for the target attribute. Using a path to the target as the ensure value is not recommended.</p>
 
@@ -340,9 +340,9 @@ file { '/tmp/foo':
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>FileMode</key>
+    <key>file_mode</key>
     <name><![CDATA[File Modes]]></name>
-    <configKey>FileMode</configKey>
+    <configKey>file_mode</configKey>
     <description>
       <![CDATA[<p>File modes should be represented as 4 digits rather than 3, to explicitly show that they are octal values. File modes can also be represented symbolically e.g. u=rw,g=r.</p>
 
@@ -363,9 +363,9 @@ file { '/tmp/foo':
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>UnquotedFileMode</key>
+    <key>unquoted_file_mode</key>
     <name><![CDATA[Unquoted File Modes]]></name>
-    <configKey>UnquotedFileMode</configKey>
+    <configKey>unquoted_file_mode</configKey>
     <description>
       <![CDATA[<p>File modes should be specified as single-quoted strings instead of bare word numbers.</p>
 
@@ -386,9 +386,9 @@ file { '/tmp/foo':
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>DuplicateParameters</key>
+    <key>duplicate_params</key>
     <name><![CDATA[Duplicate Parameters]]></name>
-    <configKey>DuplicateParameters</configKey>
+    <configKey>duplicate_params</configKey>
     <description>
       <![CDATA[<p>You really shouldn’t have duplicate parameters in a resource declaration, it is going to lead to strangness.</p>
 
@@ -410,9 +410,9 @@ file { '/tmp/foo':
     <priority>CRITICAL</priority>
   </rule>
   <rule>
-    <key>SelectorInsideResource</key>
+    <key>selector_inside_resource</key>
     <name><![CDATA[Selector Inside A Resource]]></name>
-    <configKey>SelectorInsideResource</configKey>
+    <configKey>selector_inside_resource</configKey>
     <description>
       <![CDATA[<p>You should not intermingle conditionals with resource declarations. When using conditionals for data assignment, you should separate conditional code from the resource declarations.</p>
 
@@ -443,9 +443,9 @@ file { '/tmp/readme.txt':
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>CaseWithoutDefault</key>
+    <key>case_without_default</key>
     <name><![CDATA[Case Without A Default Option]]></name>
-    <configKey>CaseWithoutDefault</configKey>
+    <configKey>case_without_default</configKey>
     <description>
       <![CDATA[<p>Case statements should have default cases. Additionally, the default case should fail the catalog compilation when the resulting behavior cannot be predicted on the majority of platforms the module will be used on. If you want the default case to be “do nothing,” include it as an explicit default: {} for clarity’s sake.</p>
 
@@ -479,9 +479,9 @@ case $::operatingsystem {
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>AutoloaderLayout</key>
+    <key>autoloader_layout</key>
     <name><![CDATA[Manifest Files In The Proper Layout]]></name>
-    <configKey>AutoloaderLayout</configKey>
+    <configKey>autoloader_layout</configKey>
     <description>
       <![CDATA[<p>All classes and resource type definitions must be in separate files in the manifests directory of their module. This is functionally identical to declaring all classes and defines in init.pp, but highlights the structure of the module and makes everything more legible.</p>
 
@@ -490,9 +490,9 @@ case $::operatingsystem {
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>RightToLeftRelationship</key>
+    <key>right_to_left_relationship</key>
     <name><![CDATA[Right To Left Relationship]]></name>
-    <configKey>RightToLeftRelationship</configKey>
+    <configKey>right_to_left_relationship</configKey>
     <description>
       <![CDATA[<p>Relationship declarations with the chaining syntax should only be used in the “left to right” direction.</p>
 
@@ -509,9 +509,9 @@ Package['httpd'] -> Service['httpd']</pre>]]>
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>NestedClassesOrDefines</key>
-    <name><![CDATA[Nested Classes Or Defines]]></name>
-    <configKey>NestedClassesOrDefines</configKey>
+    <key>nested_classes_or_defines</key>
+    <name><![CDATA[Nested Classes or Defines]]></name>
+    <configKey>nested_classes_or_defines</configKey>
     <description>
       <![CDATA[<p>Classes and defined resource types must not be defined within other classes.</p>
 
@@ -535,9 +535,9 @@ class apache {
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>InheritsAcrossNamespaces</key>
+    <key>inherits_across_namespaces</key>
     <name><![CDATA[Class Inheritance]]></name>
-    <configKey>InheritsAcrossNamespaces</configKey>
+    <configKey>inherits_across_namespaces</configKey>
     <description>
       <![CDATA[<p>Inheritance may be used within a module, but must not be used across module namespaces. Cross-module dependencies should be satisfied in a more portable way that doesn’t violate the concept of modularity, such as with include statements or relationship declarations.</p>
 
@@ -564,9 +564,9 @@ class ssh::server::solaris inherits ssh::server { }</pre>]]>
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>VariableScope</key>
+    <key>variable_scope</key>
     <name><![CDATA[Namespacing Variables]]></name>
-    <configKey>VariableScope</configKey>
+    <configKey>variable_scope</configKey>
     <description>
       <![CDATA[<p>When using top-scope variables, including facts, Puppet modules should explicitly specify the empty namespace to prevent accidental scoping issues.</p>
 
@@ -583,9 +583,9 @@ $::operatingsystem</pre>]]>
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>VariableContainsDash</key>
+    <key>variable_contains_dash</key>
     <name><![CDATA[Variable Format]]></name>
-    <configKey>VariableContainsDash</configKey>
+    <configKey>variable_contains_dash</configKey>
     <description>
       <![CDATA[<p>When defining variables you should only use letters, numbers and underscores. You should specifically not make use of dashes.</p>
 
@@ -602,36 +602,62 @@ $foo_bar</pre>]]>
     <priority>MINOR</priority>
   </rule>
   <rule>
-    <key>ParameterOrder</key>
-    <name><![CDATA[Display Order Of Parameters]]></name>
-    <configKey>ParameterOrder</configKey>
+    <key>parameter_order</key>
+    <name><![CDATA[Parameter Order]]></name>
+    <configKey>parameter_order</configKey>
     <description>
-      <![CDATA[<p>In parameterized class and defined resource type declarations, parameters that are required should be listed before optional parameters (i.e. parameters with defaults).</p>
+      <![CDATA[<p>When defining variables you should only use letters, numbers and underscores. You should specifically not make use of dashes.</p>
 
       <h2>Noncompliant Code Example</h2>
 
       <pre>
-class ntp (
-  $options   = "iburst",
-  $servers,
-  $multicast = false
+define foo($bar='baz', $gronk) { }</pre>
+
+      <h2>Compliant Solution</h2>
+
+      <pre>
+define foo($gronk, $bar='baz') { }</pre>]]>
+    </description>
+    <priority>MINOR</priority>
+  </rule>
+  <rule>
+    <key>class_parameter_defaults</key>
+    <name><![CDATA[Class Parameter Defaults]]></name>
+    <configKey>class_parameter_defaults</configKey>
+    <description>
+      <![CDATA[<p>When writing a module that accepts class parameters sane defaults SHOULD be provided for optional parameters to allow the end user the option of not explicitly specifying the parameter when declaring the class.
+
+      This rule is deprecated and has been removed in puppet-lint 1.+</p>
+
+      <h2>Noncompliant Code Example</h2>
+
+      <pre>
+class ntp(
+ $server,
 ) {}</pre>
 
       <h2>Compliant Solution</h2>
 
       <pre>
-class ntp (
-  $servers,
-  $options   = "iburst",
-  $multicast = false
-) {}</pre>]]>
+class ntp(
+  $server = 'UNSET'
+) {
+
+  include ntp::params
+
+  $server_real = $server ? {
+    'UNSET' => $::ntp::params::server,
+    default => $server,
+  }
+}</pre>]]>
     </description>
     <priority>MINOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
-    <key>ClassInheritsFromParamsClass</key>
+    <key>class_inherits_from_params_class</key>
     <name><![CDATA[Parameterised class inheritings from ‘params’ class]]></name>
-    <configKey>ClassInheritsFromParamsClass</configKey>
+    <configKey>class_inherits_from_params_class</configKey>
     <description>
       <![CDATA[<p>The following popular method SHOULD NOT be used because it is not compatible with Puppet 2.6.2 and earlier.</p>
 
@@ -660,9 +686,9 @@ class ntp(
     <priority>MAJOR</priority>
   </rule>
   <rule>
-    <key>NamesContainingDash</key>
+    <key>names_containing_dash</key>
     <name><![CDATA[Module Names Containing A Dash]]></name>
-    <configKey>NamesContainingDash</configKey>
+    <configKey>names_containing_dash</configKey>
     <description>
       <![CDATA[<p>Support for dashes in class and defined type names differs depending on the release of Puppet you’re running. To ensure compatibility on all versions, you should avoid using dashes.</p>
 
@@ -679,20 +705,27 @@ class foo::bar_baz</pre>]]>
     <priority>MAJOR</priority>
   </rule>
   <rule>
-    <key>Documentation</key>
+    <key>documentation</key>
     <name><![CDATA[Documentation]]></name>
-    <configKey>Documentation</configKey>
+    <configKey>documentation</configKey>
     <description>
-      <![CDATA[<p>All Puppet classes and defines should be documented via comments directly above the start of the code.</p>
+      <![CDATA[<p>ll Puppet classes and defines should be documented via comments directly above the start of the code.</p>
 
       <h2>Noncompliant Code Example</h2>
 
       <pre>
+define config() { }
+
 class ntp {}</pre>
 
       <h2>Compliant Solution</h2>
 
       <pre>
+# Do some config
+define config() { }
+
+#or
+
 # Install and configure an NTP server
 # You should feel free to expand on this and document any parameters etc
 class ntp {}</pre>]]>
@@ -700,9 +733,9 @@ class ntp {}</pre>]]>
     <priority>MAJOR</priority>
   </rule>
   <rule>
-    <key>UnquotedNodeName</key>
+    <key>unquoted_node_name</key>
     <name><![CDATA[Unquoted Node Name]]></name>
-    <configKey>UnquotedNodeName</configKey>
+    <configKey>unquoted_node_name</configKey>
     <description>
       <![CDATA[<p>Node names should be one of the following:
 
@@ -723,5 +756,14 @@ node 'server1' {
 }</pre>]]>
     </description>
     <priority>MAJOR</priority>
+  </rule>
+  <rule>
+    <key>IgnoredPuppetLintRule</key>
+    <name><![CDATA[Ingnored Puppet Lint Rules]]></name>
+    <configKey>IgnoredPuppetLintRule</configKey>
+    <description>
+      <![CDATA[<p>This rule tracks all the instances of puppet <a href="http://puppet-lint.com/controlcomments/">control comments</a>.</p>]]>
+    </description>
+    <priority>INFO</priority>
   </rule>
 </rules>

@@ -15,6 +15,6 @@ class PplintRuleRepositorySpec extends Specification {
         List<Rule> rules = rulerep.createRules()
 
         expect:
-        rules.size() == 32
+        rules.size() == 34
     }
 }

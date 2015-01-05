@@ -6,4 +6,63 @@ subprojects {
     apply from: '../gradle/jacoco.gradle'
 
     version = '0.1'
+
+    sourceSets {
+        integTest {
+            groovy.srcDir file('src/integTest/groovy')
+            resources.srcDir file('src/integTest/resources')
+            compileClasspath = sourceSets.main.output + configurations.testRuntime
+            runtimeClasspath = output + compileClasspath
+        }
+    }
+
+    task integTest(type: Test) {
+        testClassesDir = sourceSets.integTest.output.classesDir
+        classpath = sourceSets.integTest.runtimeClasspath
+        reports.html.destination = file("$buildDir/reports/integ")
+    }
+
+    integTest.mustRunAfter test
+    //check.dependsOn integTest
+
+    task testReport(type: TestReport) {
+        destinationDir = file("$buildDir/reports/allTests")
+        // Include the results from the `test` task in all subprojects
+        reportOn test, integTest
+    }
+
+    task jacocoIntegTestReport(type: JacocoReport) {
+        sourceSets sourceSets.main
+        executionData integTest
+        reports {
+            xml.enabled true
+            csv.enabled false
+            html.destination "${buildDir}/reports/jacocoIntegTestReport"
+        }
+    }
+
+    task jacocoCombinedTestReport(type: JacocoReport) {
+        sourceSets sourceSets.main
+        executionData test, integTest
+        reports {
+            xml.enabled true
+            csv.enabled false
+            html.destination "${buildDir}/reports/jacocoCombinedTestReport"
+        }
+    }
+}
+
+apply plugin: 'sonar-runner'
+
+repositories {
+    jcenter()
+}
+
+sonarRunner {
+    sonarProperties {
+        property "sonar.host.url", "http://localhost:9000"
+        property "sonar.jdbc.url", "jdbc:h2:tcp://localhost:9092/sonar"
+        property "sonar.jdbc.username", "sonar"
+        property "sonar.jdbc.password", "sonar"
+    }
 }

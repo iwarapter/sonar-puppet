@@ -1,0 +1,4 @@
+"/vagrant/code/NestedClasses.pp - nested_classes_or_defines 4 WARNING class defined inside a class"
+"/vagrant/code/NestedClasses.pp - autoloader_layout 2 ERROR apache not in autoload module layout"
+"/vagrant/code/NestedClasses.pp - autoloader_layout 4 ERROR ssl not in autoload module layout"
+"/vagrant/code/NestedClasses.pp - autoloader_layout 4 IGNORED ssl not in autoload module layout"

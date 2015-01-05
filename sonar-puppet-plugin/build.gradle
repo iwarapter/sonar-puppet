@@ -24,6 +24,7 @@ dependencies {
 
     compile 'org.codehaus.sonar:sonar-squid:3.7'
     compile 'org.codehaus.sonar:sonar-testing-harness:3.7'
+    compile 'org.codehaus.sonar.common-rules:sonar-common-rules:1.2'
 
     //defined for the plugin package testing
     sonarqube group: 'jaxen', name: 'jaxen', version: '1.1.4', transitive: false
@@ -35,7 +36,11 @@ dependencies {
     sonarqube "org.codehaus.groovy:groovy-all:2.2.1"
 
     compile "org.codehaus.groovy:groovy-all:2.2.1"
+
     testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
+    testCompile 'org.apache.maven:maven-project:2.2.1'
+    testRuntime "cglib:cglib-nodep:3.1"          // allows mocking of classes (in addition to interfaces)
+    testRuntime "org.objenesis:objenesis:2.1"    // allows mocking of classes without default constructor (together with CGLIB)
 }
 
 jar {
