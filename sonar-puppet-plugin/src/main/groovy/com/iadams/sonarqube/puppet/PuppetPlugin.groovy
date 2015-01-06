@@ -1,6 +1,7 @@
 package com.iadams.sonarqube.puppet
 
 import com.google.common.collect.ImmutableList
+import com.iadams.sonarqube.puppet.colorizer.PuppetColorizer
 import com.iadams.sonarqube.puppet.pplint.PplintConfiguration
 import com.iadams.sonarqube.puppet.pplint.PplintRuleRepository
 import com.iadams.sonarqube.puppet.pplint.PplintSensor
@@ -30,6 +31,7 @@ class PuppetPlugin extends SonarPlugin {
 
                 Puppet.class,
                 PuppetSourceImporter.class,
+                PuppetColorizer,
 
                 PuppetDefaultProfile.class,
 

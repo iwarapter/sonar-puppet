@@ -45,7 +45,7 @@ public enum PuppetKeyword implements TokenType {
         return false
     }
 
-    def static keywordValues(){
+    static String[] keywordValues(){
         return PuppetKeyword.values().collect(){it.getValue()}
     }
 }
