@@ -1,5 +1,6 @@
 package com.iadams.sonarqube.puppet.pplint
 
+import com.google.common.base.Charsets
 import org.sonar.api.utils.SonarException
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -18,7 +19,7 @@ class PplintIssueAnalyzerIntegSpec extends Specification {
         out.createNewFile()
 
         when:
-        new PplintIssuesAnalyzer('someFile').analyze(codeChunksPathName, out)
+        new PplintIssuesAnalyzer('someFile').analyze(codeChunksPathName, Charsets.UTF_8, out)
 
         then:
         thrown(SonarException)
@@ -33,7 +34,7 @@ class PplintIssueAnalyzerIntegSpec extends Specification {
         out.createNewFile()
 
         when:
-        def issues = new PplintIssuesAnalyzer(null).analyze(codeChunksPathName, out)
+        def issues = new PplintIssuesAnalyzer(null).analyze(codeChunksPathName, Charsets.UTF_8, out)
 
         then:
         issues.isEmpty()
@@ -50,7 +51,7 @@ class PplintIssueAnalyzerIntegSpec extends Specification {
         out.createNewFile()
 
         then:
-        def issues = new PplintIssuesAnalyzer(null).analyze(codeChunksPathName, out)
+        def issues = new PplintIssuesAnalyzer(null).analyze(codeChunksPathName, Charsets.UTF_8, out)
         issues.find{ it.ruleId == rule }
 
         where:

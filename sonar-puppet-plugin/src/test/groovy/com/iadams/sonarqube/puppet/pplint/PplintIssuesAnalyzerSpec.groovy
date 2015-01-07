@@ -24,7 +24,7 @@ class PplintIssuesAnalyzerSpec extends Specification {
 
     def "blank output should return no issues"(){
         expect:
-        new PplintIssuesAnalyzer(null).parseOutput('').isEmpty()
+        new PplintIssuesAnalyzer(null).parseOutput([""]).isEmpty()
     }
 
     def "parse an unknown rule"() {

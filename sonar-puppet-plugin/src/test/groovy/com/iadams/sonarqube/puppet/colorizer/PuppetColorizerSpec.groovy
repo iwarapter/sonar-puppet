@@ -16,19 +16,29 @@ class PuppetColorizerSpec extends Specification {
         codeColorizer = new CodeColorizer(puppetColorizer.getTokenizers())
     }
 
-    def "keywords are coloured"(){
+    /*def "keywords are coloured"(){
         expect:
         colorize("false").contains('<span class="k">false</span>')
-    }
+    }*/
 
     def "# comment should colorize"(){
         expect:
-        colorize("# comment \n new line").contains("<span class=\"cd\"># comment </span>")
+        colorize("# comment").contains("<span class=\"cd\"># comment</span>")
+    }
+
+    def "// comment should colorize"(){
+        expect:
+        colorize("// comment").contains("<span class=\"cd\">// comment</span>")
+    }
+
+    def "/* */ comment should colorize"(){
+        expect:
+        colorize("/* comment */").contains("<span class=\"cppd\">/* comment */</span>")
     }
 
     def "should colorize short string literals"(){
         expect:
-        colorize('string"').contains("<span class=\"s\">\"string\"</span>")
+        colorize('"string"').contains("<span class=\"s\">\"string\"</span>")
     }
 
     def "should colorize long string literals"(){

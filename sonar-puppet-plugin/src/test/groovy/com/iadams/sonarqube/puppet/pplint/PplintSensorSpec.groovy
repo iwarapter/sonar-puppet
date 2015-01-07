@@ -1,15 +1,11 @@
 package com.iadams.sonarqube.puppet.pplint
 
-import com.google.common.collect.ImmutableList
-import com.iadams.sonarqube.puppet.PuppetPlugin
-import com.iadams.sonarqube.puppet.core.Puppet
-import org.apache.maven.project.MavenProject
+import com.iadams.sonarqube.puppet.Puppet
 import org.sonar.api.component.ResourcePerspectives
 import org.sonar.api.profiles.RulesProfile
 import org.sonar.api.resources.Project
 import org.sonar.api.rules.ActiveRule
 import org.sonar.api.rules.RuleFinder
-import org.sonar.api.scan.filesystem.FileQuery
 import org.sonar.api.scan.filesystem.ModuleFileSystem
 import spock.lang.Specification
 import spock.lang.Unroll

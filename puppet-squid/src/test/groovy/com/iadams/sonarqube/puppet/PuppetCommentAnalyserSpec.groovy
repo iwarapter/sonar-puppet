@@ -36,10 +36,11 @@ class PuppetCommentAnalyserSpec extends Specification {
         analyser.getContents(input) == output
 
         where:
-        input           | output
-        '# comment'     | ' comment'
-        '// comment'    | ' comment'
-        '/* comment */' | ' comment '
+        input                       | output
+        '# comment'                 | ' comment'
+        '// comment'                | ' comment'
+        '/* comment */'             | ' comment '
+        '/* comment1\ncomment2 */'  | ' comment1\ncomment2 '
     }
 
     def "unknown comment type"(){
