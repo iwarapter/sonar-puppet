@@ -1,11 +1,12 @@
 package com.iadams.sonarqube.puppet.api;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.TokenType;
 
 /**
  * Created by iwarapter on 16/12/14.
  */
-public enum PuppetPunctuator {
+public enum PuppetPunctuator implements TokenType {
 
     //Comparison Operators
     EQU("=="),

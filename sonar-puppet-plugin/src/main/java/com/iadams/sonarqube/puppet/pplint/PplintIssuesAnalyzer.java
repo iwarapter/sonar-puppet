@@ -88,7 +88,7 @@ public class PplintIssuesAnalyzer {
                         int linenr = Integer.valueOf(m.group(3));
                         String ruleid = m.group(2);
 
-                        if(m.group(4) == "IGNORED "){
+                        if(m.group(4).equals("IGNORED ")){
                             ruleid = "IgnoredPuppetLintRule";
                         }
 

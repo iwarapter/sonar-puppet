@@ -55,7 +55,7 @@ public class PplintSensor implements Sensor {
             try {
                 File out = new File(workdir, (i + ".out"));
                 analyzeFile(file, out, project);
-                i = i++;
+                i++;
             } catch (Exception e) {
                 String msg = new StringBuilder()
                         .append("Cannot analyse the file '")

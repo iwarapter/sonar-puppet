@@ -1,12 +1,13 @@
 package com.iadams.sonarqube.puppet.api;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.TokenType;
 
 
 /**
  * Created by iwarapter
  */
-public enum PuppetKeyword {
+public enum PuppetKeyword implements TokenType {
     BEFORE("before"),
     CASE("case"),
     CLASS("class"),
