@@ -13,7 +13,7 @@ class PuppetPunctuatorSpec extends Specification {
         AstNode astNode = Mock(AstNode)
 
         expect:
-        PuppetPunctuator.values().size() == 44
+        PuppetPunctuator.values().size() == 42
 
         PuppetPunctuator.values().each{
             it.hasToBeSkippedFromAst(astNode) == false

@@ -8,7 +8,7 @@ import spock.lang.Specification
 class PuppetKeywordSpec extends Specification {
     def "KeywordValues"() {
         expect:
-        PuppetKeyword.values().size() == 18
+        PuppetKeyword.values().size() == 21
         PuppetKeyword.keywordValues().size() == PuppetKeyword.values().size()
     }
 }

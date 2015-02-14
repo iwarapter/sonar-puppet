@@ -4,6 +4,7 @@ import com.iadams.sonarqube.puppet.PuppetConfiguration;
 import com.iadams.sonarqube.puppet.api.PuppetKeyword;
 import com.iadams.sonarqube.puppet.api.PuppetPunctuator;
 import com.iadams.sonarqube.puppet.api.PuppetTokenType;
+import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.impl.Lexer;
 import com.sonar.sslr.impl.channel.BlackHoleChannel;
 import com.sonar.sslr.impl.channel.IdentifierAndKeywordChannel;
@@ -17,6 +18,11 @@ import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.regexp;
  */
 public class PuppetLexer {
 
+    public static final String LITERAL = "(?:"
+            + "\"([^\"\\\\]*+(\\\\[\\s\\S])?+)*+\""
+            + "|'([^'\\\\]*+(\\\\[\\s\\S])?+)*+'"
+            + ")";
+
     private PuppetLexer() {
     }
 
@@ -29,7 +35,12 @@ public class PuppetLexer {
     return Lexer.builder()
             .withFailIfNoChannelToConsumeOneCharacter(true)
             .withChannel(new IdentifierAndKeywordChannel("[a-zA-Z]([a-zA-Z0-9_]*[a-zA-Z0-9])?+", true, PuppetKeyword.values()))
-            .withChannel(regexp(PuppetTokenType.NUMBER, "[0-9]+"))
+            .withChannel(regexp(PuppetTokenType.NUMERIC_LITERAL, "[0-9]+"))
+            .withChannel(regexp(PuppetTokenType.VARIABLE, "\\$(::)?(\\w+::)*\\w+"))
+
+                    // String Literals
+            .withChannel(regexp(GenericTokenType.LITERAL, LITERAL))
+
             .withChannel(commentRegexp(COMMENT))
             .withChannel(new PunctuatorChannel(PuppetPunctuator.values()))
             .withChannel(new BlackHoleChannel("[ \t\r\n]+"))

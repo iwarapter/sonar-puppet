@@ -8,6 +8,20 @@ import com.sonar.sslr.api.TokenType;
  * Created by iwarapter
  */
 public enum PuppetKeyword implements TokenType {
+
+    /**
+     * Logical AND.
+     */
+    AND("and"),
+    /**
+     * Logical OR.
+     */
+    OR("or"),
+    /**
+     * Comparison IN.
+     */
+    IN("in"),
+
     BEFORE("before"),
     CASE("case"),
     CLASS("class"),

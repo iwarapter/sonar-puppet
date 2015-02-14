@@ -7,12 +7,11 @@ import com.sonar.sslr.api.TokenType;
  * Created by iwarapter on 16/12/14.
  */
 public enum PuppetTokenType implements TokenType {
-    NUMBER,
-    STRING,
-
-    INDENT,
-    DEDENT,
-    NEWLINE;
+    IDENTIFIER,
+    VARIABLE,
+    NUMERIC_LITERAL,
+    REGULAR_EXPRESSION_LITERAL,
+    EMPTY;
 
     public String getName() {
         return name();

@@ -2,8 +2,11 @@ package com.iadams.sonarqube.puppet.lexer
 
 import com.iadams.sonarqube.puppet.api.PuppetKeyword
 import com.iadams.sonarqube.puppet.api.PuppetPunctuator
+import com.sonar.sslr.api.Token
+import com.sonar.sslr.api.TokenType
 import com.sonar.sslr.impl.Lexer
 import spock.lang.Specification
+import spock.lang.Unroll
 
 import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
 import static com.sonar.sslr.test.lexer.LexerMatchers.hasComment;
@@ -24,15 +27,19 @@ class PuppetLexerSpec extends Specification {
         assertThat(lexer.lex("i"), hasToken("i", IDENTIFIER));
     }
 
-    def "Keywords lexed correctly"() {
+    @Unroll
+    def "Keyword #input lexed correctly"() {
         given:
         lexer.lex(input)
 
         expect:
-        hasToken(input, token)
+        containsToken(input, token)
 
         where:
         input       | token
+        'and'       | PuppetKeyword.AND
+        'or'        | PuppetKeyword.OR
+        'in'        | PuppetKeyword.IN
         'before'    | PuppetKeyword.BEFORE
         'case'      | PuppetKeyword.CASE
         'class'     | PuppetKeyword.CLASS
@@ -53,59 +60,58 @@ class PuppetLexerSpec extends Specification {
         'unless'    | PuppetKeyword.UNLESS
     }
 
-    def "Punctuators lexed correctly"() {
+    @Unroll
+    def "Punctuator #token lexed correctly"() {
         given:
         lexer.lex(input)
 
         expect:
-        hasToken(input, token)
+        containsToken(input, token)
 
         where:
         input   | token
-        '=='    | PuppetPunctuator.EQU
-        '!='    | PuppetPunctuator.NOT_EQU
-        '<'     | PuppetPunctuator.LT
-        '>'     | PuppetPunctuator.GT
-        '<='    | PuppetPunctuator.LT_EQU
-        '>='    | PuppetPunctuator.GT_EQU
-        '=~'    | PuppetPunctuator.REG_MAT
-        '!~'    | PuppetPunctuator.REG_NMAT
-        'in'    | PuppetPunctuator.IN
-        'and'   | PuppetPunctuator.AND
-        'or'    | PuppetPunctuator.OR
-        '!'     | PuppetPunctuator.NOT
-        '+'     | PuppetPunctuator.PLUS
-        '-'     | PuppetPunctuator.MINUS
-        '/'     | PuppetPunctuator.DIV
-        '*'     | PuppetPunctuator.MUL
-        '%'     | PuppetPunctuator.MOD
-        '<<'    | PuppetPunctuator.L_SHIFT
-        '>>'    | PuppetPunctuator.R_SHIFT
-        '`'     | PuppetPunctuator.BACKTICK
-        ' '     | PuppetPunctuator.LPARENTHESIS
-        ')'     | PuppetPunctuator.RPARENTHESIS
-        '['     | PuppetPunctuator.LBRACKET
-        ']'     | PuppetPunctuator.RBRACKET
-        '{'     | PuppetPunctuator.LCURLYBRACE
-        '}'     | PuppetPunctuator.RCURLYBRACE
-        ','     | PuppetPunctuator.COMMA
-        ':'     | PuppetPunctuator.COLON
-        '.'     | PuppetPunctuator.DOT
-        ';'     | PuppetPunctuator.SEMICOLON
-        '@'     | PuppetPunctuator.AT
-        '='     | PuppetPunctuator.ASSIGN
-        '+='    | PuppetPunctuator.PLUS_ASSIGN
-        '-='    | PuppetPunctuator.MINUS_ASSIGN
-        '*='    | PuppetPunctuator.MUL_ASSIGN
-        '/='    | PuppetPunctuator.DIV_ASSIGN
-        '//='   | PuppetPunctuator.DIV_DIV_ASSIGN
-        '%='    | PuppetPunctuator.MOD_ASSIGN
-        '&='    | PuppetPunctuator.AND_ASSIGN
-        '|='    | PuppetPunctuator.OR_ASSIGN
-        '^='    | PuppetPunctuator.XOR_ASSIGN
-        '>>='   | PuppetPunctuator.RIGHT_ASSIGN
-        '<<='   | PuppetPunctuator.LEFT_ASSIGN
-        '**='   | PuppetPunctuator.MUL_MUL_ASSIGN
+        "/"     | PuppetPunctuator.DIV
+        "*"     | PuppetPunctuator.MUL
+        "["     | PuppetPunctuator.LBRACK
+        "]"     | PuppetPunctuator.RBRACK
+        "{"     | PuppetPunctuator.LBRACE
+        "}"     | PuppetPunctuator.RBRACE
+        "("     | PuppetPunctuator.LPAREN
+        ")"     | PuppetPunctuator.RPAREN
+        "=="    | PuppetPunctuator.ISEQUAL
+        "=~"    | PuppetPunctuator.MATCH
+        "=>"    | PuppetPunctuator.FARROW
+        "="     | PuppetPunctuator.EQUALS
+        "+="    | PuppetPunctuator.APPENDS
+        "+>"    | PuppetPunctuator.PARROW
+        "+"     | PuppetPunctuator.PLUS
+        ">="    | PuppetPunctuator.GREATEREQUAL
+        ">>"    | PuppetPunctuator.RSHIFT
+        ">"     | PuppetPunctuator.GREATERTHAN
+        "<="    | PuppetPunctuator.LESSEQUAL
+        "<<|"   | PuppetPunctuator.LLCOLLECT
+        "<-"    | PuppetPunctuator.OUT_EDGE
+        "<~"    | PuppetPunctuator.OUT_EDGE_SUB
+        "<|"    | PuppetPunctuator.LCOLLECT
+        "<<"    | PuppetPunctuator.LSHIFT
+        "<"     | PuppetPunctuator.LESSTHAN
+        "!~"    | PuppetPunctuator.NOMATCH
+        "!="    | PuppetPunctuator.NOTEQUAL
+        "!"     | PuppetPunctuator.NOT
+        "|>>"   | PuppetPunctuator.RRCOLLECT
+        "|>"    | PuppetPunctuator.RCOLLECT
+        "->"    | PuppetPunctuator.IN_EDGE
+        "~>"    | PuppetPunctuator.IN_EDGE_SUB
+        "-"     | PuppetPunctuator.MINUS
+        ","     | PuppetPunctuator.COMMA
+        "."     | PuppetPunctuator.DOT
+        ":"     | PuppetPunctuator.COLON
+        "@"     | PuppetPunctuator.AT
+        ";"     | PuppetPunctuator.SEMIC
+        "?"     | PuppetPunctuator.QMARK
+        "\\"    | PuppetPunctuator.BACKSLASH
+        "%"     | PuppetPunctuator.MODULO
+        "|"     | PuppetPunctuator.PIPE
     }
 
     def "comments lexed correctly"() {
@@ -114,5 +120,26 @@ class PuppetLexerSpec extends Specification {
         assertThat(lexer.lex("/*test*/*/"), hasComment("/*test*/"));
         assertThat(lexer.lex("/*test/* /**/"), hasComment("/*test/* /**/"));
         assertThat(lexer.lex("/*test1\ntest2\ntest3*/"), hasComment("/*test1\ntest2\ntest3*/"));
+    }
+
+    def "example file is lexed correctly"(){
+        given:
+        String codeChunksResource = "/metrics/lines_of_code.pp"
+        String codeChunksPathName = getClass().getResource(codeChunksResource).getPath()
+        String content = new File(codeChunksPathName).text
+
+        lexer.lex(content)
+
+        expect:
+        containsToken('user',IDENTIFIER)
+    }
+
+    private boolean containsToken(String value, TokenType type){
+        for (Token token : lexer.tokens) {
+            if (token.getValue().equals(value) && token.getType() == type) {
+                return true;
+            }
+        }
+        return false;
     }
 }

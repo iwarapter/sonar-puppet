@@ -3,12 +3,6 @@ package com.iadams.sonarqube.puppet.api;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerfulGrammarBuilder;
 
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.DEDENT;
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.INDENT;
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.NEWLINE;
-import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
-
 /**
  * Created by iwarapter
  */
