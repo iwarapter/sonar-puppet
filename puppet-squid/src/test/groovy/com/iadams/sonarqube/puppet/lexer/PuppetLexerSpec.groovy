@@ -2,13 +2,15 @@ package com.iadams.sonarqube.puppet.lexer
 
 import com.iadams.sonarqube.puppet.api.PuppetKeyword
 import com.iadams.sonarqube.puppet.api.PuppetPunctuator
+import com.iadams.sonarqube.puppet.api.PuppetTokenType
 import com.sonar.sslr.api.Token
 import com.sonar.sslr.api.TokenType
 import com.sonar.sslr.impl.Lexer
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
+import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER
+import static com.sonar.sslr.api.GenericTokenType.LITERAL;
 import static com.sonar.sslr.test.lexer.LexerMatchers.hasComment;
 import static com.sonar.sslr.test.lexer.LexerMatchers.hasToken;
 import static org.junit.Assert.assertThat;
@@ -131,6 +133,8 @@ class PuppetLexerSpec extends Specification {
         lexer.lex(content)
 
         expect:
+        containsToken('$variable', PuppetTokenType.VARIABLE )
+        containsToken('"this is a string"', LITERAL)
         containsToken('user',IDENTIFIER)
     }
 

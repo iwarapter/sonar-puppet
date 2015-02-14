@@ -1,3 +1,5 @@
+#example puppet file
+
 $variable = "this is a string"
 
 user { 'katie':
