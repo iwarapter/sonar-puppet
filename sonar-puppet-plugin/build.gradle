@@ -1,10 +1,5 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.github.kevinsawicki:http-request:5.6'
-    }
+plugins {
+    id "com.iadams.sonar-packaging" version "0.1"
 }
 
 sourceCompatibility = 1.5
@@ -13,33 +8,11 @@ repositories {
     jcenter()
 }
 
-configurations {
-    sonarqube
-    provided
-    compile.extendsFrom provided
-}
-
 dependencies {
     compile project(':puppet-squid')
 
     provided "org.codehaus.sonar:sonar-plugin-api:3.7"
-    //compile 'org.codehaus.sonar:sonar-squid:3.7'
-    //compile 'org.codehaus.sonar:sonar-testing-harness:3.7'
     compile 'org.codehaus.sonar.common-rules:sonar-common-rules:1.2'
-    //compile "org.codehaus.groovy:groovy-all:2.2.1"
-
-    //defined for the plugin package testing
-    sonarqube group: 'jaxen', name: 'jaxen', version: '1.1.4', transitive: false
-    sonarqube group: 'org.codehaus.sonar.sslr', name: 'sslr-core', version: '1.20', transitive: false
-    sonarqube group: 'org.codehaus.sonar.sslr', name: 'sslr-toolkit', version: '1.20', transitive: false
-    sonarqube group: 'org.codehaus.sonar.sslr', name: 'sslr-testing-harness', version: '1.20', transitive: false
-    sonarqube group: 'org.codehaus.sonar.sslr', name: 'sslr-xpath', version: '1.20', transitive: false
-    sonarqube group: 'org.codehaus.sonar.sslr-squid-bridge', name: 'sslr-squid-bridge', version: '2.4', transitive: false
-    sonarqube group: 'org.codehaus.sonar.common-rules', name: 'sonar-common-rules', version: '1.2', transitive: false
-    sonarqube(project(':puppet-squid')){
-        transitive = false
-    }
-
 
     testCompile "org.codehaus.sonar:sonar-plugin-api:3.7"
     testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
@@ -49,46 +22,12 @@ dependencies {
     testRuntime "org.objenesis:objenesis:2.1"    // allows mocking of classes without default constructor (together with CGLIB)
 }
 
-jar {
-  into('META-INF/lib') {
-    from configurations.sonarqube
-  }
-  manifest {
-    attributes( "Created-By": "Gradle",
-                "Built-By": System.getProperty('user.name'),
-                "Build-Jdk": System.getProperty('java.version'),
-                "Build-Time": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "Plugin-BuildDate": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "Plugin-Class": 'com.iadams.sonarqube.puppet.PuppetPlugin',
-                "Plugin-Dependencies": configurations.sonarqube.collect{ "META-INF/lib/${it.name}" }.join(' '),
-                "Plugin-Description": "Enable analysis and reporting on Puppet projects.",
-                "Plugin-Developers": 'Iain Adams',
-                "Plugin-Key": 'puppet',
-                "Plugin-Name": 'Puppet',
-                "Plugin-Version": version,
-                "Sonar-Version": 3.7)
-  }
-}
-
-task deployJar(type: Copy){
-
-    from "${libsDir}/${project.name}-${project.version}.jar"
-    into '/Users/iwarapter/Downloads/sonarqube-4.3.3/extensions/plugins/'
-}
-
-import com.github.kevinsawicki.http.HttpRequest
-
-task restartLocalServer(dependsOn: 'deployJar') << {
-
-    logger.info "Restarting server"
-    def sonarUrl = 'http://localhost:9000'
-    try {
-        HttpRequest request = HttpRequest.post(new URL("${sonarUrl}/api/system/restart"))
-        if (!request.noContent()) {
-            throw new GradleException("Fail to restart server " + sonarUrl + ": " + request.message());
-        }
-    } catch (MalformedURLException e) {
-        throw new GradleException("Invalid URL", e);
-    }
-    logger.info("Server restarted");
+sonarPackaging {
+    serverUrl = 'http://localhost:9000'
+    pluginDir = '/Users/iwarapter/Downloads/sonarqube-4.3.3/extensions/plugins/'
+    pluginKey = 'puppet'
+    pluginClass = 'com.iadams.sonarqube.puppet.PuppetPlugin'
+    pluginName = 'Puppet'
+    pluginDescription = 'Enable analysis and reporting on Puppet projects.'
+    pluginDevelopers = 'Iain Adams'
 }

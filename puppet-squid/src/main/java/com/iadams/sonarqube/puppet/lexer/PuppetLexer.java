@@ -1,5 +1,6 @@
 package com.iadams.sonarqube.puppet.lexer;
 
+import com.iadams.sonarqube.puppet.PuppetConfiguration;
 import com.iadams.sonarqube.puppet.api.PuppetKeyword;
 import com.iadams.sonarqube.puppet.api.PuppetPunctuator;
 import com.iadams.sonarqube.puppet.api.PuppetTokenType;
@@ -31,11 +32,12 @@ public class PuppetLexer {
 
     public static final String COMMENT = "(?:" + HASH_LINE_COMMENT + "|" + SLASH_LINE_COMMENT + "|" + MULTI_LINE_COMMENT + ")";
 
-    public static Lexer create() {
+    public static Lexer create(PuppetConfiguration conf) {
     return Lexer.builder()
+            .withCharset(conf.getCharset())
             .withFailIfNoChannelToConsumeOneCharacter(true)
             .withChannel(new IdentifierAndKeywordChannel("[a-zA-Z]([a-zA-Z0-9_]*[a-zA-Z0-9])?+", true, PuppetKeyword.values()))
-            .withChannel(regexp(PuppetTokenType.NUMERIC_LITERAL, "[0-9]+"))
+            .withChannel(regexp(PuppetTokenType.INTEGER, "[0-9]+"))
             .withChannel(regexp(PuppetTokenType.VARIABLE, "\\$(::)?(\\w+::)*\\w+"))
 
                     // String Literals

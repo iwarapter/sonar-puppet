@@ -1,5 +1,7 @@
 package com.iadams.sonarqube.puppet.lexer
 
+import com.google.common.base.Charsets
+import com.iadams.sonarqube.puppet.PuppetConfiguration
 import com.iadams.sonarqube.puppet.api.PuppetKeyword
 import com.iadams.sonarqube.puppet.api.PuppetPunctuator
 import com.iadams.sonarqube.puppet.api.PuppetTokenType
@@ -9,6 +11,7 @@ import com.sonar.sslr.impl.Lexer
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.INTEGER;
 import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER
 import static com.sonar.sslr.api.GenericTokenType.LITERAL;
 import static com.sonar.sslr.test.lexer.LexerMatchers.hasComment;
@@ -20,7 +23,7 @@ import static org.junit.Assert.assertThat;
  */
 class PuppetLexerSpec extends Specification {
 
-    Lexer lexer = PuppetLexer.create();
+    Lexer lexer = PuppetLexer.create(new PuppetConfiguration(Charsets.UTF_8));
 
     def "lex Identifiers"() {
         assertThat(lexer.lex("abc"), hasToken("abc", IDENTIFIER));
@@ -122,6 +125,16 @@ class PuppetLexerSpec extends Specification {
         assertThat(lexer.lex("/*test*/*/"), hasComment("/*test*/"));
         assertThat(lexer.lex("/*test/* /**/"), hasComment("/*test/* /**/"));
         assertThat(lexer.lex("/*test1\ntest2\ntest3*/"), hasComment("/*test1\ntest2\ntest3*/"));
+    }
+
+    def "expressions lex correctly"() {
+        given:
+        lexer.lex("1 + 1")
+
+        expect:
+        containsToken('1', INTEGER)
+        containsToken('+', PuppetPunctuator.PLUS)
+        containsToken('1', INTEGER)
     }
 
     def "example file is lexed correctly"(){

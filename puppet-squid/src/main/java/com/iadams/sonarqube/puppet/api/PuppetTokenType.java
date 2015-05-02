@@ -9,7 +9,12 @@ import com.sonar.sslr.api.TokenType;
 public enum PuppetTokenType implements TokenType {
     IDENTIFIER,
     VARIABLE,
-    NUMERIC_LITERAL,
+    //
+    //<float> | <integer> | <hex-integer> | <octal-integer>
+    FLOAT,
+    INTEGER,
+    HEX_INTEGER,
+    OCTAL_INTEGER,
     REGULAR_EXPRESSION_LITERAL,
     EMPTY;
 
