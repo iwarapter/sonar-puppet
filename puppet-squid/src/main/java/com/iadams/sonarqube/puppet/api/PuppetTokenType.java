@@ -16,7 +16,9 @@ public enum PuppetTokenType implements TokenType {
     HEX_INTEGER,
     OCTAL_INTEGER,
     REGULAR_EXPRESSION_LITERAL,
-    EMPTY;
+    EMPTY,
+
+    NEWLINE;
 
     public String getName() {
         return name();

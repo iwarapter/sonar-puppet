@@ -53,6 +53,8 @@ subprojects {
             html.destination "${buildDir}/reports/jacocoCombinedTestReport"
         }
     }
+
+    integTest.finalizedBy (jacocoIntegTestReport, jacocoCombinedTestReport)
 }
 
 apply plugin: 'sonar-runner'

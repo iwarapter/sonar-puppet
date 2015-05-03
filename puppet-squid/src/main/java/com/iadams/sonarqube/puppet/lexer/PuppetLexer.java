@@ -37,6 +37,8 @@ public class PuppetLexer {
             .withCharset(conf.getCharset())
             .withFailIfNoChannelToConsumeOneCharacter(true)
             .withChannel(new IdentifierAndKeywordChannel("[a-zA-Z]([a-zA-Z0-9_]*[a-zA-Z0-9])?+", true, PuppetKeyword.values()))
+            .withChannel(regexp(PuppetTokenType.HEX_INTEGER, "0(x|X)[0-9a-fA-F]+"))
+            .withChannel(regexp(PuppetTokenType.OCTAL_INTEGER, "0[0-7]+"))
             .withChannel(regexp(PuppetTokenType.INTEGER, "[0-9]+"))
             .withChannel(regexp(PuppetTokenType.VARIABLE, "\\$(::)?(\\w+::)*\\w+"))
 

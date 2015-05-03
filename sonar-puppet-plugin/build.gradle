@@ -31,3 +31,9 @@ sonarPackaging {
     pluginDescription = 'Enable analysis and reporting on Puppet projects.'
     pluginDevelopers = 'Iain Adams'
 }
+
+sonarRunner {
+    sonarProperties {
+        property "sonar.tests", sourceSets.test.groovy.srcDirs + sourceSets.integTest.groovy.srcDirs
+    }
+}

@@ -7,3 +7,5 @@ jacocoTestReport {
         html.destination "${buildDir}/reports/jacocoTestReport"
     }
 }
+
+test.finalizedBy jacocoTestReport

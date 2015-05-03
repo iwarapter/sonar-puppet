@@ -137,6 +137,23 @@ class PuppetLexerSpec extends Specification {
         containsToken('1', INTEGER)
     }
 
+    @Unroll
+    def "#input is a #token"(){
+        given:
+        lexer.lex(input)
+
+        expect:
+        containsToken(input, token)
+
+        where:
+        input       | token
+        '0777'      | PuppetTokenType.OCTAL_INTEGER
+        '0x777'     | PuppetTokenType.HEX_INTEGER
+        '0xdef'     | PuppetTokenType.HEX_INTEGER
+        '0Xdef'     | PuppetTokenType.HEX_INTEGER
+        '0xDEF'     | PuppetTokenType.HEX_INTEGER
+    }
+
     def "example file is lexed correctly"(){
         given:
         String codeChunksResource = "/metrics/lines_of_code.pp"

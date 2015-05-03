@@ -5,7 +5,9 @@ import org.sonar.sslr.grammar.LexerfulGrammarBuilder;
 
 import static com.iadams.sonarqube.puppet.api.PuppetKeyword.*;
 import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.*;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.NEWLINE;
 import static com.sonar.sslr.api.GenericTokenType.LITERAL;
+import static com.sonar.sslr.api.GenericTokenType.EOF;
 
 /**
  * Created by iwarapter
@@ -26,6 +28,9 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
     //SIMPLE STATEMENTS
     STATEMENT,
+    RESOURCE,
+    VIRTUALRESOURCE,
+    COLLECTION,
 
     //CONDITIONAL STATEMENTS
     CONDITION_CLAUSE,
@@ -37,14 +42,15 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     public static LexerfulGrammarBuilder create() {
         LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
 
-        //b.rule(FILE_INPUT).is(b.zeroOrMore(b.firstOf(NEWLINE, STATEMENT)), EOF);
+        b.rule(FILE_INPUT).is(b.zeroOrMore(b.firstOf(NEWLINE, STATEMENT)), EOF);
+        b.rule(STATEMENT).is(b.oneOrMore(EXPRESSION));
 
         grammar(b);
         conditionalStatements(b);
         //simpleStatements(b);
         expressions(b);
 
-        //b.setRootRule(FILE_INPUT);
+        b.setRootRule(FILE_INPUT);
         b.buildWithMemoizationOfMatchesForAllRules();
 
         return b;
@@ -60,12 +66,12 @@ public enum PuppetGrammar  implements GrammarRuleKey {
      * @param b
      */
     public static void conditionalStatements(LexerfulGrammarBuilder b){
-
+/*
         //b.rule(CONDITIONAL_STMT).is(b.firstOf(
         //        IF_STMT,
         //        UNLESS_STMT));
         b.rule(STATEMENT).is(IF_STATEMENT);
-        /*b.rule(STATEMENT).is(b.firstOf(
+        b.rule(STATEMENT).is(b.firstOf(
                 EXPRESSION_STATEMENT,
                 COMPOUND_STATEMENT,
                 RETURN_STATEMENT,
@@ -73,9 +79,10 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 BREAK_STATEMENT,
                 IF_STATEMENT,
                 WHILE_STATEMENT,
-                NO_COMPLEXITY_STATEMENT));*/
+                NO_COMPLEXITY_STATEMENT));
         b.rule(CONDITION_CLAUSE).is(LPAREN, EXPRESSION, RPAREN);
         b.rule(IF_STATEMENT).is(IF, CONDITION_CLAUSE, STATEMENT);
+        */
     }
 
     /**
