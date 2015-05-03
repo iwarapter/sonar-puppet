@@ -152,6 +152,9 @@ class PuppetLexerSpec extends Specification {
         '0xdef'     | PuppetTokenType.HEX_INTEGER
         '0Xdef'     | PuppetTokenType.HEX_INTEGER
         '0xDEF'     | PuppetTokenType.HEX_INTEGER
+        '0.3'       | PuppetTokenType.FLOAT
+        '0.3e2'     | PuppetTokenType.FLOAT
+        '0.3E2'     | PuppetTokenType.FLOAT
     }
 
     def "example file is lexed correctly"(){
