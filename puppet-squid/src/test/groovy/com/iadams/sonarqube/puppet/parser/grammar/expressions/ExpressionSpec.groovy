@@ -23,8 +23,8 @@ class ExpressionSpec extends GrammarSpec {
 		where:
 		input << ['true == true',
 				'5 < 9',
-				'($operatingsystem != \'Solaris\')']//,
+				'($operatingsystem != \'Solaris\')',
 				//'$kernel in [\'linux\', \'solaris\']',
-				//'!str2bool($is_virtual)']
+				'!str2bool($is_virtual)']
 	}
 }

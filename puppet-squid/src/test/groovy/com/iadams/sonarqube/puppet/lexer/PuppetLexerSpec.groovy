@@ -171,6 +171,17 @@ class PuppetLexerSpec extends Specification {
         containsToken('user', IDENTIFIER)
     }
 
+    def "function calls are lexed correctly"() {
+        given:
+        lexer.lex('str2bool($is_virtual)')
+
+        expect:
+        containsToken('str2bool', IDENTIFIER)
+        containsToken('(', LPAREN)
+        containsToken('$is_virtual', VARIABLE)
+        containsToken(')', RPAREN)
+    }
+
     private boolean containsToken(String value, TokenType type){
         for (Token token : lexer.tokens) {
             if (token.getValue().equals(value) && token.getType() == type) {

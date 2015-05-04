@@ -1,6 +1,21 @@
 group = 'com.iadams.sonarqube.puppet'
 version = '0.1'
 
+apply plugin: 'sonar-runner'
+
+repositories {
+    jcenter()
+}
+
+sonarRunner {
+    sonarProperties {
+        property "sonar.host.url", "http://localhost:9000"
+        property "sonar.jdbc.url", "jdbc:h2:tcp://localhost:9092/sonar"
+        property "sonar.jdbc.username", "sonar"
+        property "sonar.jdbc.password", "sonar"
+    }
+}
+
 subprojects {
     apply plugin: 'groovy'
     apply from: '../gradle/jacoco.gradle'
@@ -65,19 +80,18 @@ subprojects {
     }
 
     integTest.finalizedBy (jacocoIntegTestReport, jacocoCombinedTestReport)
-}
 
-apply plugin: 'sonar-runner'
 
-repositories {
-    jcenter()
-}
-
-sonarRunner {
-    sonarProperties {
-        property "sonar.host.url", "http://localhost:9000"
-        property "sonar.jdbc.url", "jdbc:h2:tcp://localhost:9092/sonar"
-        property "sonar.jdbc.username", "sonar"
-        property "sonar.jdbc.password", "sonar"
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
     }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    build.dependsOn sourcesJar
+    build.dependsOn javadocJar
 }

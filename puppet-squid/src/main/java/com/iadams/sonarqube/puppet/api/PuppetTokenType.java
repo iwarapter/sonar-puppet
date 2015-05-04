@@ -7,7 +7,6 @@ import com.sonar.sslr.api.TokenType;
  * Created by iwarapter on 16/12/14.
  */
 public enum PuppetTokenType implements TokenType {
-    IDENTIFIER,
     VARIABLE,
     //
     //<float> | <integer> | <hex-integer> | <octal-integer>

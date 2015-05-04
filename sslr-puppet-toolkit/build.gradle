@@ -16,6 +16,7 @@ dependencies {
 }
 
 shadowJar {
+	classifier = ''
 	manifest {
 		attributes 'Main-Class': 'com.iadams.sonarqube.puppet.PuppetToolkit'
 	}

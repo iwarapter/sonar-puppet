@@ -1,13 +1,11 @@
 package com.iadams.sonarqube.puppet.api;
 
-import com.sonar.sslr.api.GenericTokenType;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerfulGrammarBuilder;
 
 import static com.iadams.sonarqube.puppet.api.PuppetKeyword.*;
 import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.*;
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.*;
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.IDENTIFIER;
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.NEWLINE;
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.VARIABLE;
 import static com.sonar.sslr.api.GenericTokenType.*;
@@ -44,6 +42,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
     RIGHT_VALUE,
     LITERAL_LIST,
+    ARGUMENT_EXPRESSION_LIST,
+    NAME,
 
     //SIMPLE STATEMENTS
     STATEMENT,
@@ -51,7 +51,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     VIRTUALRESOURCE,
     COLLECTION,
     FUNC_CALL,
-    FUNC_ARGS,
 
     //CONDITIONAL STATEMENTS
     CONDITION_CLAUSE,
@@ -79,15 +78,15 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
     public static void grammar(LexerfulGrammarBuilder b) {
 
-        b.rule(FUNC_CALL).is(b.sequence(
-                IDENTIFIER,
-                LPAREN,
-                b.optional(FUNC_ARGS),
-                RPAREN));
+        b.rule(NAME).is(IDENTIFIER);
 
-        b.rule(FUNC_ARGS).is(b.firstOf(
-                LITERAL_LIST,
-                VARIABLE));
+        b.rule(FUNC_CALL).is(
+                NAME,
+                LPAREN,
+                ARGUMENT_EXPRESSION_LIST,
+                RPAREN);
+
+        b.rule(ARGUMENT_EXPRESSION_LIST).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION));
     }
 
     /**
@@ -194,8 +193,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         //<rightvalue> ::= <variable> | <function-call> | <literals>
         b.rule(RIGHT_VALUE).is(b.firstOf(
-                VARIABLE,
                 FUNC_CALL,
+                VARIABLE,
                 LITERAL_LIST));
 
         //<literals> ::= <float> | <integer> | <hex-integer> | <octal-integer> | <quoted-string>
