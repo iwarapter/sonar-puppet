@@ -11,13 +11,4 @@ import static org.sonar.sslr.tests.Assertions.assertThat;
  */
 class StatementSpec extends GrammarSpec {
 
-    def "if statements"() {
-        given:
-        setRootRule(PuppetGrammar.EXPRESSION)
-
-        expect:
-        assertThat(p)
-                .matches("==")
-                //s.matches("1 - 1")
-    }
 }

@@ -2,16 +2,17 @@ package com.iadams.sonarqube.puppet.lexer
 
 import com.google.common.base.Charsets
 import com.iadams.sonarqube.puppet.PuppetConfiguration
-import com.iadams.sonarqube.puppet.api.PuppetKeyword
-import com.iadams.sonarqube.puppet.api.PuppetPunctuator
-import com.iadams.sonarqube.puppet.api.PuppetTokenType
 import com.sonar.sslr.api.Token
 import com.sonar.sslr.api.TokenType
 import com.sonar.sslr.impl.Lexer
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.INTEGER;
+import static com.iadams.sonarqube.puppet.api.PuppetKeyword.*
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.*
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.*
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.INTEGER
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.VARIABLE;
 import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER
 import static com.sonar.sslr.api.GenericTokenType.LITERAL;
 import static com.sonar.sslr.test.lexer.LexerMatchers.hasComment;
@@ -42,27 +43,27 @@ class PuppetLexerSpec extends Specification {
 
         where:
         input       | token
-        'and'       | PuppetKeyword.AND
-        'or'        | PuppetKeyword.OR
-        'in'        | PuppetKeyword.IN
-        'before'    | PuppetKeyword.BEFORE
-        'case'      | PuppetKeyword.CASE
-        'class'     | PuppetKeyword.CLASS
-        'default'   | PuppetKeyword.DEFAULT
-        'define'    | PuppetKeyword.DEFINE
-        'else'      | PuppetKeyword.ELSE
-        'elsif'     | PuppetKeyword.ELSIF
-        'false'     | PuppetKeyword.FALSE
-        'if'        | PuppetKeyword.IF
-        'import'    | PuppetKeyword.IMPORT
-        'inherits'  | PuppetKeyword.INHERITS
-        'node'      | PuppetKeyword.NODE
-        'notify'    | PuppetKeyword.NOTIFY
-        'require'   | PuppetKeyword.REQUIRE
-        'subscribe' | PuppetKeyword.SUBSCRIBE
-        'true'      | PuppetKeyword.TRUE
-        'undef'     | PuppetKeyword.UNDEF
-        'unless'    | PuppetKeyword.UNLESS
+        'and'       | AND
+        'or'        | OR
+        'in'        | IN
+        'before'    | BEFORE
+        'case'      | CASE
+        'class'     | CLASS
+        'default'   | DEFAULT
+        'define'    | DEFINE
+        'else'      | ELSE
+        'elsif'     | ELSIF
+        'false'     | FALSE
+        'if'        | IF
+        'import'    | IMPORT
+        'inherits'  | INHERITS
+        'node'      | NODE
+        'notify'    | NOTIFY
+        'require'   | REQUIRE
+        'subscribe' | SUBSCRIBE
+        'true'      | TRUE
+        'undef'     | UNDEF
+        'unless'    | UNLESS
     }
 
     @Unroll
@@ -75,48 +76,48 @@ class PuppetLexerSpec extends Specification {
 
         where:
         input   | token
-        "/"     | PuppetPunctuator.DIV
-        "*"     | PuppetPunctuator.MUL
-        "["     | PuppetPunctuator.LBRACK
-        "]"     | PuppetPunctuator.RBRACK
-        "{"     | PuppetPunctuator.LBRACE
-        "}"     | PuppetPunctuator.RBRACE
-        "("     | PuppetPunctuator.LPAREN
-        ")"     | PuppetPunctuator.RPAREN
-        "=="    | PuppetPunctuator.ISEQUAL
-        "=~"    | PuppetPunctuator.MATCH
-        "=>"    | PuppetPunctuator.FARROW
-        "="     | PuppetPunctuator.EQUALS
-        "+="    | PuppetPunctuator.APPENDS
-        "+>"    | PuppetPunctuator.PARROW
-        "+"     | PuppetPunctuator.PLUS
-        ">="    | PuppetPunctuator.GREATEREQUAL
-        ">>"    | PuppetPunctuator.RSHIFT
-        ">"     | PuppetPunctuator.GREATERTHAN
-        "<="    | PuppetPunctuator.LESSEQUAL
-        "<<|"   | PuppetPunctuator.LLCOLLECT
-        "<-"    | PuppetPunctuator.OUT_EDGE
-        "<~"    | PuppetPunctuator.OUT_EDGE_SUB
-        "<|"    | PuppetPunctuator.LCOLLECT
-        "<<"    | PuppetPunctuator.LSHIFT
-        "<"     | PuppetPunctuator.LESSTHAN
-        "!~"    | PuppetPunctuator.NOMATCH
-        "!="    | PuppetPunctuator.NOTEQUAL
-        "!"     | PuppetPunctuator.NOT
-        "|>>"   | PuppetPunctuator.RRCOLLECT
-        "|>"    | PuppetPunctuator.RCOLLECT
-        "->"    | PuppetPunctuator.IN_EDGE
-        "~>"    | PuppetPunctuator.IN_EDGE_SUB
-        "-"     | PuppetPunctuator.MINUS
-        ","     | PuppetPunctuator.COMMA
-        "."     | PuppetPunctuator.DOT
-        ":"     | PuppetPunctuator.COLON
-        "@"     | PuppetPunctuator.AT
-        ";"     | PuppetPunctuator.SEMIC
-        "?"     | PuppetPunctuator.QMARK
-        "\\"    | PuppetPunctuator.BACKSLASH
-        "%"     | PuppetPunctuator.MODULO
-        "|"     | PuppetPunctuator.PIPE
+        "/"     | DIV
+        "*"     | MUL
+        "["     | LBRACK
+        "]"     | RBRACK
+        "{"     | LBRACE
+        "}"     | RBRACE
+        "("     | LPAREN
+        ")"     | RPAREN
+        "=="    | ISEQUAL
+        "=~"    | MATCH
+        "=>"    | FARROW
+        "="     | EQUALS
+        "+="    | APPENDS
+        "+>"    | PARROW
+        "+"     | PLUS
+        ">="    | GREATEREQUAL
+        ">>"    | RSHIFT
+        ">"     | GREATERTHAN
+        "<="    | LESSEQUAL
+        "<<|"   | LLCOLLECT
+        "<-"    | OUT_EDGE
+        "<~"    | OUT_EDGE_SUB
+        "<|"    | LCOLLECT
+        "<<"    | LSHIFT
+        "<"     | LESSTHAN
+        "!~"    | NOMATCH
+        "!="    | NOTEQUAL
+        "!"     | NOT
+        "|>>"   | RRCOLLECT
+        "|>"    | RCOLLECT
+        "->"    | IN_EDGE
+        "~>"    | IN_EDGE_SUB
+        "-"     | MINUS
+        ","     | COMMA
+        "."     | DOT
+        ":"     | COLON
+        "@"     | AT
+        ";"     | SEMIC
+        "?"     | QMARK
+        "\\"    | BACKSLASH
+        "%"     | MODULO
+        "|"     | PIPE
     }
 
     def "comments lexed correctly"() {
@@ -133,7 +134,7 @@ class PuppetLexerSpec extends Specification {
 
         expect:
         containsToken('1', INTEGER)
-        containsToken('+', PuppetPunctuator.PLUS)
+        containsToken('+', PLUS)
         containsToken('1', INTEGER)
     }
 
@@ -147,14 +148,13 @@ class PuppetLexerSpec extends Specification {
 
         where:
         input       | token
-        '0777'      | PuppetTokenType.OCTAL_INTEGER
-        '0x777'     | PuppetTokenType.HEX_INTEGER
-        '0xdef'     | PuppetTokenType.HEX_INTEGER
-        '0Xdef'     | PuppetTokenType.HEX_INTEGER
-        '0xDEF'     | PuppetTokenType.HEX_INTEGER
-        '0.3'       | PuppetTokenType.FLOAT
-        '0.3e2'     | PuppetTokenType.FLOAT
-        '0.3E2'     | PuppetTokenType.FLOAT
+        '0777'      | OCTAL_INTEGER
+        '0x777'     | HEX_INTEGER
+        '0xdef'     | HEX_INTEGER
+        '0Xdef'     | HEX_INTEGER
+        '0xDEF'     | HEX_INTEGER
+        '0.3'       | FLOAT
+        '0.3'       | FLOAT
     }
 
     def "example file is lexed correctly"(){
@@ -166,9 +166,9 @@ class PuppetLexerSpec extends Specification {
         lexer.lex(content)
 
         expect:
-        containsToken('$variable', PuppetTokenType.VARIABLE )
+        containsToken('$variable', VARIABLE )
         containsToken('"this is a string"', LITERAL)
-        containsToken('user',IDENTIFIER)
+        containsToken('user', IDENTIFIER)
     }
 
     private boolean containsToken(String value, TokenType type){

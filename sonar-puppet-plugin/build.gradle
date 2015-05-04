@@ -2,12 +2,6 @@ plugins {
     id "com.iadams.sonar-packaging" version "0.1"
 }
 
-sourceCompatibility = 1.5
-
-repositories {
-    jcenter()
-}
-
 dependencies {
     compile project(':puppet-squid')
 
@@ -15,11 +9,8 @@ dependencies {
     compile 'org.codehaus.sonar.common-rules:sonar-common-rules:1.2'
 
     testCompile "org.codehaus.sonar:sonar-plugin-api:3.7"
-    testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
     testCompile 'org.codehaus.sonar:sonar-testing-harness:3.7'
     testCompile 'org.apache.maven:maven-project:2.2.1'
-    testRuntime "cglib:cglib-nodep:3.1"          // allows mocking of classes (in addition to interfaces)
-    testRuntime "org.objenesis:objenesis:2.1"    // allows mocking of classes without default constructor (together with CGLIB)
 }
 
 sonarPackaging {

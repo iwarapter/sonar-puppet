@@ -1,11 +1,16 @@
 package com.iadams.sonarqube.puppet.api;
 
+import com.sonar.sslr.api.GenericTokenType;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerfulGrammarBuilder;
 
 import static com.iadams.sonarqube.puppet.api.PuppetKeyword.*;
 import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.*;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.*;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.IDENTIFIER;
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.NEWLINE;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.VARIABLE;
+import static com.sonar.sslr.api.GenericTokenType.*;
 import static com.sonar.sslr.api.GenericTokenType.LITERAL;
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 
@@ -15,10 +20,21 @@ import static com.sonar.sslr.api.GenericTokenType.EOF;
 public enum PuppetGrammar  implements GrammarRuleKey {
 
     CONDITION,
+    OPERAND,
 
     //EXPRESSIONS
     EXPRESSION,
+    ARITH_EXP,
+    BOOL_EXP,
+    COMP_EXP,
+    MATCH_EXP,
+    NOT_EXP,
+    MINUS_EXP,
+    BRACKET_EXP,
+
+    ARITH_OP,
     ASSIGNMENT_EXPRESSION,
+    BOOL_OPERATOR,
     COMP_OPERATOR,
     A_OPER,
     M_OPER,
@@ -26,11 +42,16 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
     SHIFT_OPER,
 
+    RIGHT_VALUE,
+    LITERAL_LIST,
+
     //SIMPLE STATEMENTS
     STATEMENT,
     RESOURCE,
     VIRTUALRESOURCE,
     COLLECTION,
+    FUNC_CALL,
+    FUNC_ARGS,
 
     //CONDITIONAL STATEMENTS
     CONDITION_CLAUSE,
@@ -58,6 +79,15 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
     public static void grammar(LexerfulGrammarBuilder b) {
 
+        b.rule(FUNC_CALL).is(b.sequence(
+                IDENTIFIER,
+                LPAREN,
+                b.optional(FUNC_ARGS),
+                RPAREN));
+
+        b.rule(FUNC_ARGS).is(b.firstOf(
+                LITERAL_LIST,
+                VARIABLE));
     }
 
     /**
@@ -92,8 +122,44 @@ public enum PuppetGrammar  implements GrammarRuleKey {
      */
     public static void expressions(LexerfulGrammarBuilder b){
 
-        b.rule(EXPRESSION).is(COMP_OPERATOR);
+        b.rule(OPERAND).is(b.firstOf(
+                LITERAL_LIST,
+                VARIABLE,
+                TRUE,
+                FALSE));
+
+        /*<exp> ::=  <exp> <arithop> <exp>
+                | <exp> <boolop> <exp>
+                | <exp> <compop> <exp>
+                | <exp> <matchop> <regex>
+                | ! <exp>
+                | - <exp>
+                | "(" <exp> ")"
+                | <rightvalue>*/
+        b.rule(EXPRESSION).is(b.firstOf(
+                ARITH_EXP,
+                BOOL_EXP,
+                COMP_EXP,
+                MATCH_EXP,
+                NOT_EXP,
+                MINUS_EXP,
+                BRACKET_EXP,
+                RIGHT_VALUE));
+
+        b.rule(ARITH_EXP).is(OPERAND, ARITH_OP, OPERAND);
+        b.rule(BOOL_EXP).is(OPERAND, BOOL_OPERATOR, OPERAND);
+        b.rule(COMP_EXP).is(OPERAND, COMP_OPERATOR, OPERAND);
+        b.rule(MATCH_EXP).is(OPERAND, MATCH_OPERATOR, OPERAND);
+        b.rule(NOT_EXP).is(NOT, EXPRESSION);
+        b.rule(MINUS_EXP).is(MINUS, OPERAND);
+        b.rule(BRACKET_EXP).is(LPAREN, EXPRESSION, RPAREN);
+
         //<arithop> ::= "+" | "-" | "/" | "*" | "<<" | ">>"
+        b.rule(ARITH_OP).is(b.firstOf(
+                SHIFT_OPER,
+                A_OPER,
+                M_OPER));
+
         b.rule(SHIFT_OPER).is(b.firstOf(
                 RSHIFT,
                 LSHIFT));
@@ -107,6 +173,10 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 DIV));
 
         //<boolop>  ::= "and" | "or"
+        b.rule(BOOL_OPERATOR).is(b.firstOf(
+                AND,
+                OR,
+                NOT));
 
         //<compop>  ::= "==" | "!=" | ">" | ">=" | "<=" | "<"
         b.rule(COMP_OPERATOR).is(b.firstOf(
@@ -122,7 +192,20 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 MATCH,
                 NOMATCH));
 
+        //<rightvalue> ::= <variable> | <function-call> | <literals>
+        b.rule(RIGHT_VALUE).is(b.firstOf(
+                VARIABLE,
+                FUNC_CALL,
+                LITERAL_LIST));
+
         //<literals> ::= <float> | <integer> | <hex-integer> | <octal-integer> | <quoted-string>
+        b.rule(LITERAL_LIST).is(b.firstOf(
+                INTEGER,
+                HEX_INTEGER,
+                OCTAL_INTEGER,
+                LITERAL));
+
+        //<regex> ::= '/regex/'
 
     }
 }
