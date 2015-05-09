@@ -64,7 +64,7 @@ class PuppetAstScannerSpec extends Specification {
 		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/metrics/lines.pp"))
 
 		expect:
-		file.getInt(PuppetMetric.LINES) == 6
+		file.getInt(PuppetMetric.LINES) == 5
 	}
 
 	def "lines of code"(){

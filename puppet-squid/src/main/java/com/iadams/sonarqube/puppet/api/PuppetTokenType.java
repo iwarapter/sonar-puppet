@@ -41,6 +41,8 @@ public enum PuppetTokenType implements TokenType {
     REGULAR_EXPRESSION_LITERAL,
     EMPTY,
 
+    INDENT,
+    DEDENT,
     NEWLINE;
 
     public String getName() {

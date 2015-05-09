@@ -1,9 +1,8 @@
 dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.2.1'
-
     compile 'org.codehaus.sonar.sslr:sslr-core:1.20'
     compile 'org.codehaus.sonar.sslr-squid-bridge:sslr-squid-bridge:2.4'
 
     testCompile 'org.codehaus.sonar.sslr:sslr-testing-harness:1.20'
     testCompile 'org.slf4j:slf4j-simple:1.7.12'
+    testCompile 'org.apache.maven:maven-project:2.2.1'
 }
