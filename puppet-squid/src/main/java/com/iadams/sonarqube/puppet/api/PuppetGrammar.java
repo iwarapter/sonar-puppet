@@ -43,6 +43,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
     CONDITION,
     OPERAND,
+    ATTRIBUTE,
 
     //EXPRESSIONS
     EXPRESSION,
@@ -87,7 +88,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
 
         b.rule(FILE_INPUT).is(b.zeroOrMore(b.firstOf(NEWLINE, STATEMENT)), EOF);
-        b.rule(STATEMENT).is(b.oneOrMore(EXPRESSION));
+        b.rule(STATEMENT).is(b.firstOf(EXPRESSION, RESOURCE));
 
         grammar(b);
         conditionalStatements(b);
@@ -111,6 +112,10 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RPAREN);
 
         b.rule(ARGUMENT_EXPRESSION_LIST).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION));
+
+        b.rule(ATTRIBUTE).is(IDENTIFIER, FARROW, EXPRESSION, b.optional(COMMA));
+
+        b.rule(RESOURCE).is(IDENTIFIER, LBRACE, LITERAL, COLON, b.oneOrMore(ATTRIBUTE), RBRACE );
     }
 
     /**
@@ -160,6 +165,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 | "(" <exp> ")"
                 | <rightvalue>*/
         b.rule(EXPRESSION).is(b.firstOf(
+                ASSIGNMENT_EXPRESSION,
                 ARITH_EXP,
                 BOOL_EXP,
                 COMP_EXP,
@@ -176,6 +182,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(NOT_EXP).is(NOT, EXPRESSION);
         b.rule(MINUS_EXP).is(MINUS, OPERAND);
         b.rule(BRACKET_EXP).is(LPAREN, EXPRESSION, RPAREN);
+        b.rule(ASSIGNMENT_EXPRESSION).is(VARIABLE, EQUALS ,LITERAL_LIST);
 
         //<arithop> ::= "+" | "-" | "/" | "*" | "<<" | ">>"
         b.rule(ARITH_OP).is(b.firstOf(
@@ -223,6 +230,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         //<literals> ::= <float> | <integer> | <hex-integer> | <octal-integer> | <quoted-string>
         b.rule(LITERAL_LIST).is(b.firstOf(
+                FLOAT,
                 INTEGER,
                 HEX_INTEGER,
                 OCTAL_INTEGER,

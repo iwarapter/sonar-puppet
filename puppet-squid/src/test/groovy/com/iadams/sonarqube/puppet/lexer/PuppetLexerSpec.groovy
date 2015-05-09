@@ -193,6 +193,9 @@ class PuppetLexerSpec extends Specification {
         containsToken('$variable', VARIABLE )
         containsToken('"this is a string"', LITERAL)
         containsToken('user', IDENTIFIER)
+        containsToken('{', LBRACE)
+        containsToken("'katie'", LITERAL)
+        containsToken(':', COLON)
     }
 
     def "function calls are lexed correctly"() {
@@ -204,6 +207,26 @@ class PuppetLexerSpec extends Specification {
         containsToken('(', LPAREN)
         containsToken('$is_virtual', VARIABLE)
         containsToken(')', RPAREN)
+    }
+
+    def "assignments lexed correctly"() {
+        given:
+        lexer.lex('$var = 10')
+
+        expect:
+        containsToken('$var', VARIABLE)
+        containsToken('=', EQUALS)
+        containsToken('10', INTEGER)
+    }
+
+    def "double quoted literal"() {
+        given:
+        lexer.lex('$var = "string"')
+
+        expect:
+        containsToken('$var', VARIABLE)
+        containsToken('=', EQUALS)
+        containsToken('"string"', LITERAL)
     }
 
     private boolean containsToken(String value, TokenType type){

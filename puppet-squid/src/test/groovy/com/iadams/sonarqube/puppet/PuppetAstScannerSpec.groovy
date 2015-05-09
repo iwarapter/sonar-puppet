@@ -59,7 +59,6 @@ class PuppetAstScannerSpec extends Specification {
 		file.getNoSonarTagLines().contains(3)
 	}
 
-	@Ignore
 	def "lines"() {
 		given:
 		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/metrics/lines.pp"))
@@ -68,12 +67,11 @@ class PuppetAstScannerSpec extends Specification {
 		file.getInt(PuppetMetric.LINES) == 6
 	}
 
-	@Ignore
 	def "lines of code"(){
 		given:
 		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/metrics/lines_of_code.pp"))
 
 		expect:
-		file.getInt(PuppetMetric.LINES_OF_CODE) == 1
+		file.getInt(PuppetMetric.LINES_OF_CODE) == 6
 	}
 }

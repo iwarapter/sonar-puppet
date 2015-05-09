@@ -27,6 +27,7 @@ package com.iadams.sonarqube.puppet.parser.grammar.expressions
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 import spock.lang.Unroll
 
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.ASSIGNMENT_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.EXPRESSION
 import static org.sonar.sslr.tests.Assertions.assertThat
 
@@ -35,12 +36,11 @@ import static org.sonar.sslr.tests.Assertions.assertThat
  */
 class ExpressionSpec extends GrammarSpec {
 
-	def setup() {
-		setRootRule(EXPRESSION)
-	}
-
 	@Unroll
 	def "\"#input\" parse correctly"() {
+		given:
+		setRootRule(EXPRESSION)
+
 		expect:
 		assertThat(p).matches(input)
 
@@ -48,7 +48,17 @@ class ExpressionSpec extends GrammarSpec {
 		input << ['true == true',
 				'5 < 9',
 				'($operatingsystem != \'Solaris\')',
+				'$var = 10',
 				//'$kernel in [\'linux\', \'solaris\']',
 				'!str2bool($is_virtual)']
+	}
+
+	def "Assignment parse correctly"() {
+		given:
+		setRootRule(ASSIGNMENT_EXPRESSION)
+
+		expect:
+		assertThat(p).matches('$var = 10')
+		assertThat(p).matches('$var = "double quoted string"')
 	}
 }
