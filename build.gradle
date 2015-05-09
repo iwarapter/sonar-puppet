@@ -1,5 +1,19 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0"
+    }
+}
+
 group = 'com.iadams.sonarqube.puppet'
-version = '0.1'
+
+allprojects {
+    version = '0.1'
+}
 
 apply plugin: 'sonar-runner'
 
@@ -18,9 +32,13 @@ sonarRunner {
 
 subprojects {
     apply plugin: 'groovy'
-    apply from: '../gradle/jacoco.gradle'
+    apply from: "$rootDir/gradle/jacoco.gradle"
 
-    version = '0.1'
+    apply plugin: "com.github.hierynomus.license"
+    license {
+        header rootProject.file('LICENSE')
+        includes(["**/*.java", "**/*.groovy"])
+    }
 
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
