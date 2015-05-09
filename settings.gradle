@@ -2,5 +2,5 @@ rootProject.name = 'sonar-puppet'
 
 include 'sonar-puppet-plugin'
 include 'puppet-squid'
+include 'puppet-checks'
 include 'sslr-puppet-toolkit'
-

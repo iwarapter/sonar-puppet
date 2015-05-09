@@ -57,6 +57,7 @@ public class PuppetPlugin extends SonarPlugin {
                 PuppetSourceImporter.class,
                 PuppetColorizer.class,
 
+                PuppetSquidSensor.class,
                 PuppetDefaultProfile.class,
                 PuppetCommonRulesEngine.class,
 
