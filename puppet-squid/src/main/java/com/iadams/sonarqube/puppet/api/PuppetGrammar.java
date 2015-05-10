@@ -71,11 +71,16 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     NAME,
 
     //SIMPLE STATEMENTS
+    SIMPLE_STMT,
     STATEMENT,
     RESOURCE,
+    DEFINE_STMT,
+    DEFINE_NAME,
     VIRTUALRESOURCE,
     COLLECTION,
     FUNC_CALL,
+    PARAM_LIST,
+    PARAMETER,
 
     //CONDITIONAL STATEMENTS
     CONDITION_CLAUSE,
@@ -95,12 +100,12 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
 
         b.rule(FILE_INPUT).is(b.zeroOrMore(b.firstOf(NEWLINE, STATEMENT)), EOF);
-        b.rule(STATEMENT).is(b.firstOf(EXPRESSION, COMPOUND_STMT, RESOURCE));
+        b.rule(STATEMENT).is(b.firstOf(EXPRESSION, SIMPLE_STMT, COMPOUND_STMT, RESOURCE));
 
         grammar(b);
         conditionalStatements(b);
         compoundStatements(b);
-        //simpleStatements(b);
+        simpleStatements(b);
         expressions(b);
 
         b.setRootRule(FILE_INPUT);
@@ -121,9 +126,17 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(ARGUMENT_EXPRESSION_LIST).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION));
 
-        b.rule(ATTRIBUTE).is(IDENTIFIER, FARROW, EXPRESSION, b.optional(COMMA));
+        b.rule(ATTRIBUTE).is(IDENTIFIER,
+                FARROW,
+                b.firstOf(EXPRESSION, LITERAL_LIST, IDENTIFIER),
+                b.optional(COMMA));
 
-        b.rule(RESOURCE).is(IDENTIFIER, LBRACE, LITERAL, COLON, b.oneOrMore(ATTRIBUTE), RBRACE );
+        b.rule(RESOURCE).is(IDENTIFIER,
+                LBRACE,
+                LITERAL,
+                COLON,
+                b.oneOrMore(ATTRIBUTE),
+                RBRACE);
     }
 
     /**
@@ -152,6 +165,32 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     }
 
     /**
+     * Simple Statements
+     *
+     * @param b
+     */
+    public static void simpleStatements(LexerfulGrammarBuilder b) {
+        b.rule(SIMPLE_STMT).is(
+                DEFINE_STMT);
+
+        b.rule(DEFINE_STMT).is(DEFINE,
+                DEFINE_NAME,
+                b.optional(PARAM_LIST),
+                LBRACE,
+                b.zeroOrMore(STATEMENT),
+                RBRACE);
+
+        b.rule(DEFINE_NAME).is(IDENTIFIER);
+
+        b.rule(PARAM_LIST).is(LPAREN,
+                b.zeroOrMore(PARAMETER, b.optional(COMMA)),
+                RPAREN);
+
+        b.rule(PARAMETER).is(VARIABLE,
+                b.optional(EQUALS, LITERAL_LIST));
+    }
+
+    /**
      * Compound Statements
      *
      * @param b
@@ -166,6 +205,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 LBRACE,
                 b.zeroOrMore(RESOURCE),
                 b.zeroOrMore(CLASSDEF),
+                b.zeroOrMore(DEFINE_STMT),
                 RBRACE);
 
         b.rule(CLASSNAME).is(IDENTIFIER);
