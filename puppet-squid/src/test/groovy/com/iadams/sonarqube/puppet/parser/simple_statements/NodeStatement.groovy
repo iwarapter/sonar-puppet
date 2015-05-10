@@ -22,23 +22,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.parser.simple_statements;
+package com.iadams.sonarqube.puppet.parser.simple_statements
 
-import com.iadams.sonarqube.puppet.parser.GrammarSpec;
+import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.DEFINE_STMT;
-import static org.sonar.sslr.tests.Assertions.assertThat;
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.NODE_STMT
+import static org.sonar.sslr.tests.Assertions.assertThat
 
 /**
  * Created by iwarapter
  */
-public class DefineStatement extends GrammarSpec {
+class NodeStatement  extends GrammarSpec {
 
-	def "simple define parses correctly"() {
-		given:
-		setRootRule(DEFINE_STMT)
+	def setup(){
+		setRootRule(NODE_STMT)
+	}
 
+	def "simple node parses correctly"() {
 		expect:
-		assertThat(p).matches('define config { }')
+		assertThat(p).matches("""node server1 {
+									include common
+								}""")
+	}
+
+	def "multi node definition parses correctly"() {
+		expect:
+		assertThat(p).matches("""node 'server1', 'server2', 'server3' {
+									include common
+								}""")
 	}
 }

@@ -81,6 +81,9 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     FUNC_CALL,
     PARAM_LIST,
     PARAMETER,
+    NODE_STMT,
+    NODE_NAME,
+    INCLUDE_STMT,
 
     //CONDITIONAL STATEMENTS
     CONDITION_CLAUSE,
@@ -170,8 +173,10 @@ public enum PuppetGrammar  implements GrammarRuleKey {
      * @param b
      */
     public static void simpleStatements(LexerfulGrammarBuilder b) {
-        b.rule(SIMPLE_STMT).is(
-                DEFINE_STMT);
+        b.rule(SIMPLE_STMT).is(b.firstOf(
+                DEFINE_STMT,
+                NODE_STMT,
+                INCLUDE_STMT));
 
         b.rule(DEFINE_STMT).is(DEFINE,
                 DEFINE_NAME,
@@ -188,6 +193,18 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(PARAMETER).is(VARIABLE,
                 b.optional(EQUALS, LITERAL_LIST));
+
+        b.rule(NODE_STMT).is(NODE,
+                NODE_NAME,
+                b.zeroOrMore(COMMA, b.firstOf(LITERAL, IDENTIFIER)),
+                b.optional(INHERITS, LITERAL),
+                LBRACE,
+                b.optional(b.zeroOrMore(STATEMENT)),
+                RBRACE);
+
+        b.rule(NODE_NAME).is(b.firstOf(LITERAL, IDENTIFIER));
+
+        b.rule(INCLUDE_STMT).is("include", b.firstOf(LITERAL, IDENTIFIER));
     }
 
     /**
