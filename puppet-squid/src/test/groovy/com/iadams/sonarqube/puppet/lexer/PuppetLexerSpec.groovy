@@ -229,6 +229,17 @@ class PuppetLexerSpec extends Specification {
         containsToken('"string"', LITERAL)
     }
 
+    def "fully qualified names"(){
+        given:
+        lexer.lex('include role::solaris')
+
+        expect:
+        containsToken('include', IDENTIFIER)
+        containsToken('role', IDENTIFIER)
+        //containsToken('::', COLON)
+        containsToken('solaris', IDENTIFIER)
+    }
+
     private boolean containsToken(String value, TokenType type){
         for (Token token : lexer.tokens) {
             if (token.getValue().equals(value) && token.getType() == type) {

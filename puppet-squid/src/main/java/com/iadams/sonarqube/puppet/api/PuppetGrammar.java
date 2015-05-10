@@ -69,6 +69,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     LITERAL_LIST,
     ARGUMENT_EXPRESSION_LIST,
     NAME,
+    NAMESPACE_SEP,
+    QUALIFIED_IDENTIFIER,
 
     //SIMPLE STATEMENTS
     SIMPLE_STMT,
@@ -88,13 +90,16 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
     //CONDITIONAL STATEMENTS
     CONDITION_CLAUSE,
-    IF_STMT,
-    UNLESS_STMT,
 
     // Compound statements
     COMPOUND_STMT,
     CLASSDEF,
     CLASSNAME,
+    IF_STMT,
+    UNLESS_STMT,
+    CASE_STMT,
+    CASES,
+    CONTROL_EXP,
 
     // Top-level components
 
@@ -206,7 +211,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(NODE_NAME).is(b.firstOf(LITERAL, IDENTIFIER));
 
-        b.rule(INCLUDE_STMT).is("include", b.firstOf(LITERAL, IDENTIFIER));
+        b.rule(INCLUDE_STMT).is("include", b.firstOf(LITERAL, QUALIFIED_IDENTIFIER));
     }
 
     /**
@@ -216,7 +221,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
      */
     public static void compoundStatements(LexerfulGrammarBuilder b) {
         b.rule(COMPOUND_STMT).is(b.firstOf(CLASSDEF,
-                IF_STMT));
+                IF_STMT,
+                CASE_STMT));
 
         b.rule(CLASSDEF).is(
                 CLASS,
@@ -237,6 +243,11 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RBRACE,
                 b.optional(ELSIF, CONDITION, LBRACE,b.zeroOrMore(STATEMENT),RBRACE),
                 b.optional(ELSE, LBRACE,b.zeroOrMore(STATEMENT),RBRACE));
+
+        b.rule(CASE_STMT).is(CASE, b.firstOf(VARIABLE, EXPRESSION), LBRACE,
+                b.zeroOrMore(CASES),
+                RBRACE);
+        b.rule(CASES).is(b.firstOf(NAME, LITERAL, VARIABLE, FUNC_CALL), COLON, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
     }
 
     /**
@@ -336,5 +347,9 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         //<regex> ::= '/regex/'
 
+
+
+        b.rule(NAMESPACE_SEP).is(COLON, COLON);
+        b.rule(QUALIFIED_IDENTIFIER).is(IDENTIFIER, b.zeroOrMore(NAMESPACE_SEP, IDENTIFIER));
     }
 }

@@ -22,25 +22,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.parser.simple_statements
+package com.iadams.sonarqube.puppet.parser.compound_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
+import spock.lang.Ignore
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.INCLUDE_STMT
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.CASE_STMT
 import static org.sonar.sslr.tests.Assertions.assertThat
 
 /**
  * Created by iwarapter
  */
-class IncludeStatement extends GrammarSpec {
+public class CaseStatement extends GrammarSpec {
 
-	def "simple include parses correctly"() {
-		given:
-		setRootRule(INCLUDE_STMT)
+	def setup(){
+		setRootRule(CASE_STMT)
+	}
 
+	def "case statement parses correctly"() {
 		expect:
-		assertThat(p).matches('include common')
-		assertThat(p).matches("include 'common'")
-		assertThat(p).matches('include role::solaris')
+		assertThat(p).matches('''case $operatingsystem {
+		  'Solaris':          { include role::solaris } # apply the solaris class
+		}''')
+	}
+
+	//TODO Add support for regex and options (case 3/2 respectivly)
+	@Ignore
+	def "complex case statement parses correctly"() {
+		expect:
+		assertThat(p).matches('''case $operatingsystem {
+		  'Solaris':          { include role::solaris } # apply the solaris class
+		  'RedHat', 'CentOS': { include role::redhat  } # apply the redhat class
+		  /^(Debian|Ubuntu)$/:{ include role::debian  } # apply the debian class
+		  default:            { include role::generic } # apply the generic class
+		}''')
 	}
 }
