@@ -22,43 +22,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.parser.grammar.expressions
+package com.iadams.sonarqube.puppet.parser.compound_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
-import spock.lang.Unroll
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.ASSIGNMENT_EXPRESSION
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.EXPRESSION
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.CLASSDEF
 import static org.sonar.sslr.tests.Assertions.assertThat
 
 /**
  * Created by iwarapter
  */
-class ExpressionSpec extends GrammarSpec {
+class ClassDefSpec extends GrammarSpec {
 
-	@Unroll
-	def "\"#input\" parse correctly"() {
+	def "simple class parses correctly"() {
 		given:
-		setRootRule(EXPRESSION)
+		setRootRule(CLASSDEF)
 
 		expect:
-		assertThat(p).matches(input)
-
-		where:
-		input << ['true == true',
-				'5 < 9',
-				'($operatingsystem != \'Solaris\')',
-				'$var = 10',
-				//'$kernel in [\'linux\', \'solaris\']',
-				'!str2bool($is_virtual)']
-	}
-
-	def "Assignment parse correctly"() {
-		given:
-		setRootRule(ASSIGNMENT_EXPRESSION)
-
-		expect:
-		assertThat(p).matches('$var = 10')
-		assertThat(p).matches('$var = "double quoted string"')
+		assertThat(p).matches("""# A class with no parameters
+            class apache {
+              file { '/etc/passwd':
+                owner => 'root',
+                group => 'root',
+                mode  => '0644',
+              }
+            }
+        """)
 	}
 }

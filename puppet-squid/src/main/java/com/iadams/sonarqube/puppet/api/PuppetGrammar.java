@@ -82,16 +82,24 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     IF_STATEMENT,
     UNLESS_STMT,
 
+    // Compound statements
+    COMPOUND_STMT,
+    CLASSDEF,
+    CLASSNAME,
+
+    // Top-level components
+
     FILE_INPUT;
 
     public static LexerfulGrammarBuilder create() {
         LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
 
         b.rule(FILE_INPUT).is(b.zeroOrMore(b.firstOf(NEWLINE, STATEMENT)), EOF);
-        b.rule(STATEMENT).is(b.firstOf(EXPRESSION, RESOURCE));
+        b.rule(STATEMENT).is(b.firstOf(EXPRESSION, COMPOUND_STMT, RESOURCE));
 
         grammar(b);
         conditionalStatements(b);
+        compoundStatements(b);
         //simpleStatements(b);
         expressions(b);
 
@@ -141,6 +149,26 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(CONDITION_CLAUSE).is(LPAREN, EXPRESSION, RPAREN);
         b.rule(IF_STATEMENT).is(IF, CONDITION_CLAUSE, STATEMENT);
         */
+    }
+
+    /**
+     * Compound Statements
+     *
+     * @param b
+     */
+    public static void compoundStatements(LexerfulGrammarBuilder b) {
+        b.rule(COMPOUND_STMT).is(CLASSDEF);
+
+        b.rule(CLASSDEF).is(
+                CLASS,
+                CLASSNAME,
+                b.optional(ASSIGNMENT_EXPRESSION),
+                LBRACE,
+                b.zeroOrMore(RESOURCE),
+                b.zeroOrMore(CLASSDEF),
+                RBRACE);
+
+        b.rule(CLASSNAME).is(IDENTIFIER);
     }
 
     /**
