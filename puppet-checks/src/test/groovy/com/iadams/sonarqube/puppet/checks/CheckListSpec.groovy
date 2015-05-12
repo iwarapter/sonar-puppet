@@ -1,4 +1,4 @@
-/**
+/*
  * Sonar Puppet Plugin
  * The MIT License (MIT)
  *
@@ -22,24 +22,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.checks;
+package com.iadams.sonarqube.puppet.checks
 
-import com.google.common.collect.ImmutableList;
-
-import java.util.List;
+import com.google.common.collect.Sets
+import org.sonar.api.rules.AnnotationRuleParser
+import org.sonar.api.rules.Rule
+import org.sonar.api.rules.RuleParam
+import spock.lang.Specification
+import spock.lang.Unroll
 
 /**
  * Created by iwarapter
  */
-public final class CheckList {
+class CheckListSpec extends Specification {
 
-	public static final String REPOSITORY_KEY = "puppet";
+	def "each check is defined in list"(){
+		given:
+		def count = new File('src/main/java/com/iadams/sonarqube/puppet/checks/').listFiles().count{ it.name.endsWith('Check.java') }
 
-	public static final String SONAR_WAY_PROFILE = "Default";
+		expect:
+		count == CheckList.getChecks().size()
+	}
 
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				LineLengthCheck.class
-		);
+	@Unroll
+	def "Check #check.getSimpleName() has test"(){
+		expect:
+		String testName = '/' + check.getName().replace('.', '/') + "Spec.class";
+		assert getClass().getResource(testName)
+
+		where:
+		check << CheckList.getChecks();
+	}
+
+	@Unroll
+	def "Check #check.getSimpleName() has name and description"(){
+		given:
+		ResourceBundle resourceBundle = ResourceBundle.getBundle("org.sonar.l10n.puppet", Locale.ENGLISH);
+		Rule rule = new AnnotationRuleParser().parse("repositoryKey",[check]).first()
+
+		expect:
+		assert getClass().getResource("/org/sonar/l10n/puppet/rules/puppet/" + rule.getKey() + ".html")
+
+		where:
+		check << CheckList.getChecks();
 	}
 }
