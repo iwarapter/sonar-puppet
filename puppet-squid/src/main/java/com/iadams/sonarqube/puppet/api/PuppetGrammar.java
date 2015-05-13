@@ -99,7 +99,9 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     UNLESS_STMT,
     CASE_STMT,
     CASES,
-    CONTROL_EXP,
+    SELECTOR_STMT,
+    SELECTOR_CASE,
+    CONTROL_VAR,
 
     // Top-level components
 
@@ -137,7 +139,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(ATTRIBUTE).is(IDENTIFIER,
                 FARROW,
-                b.firstOf(EXPRESSION, LITERAL_LIST, IDENTIFIER),
+                b.firstOf(SELECTOR_STMT, EXPRESSION, LITERAL_LIST, IDENTIFIER),
                 b.optional(COMMA));
 
         b.rule(RESOURCE).is(IDENTIFIER,
@@ -199,7 +201,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RPAREN);
 
         b.rule(PARAMETER).is(VARIABLE,
-                b.optional(EQUALS, LITERAL_LIST));
+                b.optional(EQUALS, OPERAND));
 
         b.rule(NODE_STMT).is(NODE,
                 NODE_NAME,
@@ -227,27 +229,47 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(CLASSDEF).is(
                 CLASS,
                 CLASSNAME,
+                b.optional(PARAM_LIST),
                 b.optional(ASSIGNMENT_EXPRESSION),
+                b.optional(INHERITS, CLASSNAME),
                 LBRACE,
-                b.zeroOrMore(RESOURCE),
-                b.zeroOrMore(CLASSDEF),
-                b.zeroOrMore(DEFINE_STMT),
+                b.zeroOrMore(STATEMENT),
                 RBRACE);
 
-        b.rule(CLASSNAME).is(IDENTIFIER);
+        b.rule(CLASSNAME).is(QUALIFIED_IDENTIFIER);
 
         b.rule(IF_STMT).is(IF,
                 CONDITION,
                 LBRACE,
                 b.zeroOrMore(STATEMENT),
                 RBRACE,
-                b.optional(ELSIF, CONDITION, LBRACE,b.zeroOrMore(STATEMENT),RBRACE),
+                b.optional(ELSIF, CONDITION, LBRACE, b.zeroOrMore(STATEMENT), RBRACE),
                 b.optional(ELSE, LBRACE,b.zeroOrMore(STATEMENT),RBRACE));
 
         b.rule(CASE_STMT).is(CASE, b.firstOf(VARIABLE, EXPRESSION), LBRACE,
                 b.zeroOrMore(CASES),
                 RBRACE);
         b.rule(CASES).is(b.firstOf(NAME, LITERAL, VARIABLE, FUNC_CALL), COLON, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
+
+        b.rule(SELECTOR_STMT).is(
+                CONTROL_VAR,
+                QMARK,
+                LBRACE,
+                b.oneOrMore(SELECTOR_CASE),
+                b.optional(
+                        DEFAULT,
+                        FARROW,
+                        b.firstOf(NAME, LITERAL, VARIABLE, FUNC_CALL, SELECTOR_STMT),
+                        b.optional(COMMA)),
+                RBRACE);
+
+        b.rule(SELECTOR_CASE).is(
+                b.firstOf(NAME, LITERAL, VARIABLE, FUNC_CALL),
+                FARROW,
+                b.firstOf(NAME, LITERAL, VARIABLE, FUNC_CALL, SELECTOR_STMT),
+                b.optional(COMMA));
+
+        b.rule(CONTROL_VAR).is(b.firstOf(VARIABLE, FUNC_CALL));
     }
 
     /**

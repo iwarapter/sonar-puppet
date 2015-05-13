@@ -25,39 +25,27 @@
 package com.iadams.sonarqube.puppet.parser.compound_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
+import spock.lang.Ignore
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.CLASSDEF
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.SELECTOR_STMT
 import static org.sonar.sslr.tests.Assertions.assertThat
 
 /**
- * Created by iwarapter
+ * @author iwarapter
  */
-class ClassDefSpec extends GrammarSpec {
+public class SelectorStatement extends GrammarSpec {
 
-    def setup() {
-        setRootRule(CLASSDEF)
-    }
-
-	def "simple class parses correctly"() {
-		expect:
-		assertThat(p).matches("""# A class with no parameters
-            class apache {
-              file { '/etc/passwd':
-                owner => 'root',
-                group => 'root',
-                mode  => '0644',
-              }
-            }
-        """)
+	def setup(){
+		setRootRule(SELECTOR_STMT)
 	}
 
-    def "class with inherits parses correctly"() {
-        expect:
-        assertThat(p).matches('class ssh inherits server { }')
-    }
-
-    def "scoped classname with inherits parses correctly"(){
-        expect:
-        assertThat(p).matches('class ssh::client inherits workstation { }')
-    }
+	//TODO Add support for regex for case 2
+	def "selector statement parses correctly"() {
+		expect:
+		assertThat(p).matches('''$osfamily ? {
+			'Solaris'          => 'wheel',
+			#/(Darwin|FreeBSD)/ => 'wheel',
+			default            => 'root',
+		}''')
+	}
 }
