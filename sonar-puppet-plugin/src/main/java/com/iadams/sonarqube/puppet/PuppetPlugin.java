@@ -36,7 +36,7 @@ import org.sonar.api.resources.Qualifiers;
 import java.util.List;
 
 /**
- * Created by iwarapter
+ * @author iwarapter
  */
 public class PuppetPlugin extends SonarPlugin {
 
@@ -58,7 +58,9 @@ public class PuppetPlugin extends SonarPlugin {
                 PuppetColorizer.class,
 
                 PuppetSquidSensor.class,
+                PuppetRuleRepository.class,
                 PuppetDefaultProfile.class,
+
                 PuppetCommonRulesEngine.class,
 
                 PplintConfiguration.class,
