@@ -109,7 +109,7 @@ public class PuppetSquidSensor implements Sensor {
 			//saveFilesComplexityDistribution(inputFile, squidFile);
 			//saveFunctionsComplexityDistribution(inputFile, squidFile);
 			saveMeasures(inputFile, squidFile);
-			//saveIssues(inputFile, squidFile);
+			saveIssues(inputFile, squidFile);
 		}
 	}
 
@@ -123,7 +123,7 @@ public class PuppetSquidSensor implements Sensor {
 		context.saveMeasure(sonarFile, CoreMetrics.COMPLEXITY, squidFile.getDouble(PuppetMetric.COMPLEXITY));
 		context.saveMeasure(sonarFile, CoreMetrics.COMMENT_LINES, squidFile.getDouble(PuppetMetric.COMMENT_LINES));
 	}
-/*
+
 	private void saveIssues(InputFile sonarFile, SourceFile squidFile) {
 		Collection<CheckMessage> messages = squidFile.getCheckMessages();
 		for (CheckMessage message : messages) {
@@ -139,7 +139,7 @@ public class PuppetSquidSensor implements Sensor {
 				issuable.addIssue(issue);
 			}
 		}
-	}*/
+	}
 
 	@Override
 	public String toString() {

@@ -23,10 +23,14 @@ sonarPackaging {
     pluginName = 'Puppet'
     pluginDescription = 'Enable analysis and reporting on Puppet projects.'
     pluginDevelopers = 'Iain Adams'
+    pluginLicense = 'MIT'
+    pluginUrl = 'https://bitbucket.org/iwarapter/sonar-puppet'
+    pluginIssueTrackerUrl = 'https://bitbucket.org/iwarapter/sonar-puppet/issues'
 }
 
 sonarRunner {
     sonarProperties {
         property "sonar.tests", sourceSets.test.groovy.srcDirs + sourceSets.integTest.groovy.srcDirs
+        property "sonar.jacoco.itReportPath", "$buildDir/jacoco/integTest.exec"
     }
 }
