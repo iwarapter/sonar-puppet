@@ -25,18 +25,20 @@
 package com.iadams.sonarqube.puppet;
 
 import com.google.common.base.Charsets;
+import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.iadams.sonarqube.puppet.api.PuppetMetric;
 import com.iadams.sonarqube.puppet.parser.PuppetParser;
+import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
-import org.sonar.squidbridge.AstScanner;
-import org.sonar.squidbridge.SquidAstVisitor;
-import org.sonar.squidbridge.SquidAstVisitorContextImpl;
+import org.sonar.squidbridge.*;
+import org.sonar.squidbridge.api.SourceClass;
 import org.sonar.squidbridge.api.SourceCode;
 import org.sonar.squidbridge.api.SourceFile;
 import org.sonar.squidbridge.api.SourceProject;
 import org.sonar.squidbridge.indexer.QueryByType;
 import org.sonar.squidbridge.metrics.CommentsVisitor;
+import org.sonar.squidbridge.metrics.CounterVisitor;
 import org.sonar.squidbridge.metrics.LinesVisitor;
 
 import java.io.File;
@@ -80,6 +82,9 @@ public class PuppetAstScanner {
 		/* Comments */
 		builder.setCommentAnalyser(new PuppetCommentAnalyser());
 
+
+		setClassesAnalyser(builder);
+
     	/* Metrics */
 		builder.withSquidAstVisitor(new LinesVisitor<Grammar>(PuppetMetric.LINES));
 		builder.withSquidAstVisitor(new PuppetLinesOfCodeVisitor<Grammar>(PuppetMetric.LINES_OF_CODE));
@@ -100,4 +105,20 @@ public class PuppetAstScanner {
 		return builder.build();
 	}
 
+	private static void setClassesAnalyser(AstScanner.Builder<Grammar> builder) {
+		builder.withSquidAstVisitor(new SourceCodeBuilderVisitor<Grammar>(new SourceCodeBuilderCallback() {
+			@Override
+			public SourceCode createSourceCode(SourceCode parentSourceCode, AstNode astNode) {
+				String functionName = astNode.getFirstChild(PuppetGrammar.CLASSNAME).getFirstChild().getTokenValue();
+				SourceClass function = new SourceClass(functionName + ":" + astNode.getToken().getLine());
+				function.setStartAtLine(astNode.getTokenLine());
+				return function;
+			}
+		}, PuppetGrammar.CLASSDEF));
+
+		builder.withSquidAstVisitor(CounterVisitor.<Grammar>builder()
+				.setMetricDef(PuppetMetric.CLASSES)
+				.subscribeTo(PuppetGrammar.CLASSDEF)
+				.build());
+	}
 }

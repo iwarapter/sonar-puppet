@@ -108,8 +108,9 @@ class PuppetSquidSensorSpec extends Specification {
 		/*verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.NCLOC), Mockito.eq(25.0));
 		verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.STATEMENTS), Mockito.eq(23.0));
 		verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.FUNCTIONS), Mockito.eq(4.0));
-		verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.CLASSES), Mockito.eq(1.0));
 		verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.COMPLEXITY), Mockito.eq(4.0));*/
+		1 * context.saveMeasure(_, CoreMetrics.CLASSES, 2.0)
 		1 * context.saveMeasure(_, CoreMetrics.COMMENT_LINES, 2.0)
+
 	}
 }
