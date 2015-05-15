@@ -24,24 +24,11 @@
  */
 package com.iadams.sonarqube.puppet;
 
-import org.sonar.squidbridge.commonrules.api.CommonRulesEngine;
-import org.sonar.squidbridge.commonrules.api.CommonRulesRepository;
+import java.nio.charset.Charset;
 
 /**
  * @author iwarapter
  */
-public class PuppetCommonRulesEngine extends CommonRulesEngine {
-    public PuppetCommonRulesEngine() {
-        super(Puppet.KEY);
-    }
-
-    @Override
-    protected void doEnableRules(CommonRulesRepository repository) {
-        repository
-                .enableDuplicatedBlocksRule()
-                .enableInsufficientCommentDensityRule(null)
-                .enableInsufficientLineCoverageRule(null)
-                .enableInsufficientBranchCoverageRule(null);
-    }
-
+public interface CharsetAwareVisitor {
+	void setCharset(Charset charset);
 }

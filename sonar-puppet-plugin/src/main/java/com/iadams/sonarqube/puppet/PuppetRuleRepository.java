@@ -25,29 +25,22 @@
 package com.iadams.sonarqube.puppet;
 
 import com.iadams.sonarqube.puppet.checks.CheckList;
-import org.sonar.api.rules.AnnotationRuleParser;
-import org.sonar.api.rules.Rule;
-import org.sonar.api.rules.RuleRepository;
-
-import java.util.List;
+import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.squidbridge.annotations.AnnotationBasedRulesDefinition;
 
 /**
  * @author iwarapter
  */
-public class PuppetRuleRepository extends RuleRepository {
+public class PuppetRuleRepository implements RulesDefinition {
 
 	private static final String REPOSITORY_NAME = "SonarQube";
 
-	private final AnnotationRuleParser annotationRuleParser;
-
-	public PuppetRuleRepository(AnnotationRuleParser annotationRuleParser){
-		super(CheckList.REPOSITORY_KEY, Puppet.KEY);
-		setName(REPOSITORY_NAME);
-		this.annotationRuleParser = annotationRuleParser;
-	}
-
 	@Override
-	public List<Rule> createRules(){
-		return annotationRuleParser.parse(CheckList.REPOSITORY_KEY, CheckList.getChecks());
+	public void define(Context context){
+		NewRepository repository = context
+				.createRepository(CheckList.REPOSITORY_KEY, Puppet.KEY)
+				.setName(REPOSITORY_NAME);
+		AnnotationBasedRulesDefinition.load(repository, Puppet.KEY, CheckList.getChecks());
+		repository.done();
 	}
 }

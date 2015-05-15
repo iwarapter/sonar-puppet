@@ -24,16 +24,15 @@
  */
 package com.iadams.sonarqube.puppet
 
-import com.google.common.collect.ImmutableList
 import com.iadams.sonarqube.puppet.metrics.FileLinesVisitor
 import com.sonar.sslr.api.Grammar
+import org.sonar.api.batch.fs.InputFile
+import org.sonar.api.batch.fs.internal.DefaultFileSystem
+import org.sonar.api.batch.fs.internal.DefaultInputFile
 import org.sonar.api.measures.CoreMetrics
 import org.sonar.api.measures.FileLinesContext
 import org.sonar.api.measures.FileLinesContextFactory
-import org.sonar.api.resources.Project
-import org.sonar.api.resources.ProjectFileSystem
 import org.sonar.squidbridge.SquidAstVisitor
-import org.sonar.squidbridge.api.SourceFile
 import spock.lang.Specification
 
 /**
@@ -43,30 +42,28 @@ class FileLinesVisitorSpec extends Specification {
 
 	static final File BASE_DIR = new File("src/test/resources/metrics")
 
-	Project project
 	FileLinesContextFactory fileLinesContextFactory
-	ProjectFileSystem fileSystem
+	DefaultFileSystem fileSystem
 	FileLinesContext fileLinesContext
 
 	def setup(){
-		project = Mock()
 		fileLinesContextFactory = Mock()
-		fileSystem = Mock()
+		fileSystem = new DefaultFileSystem()
 		fileLinesContext = Mock()
-
-		project.fileSystem >> fileSystem
-		fileSystem.sourceDirs >> ImmutableList.of(BASE_DIR)
 	}
 
 	def "check metrics calculate correctly"() {
 		when:
+
 		File file = new File(BASE_DIR, "lines.pp")
-		org.sonar.api.resources.File resource  = org.sonar.api.resources.File.fromIOFile(file, project)
-		fileLinesContextFactory.createFor(resource) >> fileLinesContext
+		InputFile inputFile = new DefaultInputFile(file.getPath())
 
-		SquidAstVisitor<Grammar> visitor = new FileLinesVisitor(project, fileLinesContextFactory);
+		fileSystem.add(inputFile)
+		fileLinesContextFactory.createFor(inputFile) >> fileLinesContext
 
-		SourceFile sourceFile = PuppetAstScanner.scanSingleFile(file, visitor);
+		SquidAstVisitor<Grammar> visitor = new FileLinesVisitor(fileLinesContextFactory, fileSystem);
+
+		PuppetAstScanner.scanSingleFile(file, visitor);
 
 		then:
 		1 * fileLinesContext.setIntValue(CoreMetrics.NCLOC_DATA_KEY, 1, 0)

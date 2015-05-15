@@ -24,10 +24,12 @@
  */
 package com.iadams.sonarqube.puppet.checks
 
-import com.google.common.collect.Sets
-import org.sonar.api.rules.AnnotationRuleParser
+import org.sonar.api.batch.rule.ActiveRules
+import org.sonar.api.batch.rule.CheckFactory
+import org.sonar.api.batch.rule.internal.ActiveRulesBuilder
 import org.sonar.api.rules.Rule
-import org.sonar.api.rules.RuleParam
+import org.sonar.squidbridge.checks.SquidCheck
+import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -54,16 +56,16 @@ class CheckListSpec extends Specification {
 		check << CheckList.getChecks();
 	}
 
-	@Unroll
 	def "Check #check.getSimpleName() has name and description"(){
 		given:
-		ResourceBundle resourceBundle = ResourceBundle.getBundle("org.sonar.l10n.puppet", Locale.ENGLISH);
-		Rule rule = new AnnotationRuleParser().parse("repositoryKey",[check]).first()
+		ActiveRules activeRules = (new ActiveRulesBuilder())
+				.build();
+		CheckFactory checkFactory = new CheckFactory(activeRules);
+		Collection<Rule> rules = checkFactory.<Rule>create("repositoryKey").addAnnotatedChecks(CheckList.getChecks()).all()
 
 		expect:
-		assert getClass().getResource("/org/sonar/l10n/puppet/rules/puppet/" + rule.getKey() + ".html")
-
-		where:
-		check << CheckList.getChecks();
+		for(rule in rules) {
+			assert getClass().getResource("/org/sonar/l10n/puppet/rules/puppet/" + rule.getKey() + ".html")
+		}
 	}
 }

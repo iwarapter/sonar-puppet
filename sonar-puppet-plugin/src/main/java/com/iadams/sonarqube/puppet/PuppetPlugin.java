@@ -54,15 +54,16 @@ public class PuppetPlugin extends SonarPlugin {
                         .build(),
 
                 Puppet.class,
-                PuppetSourceImporter.class,
                 PuppetColorizer.class,
+
+                PuppetProfile.class,
 
                 PuppetSquidSensor.class,
                 PuppetRuleRepository.class,
-                PuppetDefaultProfile.class,
 
                 PuppetCommonRulesEngine.class,
 
+                //PuppetDefaultProfile.class,
                 PplintConfiguration.class,
                 PplintSensor.class,
                 PplintRuleRepository.class);

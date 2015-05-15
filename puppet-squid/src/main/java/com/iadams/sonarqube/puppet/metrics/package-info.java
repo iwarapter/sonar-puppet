@@ -22,26 +22,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet;
 
-import org.sonar.squidbridge.commonrules.api.CommonRulesEngine;
-import org.sonar.squidbridge.commonrules.api.CommonRulesRepository;
+@ParametersAreNonnullByDefault
+package com.iadams.sonarqube.puppet.metrics;
 
-/**
- * @author iwarapter
- */
-public class PuppetCommonRulesEngine extends CommonRulesEngine {
-    public PuppetCommonRulesEngine() {
-        super(Puppet.KEY);
-    }
-
-    @Override
-    protected void doEnableRules(CommonRulesRepository repository) {
-        repository
-                .enableDuplicatedBlocksRule()
-                .enableInsufficientCommentDensityRule(null)
-                .enableInsufficientLineCoverageRule(null)
-                .enableInsufficientBranchCoverageRule(null);
-    }
-
-}
+import javax.annotation.ParametersAreNonnullByDefault;

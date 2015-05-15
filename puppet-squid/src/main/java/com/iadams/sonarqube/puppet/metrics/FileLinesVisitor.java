@@ -28,6 +28,8 @@ import com.google.common.collect.Sets;
 import com.iadams.sonarqube.puppet.api.PuppetMetric;
 import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.*;
+import org.sonar.api.batch.fs.FileSystem;
+import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.FileLinesContext;
 import org.sonar.api.measures.FileLinesContextFactory;
@@ -45,17 +47,18 @@ import java.util.Set;
  */
 public class FileLinesVisitor extends SquidAstVisitor<Grammar> implements AstAndTokenVisitor {
 
-	private final Project project;
 	private final FileLinesContextFactory fileLinesContextFactory;
+	private final FileSystem fileSystem;
 
 	private final Set<Integer> linesOfCode = Sets.newHashSet();
 	private final Set<Integer> linesOfComments = Sets.newHashSet();
 
-	public FileLinesVisitor(Project project, FileLinesContextFactory fileLinesContextFactory) {
-		this.project = project;
+	public FileLinesVisitor(FileLinesContextFactory fileLinesContextFactory, FileSystem fileSystem) {
 		this.fileLinesContextFactory = fileLinesContextFactory;
+		this.fileSystem = fileSystem;
 	}
 
+	@Override
 	public void visitToken(Token token) {
 		if (token.getType().equals(GenericTokenType.EOF)) {
 			return;
@@ -79,8 +82,11 @@ public class FileLinesVisitor extends SquidAstVisitor<Grammar> implements AstAnd
 
 	@Override
 	public void leaveFile(AstNode astNode) {
-		File sonarFile = File.fromIOFile(getContext().getFile(), project);
-		FileLinesContext fileLinesContext = fileLinesContextFactory.createFor(sonarFile);
+		InputFile inputFile = fileSystem.inputFile(fileSystem.predicates().is(getContext().getFile()));
+		if( inputFile == null ){
+			throw new IllegalStateException("InputFile is null, but it should not be.");
+		}
+		FileLinesContext fileLinesContext = fileLinesContextFactory.createFor(inputFile);
 
 		int fileLength = getContext().peekSourceCode().getInt(PuppetMetric.LINES);
 		for (int line = 1; line <= fileLength; line++) {

@@ -24,24 +24,32 @@
  */
 package com.iadams.sonarqube.puppet;
 
-import org.sonar.squidbridge.commonrules.api.CommonRulesEngine;
-import org.sonar.squidbridge.commonrules.api.CommonRulesRepository;
+import com.iadams.sonarqube.puppet.checks.CheckList;
+import org.sonar.api.profiles.ProfileDefinition;
+import org.sonar.api.profiles.RulesProfile;
+import org.sonar.api.rules.RuleFinder;
+import org.sonar.api.utils.ValidationMessages;
+import org.sonar.squidbridge.annotations.AnnotationBasedProfileBuilder;
 
 /**
  * @author iwarapter
  */
-public class PuppetCommonRulesEngine extends CommonRulesEngine {
-    public PuppetCommonRulesEngine() {
-        super(Puppet.KEY);
-    }
+public class PuppetProfile extends ProfileDefinition {
 
-    @Override
-    protected void doEnableRules(CommonRulesRepository repository) {
-        repository
-                .enableDuplicatedBlocksRule()
-                .enableInsufficientCommentDensityRule(null)
-                .enableInsufficientLineCoverageRule(null)
-                .enableInsufficientBranchCoverageRule(null);
-    }
+	private final RuleFinder ruleFinder;
 
+	public PuppetProfile(RuleFinder ruleFinder){
+		this.ruleFinder = ruleFinder;
+	}
+
+	@Override
+	public RulesProfile createProfile(ValidationMessages validation) {
+		AnnotationBasedProfileBuilder annotationBasedProfileBuilder = new AnnotationBasedProfileBuilder(ruleFinder);
+		return annotationBasedProfileBuilder.build(
+				CheckList.REPOSITORY_KEY,
+				CheckList.SONAR_WAY_PROFILE,
+				Puppet.KEY,
+				CheckList.getChecks(),
+				validation);
+	}
 }

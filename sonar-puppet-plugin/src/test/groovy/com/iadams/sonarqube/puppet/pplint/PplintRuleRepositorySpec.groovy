@@ -24,9 +24,9 @@
  */
 package com.iadams.sonarqube.puppet.pplint
 
+import org.sonar.api.server.rule.RulesDefinition
+import org.sonar.api.server.rule.RulesDefinitionXmlLoader
 import spock.lang.Specification
-import org.sonar.api.rules.Rule
-import org.sonar.api.rules.XMLRuleParser
 
 /**
  * Created by iwarapter
@@ -35,8 +35,10 @@ class PplintRuleRepositorySpec extends Specification {
 
     def "CreateRules"() {
         given:
-        PplintRuleRepository rulerep = new PplintRuleRepository(new XMLRuleParser())
-        List<Rule> rules = rulerep.createRules()
+        PplintRuleRepository ruleRepository = new PplintRuleRepository(new RulesDefinitionXmlLoader())
+        RulesDefinition.Context context = new RulesDefinition.Context();
+        ruleRepository.define(context);
+        List<RulesDefinition.Rule> rules = context.repository(PplintRuleRepository.REPOSITORY_KEY).rules();
 
         expect:
         rules.size() == 34

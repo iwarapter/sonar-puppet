@@ -22,26 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet;
-
-import org.sonar.squidbridge.commonrules.api.CommonRulesEngine;
-import org.sonar.squidbridge.commonrules.api.CommonRulesRepository;
+package com.iadams.sonarqube.puppet.checks;
 
 /**
  * @author iwarapter
  */
-public class PuppetCommonRulesEngine extends CommonRulesEngine {
-    public PuppetCommonRulesEngine() {
-        super(Puppet.KEY);
-    }
+public class Tags {
+	public static final String BRAIN_OVERLOAD = "brain-overload";
+	public static final String BUG = "bug";
+	public static final String CLUMSY = "clumsy";
+	public static final String CONVENTION = "convention";
+	public static final String OBSOLETE = "obsolete";
+	public static final String SECURITY = "security";
+	public static final String UNUSED = "unused";
+	public static final String CERT = "cert";
+	public static final String PITFALL = "pitfall";
+	public static final String MISRA = "misra";
+	public static final String CONFUSING = "confusing";
+	public static final String CWE = "cwe";
+	public static final String PERFORMANCE = "performance";
 
-    @Override
-    protected void doEnableRules(CommonRulesRepository repository) {
-        repository
-                .enableDuplicatedBlocksRule()
-                .enableInsufficientCommentDensityRule(null)
-                .enableInsufficientLineCoverageRule(null)
-                .enableInsufficientBranchCoverageRule(null);
-    }
-
+	private Tags() {
+		// This class only defines constants
+	}
 }

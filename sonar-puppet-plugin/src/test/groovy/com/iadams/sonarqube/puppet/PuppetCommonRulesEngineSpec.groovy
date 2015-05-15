@@ -24,7 +24,7 @@
  */
 package com.iadams.sonarqube.puppet
 
-import org.sonar.commonrules.api.CommonRulesRepository
+import org.sonar.squidbridge.commonrules.api.CommonRulesRepository
 import spock.lang.Specification
 
 
@@ -47,7 +47,7 @@ class PuppetCommonRulesEngineSpec extends Specification {
         CommonRulesRepository repo = engine.newRepository()
 
         expect:
-        repo.rules().size() == 4
-        repo.rule(CommonRulesRepository.RULE_INSUFFICIENT_COMMENT_DENSITY).isEnabled()
+        repo.enabledRuleKeys().size() == 4
+        repo.enableInsufficientCommentDensityRule(null) != null
     }
 }

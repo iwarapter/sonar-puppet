@@ -24,52 +24,58 @@
  */
 package com.iadams.sonarqube.puppet
 
-import com.google.common.collect.ImmutableList
+import com.iadams.sonarqube.puppet.checks.CheckList
 import org.sonar.api.batch.SensorContext
+import org.sonar.api.batch.fs.InputFile
+import org.sonar.api.batch.fs.internal.DefaultFileSystem
+import org.sonar.api.batch.fs.internal.DefaultInputFile
+import org.sonar.api.batch.rule.ActiveRules
+import org.sonar.api.batch.rule.CheckFactory
+import org.sonar.api.batch.rule.internal.ActiveRulesBuilder
 import org.sonar.api.component.ResourcePerspectives
+import org.sonar.api.issue.Issuable
 import org.sonar.api.measures.CoreMetrics
 import org.sonar.api.measures.FileLinesContext
 import org.sonar.api.measures.FileLinesContextFactory
-import org.sonar.api.profiles.RulesProfile
 import org.sonar.api.resources.Project
-import org.sonar.api.resources.ProjectFileSystem
-import org.sonar.api.scan.filesystem.FileQuery
-import org.sonar.api.scan.filesystem.ModuleFileSystem
+import org.sonar.api.rule.RuleKey
+import spock.lang.Ignore
 import spock.lang.Specification
-
-import java.nio.charset.Charset
 
 /**
  * Created by iwarapter
  */
 class PuppetSquidSensorSpec extends Specification {
 
-	FileLinesContextFactory fileLinesContextFactory;
-	FileLinesContext fileLinesContext
+	private PuppetSquidSensor sensor
+	private DefaultFileSystem fs = new DefaultFileSystem()
+	ResourcePerspectives perspectives
 
 	def setup() {
-		fileLinesContextFactory = Mock()
-		fileLinesContext = Mock()
+		FileLinesContextFactory fileLinesContextFactory = Mock()
+		FileLinesContext fileLinesContext = Mock()
 
-		fileLinesContextFactory.createFor(_) >> fileLinesContext
+		fileLinesContextFactory.createFor(_ as InputFile) >> fileLinesContext
+		ActiveRules activeRules = (new ActiveRulesBuilder())
+				.create(RuleKey.of(CheckList.REPOSITORY_KEY, "LineLength"))
+				.setName("Lines should not be too long")
+				.activate()
+				.build();
+		CheckFactory checkFactory = new CheckFactory(activeRules)
+		perspectives = Mock()
+		sensor = new PuppetSquidSensor( fileLinesContextFactory, fs, perspectives, checkFactory)
 	}
 
 	def "should execute on puppet project"() {
-		given:
-		Project project = Mock()
-		ModuleFileSystem fs = Mock()
-		RulesProfile profile = Mock()
-		profile.getActiveRulesByRepository(_) >> []
-		PuppetSquidSensor sensor = new PuppetSquidSensor(profile, fileLinesContextFactory, fs, Mock(ResourcePerspectives))
-
 		when:
-		1 * fs.files(_) >> []
+		Project project = Mock()
 
 		then:
+		sensor.toString() == "PuppetSquidSensor"
 		sensor.shouldExecuteOnProject(project) == false
 
 		when:
-		1 * fs.files(_) >> [Mock(File)]
+		fs.add(new DefaultInputFile("test.pp").setLanguage(Puppet.KEY))
 
 		then:
 		sensor.shouldExecuteOnProject(project) == true
@@ -77,42 +83,33 @@ class PuppetSquidSensorSpec extends Specification {
 
 	def "should_analyse"() {
 		given:
-		ModuleFileSystem fs = Mock()
-		fs.sourceCharset(_) >> Charset.forName("UTF-8")
-		fs.files(_) >> ImmutableList.of(
-				new File("src/test/resources/com/iadams/sonarqube/puppet/code_chunks.pp"))
+		String relativePath = "src/test/resources/com/iadams/sonarqube/puppet/code_chunks.pp"
+		DefaultInputFile inputFile = new DefaultInputFile(relativePath).setLanguage(Puppet.KEY)
+		inputFile.setAbsolutePath((new File(relativePath)).getAbsolutePath())
+		fs.add(inputFile)
 
-		ProjectFileSystem pfs = Mock()
-		pfs.getSourceDirs() >> ImmutableList.of(new File("src/test/resources/com/iadams/sonarqube/puppet/"))
+		Issuable issuable = Mock()
+		Issuable.IssueBuilder issueBuilder = Mock()
+		perspectives.as(_, _) >> issuable
+		issuable.newIssueBuilder() >> issueBuilder
+		issueBuilder.ruleKey(_)  >> issueBuilder
+		issueBuilder.line(_) >> issueBuilder
+		issueBuilder.message(_) >> issueBuilder
 
 		Project project = new Project("key")
-		project.setFileSystem(pfs)
 		SensorContext context = Mock()
-		RulesProfile profile = Mock()
-		profile.getActiveRulesByRepository(_) >> []
-		PuppetSquidSensor sensor = new PuppetSquidSensor(profile, fileLinesContextFactory, fs, Mock(ResourcePerspectives))
 
 		when:
 		sensor.analyse(project, context)
 
 		then:
 		1 * context.saveMeasure(_, CoreMetrics.FILES, 1.0)
-		/*1 * context.saveMeasure(_, CoreMetrics.LINES, 1.0)
-		verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.NCLOC), Mockito.eq(25.0));
+		//1 * context.saveMeasure(_, CoreMetrics.LINES, 1.0)
+		/*verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.NCLOC), Mockito.eq(25.0));
 		verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.STATEMENTS), Mockito.eq(23.0));
 		verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.FUNCTIONS), Mockito.eq(4.0));
 		verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.CLASSES), Mockito.eq(1.0));
-		verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.COMPLEXITY), Mockito.eq(4.0));
-		1 * context.saveMeasure(_, CoreMetrics.COMMENT_LINES, 2.0)*/
-	}
-
-	def "test toString()"() {
-		given:
-		RulesProfile profile = Mock()
-		profile.getActiveRulesByRepository(_) >> []
-		PuppetSquidSensor sensor = new PuppetSquidSensor(profile, fileLinesContextFactory, null, Mock(ResourcePerspectives.class))
-
-		expect:
-		sensor.toString().equals("PuppetSquidSensor")
+		verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.COMPLEXITY), Mockito.eq(4.0));*/
+		1 * context.saveMeasure(_, CoreMetrics.COMMENT_LINES, 2.0)
 	}
 }

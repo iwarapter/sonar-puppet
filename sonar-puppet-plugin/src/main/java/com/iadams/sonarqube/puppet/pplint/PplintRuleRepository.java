@@ -24,36 +24,37 @@
  */
 package com.iadams.sonarqube.puppet.pplint;
 
+import com.google.common.base.Charsets;
 import com.iadams.sonarqube.puppet.Puppet;
-import org.sonar.api.rules.Rule;
-import org.sonar.api.rules.RuleRepository;
-import org.sonar.api.rules.XMLRuleParser;
+import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.api.server.rule.RulesDefinitionXmlLoader;
+import org.sonar.squidbridge.rules.SqaleXmlLoader;
 
 import java.util.List;
 
 /**
  * Created by iwarapter
  */
-public class PplintRuleRepository extends RuleRepository {
+public class PplintRuleRepository implements RulesDefinition {
 
     public static final String REPOSITORY_NAME = "Pplint";
     public static final String REPOSITORY_KEY = REPOSITORY_NAME;
 
     private static final String RULES_FILE = "/com/iadams/sonarqube/puppet/pplint/rules.xml";
-    private final XMLRuleParser ruleParser;
+    private static final String SQALE_FILE = "/com/sonar/sqale/puppet-model.xml";
+    private final RulesDefinitionXmlLoader xmlLoader;
 
-    public PplintRuleRepository(XMLRuleParser ruleParser) {
-        super(REPOSITORY_KEY, Puppet.KEY);
-        setName(REPOSITORY_NAME);
-        this.ruleParser = ruleParser;
+    public PplintRuleRepository(RulesDefinitionXmlLoader xmlLoader) {
+        this.xmlLoader = xmlLoader;
     }
 
     @Override
-    public List<Rule> createRules() {
-        List<Rule> rules = ruleParser.parse(getClass().getResourceAsStream(RULES_FILE));
-        for (Rule r : rules) {
-            r.setRepositoryKey(REPOSITORY_KEY);
-        }
-        return rules;
+    public void define(Context context){
+        NewRepository repository = context
+                .createRepository(REPOSITORY_KEY, Puppet.KEY)
+                .setName(REPOSITORY_NAME);
+        xmlLoader.load(repository, getClass().getResourceAsStream(RULES_FILE), Charsets.UTF_8.name());
+        SqaleXmlLoader.load(repository, SQALE_FILE);
+        repository.done();
     }
 }

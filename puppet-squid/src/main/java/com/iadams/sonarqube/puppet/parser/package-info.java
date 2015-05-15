@@ -22,16 +22,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet;
 
-import org.sonar.api.batch.AbstractSourceImporter;
+@ParametersAreNonnullByDefault
+package com.iadams.sonarqube.puppet.parser;
 
-/**
- * Created by iwarapter
- */
-public class PuppetSourceImporter extends AbstractSourceImporter {
-
-    public PuppetSourceImporter(Puppet puppet) {
-        super(puppet);
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

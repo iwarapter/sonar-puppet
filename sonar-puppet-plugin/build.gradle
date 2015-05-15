@@ -6,17 +6,18 @@ dependencies {
     compile project(':puppet-squid')
     compile project(':puppet-checks')
 
-    provided "org.codehaus.sonar:sonar-plugin-api:3.7"
-    compile 'org.codehaus.sonar.common-rules:sonar-common-rules:1.2'
+    provided "org.codehaus.sonar:sonar-plugin-api:$sonarVersion"
 
-    testCompile "org.codehaus.sonar:sonar-plugin-api:3.7"
-    testCompile 'org.codehaus.sonar:sonar-testing-harness:3.7'
+    testCompile "org.codehaus.sonar:sonar-plugin-api:$sonarVersion"
+    testCompile "org.codehaus.sonar:sonar-testing-harness:$sonarVersion"
     testCompile 'org.apache.maven:maven-project:2.2.1'
+
+    testRuntime 'org.slf4j:slf4j-simple:1.7.12'
 }
 
 sonarPackaging {
     serverUrl = 'http://localhost:9000'
-    pluginDir = '/Users/iwarapter/Downloads/sonarqube-4.3.3/extensions/plugins/'
+    pluginDir = '/Users/iwarapter/Downloads/sonarqube-4.5.4/extensions/plugins/'
     pluginKey = 'puppet'
     pluginClass = 'com.iadams.sonarqube.puppet.PuppetPlugin'
     pluginName = 'Puppet'

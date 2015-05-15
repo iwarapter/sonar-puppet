@@ -47,6 +47,11 @@ subprojects {
         jcenter()
     }
 
+    ext {
+        sonarVersion = '4.5.2'
+        sslrVersion = '1.20'
+    }
+
     dependencies {
         testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
         testRuntime "cglib:cglib-nodep:3.1"          // allows mocking of classes (in addition to interfaces)
@@ -69,7 +74,7 @@ subprojects {
     }
 
     integTest.mustRunAfter test
-    //check.dependsOn integTest
+    check.dependsOn integTest
 
     task testReport(type: TestReport) {
         destinationDir = file("$buildDir/reports/allTests")

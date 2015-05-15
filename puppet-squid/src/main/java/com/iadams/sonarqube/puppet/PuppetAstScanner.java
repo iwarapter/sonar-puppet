@@ -29,8 +29,12 @@ import com.iadams.sonarqube.puppet.api.PuppetMetric;
 import com.iadams.sonarqube.puppet.parser.PuppetParser;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
-import org.sonar.squidbridge.*;
-import org.sonar.squidbridge.api.*;
+import org.sonar.squidbridge.AstScanner;
+import org.sonar.squidbridge.SquidAstVisitor;
+import org.sonar.squidbridge.SquidAstVisitorContextImpl;
+import org.sonar.squidbridge.api.SourceCode;
+import org.sonar.squidbridge.api.SourceFile;
+import org.sonar.squidbridge.api.SourceProject;
 import org.sonar.squidbridge.indexer.QueryByType;
 import org.sonar.squidbridge.metrics.CommentsVisitor;
 import org.sonar.squidbridge.metrics.LinesVisitor;
@@ -67,16 +71,16 @@ public class PuppetAstScanner {
 
 		AstScanner.Builder<Grammar> builder = AstScanner.<Grammar>builder(context).setBaseParser(parser);
 
-    /* Metrics */
+    	/* Metrics */
 		builder.withMetrics(PuppetMetric.values());
 
-    /* Files */
+		/* Files */
 		builder.setFilesMetric(PuppetMetric.FILES);
 
-    /* Comments */
+		/* Comments */
 		builder.setCommentAnalyser(new PuppetCommentAnalyser());
 
-    /* Metrics */
+    	/* Metrics */
 		builder.withSquidAstVisitor(new LinesVisitor<Grammar>(PuppetMetric.LINES));
 		builder.withSquidAstVisitor(new PuppetLinesOfCodeVisitor<Grammar>(PuppetMetric.LINES_OF_CODE));
 		builder.withSquidAstVisitor(CommentsVisitor.<Grammar>builder().withCommentMetric(PuppetMetric.COMMENT_LINES)
@@ -85,8 +89,11 @@ public class PuppetAstScanner {
 				.build());
 
 
-    /* External visitors (typically Check ones) */
+    	/* External visitors (typically Check ones) */
 		for (SquidAstVisitor<Grammar> visitor : visitors) {
+			if (visitor instanceof CharsetAwareVisitor) {
+				((CharsetAwareVisitor) visitor).setCharset(conf.getCharset());
+			}
 			builder.withSquidAstVisitor(visitor);
 		}
 
