@@ -22,54 +22,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.parser.compound_statements
+package com.iadams.sonarqube.puppet.parser.simple_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.IF_STMT
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.CLASSREF
 import static org.sonar.sslr.tests.Assertions.assertThat
 
 /**
  * Created by iwarapter
  */
-public class IfStatement extends GrammarSpec {
+class ClassRefStatement extends GrammarSpec {
 
 	def setup(){
-		setRootRule(IF_STMT)
+		setRootRule(CLASSREF)
 	}
 
-	def "simple if statement parses correctly"() {
+	def "example array parses correctly"() {
 		expect:
-		assertThat(p).matches('if 1 == 1 {}')
-	}
-
-	def "if statement with else parses correctly"() {
-		expect:
-		assertThat(p).matches('''if str2bool("$is_virtual") {
-			  # Our NTP module is not supported on virtual machines:
-			  warning( 'Tried to include class ntp on virtual machine.' )
-			}
-			else {
-			  # Normal node, include the class.
-			  include ntp
-			}''')
-	}
-
-	def "if statement with elseif parses correctly"() {
-		expect:
-		assertThat(p).matches('''if str2bool("$is_virtual") {
-			  # Our NTP module is not supported on virtual machines:
-			  warning( 'Tried to include class ntp on virtual machine.' )
-			}
-			elsif $operatingsystem == 'Darwin' {
-			  warning( 'This NTP module does not yet work on our Mac laptops.' )
-			}''')
-	}
-
-	def "if statement with variable condition parses correctly"(){
-		expect:
-		assertThat(p).matches('''if $mpm_module {
-									validate_re($mpm_module, $valid_mpms_re)
-								 }''')
+		assertThat(p).matches("Class['Apache::Service']")
 	}
 }

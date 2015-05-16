@@ -91,6 +91,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     ARRAY,
     HASHES,
     HASH_KEY,
+    CLASSREF,
 
     //CONDITIONAL STATEMENTS
     CONDITION_CLAUSE,
@@ -141,9 +142,10 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(ARGUMENT_EXPRESSION_LIST).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION));
 
-        b.rule(ATTRIBUTE).is(IDENTIFIER,
+        b.rule(ATTRIBUTE).is(b.firstOf(IDENTIFIER,
+                        NOTIFY),
                 FARROW,
-                b.firstOf(SELECTOR_STMT, EXPRESSION, LITERAL_LIST, IDENTIFIER),
+                b.firstOf(SELECTOR_STMT, EXPRESSION, LITERAL_LIST, CLASSREF, IDENTIFIER),
                 b.optional(COMMA));
 
         b.rule(RESOURCE).is(IDENTIFIER,
@@ -162,7 +164,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 OCTAL_INTEGER,
                 FLOAT,
                 UNDEF,
-                //TODO Add arrays/hashes
+                ARRAY,
                 HASHES,
                 IDENTIFIER,
                 VARIABLE
@@ -239,6 +241,14 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.optional(COMMA));
 
         b.rule(HASH_KEY).is(IDENTIFIER);
+
+        b.rule(ARRAY).is(LBRACK,
+                b.zeroOrMore(DATA_TYPE,
+                        b.zeroOrMore(COMMA, DATA_TYPE)),
+                b.optional(COMMA),
+                RBRACK);
+
+        b.rule(CLASSREF).is("Class", ARRAY);
     }
 
     /**
@@ -304,7 +314,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
      */
     public static void expressions(LexerfulGrammarBuilder b){
 
-        b.rule(CONDITION).is(b.firstOf(COMP_EXP, FUNC_CALL));
+        b.rule(CONDITION).is(b.firstOf(COMP_EXP, FUNC_CALL, VARIABLE));
 
         b.rule(OPERAND).is(b.firstOf(
                 LITERAL_LIST,
