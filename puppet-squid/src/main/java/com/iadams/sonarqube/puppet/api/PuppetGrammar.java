@@ -92,6 +92,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     HASHES,
     HASH_KEY,
     CLASSREF,
+    PACKAGEREF,
 
     //CONDITIONAL STATEMENTS
     CONDITION_CLAUSE,
@@ -143,9 +144,10 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(ARGUMENT_EXPRESSION_LIST).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION));
 
         b.rule(ATTRIBUTE).is(b.firstOf(IDENTIFIER,
-                        NOTIFY),
+                        NOTIFY,
+                        REQUIRE),
                 FARROW,
-                b.firstOf(SELECTOR_STMT, EXPRESSION, LITERAL_LIST, CLASSREF, IDENTIFIER),
+                b.firstOf(SELECTOR_STMT, EXPRESSION, LITERAL_LIST, CLASSREF, PACKAGEREF, IDENTIFIER),
                 b.optional(COMMA));
 
         b.rule(RESOURCE).is(IDENTIFIER,
@@ -154,7 +156,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 COLON,
                 b.oneOrMore(ATTRIBUTE),
                 RBRACE);
-        b.rule(RESOURCE_NAME).is(b.firstOf(LITERAL, IDENTIFIER));
+        b.rule(RESOURCE_NAME).is(b.firstOf(LITERAL, IDENTIFIER, VARIABLE));
 
         b.rule(DATA_TYPE).is(b.firstOf(TRUE,
                 FALSE,
@@ -248,6 +250,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.optional(COMMA),
                 RBRACK);
 
+        b.rule(PACKAGEREF).is("Package", ARRAY);
         b.rule(CLASSREF).is("Class", ARRAY);
     }
 
@@ -392,7 +395,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(RIGHT_VALUE).is(b.firstOf(
                 FUNC_CALL,
                 VARIABLE,
-                LITERAL_LIST));
+                LITERAL_LIST,
+                ARRAY));
 
         //<literals> ::= <float> | <integer> | <hex-integer> | <octal-integer> | <quoted-string>
         b.rule(LITERAL_LIST).is(b.firstOf(

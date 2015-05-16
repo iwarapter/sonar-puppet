@@ -46,4 +46,13 @@ public class ResourceStatement extends GrammarSpec {
 								 	notify => Class['Apache::Service'],
 								 }''')
 	}
+
+	def "resource with package require parses correctly"() {
+		expect:
+		assertThat(p).matches('''user { $user:
+									ensure  => present,
+									gid     => $group,
+									require => Package['httpd'],
+								 }''')
+	}
 }
