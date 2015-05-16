@@ -60,4 +60,16 @@ class ClassDefSpec extends GrammarSpec {
         expect:
         assertThat(p).matches('class ssh::client inherits workstation { }')
     }
+
+    def "classes with complex parameters"(){
+        expect:
+        assertThat(p).matches('''class apache(
+                                    $apache_name            = $::apache::params::apache_name,
+                                    $default_mods           = true,
+                                    $default_charset        = undef,
+                                    $default_ssl_vhost      = false,
+                                    $default_type           = 'none',
+                                    $log_formats            = {},
+                                 ) inherits ::apache::params { }''')
+    }
 }

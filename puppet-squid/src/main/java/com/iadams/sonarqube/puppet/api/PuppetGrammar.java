@@ -44,6 +44,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     CONDITION,
     OPERAND,
     ATTRIBUTE,
+    DATA_TYPE,
 
     //EXPRESSIONS
     EXPRESSION,
@@ -87,6 +88,9 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     NODE_STMT,
     NODE_NAME,
     INCLUDE_STMT,
+    ARRAY,
+    HASHES,
+    HASH_KEY,
 
     //CONDITIONAL STATEMENTS
     CONDITION_CLAUSE,
@@ -149,6 +153,20 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.oneOrMore(ATTRIBUTE),
                 RBRACE);
         b.rule(RESOURCE_NAME).is(b.firstOf(LITERAL, IDENTIFIER));
+
+        b.rule(DATA_TYPE).is(b.firstOf(TRUE,
+                FALSE,
+                LITERAL,
+                INTEGER,
+                HEX_INTEGER,
+                OCTAL_INTEGER,
+                FLOAT,
+                UNDEF,
+                //TODO Add arrays/hashes
+                HASHES,
+                IDENTIFIER,
+                VARIABLE
+                ));
     }
 
     /**
@@ -201,7 +219,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RPAREN);
 
         b.rule(PARAMETER).is(VARIABLE,
-                b.optional(EQUALS, OPERAND));
+                b.optional(EQUALS, DATA_TYPE));
 
         b.rule(NODE_STMT).is(NODE,
                 NODE_NAME,
@@ -214,6 +232,13 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(NODE_NAME).is(b.firstOf(LITERAL, IDENTIFIER));
 
         b.rule(INCLUDE_STMT).is("include", b.firstOf(LITERAL, QUALIFIED_IDENTIFIER));
+
+        b.rule(HASHES).is(LBRACE,
+                b.zeroOrMore(HASH_KEY, FARROW, DATA_TYPE, b.optional(COMMA)),
+                RBRACE,
+                b.optional(COMMA));
+
+        b.rule(HASH_KEY).is(IDENTIFIER);
     }
 
     /**
@@ -313,7 +338,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(NOT_EXP).is(NOT, EXPRESSION);
         b.rule(MINUS_EXP).is(MINUS, OPERAND);
         b.rule(BRACKET_EXP).is(LPAREN, EXPRESSION, RPAREN);
-        b.rule(ASSIGNMENT_EXPRESSION).is(VARIABLE, EQUALS ,LITERAL_LIST);
+        b.rule(ASSIGNMENT_EXPRESSION).is(VARIABLE, EQUALS ,b.firstOf(LITERAL_LIST, SELECTOR_STMT));
 
         //<arithop> ::= "+" | "-" | "/" | "*" | "<<" | ">>"
         b.rule(ARITH_OP).is(b.firstOf(
@@ -372,6 +397,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
 
         b.rule(NAMESPACE_SEP).is(COLON, COLON);
-        b.rule(QUALIFIED_IDENTIFIER).is(IDENTIFIER, b.zeroOrMore(NAMESPACE_SEP, IDENTIFIER));
+        b.rule(QUALIFIED_IDENTIFIER).is(b.optional(NAMESPACE_SEP), IDENTIFIER, b.zeroOrMore(NAMESPACE_SEP, IDENTIFIER));
     }
 }
