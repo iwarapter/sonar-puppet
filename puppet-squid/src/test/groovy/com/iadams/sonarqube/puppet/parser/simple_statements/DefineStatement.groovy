@@ -41,4 +41,20 @@ public class DefineStatement extends GrammarSpec {
 		expect:
 		assertThat(p).matches('define config { }')
 	}
+
+	def "fully qualified name parses correctly"() {
+		given:
+		setRootRule(DEFINE_STMT)
+
+		expect:
+		assertThat(p).matches('define full::qualified { }')
+	}
+
+	def "name with - parses correctly"() {
+		given:
+		setRootRule(DEFINE_STMT)
+
+		expect:
+		assertThat(p).matches('define foo-bar { }')
+	}
 }

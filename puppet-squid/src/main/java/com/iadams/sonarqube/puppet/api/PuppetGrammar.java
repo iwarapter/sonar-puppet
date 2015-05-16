@@ -194,7 +194,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.zeroOrMore(STATEMENT),
                 RBRACE);
 
-        b.rule(DEFINE_NAME).is(IDENTIFIER);
+        b.rule(DEFINE_NAME).is(QUALIFIED_IDENTIFIER);
 
         b.rule(PARAM_LIST).is(LPAREN,
                 b.zeroOrMore(PARAMETER, b.optional(COMMA)),
