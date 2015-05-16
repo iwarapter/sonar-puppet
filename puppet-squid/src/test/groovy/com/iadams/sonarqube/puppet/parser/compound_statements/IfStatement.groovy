@@ -72,4 +72,13 @@ public class IfStatement extends GrammarSpec {
 									validate_re($mpm_module, $valid_mpms_re)
 								 }''')
 	}
+
+	def "compact if statement parses"() {
+		expect:
+		assertThat(p).matches('''if $purge_vhost_dir == undef {
+									$purge_vhostd = $purge_confd
+								  } else {
+									$purge_vhostd = $purge_vhost_dir
+								  }''')
+	}
 }

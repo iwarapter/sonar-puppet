@@ -92,6 +92,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     HASHES,
     HASH_KEY,
     CLASSREF,
+    CLASS_RESOURCE_REF,
     PACKAGEREF,
 
     //CONDITIONAL STATEMENTS
@@ -261,17 +262,25 @@ public enum PuppetGrammar  implements GrammarRuleKey {
      */
     public static void compoundStatements(LexerfulGrammarBuilder b) {
         b.rule(COMPOUND_STMT).is(b.firstOf(CLASSDEF,
+                CLASS_RESOURCE_REF,
                 IF_STMT,
                 CASE_STMT));
 
-        b.rule(CLASSDEF).is(
+        b.rule(CLASSDEF).is(CLASS,
+                            CLASSNAME,
+                            b.optional(PARAM_LIST),
+                            b.optional(ASSIGNMENT_EXPRESSION),
+                            b.optional(INHERITS, CLASSNAME),
+                            LBRACE,
+                            b.zeroOrMore(STATEMENT),
+                            RBRACE);
+        //https://docs.puppetlabs.com/puppet/3.8/reference/lang_classes.html#using-resource-like-declarations
+        b.rule(CLASS_RESOURCE_REF).is(
                 CLASS,
-                CLASSNAME,
-                b.optional(PARAM_LIST),
-                b.optional(ASSIGNMENT_EXPRESSION),
-                b.optional(INHERITS, CLASSNAME),
                 LBRACE,
-                b.zeroOrMore(STATEMENT),
+                LITERAL,
+                COLON,
+                b.zeroOrMore(ATTRIBUTE),
                 RBRACE);
 
         b.rule(CLASSNAME).is(QUALIFIED_IDENTIFIER);
@@ -281,8 +290,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 LBRACE,
                 b.zeroOrMore(STATEMENT),
                 RBRACE,
-                b.optional(ELSIF, CONDITION, LBRACE, b.zeroOrMore(STATEMENT), RBRACE),
-                b.optional(ELSE, LBRACE,b.zeroOrMore(STATEMENT),RBRACE));
+                b.optional(ELSE, LBRACE, b.zeroOrMore(STATEMENT),RBRACE),
+                b.optional(ELSIF, CONDITION, LBRACE, b.zeroOrMore(STATEMENT), RBRACE));
 
         b.rule(CASE_STMT).is(CASE, b.firstOf(VARIABLE, EXPRESSION), LBRACE,
                 b.zeroOrMore(CASES),
@@ -323,7 +332,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 LITERAL_LIST,
                 VARIABLE,
                 TRUE,
-                FALSE));
+                FALSE,
+                UNDEF));
 
         /*<exp> ::=  <exp> <arithop> <exp>
                 | <exp> <boolop> <exp>
@@ -351,7 +361,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(NOT_EXP).is(NOT, EXPRESSION);
         b.rule(MINUS_EXP).is(MINUS, OPERAND);
         b.rule(BRACKET_EXP).is(LPAREN, EXPRESSION, RPAREN);
-        b.rule(ASSIGNMENT_EXPRESSION).is(VARIABLE, EQUALS ,b.firstOf(LITERAL_LIST, SELECTOR_STMT));
+        b.rule(ASSIGNMENT_EXPRESSION).is(VARIABLE, EQUALS ,b.firstOf(LITERAL_LIST, SELECTOR_STMT, VARIABLE));
 
         //<arithop> ::= "+" | "-" | "/" | "*" | "<<" | ">>"
         b.rule(ARITH_OP).is(b.firstOf(
