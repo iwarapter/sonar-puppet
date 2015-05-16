@@ -40,3 +40,9 @@ shadowJar {
 }
 
 jar.finalizedBy shadowJar
+
+pitest {
+	targetClasses = ['com.iadams.sonarqube.puppet.*']
+	threads = 4
+	outputFormats = ['XML', 'HTML']
+}

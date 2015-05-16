@@ -6,6 +6,7 @@ buildscript {
     }
     dependencies {
         classpath "nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0"
+        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.1.4'
     }
 }
 
@@ -32,6 +33,7 @@ sonarRunner {
 
 subprojects {
     apply plugin: 'groovy'
+    apply plugin: "info.solidsoft.pitest"
     apply from: "$rootDir/gradle/jacoco.gradle"
 
     apply plugin: "com.github.hierynomus.license"

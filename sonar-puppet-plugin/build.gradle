@@ -3,7 +3,6 @@ plugins {
 }
 
 dependencies {
-    compile project(':puppet-squid')
     compile project(':puppet-checks')
 
     provided "org.codehaus.sonar:sonar-plugin-api:$sonarVersion"
@@ -17,7 +16,7 @@ dependencies {
 
 sonarPackaging {
     serverUrl = 'http://localhost:9000'
-    pluginDir = '/Users/iwarapter/Downloads/sonarqube-4.5.4/extensions/plugins/'
+    pluginDir = '/Users/iwarapter/Downloads/sonarqube-5.1/extensions/plugins/'
     pluginKey = 'puppet'
     pluginClass = 'com.iadams.sonarqube.puppet.PuppetPlugin'
     pluginName = 'Puppet'
@@ -26,6 +25,9 @@ sonarPackaging {
     pluginLicense = 'MIT'
     pluginUrl = 'https://bitbucket.org/iwarapter/sonar-puppet'
     pluginIssueTrackerUrl = 'https://bitbucket.org/iwarapter/sonar-puppet/issues'
+    organization {
+        name = 'Iain Adams'
+    }
 }
 
 sonarRunner {
@@ -33,4 +35,10 @@ sonarRunner {
         property "sonar.tests", sourceSets.test.groovy.srcDirs + sourceSets.integTest.groovy.srcDirs
         property "sonar.jacoco.itReportPath", "$buildDir/jacoco/integTest.exec"
     }
+}
+
+pitest {
+    targetClasses = ['com.iadams.sonarqube.puppet.*']
+    threads = 4
+    outputFormats = ['XML', 'HTML']
 }
