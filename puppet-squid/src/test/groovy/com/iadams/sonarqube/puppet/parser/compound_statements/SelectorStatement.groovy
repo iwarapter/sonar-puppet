@@ -65,4 +65,12 @@ public class SelectorStatement extends GrammarSpec {
 								  false => 'absent\'
 								}''')
 	}
+
+	def "selector with an undef assignment"(){
+		expect:
+		assertThat(p).matches('''$::apache::apache_version ? {
+						   		   '2.4'   => 'mod_pagespeed_ap24.so',
+								   default => undef
+								}''')
+	}
 }

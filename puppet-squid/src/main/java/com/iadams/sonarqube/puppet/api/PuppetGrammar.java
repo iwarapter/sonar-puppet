@@ -319,7 +319,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.optional(
                         DEFAULT,
                         FARROW,
-                        b.firstOf(TRUE, FALSE, NAME, LITERAL, VARIABLE, FUNC_CALL, SELECTOR_STMT),
+                        b.firstOf(TRUE, FALSE, UNDEF, NAME, LITERAL, VARIABLE, FUNC_CALL, SELECTOR_STMT),
                         b.optional(COMMA)),
                 RBRACE);
 
@@ -379,7 +379,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(NOT_EXP).is(NOT, EXPRESSION);
         b.rule(MINUS_EXP).is(MINUS, OPERAND);
         b.rule(BRACKET_EXP).is(LPAREN, EXPRESSION, RPAREN);
-        b.rule(ASSIGNMENT_EXPRESSION).is(VARIABLE, EQUALS ,b.firstOf(SELECTOR_STMT, EXPRESSION, LITERAL_LIST, VARIABLE));
+        b.rule(ASSIGNMENT_EXPRESSION).is(VARIABLE, EQUALS ,b.firstOf(SELECTOR_STMT, EXPRESSION, LITERAL_LIST, VARIABLE, UNDEF));
 
         //<arithop> ::= "+" | "-" | "/" | "*" | "<<" | ">>"
         b.rule(ARITH_OP).is(b.firstOf(

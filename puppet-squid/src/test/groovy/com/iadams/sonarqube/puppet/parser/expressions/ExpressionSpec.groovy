@@ -60,6 +60,7 @@ class ExpressionSpec extends GrammarSpec {
 
 		expect:
 		assertThat(p).matches('$var = 10')
+		assertThat(p).matches('$var = undef')
 		assertThat(p).matches('$var = "double quoted string"')
 		assertThat(p).matches('$purge_mod_dir = $purge_configs and !$mod_enable_dir')
 		assertThat(p).matches('''$valid_mpms_re = $apache_version ? {
