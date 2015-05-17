@@ -92,4 +92,9 @@ public class IfStatement extends GrammarSpec {
 									$_lib = "mod_${mod}.so"
 								  }''')
 	}
+
+	def "if with condition in parenthesis"(){
+		expect:
+		assertThat(p).matches('if ($::operatingsystem == \'Amazon\') {}')
+	}
 }

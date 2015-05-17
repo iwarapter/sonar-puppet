@@ -46,15 +46,23 @@ public class CaseStatement extends GrammarSpec {
 		}''')
 	}
 
-	//TODO Add support for regex and options (case 3/2 respectivly)
+	//TODO Add support for regex
 	@Ignore
-	def "complex case statement parses correctly"() {
+	def "case with regex option"() {
 		expect:
 		assertThat(p).matches('''case $operatingsystem {
 		  'Solaris':          { include role::solaris } # apply the solaris class
-		  'RedHat', 'CentOS': { include role::redhat  } # apply the redhat class
-		  /^(Debian|Ubuntu)$/:{ include role::debian  } # apply the debian class
+		  #/^(Debian|Ubuntu)$/:{ include role::debian  } # apply the debian class
 		  default:            { include role::generic } # apply the generic class
+		}''')
+	}
+
+	def "case with list of options"() {
+		expect:
+		assertThat(p).matches('''case $operatingsystem {
+		  'Solaris':          				{ include role::solaris } # apply the solaris class
+		  true, false, 'RedHat', 'CentOS':  { include role::redhat  } # apply the redhat class
+		  default:            				{ include role::generic } # apply the generic class
 		}''')
 	}
 

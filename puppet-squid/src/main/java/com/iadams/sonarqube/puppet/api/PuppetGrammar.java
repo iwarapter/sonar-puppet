@@ -106,6 +106,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     ELSEIF_STMT,
     UNLESS_STMT,
     CASE_STMT,
+    CASE_MATCHER,
     CASES,
     SELECTOR_STMT,
     SELECTOR_CASE,
@@ -299,14 +300,16 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.zeroOrMore(STATEMENT),
                 RBRACE,
                 b.zeroOrMore(ELSEIF_STMT),
-                b.optional(ELSE, LBRACE, b.zeroOrMore(STATEMENT),RBRACE));
+                b.optional(ELSE, LBRACE, b.zeroOrMore(STATEMENT), RBRACE));
 
         b.rule(ELSEIF_STMT).is(ELSIF, CONDITION, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
 
         b.rule(CASE_STMT).is(CASE, b.firstOf(VARIABLE, EXPRESSION), LBRACE,
-                b.zeroOrMore(CASES),
+                b.zeroOrMore(CASE_MATCHER),
                 RBRACE);
-        b.rule(CASES).is(b.firstOf(NAME, DEFAULT, LITERAL, VARIABLE, FUNC_CALL), COLON, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
+        b.rule(CASE_MATCHER).is(CASES, COLON, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
+        b.rule(CASES).is(b.firstOf(TRUE, FALSE, NAME, DEFAULT, LITERAL, VARIABLE, FUNC_CALL),
+                         b.zeroOrMore(COMMA, b.firstOf(TRUE, FALSE, NAME, DEFAULT, LITERAL, VARIABLE, FUNC_CALL)));
 
         b.rule(SELECTOR_STMT).is(
                 CONTROL_VAR,
@@ -336,7 +339,10 @@ public enum PuppetGrammar  implements GrammarRuleKey {
      */
     public static void expressions(LexerfulGrammarBuilder b){
 
-        b.rule(CONDITION).is(b.firstOf(COMP_EXP, BOOL_EXP, NOT_EXP, FUNC_CALL, VARIABLE));
+        b.rule(CONDITION).is(
+                b.optional(LPAREN),
+                b.firstOf(COMP_EXP, BOOL_EXP, NOT_EXP, FUNC_CALL, VARIABLE),
+                b.optional(RPAREN));
 
         b.rule(OPERAND).is(b.firstOf(
                 LITERAL_LIST,

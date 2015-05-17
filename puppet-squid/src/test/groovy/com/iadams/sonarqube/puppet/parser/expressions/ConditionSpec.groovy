@@ -47,6 +47,7 @@ class ConditionSpec extends GrammarSpec {
 		input << ['1 == 1',
 				  'func($var)',
 				  '$var1 and ! defined(File[$var2])',
-				  'versioncmp($apache_version, \'2.4\') < 0']
+				  'versioncmp($apache_version, \'2.4\') < 0',
+		 		  '$::operatingsystem == \'Amazon\'']
 	}
 }
