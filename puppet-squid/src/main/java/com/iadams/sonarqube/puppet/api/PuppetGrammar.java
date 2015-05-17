@@ -262,11 +262,11 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.optional(COMMA),
                 RBRACK);
 
-        b.rule(RESOURCE_REF).is(IDENTIFIER, ARRAY);
+        b.rule(RESOURCE_REF).is(QUALIFIED_IDENTIFIER, ARRAY);
 
         b.rule(RELATIONSHIP_STMT).is(RESOURCE_REF, b.oneOrMore(b.firstOf(IN_EDGE, IN_EDGE_SUB), RESOURCE_REF));
 
-        b.rule(ACCESSOR).is(VARIABLE, b.oneOrMore(LBRACK, b.firstOf(LITERAL, INTEGER), RBRACK));
+        b.rule(ACCESSOR).is(VARIABLE, b.oneOrMore(LBRACK, b.firstOf(LITERAL, INTEGER, IDENTIFIER), RBRACK));
     }
 
     /**

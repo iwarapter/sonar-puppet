@@ -48,5 +48,6 @@ class AccessorStatement extends GrammarSpec {
 		expect:
 		assertThat(p).matches('$foo[1][\'third\']')
 		assertThat(p).matches('$foo[\'one\'][1]')
+		assertThat(p).matches('$main_site[port][https]')
 	}
 }

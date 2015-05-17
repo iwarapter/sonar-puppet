@@ -38,8 +38,9 @@ class ResourceRefStatement extends GrammarSpec {
 		setRootRule(RESOURCE_REF)
 	}
 
-	def "example array parses correctly"() {
+	def "example resource references parses correctly"() {
 		expect:
 		assertThat(p).matches("Class['Apache::Service']")
+		assertThat(p).matches("Concat::Fragment['apache_port_header']")
 	}
 }
