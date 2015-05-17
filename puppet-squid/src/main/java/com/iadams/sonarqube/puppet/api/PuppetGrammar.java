@@ -317,7 +317,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RBRACE);
 
         b.rule(SELECTOR_CASE).is(
-                b.firstOf(NAME, LITERAL, VARIABLE, FUNC_CALL),
+                b.firstOf(TRUE, FALSE, NAME, LITERAL, VARIABLE, FUNC_CALL),
                 FARROW,
                 b.firstOf(TRUE, FALSE, NAME, LITERAL, VARIABLE, FUNC_CALL, SELECTOR_STMT),
                 b.optional(COMMA));

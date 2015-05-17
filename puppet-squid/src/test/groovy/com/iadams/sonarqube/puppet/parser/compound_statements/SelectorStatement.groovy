@@ -57,4 +57,12 @@ public class SelectorStatement extends GrammarSpec {
 								}
 							''')
 	}
+
+	def "selector case testing"(){
+		expect:
+		assertThat(p).matches('''$default_ssl_vhost ? {
+								  true  => 'present',
+								  false => 'absent\'
+								}''')
+	}
 }
