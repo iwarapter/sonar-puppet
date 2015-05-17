@@ -78,6 +78,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     STATEMENT,
     RESOURCE,
     RESOURCE_NAME,
+    RESOURCE_REF,
+    EXEC_RESOURCE,
     DEFINE_STMT,
     DEFINE_NAME,
     VIRTUALRESOURCE,
@@ -91,9 +93,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     ARRAY,
     HASHES,
     HASH_KEY,
-    CLASSREF,
     CLASS_RESOURCE_REF,
-    PACKAGEREF,
 
     //CONDITIONAL STATEMENTS
     CONDITION_CLAUSE,
@@ -148,13 +148,12 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                         NOTIFY,
                         REQUIRE),
                 FARROW,
-                b.firstOf(SELECTOR_STMT, EXPRESSION, LITERAL_LIST, CLASSREF, PACKAGEREF, IDENTIFIER),
+                b.firstOf(SELECTOR_STMT, EXPRESSION, RESOURCE_REF, LITERAL_LIST, IDENTIFIER, TRUE, FALSE),
                 b.optional(COMMA));
 
         b.rule(RESOURCE).is(IDENTIFIER,
                 LBRACE,
-                RESOURCE_NAME,
-                COLON,
+                b.optional(RESOURCE_NAME, COLON),
                 b.oneOrMore(ATTRIBUTE),
                 RBRACE);
         b.rule(RESOURCE_NAME).is(b.firstOf(LITERAL, IDENTIFIER, VARIABLE));
@@ -172,6 +171,12 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 IDENTIFIER,
                 VARIABLE
                 ));
+
+        /*b.rule(EXEC_RESOURCE).is("exec",
+                LBRACE,
+                b.optional(LITERAL, COLON),
+                b.zeroOrMore(ATTRIBUTE),
+                RBRACE);*/
     }
 
     /**
@@ -251,8 +256,9 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.optional(COMMA),
                 RBRACK);
 
-        b.rule(PACKAGEREF).is("Package", ARRAY);
-        b.rule(CLASSREF).is("Class", ARRAY);
+        b.rule(RESOURCE_REF).is(IDENTIFIER, ARRAY);
+        //b.rule(PACKAGEREF).is("Package", ARRAY);
+        //b.rule(CLASSREF).is("Class", ARRAY);
     }
 
     /**
@@ -326,7 +332,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
      */
     public static void expressions(LexerfulGrammarBuilder b){
 
-        b.rule(CONDITION).is(b.firstOf(COMP_EXP, FUNC_CALL, VARIABLE));
+        b.rule(CONDITION).is(b.firstOf(COMP_EXP, BOOL_EXP, NOT_EXP, FUNC_CALL, VARIABLE));
 
         b.rule(OPERAND).is(b.firstOf(
                 LITERAL_LIST,
@@ -352,16 +358,17 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 NOT_EXP,
                 MINUS_EXP,
                 BRACKET_EXP,
-                RIGHT_VALUE));
+                RIGHT_VALUE,
+                RESOURCE_REF));
 
         b.rule(ARITH_EXP).is(OPERAND, ARITH_OP, OPERAND);
-        b.rule(BOOL_EXP).is(OPERAND, BOOL_OPERATOR, OPERAND);
+        b.rule(BOOL_EXP).is(OPERAND, BOOL_OPERATOR, EXPRESSION);
         b.rule(COMP_EXP).is(OPERAND, COMP_OPERATOR, OPERAND);
         b.rule(MATCH_EXP).is(OPERAND, MATCH_OPERATOR, OPERAND);
         b.rule(NOT_EXP).is(NOT, EXPRESSION);
         b.rule(MINUS_EXP).is(MINUS, OPERAND);
         b.rule(BRACKET_EXP).is(LPAREN, EXPRESSION, RPAREN);
-        b.rule(ASSIGNMENT_EXPRESSION).is(VARIABLE, EQUALS ,b.firstOf(LITERAL_LIST, SELECTOR_STMT, VARIABLE));
+        b.rule(ASSIGNMENT_EXPRESSION).is(VARIABLE, EQUALS ,b.firstOf(SELECTOR_STMT, EXPRESSION, LITERAL_LIST, VARIABLE));
 
         //<arithop> ::= "+" | "-" | "/" | "*" | "<<" | ">>"
         b.rule(ARITH_OP).is(b.firstOf(

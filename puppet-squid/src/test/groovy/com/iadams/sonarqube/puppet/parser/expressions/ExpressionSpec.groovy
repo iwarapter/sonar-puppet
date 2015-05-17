@@ -28,6 +28,7 @@ import com.iadams.sonarqube.puppet.parser.GrammarSpec
 import spock.lang.Unroll
 
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.ASSIGNMENT_EXPRESSION
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.BOOL_EXP
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.EXPRESSION
 import static org.sonar.sslr.tests.Assertions.assertThat
 
@@ -60,5 +61,22 @@ class ExpressionSpec extends GrammarSpec {
 		expect:
 		assertThat(p).matches('$var = 10')
 		assertThat(p).matches('$var = "double quoted string"')
+		assertThat(p).matches('$purge_mod_dir = $purge_configs and !$mod_enable_dir')
+		assertThat(p).matches('''$valid_mpms_re = $apache_version ? {
+									'2.4'   => '(event|itk|peruser|prefork|worker)',
+									default => '(event|itk|prefork|worker)\'
+								  }''')
+	}
+
+	def "boolean expressions parse correctly"(){
+		given:
+		setRootRule(BOOL_EXP)
+
+		expect:
+		assertThat(p).matches(input)
+
+		where:
+		input << ['$purge_configs and $mod_enable_dir',
+				  '$purge_configs and !$mod_enable_dir']
 	}
 }

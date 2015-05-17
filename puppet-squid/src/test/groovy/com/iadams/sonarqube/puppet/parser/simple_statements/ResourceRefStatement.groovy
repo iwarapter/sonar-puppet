@@ -26,16 +26,16 @@ package com.iadams.sonarqube.puppet.parser.simple_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.CLASSREF
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.RESOURCE_REF
 import static org.sonar.sslr.tests.Assertions.assertThat
 
 /**
  * Created by iwarapter
  */
-class ClassRefStatement extends GrammarSpec {
+class ResourceRefStatement extends GrammarSpec {
 
 	def setup(){
-		setRootRule(CLASSREF)
+		setRootRule(RESOURCE_REF)
 	}
 
 	def "example array parses correctly"() {

@@ -22,44 +22,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.parser.compound_statements
+package com.iadams.sonarqube.puppet.parser.expressions
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
+import spock.lang.Unroll
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.RESOURCE
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.*
 import static org.sonar.sslr.tests.Assertions.assertThat
 
 /**
  * Created by iwarapter
  */
-public class ResourceStatement extends GrammarSpec {
+class ConditionSpec extends GrammarSpec {
 
-	def setup(){
-		setRootRule(RESOURCE)
+	@Unroll
+	def "conditions parse correctly"() {
+		given:
+		setRootRule(CONDITION)
+
+		expect:
+		assertThat(p).matches(input)
+
+		where:
+		input << ['1 == 1',
+				  'func($var)',
+				  '$var1 and ! defined(File[$var2])']
 	}
 
-	def "resource with class notify parses correctly"() {
+	def "Assignment parse correctly"() {
+		given:
+		setRootRule(ASSIGNMENT_EXPRESSION)
+
 		expect:
-		assertThat(p).matches('''package { 'httpd':
-								 	ensure => $package_ensure,
-								 	name   => $apache_name,
-								 	notify => Class['Apache::Service'],
-								 }''')
+		assertThat(p).matches('$var = 10')
+		assertThat(p).matches('$var = "double quoted string"')
+		assertThat(p).matches('$purge_mod_dir = $purge_configs and !$mod_enable_dir')
+		assertThat(p).matches('''$valid_mpms_re = $apache_version ? {
+									'2.4'   => '(event|itk|peruser|prefork|worker)',
+									default => '(event|itk|prefork|worker)\'
+								  }''')
 	}
 
-	def "resource with package require parses correctly"() {
-		expect:
-		assertThat(p).matches('''user { $user:
-									ensure  => present,
-									gid     => $group,
-									require => Package['httpd'],
-								 }''')
-	}
+	def "boolean expressions parse correctly"(){
+		given:
+		setRootRule(BOOL_EXP)
 
-	def "support exec resources"(){
 		expect:
-		assertThat(p).matches('''Exec {
-								 	path => '/bin:/sbin:/usr/bin:/usr/sbin',
-								 }''')
+		assertThat(p).matches(input)
+
+		where:
+		input << ['$purge_configs and $mod_enable_dir',
+				  '$purge_configs and !$mod_enable_dir']
 	}
 }
