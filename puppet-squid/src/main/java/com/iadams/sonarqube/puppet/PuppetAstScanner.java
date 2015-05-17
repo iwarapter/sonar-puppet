@@ -114,12 +114,13 @@ public class PuppetAstScanner {
 				function.setStartAtLine(astNode.getTokenLine());
 				return function;
 			}
-		}, PuppetGrammar.CLASSDEF, PuppetGrammar.CLASS_RESOURCE_REF));
+		}, PuppetGrammar.CLASSDEF));
 
 		builder.withSquidAstVisitor(CounterVisitor.<Grammar>builder()
 				.setMetricDef(PuppetMetric.CLASSES)
 				.subscribeTo(PuppetGrammar.CLASSDEF)
-				.subscribeTo(PuppetGrammar.CLASS_RESOURCE_REF)
 				.build());
+
+		//TODO Handle PuppetGrammar.CLASS_RESOURCE_DEF with another visitor.
 	}
 }
