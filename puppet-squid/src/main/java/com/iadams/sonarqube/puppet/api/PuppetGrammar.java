@@ -254,7 +254,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RBRACE,
                 b.optional(COMMA));
 
-        b.rule(HASH_KEY).is(IDENTIFIER);
+        b.rule(HASH_KEY).is(b.firstOf(IDENTIFIER, LITERAL));
 
         b.rule(ARRAY).is(LBRACK,
                 b.zeroOrMore(DATA_TYPE,

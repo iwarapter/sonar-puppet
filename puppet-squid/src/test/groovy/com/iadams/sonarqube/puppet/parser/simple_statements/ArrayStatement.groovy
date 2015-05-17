@@ -44,4 +44,9 @@ class ArrayStatement extends GrammarSpec {
 		assertThat(p).matches("[ 'one', 'two', 'three' ]")
 		assertThat(p).matches("[ 'one', 'two', 'three', ]")
 	}
+
+	def "nested arrays parse correctly"(){
+		expect:
+		assertThat(p).matches("[ 'one', {'second' => 'two', 'third' => 'three'} ]")
+	}
 }
