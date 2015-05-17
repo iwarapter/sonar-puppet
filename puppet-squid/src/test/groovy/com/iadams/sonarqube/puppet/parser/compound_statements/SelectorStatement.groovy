@@ -48,4 +48,13 @@ public class SelectorStatement extends GrammarSpec {
 			default            => 'root',
 		}''')
 	}
+
+	def "another selector example"(){
+		expect:
+		assertThat(p).matches('''$::osfamily ? {
+								  'freebsd' => true,
+								  default   => false
+								}
+							''')
+	}
 }

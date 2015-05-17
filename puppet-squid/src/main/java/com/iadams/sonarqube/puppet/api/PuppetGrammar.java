@@ -151,12 +151,12 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.firstOf(SELECTOR_STMT, EXPRESSION, RESOURCE_REF, LITERAL_LIST, IDENTIFIER, TRUE, FALSE),
                 b.optional(COMMA));
 
-        b.rule(RESOURCE).is(IDENTIFIER,
+        b.rule(RESOURCE).is(QUALIFIED_IDENTIFIER,
                 LBRACE,
                 b.optional(RESOURCE_NAME, COLON),
                 b.oneOrMore(ATTRIBUTE),
                 RBRACE);
-        b.rule(RESOURCE_NAME).is(b.firstOf(LITERAL, IDENTIFIER, VARIABLE));
+        b.rule(RESOURCE_NAME).is(b.firstOf(ARRAY, LITERAL, IDENTIFIER, VARIABLE));
 
         b.rule(DATA_TYPE).is(b.firstOf(TRUE,
                 FALSE,
@@ -302,7 +302,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(CASE_STMT).is(CASE, b.firstOf(VARIABLE, EXPRESSION), LBRACE,
                 b.zeroOrMore(CASES),
                 RBRACE);
-        b.rule(CASES).is(b.firstOf(NAME, LITERAL, VARIABLE, FUNC_CALL), COLON, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
+        b.rule(CASES).is(b.firstOf(NAME, DEFAULT, LITERAL, VARIABLE, FUNC_CALL), COLON, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
 
         b.rule(SELECTOR_STMT).is(
                 CONTROL_VAR,
@@ -312,14 +312,14 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.optional(
                         DEFAULT,
                         FARROW,
-                        b.firstOf(NAME, LITERAL, VARIABLE, FUNC_CALL, SELECTOR_STMT),
+                        b.firstOf(TRUE, FALSE, NAME, LITERAL, VARIABLE, FUNC_CALL, SELECTOR_STMT),
                         b.optional(COMMA)),
                 RBRACE);
 
         b.rule(SELECTOR_CASE).is(
                 b.firstOf(NAME, LITERAL, VARIABLE, FUNC_CALL),
                 FARROW,
-                b.firstOf(NAME, LITERAL, VARIABLE, FUNC_CALL, SELECTOR_STMT),
+                b.firstOf(TRUE, FALSE, NAME, LITERAL, VARIABLE, FUNC_CALL, SELECTOR_STMT),
                 b.optional(COMMA));
 
         b.rule(CONTROL_VAR).is(b.firstOf(VARIABLE, FUNC_CALL));

@@ -62,4 +62,32 @@ public class ResourceStatement extends GrammarSpec {
 								 	path => '/bin:/sbin:/usr/bin:/usr/sbin',
 								 }''')
 	}
+
+	def "check fully qualified type"(){
+		expect:
+		assertThat(p).matches('''concat::fragment { 'Apache ports header':
+								ensure  => present,
+								target  => $ports_file,
+								content => template('apache/ports_header.erb')
+							  }''')
+	}
+
+	def "array of titles"(){
+		expect:
+		assertThat(p).matches('''file { ['/etc',
+										'/etc/rc.d',
+										'/etc/rc.d/init.d',
+										'/etc/rc.d/rc0.d',
+										'/etc/rc.d/rc1.d',
+										'/etc/rc.d/rc2.d',
+										'/etc/rc.d/rc3.d',
+										'/etc/rc.d/rc4.d',
+										'/etc/rc.d/rc5.d',
+										'/etc/rc.d/rc6.d']:
+								  ensure => directory,
+								  owner  => 'root',
+								  group  => 'root',
+								  mode   => '0755',
+								}''')
+	}
 }

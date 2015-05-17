@@ -57,4 +57,18 @@ public class CaseStatement extends GrammarSpec {
 		  default:            { include role::generic } # apply the generic class
 		}''')
 	}
+
+	def "case statement with default"(){
+		expect:
+		assertThat(p).matches('''case $::osfamily {
+								  'debian': {
+									$access_log_file      = 'access.log\'
+								  } 'redhat': {
+									$access_log_file      = 'access_log\'
+								  }
+								  default: {
+									fail("Unsupported osfamily ${::osfamily}")
+								  }
+								}''')
+	}
 }
