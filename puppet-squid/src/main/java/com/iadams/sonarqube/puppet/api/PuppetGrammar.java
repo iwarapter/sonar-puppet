@@ -94,6 +94,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     HASHES,
     HASH_KEY,
     CLASS_RESOURCE_REF,
+    RELATIONSHIP_STMT,
 
     //CONDITIONAL STATEMENTS
     CONDITION_CLAUSE,
@@ -120,7 +121,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
 
         b.rule(FILE_INPUT).is(b.zeroOrMore(b.firstOf(NEWLINE, STATEMENT)), EOF);
-        b.rule(STATEMENT).is(b.firstOf(EXPRESSION, SIMPLE_STMT, COMPOUND_STMT, RESOURCE));
+        b.rule(STATEMENT).is(b.firstOf(SIMPLE_STMT, EXPRESSION, COMPOUND_STMT, RESOURCE));
 
         grammar(b);
         conditionalStatements(b);
@@ -216,7 +217,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(SIMPLE_STMT).is(b.firstOf(
                 DEFINE_STMT,
                 NODE_STMT,
-                INCLUDE_STMT));
+                INCLUDE_STMT,
+                RELATIONSHIP_STMT));
 
         b.rule(DEFINE_STMT).is(DEFINE,
                 DEFINE_NAME,
@@ -262,6 +264,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(RESOURCE_REF).is(IDENTIFIER, ARRAY);
         //b.rule(PACKAGEREF).is("Package", ARRAY);
         //b.rule(CLASSREF).is("Class", ARRAY);
+
+        b.rule(RELATIONSHIP_STMT).is(RESOURCE_REF, b.oneOrMore(b.firstOf(IN_EDGE, IN_EDGE_SUB), RESOURCE_REF));
     }
 
     /**

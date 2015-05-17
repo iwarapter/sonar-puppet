@@ -85,4 +85,12 @@ class ClassDefSpec extends GrammarSpec {
                                     version => '2.2.21',
                                  }''')
     }
+
+    def "class with relationship statement"(){
+        expect:
+        assertThat(p).matches('''class apache::mod::proxy_http {
+                                  Class['::apache::mod::proxy'] -> Class['::apache::mod::proxy_http']
+                                  ::apache::mod { 'proxy_http': }
+                                }''')
+    }
 }

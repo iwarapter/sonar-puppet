@@ -33,8 +33,6 @@ import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.FileLinesContext;
 import org.sonar.api.measures.FileLinesContextFactory;
-import org.sonar.api.resources.File;
-import org.sonar.api.resources.Project;
 import org.sonar.squidbridge.SquidAstVisitor;
 
 import java.util.List;
