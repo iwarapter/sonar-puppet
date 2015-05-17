@@ -73,4 +73,15 @@ public class SelectorStatement extends GrammarSpec {
 								   default => undef
 								}''')
 	}
+
+	def "nested selector statements"(){
+		expect:
+		assertThat(p).matches('''$source ? {
+									undef   => $content ? {
+									  undef   => template($template),
+									  default => $content,
+									},
+									default => undef,
+								  }''')
+	}
 }

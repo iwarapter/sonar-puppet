@@ -324,14 +324,14 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.optional(
                         DEFAULT,
                         FARROW,
-                        b.firstOf(TRUE, FALSE, UNDEF, NAME, LITERAL, VARIABLE, FUNC_CALL, SELECTOR_STMT),
+                        b.firstOf(TRUE, FALSE, UNDEF, FUNC_CALL, NAME, LITERAL, SELECTOR_STMT, VARIABLE),
                         b.optional(COMMA)),
                 RBRACE);
 
         b.rule(SELECTOR_CASE).is(
-                b.firstOf(TRUE, FALSE, NAME, LITERAL, VARIABLE, FUNC_CALL),
+                b.firstOf(TRUE, FALSE, UNDEF, NAME, LITERAL, VARIABLE, FUNC_CALL),
                 FARROW,
-                b.firstOf(TRUE, FALSE, NAME, LITERAL, VARIABLE, FUNC_CALL, SELECTOR_STMT),
+                b.firstOf(TRUE, FALSE, UNDEF, FUNC_CALL, NAME, LITERAL, SELECTOR_STMT, VARIABLE),
                 b.optional(COMMA));
 
         b.rule(CONTROL_VAR).is(b.firstOf(VARIABLE, FUNC_CALL));
