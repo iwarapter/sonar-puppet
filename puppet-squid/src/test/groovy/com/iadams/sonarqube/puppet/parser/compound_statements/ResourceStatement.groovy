@@ -78,16 +78,23 @@ public class ResourceStatement extends GrammarSpec {
 										'/etc/rc.d',
 										'/etc/rc.d/init.d',
 										'/etc/rc.d/rc0.d',
-										'/etc/rc.d/rc1.d',
-										'/etc/rc.d/rc2.d',
-										'/etc/rc.d/rc3.d',
-										'/etc/rc.d/rc4.d',
-										'/etc/rc.d/rc5.d',
-										'/etc/rc.d/rc6.d']:
+										'/etc/rc.d/rc1.d']:
 								  ensure => directory,
 								  owner  => 'root',
 								  group  => 'root',
 								  mode   => '0755',
 								}''')
+	}
+
+	def "resource with no attributes"(){
+		expect:
+		assertThat(p).matches('::apache::mod { \'expires\': }')
+	}
+
+	def "resource with before attribute"(){
+		expect:
+		assertThat(p).matches('''file { 'expires.conf':
+									before  => File[$::apache::mod_dir],
+								  }''')
 	}
 }

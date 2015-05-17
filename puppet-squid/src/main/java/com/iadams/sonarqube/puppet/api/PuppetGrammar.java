@@ -103,6 +103,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     CLASSDEF,
     CLASSNAME,
     IF_STMT,
+    ELSEIF_STMT,
     UNLESS_STMT,
     CASE_STMT,
     CASES,
@@ -146,7 +147,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(ATTRIBUTE).is(b.firstOf(IDENTIFIER,
                         NOTIFY,
-                        REQUIRE),
+                        REQUIRE,
+                        BEFORE),
                 FARROW,
                 b.firstOf(SELECTOR_STMT, EXPRESSION, RESOURCE_REF, LITERAL_LIST, IDENTIFIER, TRUE, FALSE),
                 b.optional(COMMA));
@@ -154,7 +156,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(RESOURCE).is(QUALIFIED_IDENTIFIER,
                 LBRACE,
                 b.optional(RESOURCE_NAME, COLON),
-                b.oneOrMore(ATTRIBUTE),
+                b.zeroOrMore(ATTRIBUTE),
                 RBRACE);
         b.rule(RESOURCE_NAME).is(b.firstOf(ARRAY, LITERAL, IDENTIFIER, VARIABLE));
 
@@ -296,8 +298,10 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 LBRACE,
                 b.zeroOrMore(STATEMENT),
                 RBRACE,
-                b.optional(ELSE, LBRACE, b.zeroOrMore(STATEMENT),RBRACE),
-                b.optional(ELSIF, CONDITION, LBRACE, b.zeroOrMore(STATEMENT), RBRACE));
+                b.zeroOrMore(ELSEIF_STMT),
+                b.optional(ELSE, LBRACE, b.zeroOrMore(STATEMENT),RBRACE));
+
+        b.rule(ELSEIF_STMT).is(ELSIF, CONDITION, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
 
         b.rule(CASE_STMT).is(CASE, b.firstOf(VARIABLE, EXPRESSION), LBRACE,
                 b.zeroOrMore(CASES),
@@ -337,6 +341,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(OPERAND).is(b.firstOf(
                 LITERAL_LIST,
                 VARIABLE,
+                FUNC_CALL,
                 TRUE,
                 FALSE,
                 UNDEF));

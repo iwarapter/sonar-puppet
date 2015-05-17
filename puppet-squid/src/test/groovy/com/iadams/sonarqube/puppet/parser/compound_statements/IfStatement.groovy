@@ -81,4 +81,15 @@ public class IfStatement extends GrammarSpec {
 									$purge_vhostd = $purge_vhost_dir
 								  }''')
 	}
+
+	def "if elseif else statement"(){
+		expect:
+		assertThat(p).matches('''if $lib {
+									$_lib = $lib
+								  } elsif has_key($mod_libs, $mod) { # 2.6 compatibility hack
+									$_lib = $mod_libs[$mod]
+								  } else {
+									$_lib = "mod_${mod}.so"
+								  }''')
+	}
 }

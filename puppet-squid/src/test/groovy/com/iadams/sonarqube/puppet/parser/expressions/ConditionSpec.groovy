@@ -46,32 +46,7 @@ class ConditionSpec extends GrammarSpec {
 		where:
 		input << ['1 == 1',
 				  'func($var)',
-				  '$var1 and ! defined(File[$var2])']
-	}
-
-	def "Assignment parse correctly"() {
-		given:
-		setRootRule(ASSIGNMENT_EXPRESSION)
-
-		expect:
-		assertThat(p).matches('$var = 10')
-		assertThat(p).matches('$var = "double quoted string"')
-		assertThat(p).matches('$purge_mod_dir = $purge_configs and !$mod_enable_dir')
-		assertThat(p).matches('''$valid_mpms_re = $apache_version ? {
-									'2.4'   => '(event|itk|peruser|prefork|worker)',
-									default => '(event|itk|prefork|worker)\'
-								  }''')
-	}
-
-	def "boolean expressions parse correctly"(){
-		given:
-		setRootRule(BOOL_EXP)
-
-		expect:
-		assertThat(p).matches(input)
-
-		where:
-		input << ['$purge_configs and $mod_enable_dir',
-				  '$purge_configs and !$mod_enable_dir']
+				  '$var1 and ! defined(File[$var2])',
+				  'versioncmp($apache_version, \'2.4\') < 0']
 	}
 }
