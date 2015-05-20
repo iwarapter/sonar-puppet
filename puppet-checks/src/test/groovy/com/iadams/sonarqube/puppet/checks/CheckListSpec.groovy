@@ -24,12 +24,6 @@
  */
 package com.iadams.sonarqube.puppet.checks
 
-import org.sonar.api.batch.rule.ActiveRules
-import org.sonar.api.batch.rule.CheckFactory
-import org.sonar.api.batch.rule.internal.ActiveRulesBuilder
-import org.sonar.api.rules.Rule
-import org.sonar.squidbridge.checks.SquidCheck
-import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -54,18 +48,5 @@ class CheckListSpec extends Specification {
 
 		where:
 		check << CheckList.getChecks();
-	}
-
-	def "Check #check.getSimpleName() has name and description"(){
-		given:
-		ActiveRules activeRules = (new ActiveRulesBuilder())
-				.build();
-		CheckFactory checkFactory = new CheckFactory(activeRules);
-		Collection<Rule> rules = checkFactory.<Rule>create("repositoryKey").addAnnotatedChecks(CheckList.getChecks()).all()
-
-		expect:
-		for(rule in rules) {
-			assert getClass().getResource("/org/sonar/l10n/puppet/rules/puppet/" + rule.getKey() + ".html")
-		}
 	}
 }

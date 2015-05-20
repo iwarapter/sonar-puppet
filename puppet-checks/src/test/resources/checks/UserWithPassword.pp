@@ -1,0 +1,3 @@
+user { 'iain':
+	password => 'cheese'
+}
