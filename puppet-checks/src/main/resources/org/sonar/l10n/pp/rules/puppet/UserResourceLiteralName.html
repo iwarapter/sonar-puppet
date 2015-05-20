@@ -1,0 +1,19 @@
+<p>
+User names should not be hard coded.
+</p>
+
+<h2>Noncompliant Code Example</h2>
+
+<pre>
+user { 'tim':
+	ensure => present
+}
+</pre>
+
+<h2>Compliant Solution</h2>
+
+<pre>
+user { $username:
+	ensure => present
+}
+</pre>

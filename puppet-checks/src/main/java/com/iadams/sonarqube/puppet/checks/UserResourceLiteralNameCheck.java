@@ -25,14 +25,13 @@
 package com.iadams.sonarqube.puppet.checks;
 
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
-import com.sonar.sslr.api.AstAndTokenVisitor;
+import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.api.Token;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.check.RuleProperty;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
@@ -42,17 +41,17 @@ import org.sonar.squidbridge.checks.SquidCheck;
  * @author iwarapter
  */
 @Rule(
-		key = UserResourcePasswordNotSetCheck.CHECK_KEY,
+		key = UserResourceLiteralNameCheck.CHECK_KEY,
 		priority = Priority.MAJOR,
-		name = "User resource should not set password",
+		name = "User resource should use variable not literal",
 		tags = Tags.SECURITY
 )
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.SECURITY_FEATURES)
 @SqaleConstantRemediation("10min")
-public class UserResourcePasswordNotSetCheck extends SquidCheck<Grammar> {
+public class UserResourceLiteralNameCheck extends SquidCheck<Grammar> {
 
-	public static final String CHECK_KEY = "ResourcePasswordSet";
+	public static final String CHECK_KEY = "UserResourceLiteralName";
 
 	@Override
 	public void init() {
@@ -64,9 +63,9 @@ public class UserResourcePasswordNotSetCheck extends SquidCheck<Grammar> {
 		if(node.getToken().getValue().equals("user")) {
 			for (int n = 0; n < node.getChildren().size(); n++) {
 				AstNode node1 = node.getChildren().get(n);
-				if(node1.getName().equals(PuppetGrammar.ATTRIBUTE.toString())){
-					if(node1.getToken().getValue().equals("password")) {
-						getContext().createLineViolation(this, "Do not set passwords in user resources.", node.getChildren().get(n));
+				if(node1.getName().equals(PuppetGrammar.RESOURCE_NAME.toString())){
+					if(node1.getToken().getType().toString().equals(GenericTokenType.LITERAL.getName())){
+						getContext().createLineViolation(this, "Do not hard code user names.", node.getChildren().get(n));
 					}
 				}
 			}

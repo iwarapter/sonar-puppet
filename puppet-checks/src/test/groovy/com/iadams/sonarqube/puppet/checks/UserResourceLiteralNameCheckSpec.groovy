@@ -1,4 +1,4 @@
-/**
+/*
  * Sonar Puppet Plugin
  * The MIT License (MIT)
  *
@@ -22,26 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.checks;
+package com.iadams.sonarqube.puppet.checks
 
-import com.google.common.collect.ImmutableList;
-
-import java.util.List;
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
+import spock.lang.Specification
 
 /**
- * Created by iwarapter
+ * @author iwarapter
  */
-public final class CheckList {
+class UserResourceLiteralNameCheckSpec extends Specification {
 
-	public static final String REPOSITORY_KEY = "puppet";
+	def "validate rule"() {
+		given:
+		UserResourceLiteralNameCheck check = new UserResourceLiteralNameCheck();
 
-	public static final String SONAR_WAY_PROFILE = "Default";
+		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/UserResourceLiteralName.pp"), check);
 
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				LineLengthCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class
-		);
+		expect:
+		CheckMessagesVerifier.verify(file.getCheckMessages())
+				.next().atLine(1).withMessage("Do not hard code user names.")
+				.noMore();
 	}
 }
