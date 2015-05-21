@@ -24,6 +24,7 @@
  */
 package com.iadams.sonarqube.puppet.checks
 
+import org.sonar.api.rules.AnnotationRuleParser
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -48,5 +49,15 @@ class CheckListSpec extends Specification {
 
 		where:
 		check << CheckList.getChecks();
+	}
+
+	@Unroll
+	def "Check #rule.getKey() has description"(){
+		expect:
+		getClass().getResource("/org/sonar/l10n/pp/rules/puppet/" + rule.getKey() + ".html")
+		!rule.getDescription()
+
+		where:
+		rule << new AnnotationRuleParser().parse("repositoryKey", CheckList.checks);
 	}
 }
