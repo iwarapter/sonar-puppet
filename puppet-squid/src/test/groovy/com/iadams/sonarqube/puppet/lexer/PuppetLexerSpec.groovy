@@ -26,6 +26,7 @@ package com.iadams.sonarqube.puppet.lexer
 
 import com.google.common.base.Charsets
 import com.iadams.sonarqube.puppet.PuppetConfiguration
+import com.iadams.sonarqube.puppet.api.PuppetTokenType
 import com.sonar.sslr.api.Token
 import com.sonar.sslr.api.TokenType
 import com.sonar.sslr.impl.Lexer
@@ -48,7 +49,11 @@ import static org.junit.Assert.assertThat;
  */
 class PuppetLexerSpec extends Specification {
 
-    Lexer lexer = PuppetLexer.create(new PuppetConfiguration(Charsets.UTF_8));
+    private static Lexer lexer;
+
+    def setupSpec(){
+        lexer = PuppetLexer.create(new PuppetConfiguration(Charsets.UTF_8));
+    }
 
     def "lex Identifiers"() {
         assertThat(lexer.lex("abc"), hasToken("abc", IDENTIFIER));
@@ -238,6 +243,20 @@ class PuppetLexerSpec extends Specification {
         containsToken('role', IDENTIFIER)
         //containsToken('::', COLON)
         containsToken('solaris', IDENTIFIER)
+    }
+
+    @Unroll
+    def "matches regular expressions"(){
+        expect:
+        assertRegexp(statement);
+
+        where:
+        statement << ["/^www\\d+\$/", "/^(foo|bar)\\.example\\.com\$/",
+                      "/^(Debian|Ubuntu)\$/", "/^dev-[^\\s]*\$/"]
+    }
+
+    private static void assertRegexp(String regexp) {
+        assertThat(lexer.lex(regexp), hasToken(regexp, PuppetTokenType.REGULAR_EXPRESSION_LITERAL));
     }
 
     private boolean containsToken(String value, TokenType type){

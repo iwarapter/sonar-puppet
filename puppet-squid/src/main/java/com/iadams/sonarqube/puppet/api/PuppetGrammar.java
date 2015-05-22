@@ -381,7 +381,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(ARITH_EXP).is(OPERAND, ARITH_OP, OPERAND);
         b.rule(BOOL_EXP).is(OPERAND, BOOL_OPERATOR, EXPRESSION);
         b.rule(COMP_EXP).is(OPERAND, COMP_OPERATOR, b.firstOf(EXPRESSION, OPERAND));
-        b.rule(MATCH_EXP).is(OPERAND, MATCH_OPERATOR, OPERAND);
+        b.rule(MATCH_EXP).is(OPERAND, MATCH_OPERATOR, REGULAR_EXPRESSION_LITERAL);
         b.rule(NOT_EXP).is(NOT, EXPRESSION);
         b.rule(MINUS_EXP).is(MINUS, OPERAND);
         b.rule(BRACKET_EXP).is(LPAREN, EXPRESSION, RPAREN);

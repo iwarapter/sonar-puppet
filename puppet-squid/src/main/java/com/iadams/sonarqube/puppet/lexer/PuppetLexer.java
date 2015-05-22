@@ -70,6 +70,9 @@ public class PuppetLexer {
                     // String Literals
             .withChannel(regexp(GenericTokenType.LITERAL, LITERAL))
 
+                    //Lets play with matching regex!
+            .withChannel(new PuppetRegexpChannel())
+
             .withChannel(commentRegexp(COMMENT))
             .withChannel(new PunctuatorChannel(PuppetPunctuator.values()))
             .withChannel(new BlackHoleChannel("[ \t\r\n]+"))
