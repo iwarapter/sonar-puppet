@@ -25,7 +25,6 @@
 package com.iadams.sonarqube.puppet.parser.compound_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
-import spock.lang.Ignore
 
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.CASE_STMT
 import static org.sonar.sslr.tests.Assertions.assertThat
@@ -46,13 +45,11 @@ public class CaseStatement extends GrammarSpec {
 		}''')
 	}
 
-	//TODO Add support for regex
-	@Ignore
 	def "case with regex option"() {
 		expect:
 		assertThat(p).matches('''case $operatingsystem {
 		  'Solaris':          { include role::solaris } # apply the solaris class
-		  #/^(Debian|Ubuntu)$/:{ include role::debian  } # apply the debian class
+		  /^(Debian|Ubuntu)$/:{ include role::debian  } # apply the debian class
 		  default:            { include role::generic } # apply the generic class
 		}''')
 	}
