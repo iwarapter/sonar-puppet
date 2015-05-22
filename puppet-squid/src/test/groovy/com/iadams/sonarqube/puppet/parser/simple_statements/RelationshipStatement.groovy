@@ -38,14 +38,21 @@ class RelationshipStatement extends GrammarSpec {
 		setRootRule(RELATIONSHIP_STMT)
 	}
 
-	def "relationship chaining passes correctly"() {
+	def "left right relationship chaining passes correctly"() {
 		expect:
 		assertThat(p).matches("File['/etc/ntp.conf'] ~> Service['ntpd']")
 		assertThat(p).matches("File['/etc/ntp.conf'] -> Service['ntpd']")
 	}
 
+	def "right left relationship chaining passes correctly"() {
+		expect:
+		assertThat(p).matches("File['/etc/ntp.conf'] <~ Service['ntpd']")
+		assertThat(p).matches("File['/etc/ntp.conf'] <- Service['ntpd']")
+	}
+
 	def "nested relationship chains"(){
 		expect:
 		assertThat(p).matches("Package['ntp'] -> File['/etc/ntp.conf'] ~> Service['ntpd']")
+		assertThat(p).matches("Package['ntp'] <- File['/etc/ntp.conf'] <~ Service['ntpd']")
 	}
 }

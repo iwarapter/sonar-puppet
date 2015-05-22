@@ -95,6 +95,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     HASH_KEY,
     CLASS_RESOURCE_REF,
     RELATIONSHIP_STMT,
+    RELATIONSHIP_LR_STMT,
+    RELATIONSHIP_RL_STMT,
     ACCESSOR,
 
     //CONDITIONAL STATEMENTS
@@ -264,7 +266,9 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(RESOURCE_REF).is(QUALIFIED_IDENTIFIER, ARRAY);
 
-        b.rule(RELATIONSHIP_STMT).is(RESOURCE_REF, b.oneOrMore(b.firstOf(IN_EDGE, IN_EDGE_SUB), RESOURCE_REF));
+        b.rule(RELATIONSHIP_STMT).is(b.firstOf(RELATIONSHIP_LR_STMT, RELATIONSHIP_RL_STMT));
+        b.rule(RELATIONSHIP_LR_STMT).is(RESOURCE_REF, b.oneOrMore(b.firstOf(IN_EDGE, IN_EDGE_SUB), RESOURCE_REF));
+        b.rule(RELATIONSHIP_RL_STMT).is(RESOURCE_REF, b.oneOrMore(b.firstOf(OUT_EDGE, OUT_EDGE_SUB), RESOURCE_REF));
 
         b.rule(ACCESSOR).is(VARIABLE, b.oneOrMore(LBRACK, b.firstOf(LITERAL, INTEGER, IDENTIFIER), RBRACK));
     }
