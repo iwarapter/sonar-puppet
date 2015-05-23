@@ -39,12 +39,11 @@ public class SelectorStatement extends GrammarSpec {
 		setRootRule(SELECTOR_STMT)
 	}
 
-	//TODO Add support for regex for case 2
 	def "selector statement parses correctly"() {
 		expect:
 		assertThat(p).matches('''$osfamily ? {
 			'Solaris'          => 'wheel',
-			#/(Darwin|FreeBSD)/ => 'wheel',
+			/(Darwin|FreeBSD)/ => 'wheel',
 			default            => 'root',
 		}''')
 	}
@@ -83,5 +82,15 @@ public class SelectorStatement extends GrammarSpec {
 									},
 									default => undef,
 								  }''')
+	}
+
+	def "select with arrays"(){
+		expect:
+		assertThat(p).matches("""\$::apache::params::distrelease ? {
+									'6'     => ['/usr/lib/libxml2.so.2'],
+									'10'    => ['/usr/lib/libxml2.so.2'],
+									default => ["/usr/lib/\${gnu_path}-linux-gnu/libxml2.so.2"],
+								  }
+""")
 	}
 }
