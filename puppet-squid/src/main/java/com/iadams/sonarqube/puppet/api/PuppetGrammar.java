@@ -99,6 +99,13 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     RELATIONSHIP_RL_STMT,
     ACCESSOR,
 
+    RESOURCE_COLLECTOR,
+    RESOURCE_COLLECTOR_SEARCH,
+    COLLECTOR_EQ_SEARCH,
+    COLLECTOR_NOTEQ_SEARCH,
+    COLLECTOR_AND_SEARCH,
+    COLLECTOR_OR_SEARCH,
+
     //CONDITIONAL STATEMENTS
     CONDITION_CLAUSE,
 
@@ -282,7 +289,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(COMPOUND_STMT).is(b.firstOf(CLASSDEF,
                 CLASS_RESOURCE_REF,
                 IF_STMT,
-                CASE_STMT));
+                CASE_STMT,
+                RESOURCE_COLLECTOR));
 
         b.rule(CLASSDEF).is(CLASS,
                             CLASSNAME,
@@ -339,6 +347,33 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.optional(COMMA));
 
         b.rule(CONTROL_VAR).is(b.firstOf(VARIABLE, FUNC_CALL));
+
+        b.rule(RESOURCE_COLLECTOR).is(NAME, LCOLLECT, b.optional(RESOURCE_COLLECTOR_SEARCH), RCOLLECT);
+        b.rule(RESOURCE_COLLECTOR_SEARCH).is(
+                b.firstOf(COLLECTOR_AND_SEARCH,
+                        COLLECTOR_OR_SEARCH,
+                        COLLECTOR_EQ_SEARCH,
+                        COLLECTOR_NOTEQ_SEARCH));
+
+        b.rule(COLLECTOR_EQ_SEARCH).is(
+                IDENTIFIER,
+                ISEQUAL,
+                b.firstOf(LITERAL_LIST, TRUE, FALSE, RESOURCE_REF, UNDEF));
+
+        b.rule(COLLECTOR_NOTEQ_SEARCH).is(
+                IDENTIFIER,
+                NOTEQUAL,
+                b.firstOf(LITERAL_LIST, TRUE, FALSE, RESOURCE_REF, UNDEF));
+
+        b.rule(COLLECTOR_AND_SEARCH).is(
+                b.firstOf(COLLECTOR_EQ_SEARCH, COLLECTOR_NOTEQ_SEARCH),
+                AND,
+                b.firstOf(COLLECTOR_EQ_SEARCH, COLLECTOR_NOTEQ_SEARCH));
+
+        b.rule(COLLECTOR_OR_SEARCH).is(
+                b.firstOf(COLLECTOR_EQ_SEARCH, COLLECTOR_NOTEQ_SEARCH),
+                OR,
+                b.firstOf(COLLECTOR_EQ_SEARCH, COLLECTOR_NOTEQ_SEARCH));
     }
 
     /**
