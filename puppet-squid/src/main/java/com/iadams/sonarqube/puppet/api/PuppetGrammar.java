@@ -105,6 +105,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     COLLECTOR_NOTEQ_SEARCH,
     COLLECTOR_AND_SEARCH,
     COLLECTOR_OR_SEARCH,
+    EXPORTED_RESOURCE_COLLECTOR,
 
     //CONDITIONAL STATEMENTS
     CONDITION_CLAUSE,
@@ -290,7 +291,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 CLASS_RESOURCE_REF,
                 IF_STMT,
                 CASE_STMT,
-                RESOURCE_COLLECTOR));
+                RESOURCE_COLLECTOR,
+                EXPORTED_RESOURCE_COLLECTOR));
 
         b.rule(CLASSDEF).is(CLASS,
                             CLASSNAME,
@@ -374,6 +376,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.firstOf(COLLECTOR_EQ_SEARCH, COLLECTOR_NOTEQ_SEARCH),
                 OR,
                 b.firstOf(COLLECTOR_EQ_SEARCH, COLLECTOR_NOTEQ_SEARCH));
+
+        b.rule(EXPORTED_RESOURCE_COLLECTOR).is(NAME, LLCOLLECT, b.optional(RESOURCE_COLLECTOR_SEARCH), RRCOLLECT);
     }
 
     /**
