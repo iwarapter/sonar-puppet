@@ -55,4 +55,9 @@ class RelationshipStatement extends GrammarSpec {
 		assertThat(p).matches("Package['ntp'] -> File['/etc/ntp.conf'] ~> Service['ntpd']")
 		assertThat(p).matches("Package['ntp'] <- File['/etc/ntp.conf'] <~ Service['ntpd']")
 	}
+
+	def "relationships with collector works"(){
+		expect:
+		assertThat(p).matches('Package[$_package] -> File<| title == "${mod}.conf" |>')
+	}
 }

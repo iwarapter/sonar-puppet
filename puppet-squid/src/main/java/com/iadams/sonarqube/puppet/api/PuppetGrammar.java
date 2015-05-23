@@ -161,7 +161,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(ATTRIBUTE).is(b.firstOf(IDENTIFIER,
                         NOTIFY,
                         REQUIRE,
-                        BEFORE),
+                        BEFORE,
+                        SUBSCRIBE),
                 FARROW,
                 b.firstOf(SELECTOR_STMT, EXPRESSION, RESOURCE_REF, LITERAL_LIST, IDENTIFIER, TRUE, FALSE),
                 b.optional(COMMA));
@@ -275,8 +276,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(RESOURCE_REF).is(QUALIFIED_IDENTIFIER, ARRAY);
 
         b.rule(RELATIONSHIP_STMT).is(b.firstOf(RELATIONSHIP_LR_STMT, RELATIONSHIP_RL_STMT));
-        b.rule(RELATIONSHIP_LR_STMT).is(RESOURCE_REF, b.oneOrMore(b.firstOf(IN_EDGE, IN_EDGE_SUB), RESOURCE_REF));
-        b.rule(RELATIONSHIP_RL_STMT).is(RESOURCE_REF, b.oneOrMore(b.firstOf(OUT_EDGE, OUT_EDGE_SUB), RESOURCE_REF));
+        b.rule(RELATIONSHIP_LR_STMT).is(RESOURCE_REF, b.oneOrMore(b.firstOf(IN_EDGE, IN_EDGE_SUB), b.firstOf(RESOURCE_REF,RESOURCE_COLLECTOR)));
+        b.rule(RELATIONSHIP_RL_STMT).is(RESOURCE_REF, b.oneOrMore(b.firstOf(OUT_EDGE, OUT_EDGE_SUB), b.firstOf(RESOURCE_REF,RESOURCE_COLLECTOR)));
 
         b.rule(ACCESSOR).is(VARIABLE, b.oneOrMore(LBRACK, b.firstOf(LITERAL, INTEGER, IDENTIFIER), RBRACK));
     }
@@ -350,7 +351,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(CONTROL_VAR).is(b.firstOf(VARIABLE, FUNC_CALL));
 
-        b.rule(RESOURCE_COLLECTOR).is(NAME, LCOLLECT, b.optional(RESOURCE_COLLECTOR_SEARCH), RCOLLECT);
+        b.rule(RESOURCE_COLLECTOR).is(QUALIFIED_IDENTIFIER, LCOLLECT, b.optional(RESOURCE_COLLECTOR_SEARCH), RCOLLECT);
         b.rule(RESOURCE_COLLECTOR_SEARCH).is(
                 b.firstOf(COLLECTOR_AND_SEARCH,
                         COLLECTOR_OR_SEARCH,
@@ -360,12 +361,12 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(COLLECTOR_EQ_SEARCH).is(
                 IDENTIFIER,
                 ISEQUAL,
-                b.firstOf(LITERAL_LIST, TRUE, FALSE, RESOURCE_REF, UNDEF));
+                b.firstOf(VARIABLE, LITERAL_LIST, TRUE, FALSE, RESOURCE_REF, UNDEF));
 
         b.rule(COLLECTOR_NOTEQ_SEARCH).is(
                 IDENTIFIER,
                 NOTEQUAL,
-                b.firstOf(LITERAL_LIST, TRUE, FALSE, RESOURCE_REF, UNDEF));
+                b.firstOf(VARIABLE, LITERAL_LIST, TRUE, FALSE, RESOURCE_REF, UNDEF));
 
         b.rule(COLLECTOR_AND_SEARCH).is(
                 b.firstOf(COLLECTOR_EQ_SEARCH, COLLECTOR_NOTEQ_SEARCH),
@@ -377,7 +378,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 OR,
                 b.firstOf(COLLECTOR_EQ_SEARCH, COLLECTOR_NOTEQ_SEARCH));
 
-        b.rule(EXPORTED_RESOURCE_COLLECTOR).is(NAME, LLCOLLECT, b.optional(RESOURCE_COLLECTOR_SEARCH), RRCOLLECT);
+        b.rule(EXPORTED_RESOURCE_COLLECTOR).is(QUALIFIED_IDENTIFIER, LLCOLLECT, b.optional(RESOURCE_COLLECTOR_SEARCH), RRCOLLECT);
     }
 
     /**
