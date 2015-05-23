@@ -328,7 +328,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.optional(
                         DEFAULT,
                         FARROW,
-                        b.firstOf(TRUE, FALSE, UNDEF, FUNC_CALL, NAME, LITERAL, SELECTOR_STMT, VARIABLE, ARRAY),
+                        b.firstOf(TRUE, FALSE, UNDEF, FUNC_CALL, RESOURCE_REF, NAME, LITERAL, SELECTOR_STMT, VARIABLE, ARRAY),
                         b.optional(COMMA)),
                 RBRACE);
 

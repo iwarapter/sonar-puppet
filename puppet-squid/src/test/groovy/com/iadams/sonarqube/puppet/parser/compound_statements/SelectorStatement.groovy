@@ -28,6 +28,7 @@ import com.iadams.sonarqube.puppet.parser.GrammarSpec
 import spock.lang.Ignore
 
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.SELECTOR_STMT
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.expressions
 import static org.sonar.sslr.tests.Assertions.assertThat
 
 /**
@@ -84,13 +85,24 @@ public class SelectorStatement extends GrammarSpec {
 								  }''')
 	}
 
-	def "select with arrays"(){
+	def "selector with arrays"(){
 		expect:
 		assertThat(p).matches("""\$::apache::params::distrelease ? {
 									'6'     => ['/usr/lib/libxml2.so.2'],
 									'10'    => ['/usr/lib/libxml2.so.2'],
 									default => ["/usr/lib/\${gnu_path}-linux-gnu/libxml2.so.2"],
 								  }
-""")
+								""")
+	}
+
+	def "selector with default resource ref"(){
+		expect:
+		assertThat(p).matches("""\$::osfamily ? {
+						  'freebsd' => [
+							File[\$_loadfile_name],
+							File["\${::apache::conf_dir}/\${::apache::params::conf_file}"]
+						  ],
+						  default => File[\$_loadfile_name],
+						}""")
 	}
 }
