@@ -132,7 +132,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
 
         b.rule(FILE_INPUT).is(b.zeroOrMore(b.firstOf(NEWLINE, STATEMENT)), EOF);
-        b.rule(STATEMENT).is(b.firstOf(SIMPLE_STMT, EXPRESSION, COMPOUND_STMT, RESOURCE));
+        b.rule(STATEMENT).is(b.firstOf(RESOURCE, SIMPLE_STMT, EXPRESSION, COMPOUND_STMT));
 
         grammar(b);
         conditionalStatements(b);
@@ -162,6 +162,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                         NOTIFY,
                         REQUIRE,
                         BEFORE,
+                        UNLESS,
                         SUBSCRIBE),
                 FARROW,
                 b.firstOf(SELECTOR_STMT, EXPRESSION, RESOURCE_REF, LITERAL_LIST, IDENTIFIER, TRUE, FALSE),

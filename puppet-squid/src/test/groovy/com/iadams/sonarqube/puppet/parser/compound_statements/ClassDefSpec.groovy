@@ -93,4 +93,15 @@ class ClassDefSpec extends GrammarSpec {
                                   ::apache::mod { 'proxy_http': }
                                 }''')
     }
+
+    def "class with empty resource"(){
+        expect:
+        assertThat(p).matches('''class apache::mod::dav_svn (
+                                  $authz_svn_enabled = false,
+                                ) {
+                                  Class['::apache::mod::dav'] -> Class['::apache::mod::dav_svn']
+                                  include ::apache::mod::dav
+                                  ::apache::mod { 'dav_svn': }
+                                }''')
+    }
 }
