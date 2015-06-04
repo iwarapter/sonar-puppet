@@ -73,7 +73,9 @@ class ExpressionSpec extends GrammarSpec {
 									default => '(event|itk|prefork|worker)\'
 								  }''')
 		assertThat(p).matches('$notifies = Class[\'Apache::Service\']')
-		assertThat(p).matches('$mod_packages = { \'auth_cas\' => \'mod_auth_cas\'}')
+		assertThat(p).matches('''$_directory_version = {
+									require => 'all granted',
+								 }''')
 	}
 
 	def "unary (not) expressions parse"(){

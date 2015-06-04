@@ -26,32 +26,20 @@ package com.iadams.sonarqube.puppet.parser.simple_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.ARRAY
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.HASHES
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.FUNC_CALL
 import static org.sonar.sslr.tests.Assertions.assertThat
 
 /**
- * Created by iwarapter
+ * @author iwarapter
  */
-class ArrayStatement extends GrammarSpec {
+class FunctionCallStatements extends GrammarSpec {
 
 	def setup(){
-		setRootRule(ARRAY)
+		setRootRule(FUNC_CALL)
 	}
 
-	def "example array parses correctly"() {
+	def "simple function call parses"() {
 		expect:
-		assertThat(p).matches("[ 'one', 'two', 'three' ]")
-		assertThat(p).matches("[ 'one', 'two', 'three', ]")
-	}
-
-	def "nested arrays parse correctly"(){
-		expect:
-		assertThat(p).matches("[ 'one', {'second' => 'two', 'third' => 'three'} ]")
-	}
-
-	def "array from function call parses"(){
-		expect:
-		assertThat(p).matches('[ merge($_directory, $_directory_version) ]')
+		assertThat(p).matches('merge($_directory, $_directory_version)')
 	}
 }

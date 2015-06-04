@@ -264,11 +264,11 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RBRACE,
                 b.optional(COMMA));
 
-        b.rule(HASH_KEY).is(b.firstOf(IDENTIFIER, LITERAL));
+        b.rule(HASH_KEY).is(b.firstOf(IDENTIFIER, LITERAL, REQUIRE));
 
         b.rule(ARRAY).is(LBRACK,
-                b.zeroOrMore(DATA_TYPE,
-                        b.zeroOrMore(COMMA, DATA_TYPE)),
+                b.zeroOrMore(b.firstOf(FUNC_CALL, DATA_TYPE),
+                        b.zeroOrMore(COMMA, b.firstOf(FUNC_CALL, DATA_TYPE))),
                 b.optional(COMMA),
                 RBRACK);
 
