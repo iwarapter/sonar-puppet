@@ -49,12 +49,20 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     //EXPRESSIONS
     EXPRESSION,
     ARITH_EXP,
-    BOOL_EXP,
+    BOOL_EXPRESSION,
     COMP_EXP,
-    MATCH_EXP,
-    NOT_EXP,
-    MINUS_EXP,
+    MATCH_EXPRESSION,
+    UNARY_NOT_EXPRESSION,
+    UNARY_NEG_EXPRESSION,
     BRACKET_EXP,
+
+    ATOM,
+
+    SHIFT_EXPRESSION,
+    ADDITIVE_EXPRESSION,
+    MULTIPLICATIVE_EXPRESSION,
+
+    COMPARISON,
 
     ARITH_OP,
     ASSIGNMENT_EXPRESSION,
@@ -67,7 +75,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     SHIFT_OPER,
 
     RIGHT_VALUE,
-    LITERAL_LIST,
+    LITERALS,
     ARGUMENT_EXPRESSION_LIST,
     NAME,
     NAMESPACE_SEP,
@@ -165,7 +173,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                         UNLESS,
                         SUBSCRIBE),
                 FARROW,
-                b.firstOf(SELECTOR_STMT, EXPRESSION, RESOURCE_REF, LITERAL_LIST, IDENTIFIER, TRUE, FALSE),
+                b.firstOf(SELECTOR_STMT, EXPRESSION, RESOURCE_REF, LITERALS, IDENTIFIER, TRUE, FALSE),
                 b.optional(COMMA));
 
         b.rule(RESOURCE).is(QUALIFIED_IDENTIFIER,
@@ -188,12 +196,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 IDENTIFIER,
                 VARIABLE
                 ));
-
-        /*b.rule(EXEC_RESOURCE).is("exec",
-                LBRACE,
-                b.optional(LITERAL, COLON),
-                b.zeroOrMore(ATTRIBUTE),
-                RBRACE);*/
     }
 
     /**
@@ -362,12 +364,12 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(COLLECTOR_EQ_SEARCH).is(
                 IDENTIFIER,
                 ISEQUAL,
-                b.firstOf(VARIABLE, LITERAL_LIST, TRUE, FALSE, RESOURCE_REF, UNDEF));
+                b.firstOf(VARIABLE, LITERALS, TRUE, FALSE, RESOURCE_REF, UNDEF));
 
         b.rule(COLLECTOR_NOTEQ_SEARCH).is(
                 IDENTIFIER,
                 NOTEQUAL,
-                b.firstOf(VARIABLE, LITERAL_LIST, TRUE, FALSE, RESOURCE_REF, UNDEF));
+                b.firstOf(VARIABLE, LITERALS, TRUE, FALSE, RESOURCE_REF, UNDEF));
 
         b.rule(COLLECTOR_AND_SEARCH).is(
                 b.firstOf(COLLECTOR_EQ_SEARCH, COLLECTOR_NOTEQ_SEARCH),
@@ -389,13 +391,10 @@ public enum PuppetGrammar  implements GrammarRuleKey {
      */
     public static void expressions(LexerfulGrammarBuilder b){
 
-        b.rule(CONDITION).is(
-                b.optional(LPAREN),
-                b.firstOf(COMP_EXP, BOOL_EXP, NOT_EXP, FUNC_CALL, VARIABLE),
-                b.optional(RPAREN));
+        b.rule(CONDITION).is(ASSIGNMENT_EXPRESSION);
 
         b.rule(OPERAND).is(b.firstOf(
-                LITERAL_LIST,
+                LITERALS,
                 VARIABLE,
                 FUNC_CALL,
                 TRUE,
@@ -413,24 +412,44 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(EXPRESSION).is(b.firstOf(
                 ACCESSOR,
                 ASSIGNMENT_EXPRESSION,
-                ARITH_EXP,
-                BOOL_EXP,
-                COMP_EXP,
-                MATCH_EXP,
-                NOT_EXP,
-                MINUS_EXP,
-                BRACKET_EXP,
+                //ARITH_EXP,
+                BOOL_EXPRESSION,
+                //COMP_EXP,
+                MATCH_EXPRESSION,
+                UNARY_NOT_EXPRESSION,
+                UNARY_NEG_EXPRESSION,
+                //BRACKET_EXP,
                 RIGHT_VALUE,
                 RESOURCE_REF));
 
-        b.rule(ARITH_EXP).is(OPERAND, ARITH_OP, OPERAND);
-        b.rule(BOOL_EXP).is(OPERAND, BOOL_OPERATOR, EXPRESSION);
-        b.rule(COMP_EXP).is(OPERAND, COMP_OPERATOR, b.firstOf(EXPRESSION, OPERAND));
-        b.rule(MATCH_EXP).is(OPERAND, MATCH_OPERATOR, REGULAR_EXPRESSION_LITERAL);
-        b.rule(NOT_EXP).is(NOT, EXPRESSION);
-        b.rule(MINUS_EXP).is(MINUS, OPERAND);
-        b.rule(BRACKET_EXP).is(LPAREN, EXPRESSION, RPAREN);
-        b.rule(ASSIGNMENT_EXPRESSION).is(VARIABLE, EQUALS ,b.firstOf(SELECTOR_STMT, EXPRESSION, LITERAL_LIST, VARIABLE, UNDEF));
+        //https://docs.puppetlabs.com/puppet/latest/reference/lang_expressions.html#order-of-operations
+
+
+
+        b.rule(UNARY_NOT_EXPRESSION).is(b.optional(NOT), ATOM);
+        b.rule(UNARY_NEG_EXPRESSION).is(b.optional(MINUS), UNARY_NOT_EXPRESSION);
+
+        b.rule(MATCH_EXPRESSION).is(UNARY_NEG_EXPRESSION, b.zeroOrMore(MATCH_OPERATOR, UNARY_NEG_EXPRESSION));
+        b.rule(MULTIPLICATIVE_EXPRESSION).is(MATCH_EXPRESSION, b.zeroOrMore(M_OPER, MATCH_EXPRESSION));
+        b.rule(ADDITIVE_EXPRESSION).is(MULTIPLICATIVE_EXPRESSION, b.zeroOrMore(A_OPER, MULTIPLICATIVE_EXPRESSION));
+        b.rule(SHIFT_EXPRESSION).is(ADDITIVE_EXPRESSION, b.zeroOrMore(SHIFT_OPER, ADDITIVE_EXPRESSION));
+        b.rule(COMPARISON).is(SHIFT_EXPRESSION, b.zeroOrMore(COMP_OPERATOR, SHIFT_EXPRESSION));
+        b.rule(BOOL_EXPRESSION).is(COMPARISON, b.zeroOrMore(BOOL_OPERATOR, COMPARISON));
+        b.rule(ASSIGNMENT_EXPRESSION).is(BOOL_EXPRESSION, b.zeroOrMore(EQUALS, BOOL_EXPRESSION));
+
+        b.rule(ATOM).is(b.firstOf(
+                b.sequence(LPAREN, ASSIGNMENT_EXPRESSION, RPAREN),
+                SELECTOR_STMT,
+                ARRAY,
+                LITERALS,
+                VARIABLE,
+                FUNC_CALL,
+                TRUE,
+                FALSE,
+                UNDEF
+        ));
+
+
 
         //<arithop> ::= "+" | "-" | "/" | "*" | "<<" | ">>"
         b.rule(ARITH_OP).is(b.firstOf(
@@ -448,13 +467,13 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(M_OPER).is(b.firstOf(
                 MUL,
-                DIV));
+                DIV,
+                MODULO));
 
         //<boolop>  ::= "and" | "or"
         b.rule(BOOL_OPERATOR).is(b.firstOf(
                 AND,
-                OR,
-                NOT));
+                OR));
 
         //<compop>  ::= "==" | "!=" | ">" | ">=" | "<=" | "<"
         b.rule(COMP_OPERATOR).is(b.firstOf(
@@ -474,11 +493,11 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(RIGHT_VALUE).is(b.firstOf(
                 FUNC_CALL,
                 VARIABLE,
-                LITERAL_LIST,
+                LITERALS,
                 ARRAY));
 
         //<literals> ::= <float> | <integer> | <hex-integer> | <octal-integer> | <quoted-string>
-        b.rule(LITERAL_LIST).is(b.firstOf(
+        b.rule(LITERALS).is(b.firstOf(
                 FLOAT,
                 INTEGER,
                 HEX_INTEGER,

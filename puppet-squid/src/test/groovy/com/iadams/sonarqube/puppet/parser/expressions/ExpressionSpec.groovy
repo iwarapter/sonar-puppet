@@ -27,9 +27,13 @@ package com.iadams.sonarqube.puppet.parser.expressions
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 import spock.lang.Unroll
 
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.ADDITIVE_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.ASSIGNMENT_EXPRESSION
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.BOOL_EXP
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.BOOL_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.EXPRESSION
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.MULTIPLICATIVE_EXPRESSION
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.SHIFT_EXPRESSION
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.UNARY_NOT_EXPRESSION
 import static org.sonar.sslr.tests.Assertions.assertThat
 
 /**
@@ -69,9 +73,18 @@ class ExpressionSpec extends GrammarSpec {
 								  }''')
 	}
 
+	def "unary (not) expressions parse"(){
+		given:
+		setRootRule(UNARY_NOT_EXPRESSION)
+
+		expect:
+		assertThat(p).matches('!$var')
+		assertThat(p).matches('!(true)')
+	}
+
 	def "boolean expressions parse correctly"(){
 		given:
-		setRootRule(BOOL_EXP)
+		setRootRule(BOOL_EXPRESSION)
 
 		expect:
 		assertThat(p).matches(input)
@@ -79,5 +92,35 @@ class ExpressionSpec extends GrammarSpec {
 		where:
 		input << ['$purge_configs and $mod_enable_dir',
 				  '$purge_configs and !$mod_enable_dir']
+	}
+
+	def "mult expressions parse"(){
+		given:
+		setRootRule(MULTIPLICATIVE_EXPRESSION)
+
+		expect:
+		assertThat(p).matches('1 * 1')
+		assertThat(p).matches('(1 + 2) * 3')
+		assertThat(p).matches('(1 + 2) * (3 * 6)')
+	}
+
+	def "addition expressions parse"(){
+		given:
+		setRootRule(ADDITIVE_EXPRESSION)
+
+		expect:
+		assertThat(p).matches('1 + 1')
+		assertThat(p).matches('(1 + 2) + 3')
+		assertThat(p).matches('(1 + 2) - (3 * 6)')
+	}
+
+	def "shift expressions parse"(){
+		given:
+		setRootRule(SHIFT_EXPRESSION)
+
+		expect:
+		assertThat(p).matches('1 << 1')
+		assertThat(p).matches('(1 + 2) << 3')
+		assertThat(p).matches('(1 + 2) >> (3 * 6)')
 	}
 }

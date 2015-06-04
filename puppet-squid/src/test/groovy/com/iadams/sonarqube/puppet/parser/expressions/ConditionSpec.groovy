@@ -58,8 +58,6 @@ class ConditionSpec extends GrammarSpec {
 		assertThat(p).matches('$::operatingsystem == \'Ubuntu\' and $::lsbdistrelease == \'10.04\'')
 	}
 
-	@Ignore
-	//TODO Handling complex conditions is priority!
 	def "complex conditions parse"(){
 		expect:
 		assertThat(p).matches('($scriptalias or $scriptaliases != []) or ($redirect_source and $redirect_dest)')
