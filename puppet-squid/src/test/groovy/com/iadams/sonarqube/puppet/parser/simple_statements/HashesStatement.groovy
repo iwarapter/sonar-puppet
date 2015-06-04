@@ -27,7 +27,6 @@ package com.iadams.sonarqube.puppet.parser.simple_statements
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.HASHES
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.NODE_STMT
 import static org.sonar.sslr.tests.Assertions.assertThat
 
 /**
@@ -43,5 +42,15 @@ class HashesStatement extends GrammarSpec {
 		expect:
 		assertThat(p).matches("{ key1 => 'val1', key2 => 'val2' }")
 		assertThat(p).matches("{ key1 => 'val1', key2 => 'val2', }")
+	}
+
+	def "hashes with selectors parse"(){
+		expect:
+		assertThat(p).matches('''{
+									  'authnz_ldap' => $::apache::version::distrelease ? {
+											'7'     => 'mod_ldap',
+											default => 'mod_authz_ldap',
+									  }
+								 }''')
 	}
 }

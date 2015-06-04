@@ -139,7 +139,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(STATEMENT).is(b.firstOf(RESOURCE, SIMPLE_STMT, COMPOUND_STMT, EXPRESSION));
 
         grammar(b);
-        conditionalStatements(b);
         compoundStatements(b);
         simpleStatements(b);
         expressions(b);
@@ -195,31 +194,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     }
 
     /**
-     * Conditional Statements
-     * https://docs.puppetlabs.com/puppet/3.7/reference/lang_conditional.html
-     * @param b
-     */
-    public static void conditionalStatements(LexerfulGrammarBuilder b){
-/*
-        //b.rule(CONDITIONAL_STMT).is(b.firstOf(
-        //        IF_STMT,
-        //        UNLESS_STMT));
-        b.rule(STATEMENT).is(IF_STMT);
-        b.rule(STATEMENT).is(b.firstOf(
-                EXPRESSION_STATEMENT,
-                COMPOUND_STATEMENT,
-                RETURN_STATEMENT,
-                CONTINUE_STATEMENT,
-                BREAK_STATEMENT,
-                IF_STMT,
-                WHILE_STATEMENT,
-                NO_COMPLEXITY_STATEMENT));
-        b.rule(CONDITION_CLAUSE).is(LPAREN, EXPRESSION, RPAREN);
-        b.rule(IF_STMT).is(IF, CONDITION_CLAUSE, STATEMENT);
-        */
-    }
-
-    /**
      * Simple Statements
      *
      * @param b
@@ -260,7 +234,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(INCLUDE_STMT).is("include", b.firstOf(LITERAL, QUALIFIED_IDENTIFIER));
 
         b.rule(HASHES).is(LBRACE,
-                b.zeroOrMore(HASH_KEY, FARROW, DATA_TYPE, b.optional(COMMA)),
+                b.zeroOrMore(HASH_KEY, FARROW, b.firstOf(SELECTOR_STMT, DATA_TYPE), b.optional(COMMA)),
                 RBRACE,
                 b.optional(COMMA));
 
