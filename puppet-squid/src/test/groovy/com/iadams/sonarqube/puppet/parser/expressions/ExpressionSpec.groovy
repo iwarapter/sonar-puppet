@@ -31,6 +31,7 @@ import static com.iadams.sonarqube.puppet.api.PuppetGrammar.ADDITIVE_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.ASSIGNMENT_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.BOOL_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.EXPRESSION
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.MATCH_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.MULTIPLICATIVE_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.SHIFT_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.UNARY_NOT_EXPRESSION
@@ -71,6 +72,7 @@ class ExpressionSpec extends GrammarSpec {
 									'2.4'   => '(event|itk|peruser|prefork|worker)',
 									default => '(event|itk|prefork|worker)\'
 								  }''')
+		assertThat(p).matches('$notifies = Class[\'Apache::Service\']')
 	}
 
 	def "unary (not) expressions parse"(){
@@ -122,5 +124,13 @@ class ExpressionSpec extends GrammarSpec {
 		assertThat(p).matches('1 << 1')
 		assertThat(p).matches('(1 + 2) << 3')
 		assertThat(p).matches('(1 + 2) >> (3 * 6)')
+	}
+
+	def "regex match expression parse"() {
+		given:
+		setRootRule(MATCH_EXPRESSION)
+
+		expect:
+		assertThat(p).matches('$mod_path =~ /\\//')
 	}
 }

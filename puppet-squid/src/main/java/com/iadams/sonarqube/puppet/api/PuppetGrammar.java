@@ -412,13 +412,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(EXPRESSION).is(b.firstOf(
                 ACCESSOR,
                 ASSIGNMENT_EXPRESSION,
-                //ARITH_EXP,
-                BOOL_EXPRESSION,
-                //COMP_EXP,
-                MATCH_EXPRESSION,
-                UNARY_NOT_EXPRESSION,
-                UNARY_NEG_EXPRESSION,
-                //BRACKET_EXP,
                 RIGHT_VALUE,
                 RESOURCE_REF));
 
@@ -441,6 +434,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.sequence(LPAREN, ASSIGNMENT_EXPRESSION, RPAREN),
                 SELECTOR_STMT,
                 ARRAY,
+                REGULAR_EXPRESSION_LITERAL,
+                RESOURCE_REF,
                 LITERALS,
                 VARIABLE,
                 FUNC_CALL,
