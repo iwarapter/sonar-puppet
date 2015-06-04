@@ -42,19 +42,15 @@ import static com.sonar.sslr.api.GenericTokenType.EOF;
 public enum PuppetGrammar  implements GrammarRuleKey {
 
     CONDITION,
-    OPERAND,
     ATTRIBUTE,
     DATA_TYPE,
 
     //EXPRESSIONS
     EXPRESSION,
-    ARITH_EXP,
     BOOL_EXPRESSION,
-    COMP_EXP,
     MATCH_EXPRESSION,
     UNARY_NOT_EXPRESSION,
     UNARY_NEG_EXPRESSION,
-    BRACKET_EXP,
 
     ATOM,
 
@@ -140,7 +136,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
 
         b.rule(FILE_INPUT).is(b.zeroOrMore(b.firstOf(NEWLINE, STATEMENT)), EOF);
-        b.rule(STATEMENT).is(b.firstOf(RESOURCE, SIMPLE_STMT, EXPRESSION, COMPOUND_STMT));
+        b.rule(STATEMENT).is(b.firstOf(RESOURCE, SIMPLE_STMT, COMPOUND_STMT, EXPRESSION));
 
         grammar(b);
         conditionalStatements(b);
@@ -301,7 +297,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(CLASSDEF).is(CLASS,
                             CLASSNAME,
                             b.optional(PARAM_LIST),
-                            b.optional(ASSIGNMENT_EXPRESSION),
                             b.optional(INHERITS, CLASSNAME),
                             LBRACE,
                             b.zeroOrMore(STATEMENT),
@@ -393,14 +388,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(CONDITION).is(ASSIGNMENT_EXPRESSION);
 
-        b.rule(OPERAND).is(b.firstOf(
-                LITERALS,
-                VARIABLE,
-                FUNC_CALL,
-                TRUE,
-                FALSE,
-                UNDEF));
-
         /*<exp> ::=  <exp> <arithop> <exp>
                 | <exp> <boolop> <exp>
                 | <exp> <compop> <exp>
@@ -433,7 +420,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(ATOM).is(b.firstOf(
                 b.sequence(LPAREN, ASSIGNMENT_EXPRESSION, RPAREN),
                 SELECTOR_STMT,
-                ARRAY,
                 REGULAR_EXPRESSION_LITERAL,
                 RESOURCE_REF,
                 LITERALS,
@@ -441,7 +427,9 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 FUNC_CALL,
                 TRUE,
                 FALSE,
-                UNDEF
+                UNDEF,
+                ARRAY,
+                HASHES
         ));
 
 

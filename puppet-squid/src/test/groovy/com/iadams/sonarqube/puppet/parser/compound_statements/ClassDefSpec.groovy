@@ -104,4 +104,9 @@ class ClassDefSpec extends GrammarSpec {
                                   ::apache::mod { 'dav_svn': }
                                 }''')
     }
+
+    def "empty class def parses"(){
+        expect:
+        assertThat(p).matches('class ssl { }')
+    }
 }
