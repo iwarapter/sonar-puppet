@@ -59,5 +59,6 @@ class RelationshipStatement extends GrammarSpec {
 	def "relationships with collector works"(){
 		expect:
 		assertThat(p).matches('Package[$_package] -> File<| title == "${mod}.conf" |>')
+		assertThat(p).matches('Postgresql::Server::Database<|title == $database_name|> -> Exec[$exec_name]')
 	}
 }

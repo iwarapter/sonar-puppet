@@ -10,25 +10,12 @@ buildscript {
     }
 }
 
+apply from: "$rootDir/gradle/sonar.gradle"
+
 group = 'com.iadams.sonarqube.puppet'
 
 allprojects {
     version = '0.1'
-}
-
-apply plugin: 'sonar-runner'
-
-repositories {
-    jcenter()
-}
-
-sonarRunner {
-    sonarProperties {
-        property "sonar.host.url", "http://localhost:9000"
-        property "sonar.jdbc.url", "jdbc:h2:tcp://localhost:9092/sonar"
-        property "sonar.jdbc.username", "sonar"
-        property "sonar.jdbc.password", "sonar"
-    }
 }
 
 subprojects {

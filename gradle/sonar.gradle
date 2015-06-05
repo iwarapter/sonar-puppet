@@ -1,5 +1,9 @@
 apply plugin: "sonar-runner"
 
+repositories {
+    jcenter()
+}
+
 sonarRunner {
     sonarProperties {
         property "sonar.host.url", "http://localhost:9000"
