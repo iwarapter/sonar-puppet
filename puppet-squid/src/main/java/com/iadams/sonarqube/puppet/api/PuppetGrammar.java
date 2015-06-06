@@ -136,7 +136,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
 
         b.rule(FILE_INPUT).is(b.zeroOrMore(b.firstOf(NEWLINE, STATEMENT)), EOF);
-        b.rule(STATEMENT).is(b.firstOf(RESOURCE, SIMPLE_STMT, COMPOUND_STMT, EXPRESSION));
+        b.rule(STATEMENT).is(b.firstOf(SIMPLE_STMT, COMPOUND_STMT, EXPRESSION));
 
         grammar(b);
         compoundStatements(b);
@@ -159,7 +159,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 ARGUMENT_EXPRESSION_LIST,
                 RPAREN);
 
-        b.rule(ARGUMENT_EXPRESSION_LIST).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION));
+        b.rule(ARGUMENT_EXPRESSION_LIST).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION), b.optional(COMMA));
 
         b.rule(ATTRIBUTE).is(b.firstOf(IDENTIFIER,
                         NOTIFY,
@@ -200,10 +200,11 @@ public enum PuppetGrammar  implements GrammarRuleKey {
      */
     public static void simpleStatements(LexerfulGrammarBuilder b) {
         b.rule(SIMPLE_STMT).is(b.firstOf(
+                RELATIONSHIP_STMT,
+                RESOURCE,
                 DEFINE_STMT,
                 NODE_STMT,
-                INCLUDE_STMT,
-                RELATIONSHIP_STMT));
+                INCLUDE_STMT));
 
         b.rule(DEFINE_STMT).is(DEFINE,
                 DEFINE_NAME,
@@ -249,8 +250,18 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(RESOURCE_REF).is(QUALIFIED_IDENTIFIER, ARRAY);
 
         b.rule(RELATIONSHIP_STMT).is(b.firstOf(RELATIONSHIP_LR_STMT, RELATIONSHIP_RL_STMT));
-        b.rule(RELATIONSHIP_LR_STMT).is(b.firstOf(RESOURCE_REF,RESOURCE_COLLECTOR), b.oneOrMore(b.firstOf(IN_EDGE, IN_EDGE_SUB), b.firstOf(RESOURCE_REF,RESOURCE_COLLECTOR)));
-        b.rule(RELATIONSHIP_RL_STMT).is(b.firstOf(RESOURCE_REF,RESOURCE_COLLECTOR), b.oneOrMore(b.firstOf(OUT_EDGE, OUT_EDGE_SUB), b.firstOf(RESOURCE_REF,RESOURCE_COLLECTOR)));
+        b.rule(RELATIONSHIP_LR_STMT).is(
+                b.firstOf(RESOURCE, RESOURCE_REF, RESOURCE_COLLECTOR),
+                b.oneOrMore(
+                        b.firstOf(IN_EDGE, IN_EDGE_SUB),
+                        b.firstOf(RESOURCE_REF,RESOURCE_COLLECTOR, RESOURCE)
+                ));
+        b.rule(RELATIONSHIP_RL_STMT).is(
+                b.firstOf(RESOURCE, RESOURCE_REF,RESOURCE_COLLECTOR),
+                b.oneOrMore(
+                        b.firstOf(OUT_EDGE, OUT_EDGE_SUB),
+                        b.firstOf(RESOURCE_REF,RESOURCE_COLLECTOR, RESOURCE)
+                ));
 
         b.rule(ACCESSOR).is(VARIABLE, b.oneOrMore(LBRACK, b.firstOf(LITERAL, INTEGER, IDENTIFIER), RBRACK));
     }
@@ -261,7 +272,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
      * @param b
      */
     public static void compoundStatements(LexerfulGrammarBuilder b) {
-        b.rule(COMPOUND_STMT).is(b.firstOf(CLASSDEF,
+        b.rule(COMPOUND_STMT).is(b.firstOf(
+                CLASSDEF,
                 CLASS_RESOURCE_REF,
                 IF_STMT,
                 CASE_STMT,

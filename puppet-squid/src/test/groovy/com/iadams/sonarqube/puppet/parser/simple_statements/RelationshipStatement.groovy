@@ -61,4 +61,18 @@ class RelationshipStatement extends GrammarSpec {
 		assertThat(p).matches('Package[$_package] -> File<| title == "${mod}.conf" |>')
 		assertThat(p).matches('Postgresql::Server::Database<|title == $database_name|> -> Exec[$exec_name]')
 	}
+
+	def "relationship from resource declarations work"(){
+		expect:
+		assertThat(p).matches("anchor { 'postgresql::server::plpython::start': }-> Class['postgresql::server::install']")
+	}
+
+	def "complex nested relationships parse"(){
+		expect:
+		assertThat(p).matches("""anchor { 'postgresql::server::postgis::start': }->
+								 Class['postgresql::server::install']->
+								 Package['postgresql-postgis']->
+								 Class['postgresql::server::service']->
+								 anchor { 'postgresql::server::postgis::end': }""")
+	}
 }
