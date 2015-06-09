@@ -2,6 +2,21 @@ plugins {
     id "com.iadams.sonar-packaging" version "0.1"
 }
 
+sourceSets {
+    functionalTest {
+        groovy.srcDir file('src/functional/groovy')
+        resources.srcDir file('src/functional/resources')
+        compileClasspath = sourceSets.main.output + configurations.testRuntime
+        runtimeClasspath = output + compileClasspath
+    }
+}
+
+task functionalTest(type: Test) {
+    testClassesDir = sourceSets.functionalTest.output.classesDir
+    classpath = sourceSets.functionalTest.runtimeClasspath
+    reports.html.destination = file("$buildDir/reports/functional")
+}
+
 dependencies {
     compile project(':puppet-checks')
 
@@ -12,6 +27,8 @@ dependencies {
     testCompile 'org.apache.maven:maven-project:2.2.1'
 
     testRuntime 'org.slf4j:slf4j-simple:1.7.12'
+
+    functionalTestCompile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
 }
 
 sonarPackaging {
