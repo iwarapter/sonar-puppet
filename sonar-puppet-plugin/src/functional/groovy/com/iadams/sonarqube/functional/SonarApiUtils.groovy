@@ -22,26 +22,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet
+package com.iadams.sonarqube.functional
 
-import com.iadams.sonarqube.functional.FunctionalSpecBase
+import groovy.json.JsonSlurper
+import groovyx.net.http.ContentType
+import groovyx.net.http.HTTPBuilder
+import groovyx.net.http.HttpResponseException
 
 /**
  * @author iwarapter
  */
-class PplintFunctionalSpec extends FunctionalSpecBase {
+final class SonarApiUtils {
 
-	def setup(){
-		copyResources("code_chunks.pp", "code_chunks.pp")
-	}
+	static void queryMetrics(String url, String project, Map<String, Float> metrics_to_query){
+		try {
+			def http = new HTTPBuilder(url)
+			def resp = http.get(path: '/api/resources', query: [resource: project, metrics: metrics_to_query.keySet().join(',')])
 
-	def "run sonar-runner without pplint"(){
-		when:
-		runSonarRunner()
+			Map<String, Float> results = [:]
+			resp.'msr'[0].each{
+				results.put(it.key, it.val)
+			}
 
-		then:
-		analysisFinishesSuccessfully()
-		analysisLogContainsNoErrorsOrWarnings()
-		theFollowingMetricsHaveTheFollowingValue([violations:8, lines:9])
+			assert metrics_to_query.equals(results) : "Expected:\n$metrics_to_query\nReceived:\n$results\n\n" + metrics_to_query.minus(metrics_to_query.intersect(results))
+		}
+		catch( HttpResponseException e){
+			assert false : "Cannot query the metrics, details: ${e.message}"
+		}
 	}
 }

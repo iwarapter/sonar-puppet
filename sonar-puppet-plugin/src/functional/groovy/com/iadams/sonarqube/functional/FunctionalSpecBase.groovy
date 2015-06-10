@@ -33,6 +33,7 @@ import spock.lang.Specification
  * @author iwarapter
  */
 @Slf4j
+//TODO This should probably all be pulled out into a library.
 abstract class FunctionalSpecBase extends Specification {
 
 	@TempDirectory(clean=false) protected File projectDir
@@ -92,6 +93,11 @@ abstract class FunctionalSpecBase extends Specification {
 
 	void analysisLogContains(String line){
 		assert analysisLog.text.contains(line)
+	}
+
+
+	void theFollowingMetricsHaveTheFollowingValue(Map<String, Float> metrics_to_query){
+		SonarApiUtils.queryMetrics('http://localhost:9000', moduleName, metrics_to_query.sort())
 	}
 
 	private final String SONAR_ERROR = ".* ERROR .*"
