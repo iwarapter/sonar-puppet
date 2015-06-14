@@ -30,13 +30,13 @@ import org.sonar.api.profiles.XMLProfileParser;
 import org.sonar.api.utils.ValidationMessages;
 
 /**
- * Created by iwarapter
+ * @author iwarapter
  */
-public class PuppetDefaultProfile extends ProfileDefinition {
+public class PuppetLintProfile extends ProfileDefinition {
 
     private final XMLProfileParser xmlProfileParser;
 
-    public PuppetDefaultProfile(XMLProfileParser xmlProfileParser) {
+    public PuppetLintProfile(XMLProfileParser xmlProfileParser) {
         this.xmlProfileParser = xmlProfileParser;
     }
 

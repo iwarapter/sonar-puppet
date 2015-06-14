@@ -33,7 +33,7 @@ import org.sonar.squidbridge.rules.SqaleXmlLoader;
 import java.util.List;
 
 /**
- * Created by iwarapter
+ * @author iwarapter
  */
 public class PplintRuleRepository implements RulesDefinition {
 

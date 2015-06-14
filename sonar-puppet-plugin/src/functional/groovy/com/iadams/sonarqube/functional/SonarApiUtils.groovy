@@ -24,10 +24,9 @@
  */
 package com.iadams.sonarqube.functional
 
-import groovy.json.JsonSlurper
-import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.HttpResponseException
+import groovyx.net.http.Method
 
 /**
  * @author iwarapter
@@ -47,7 +46,55 @@ final class SonarApiUtils {
 			assert metrics_to_query.equals(results) : "Expected:\n$metrics_to_query\nReceived:\n$results\n\n" + metrics_to_query.minus(metrics_to_query.intersect(results))
 		}
 		catch( HttpResponseException e){
-			assert false : "Cannot query the metrics, details: ${e.message}"
+			throw new FunctionalSpecException("Cannot query the metrics, details: ${e.message}", e)
+		}
+	}
+
+	static void activateRepositoryRules(String url, String profile = 'Default', String language = 'pp', String repository = 'Pplint'){
+		try {
+			String key = defaultProfileKey(url, profile, language)
+			def http = new HTTPBuilder(url)
+			http.request(Method.POST){ req->
+				uri.path = '/api/qualityprofiles/activate_rules'
+				uri.query = [ profile_key: key , repositories: repository]
+				headers.'Authorization' =
+						"Basic ${"admin:admin".bytes.encodeBase64().toString()}"
+			}
+		}
+		catch( HttpResponseException e){
+			throw new FunctionalSpecException("Cannot deactivate all the rules, details: ${e.message}", e)
+		}
+	}
+
+	static void deactivateAllRules(String url, String profile = 'Default', String language = 'pp'){
+		try {
+			String key = defaultProfileKey(url, profile, language)
+			def http = new HTTPBuilder(url)
+			http.request(Method.POST){ req->
+				uri.path = '/api/qualityprofiles/deactivate_rules'
+				uri.query = [ profile_key: key ]
+				headers.'Authorization' =
+						"Basic ${"admin:admin".bytes.encodeBase64().toString()}"
+			}
+		}
+		catch( HttpResponseException e){
+			throw new FunctionalSpecException("Cannot deactivate all the rules, details: ${e.message}", e)
+		}
+	}
+
+	static String defaultProfileKey(String url, String profile, String language){
+		try {
+			def http = new HTTPBuilder(url)
+			def resp = http.get(path: '/api/rules/app')
+			for(i in resp.qualityprofiles){
+				if(i.lang == language && i.name == profile){
+					return i.key
+				}
+			}
+			throw new FunctionalSpecException("Unable to find default profile for $language $profile")
+		}
+		catch( HttpResponseException e){
+			throw new FunctionalSpecException("Cannot query the metrics, details: ${e.message}", e)
 		}
 	}
 }

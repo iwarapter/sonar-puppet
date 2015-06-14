@@ -33,4 +33,8 @@ class FunctionalSpecException extends Exception {
 	FunctionalSpecException(String message, Throwable cause) {
 		super(message, cause)
 	}
+
+	FunctionalSpecException(String message) {
+		super(message)
+	}
 }

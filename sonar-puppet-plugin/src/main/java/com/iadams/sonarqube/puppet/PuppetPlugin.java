@@ -67,6 +67,7 @@ public class PuppetPlugin extends SonarPlugin {
 
                 PplintConfiguration.class,
                 PplintSensor.class,
-                PplintRuleRepository.class);
+                PplintRuleRepository.class,
+                PuppetLintProfile.class);
     }
 }

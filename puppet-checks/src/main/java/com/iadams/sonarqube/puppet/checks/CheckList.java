@@ -29,7 +29,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 /**
- * Created by iwarapter
+ * @author iwarapter
  */
 public final class CheckList {
 

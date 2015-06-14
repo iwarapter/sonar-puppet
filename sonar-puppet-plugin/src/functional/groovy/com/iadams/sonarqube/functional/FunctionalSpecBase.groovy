@@ -64,7 +64,6 @@ abstract class FunctionalSpecBase extends Specification {
 	}
 
 	def setupSpec(){
-		println "Setup Spec"
 		if(!isWebuiUp()){
 			String sonarHome = System.getenv('SONARHOME')
 			println "SONARHOME: $sonarHome"
@@ -132,7 +131,15 @@ abstract class FunctionalSpecBase extends Specification {
 
 
 	void theFollowingMetricsHaveTheFollowingValue(Map<String, Float> metrics_to_query){
-		SonarApiUtils.queryMetrics('http://localhost:9000', moduleName, metrics_to_query.sort())
+		SonarApiUtils.queryMetrics(SONAR_URL, moduleName, metrics_to_query.sort())
+	}
+
+	void activateRepositoryRules(String repository, String profile = "Default", String language = 'pp'){
+		SonarApiUtils.activateRepositoryRules(SONAR_URL, profile, language, repository)
+	}
+
+	void deactivateAllRules(String profile = 'Default', String language = 'pp'){
+		SonarApiUtils.deactivateAllRules(SONAR_URL, profile, language)
 	}
 
 	private static final String SONAR_ERROR = ".* ERROR .*"
@@ -198,7 +205,7 @@ abstract class FunctionalSpecBase extends Specification {
 
 	private static String LOG_FILE_PATH = 'logs/sonar.log'
 	private static String PLUGIN_DIR = 'extensions/plugins/'
-	private static String SONAR_URL = 'http://localhost:9000'
+	protected static String SONAR_URL = 'http://localhost:9000'
 	private static File JAR_PATH = new File('build/libs')
 
 	boolean isInstalled(String sonarHome){
