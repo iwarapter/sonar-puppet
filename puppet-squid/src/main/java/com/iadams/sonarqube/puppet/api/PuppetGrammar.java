@@ -392,16 +392,16 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
 
 
-        b.rule(UNARY_NOT_EXPRESSION).is(b.optional(NOT), ATOM);
-        b.rule(UNARY_NEG_EXPRESSION).is(b.optional(MINUS), UNARY_NOT_EXPRESSION);
+        b.rule(UNARY_NOT_EXPRESSION).is(b.optional(NOT), ATOM).skipIfOneChild();
+        b.rule(UNARY_NEG_EXPRESSION).is(b.optional(MINUS), UNARY_NOT_EXPRESSION).skipIfOneChild();
 
-        b.rule(MATCH_EXPRESSION).is(UNARY_NEG_EXPRESSION, b.zeroOrMore(MATCH_OPERATOR, UNARY_NEG_EXPRESSION));
-        b.rule(MULTIPLICATIVE_EXPRESSION).is(MATCH_EXPRESSION, b.zeroOrMore(M_OPER, MATCH_EXPRESSION));
-        b.rule(ADDITIVE_EXPRESSION).is(MULTIPLICATIVE_EXPRESSION, b.zeroOrMore(A_OPER, MULTIPLICATIVE_EXPRESSION));
-        b.rule(SHIFT_EXPRESSION).is(ADDITIVE_EXPRESSION, b.zeroOrMore(SHIFT_OPER, ADDITIVE_EXPRESSION));
-        b.rule(COMPARISON).is(SHIFT_EXPRESSION, b.zeroOrMore(COMP_OPERATOR, SHIFT_EXPRESSION));
-        b.rule(BOOL_EXPRESSION).is(COMPARISON, b.zeroOrMore(BOOL_OPERATOR, COMPARISON));
-        b.rule(ASSIGNMENT_EXPRESSION).is(BOOL_EXPRESSION, b.zeroOrMore(EQUALS, BOOL_EXPRESSION));
+        b.rule(MATCH_EXPRESSION).is(UNARY_NEG_EXPRESSION, b.zeroOrMore(MATCH_OPERATOR, UNARY_NEG_EXPRESSION)).skipIfOneChild();
+        b.rule(MULTIPLICATIVE_EXPRESSION).is(MATCH_EXPRESSION, b.zeroOrMore(M_OPER, MATCH_EXPRESSION)).skipIfOneChild();
+        b.rule(ADDITIVE_EXPRESSION).is(MULTIPLICATIVE_EXPRESSION, b.zeroOrMore(A_OPER, MULTIPLICATIVE_EXPRESSION)).skipIfOneChild();
+        b.rule(SHIFT_EXPRESSION).is(ADDITIVE_EXPRESSION, b.zeroOrMore(SHIFT_OPER, ADDITIVE_EXPRESSION)).skipIfOneChild();
+        b.rule(COMPARISON).is(SHIFT_EXPRESSION, b.zeroOrMore(COMP_OPERATOR, SHIFT_EXPRESSION)).skipIfOneChild();
+        b.rule(BOOL_EXPRESSION).is(COMPARISON, b.zeroOrMore(BOOL_OPERATOR, COMPARISON)).skipIfOneChild();
+        b.rule(ASSIGNMENT_EXPRESSION).is(BOOL_EXPRESSION, b.zeroOrMore(EQUALS, BOOL_EXPRESSION)).skipIfOneChild();
 
         b.rule(ATOM).is(b.firstOf(
                 b.sequence(LPAREN, ASSIGNMENT_EXPRESSION, RPAREN),
@@ -471,7 +471,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 INTEGER,
                 HEX_INTEGER,
                 OCTAL_INTEGER,
-                LITERAL));
+                LITERAL)).skipIfOneChild();
 
         //<regex> ::= '/regex/'
 

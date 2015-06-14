@@ -25,7 +25,9 @@
 package com.iadams.sonarqube.functional
 
 import com.energizedwork.spock.extensions.TempDirectory
+import com.google.common.io.Files
 import groovy.util.logging.Slf4j
+import groovyx.net.http.HTTPBuilder
 import org.apache.commons.io.FileUtils
 import spock.lang.Specification
 
@@ -43,9 +45,7 @@ abstract class FunctionalSpecBase extends Specification {
 	protected File analysisLog
 	protected int returnCode
 
-	private String findModuleName() {
-		projectDir.getName().replaceAll(/_\d+/, '')
-	}
+	protected static boolean didSonarStart
 
 	def setup() {
 		moduleName = findModuleName()
@@ -58,8 +58,43 @@ abstract class FunctionalSpecBase extends Specification {
 		sonarProjectFile << "sonar.projectName=$moduleName\n"
 		sonarProjectFile << "sonar.projectVersion=1.0\n"
 		sonarProjectFile << "sonar.sources=.\n"
+		sonarProjectFile << "sonar.scm.disabled=true\n"
 
 		println "Running test from ${projectDir.getAbsolutePath()}"
+	}
+
+	def setupSpec(){
+		println "Setup Spec"
+		if(!isWebuiUp()){
+			String sonarHome = System.getenv('SONARHOME')
+			println "SONARHOME: $sonarHome"
+			if(sonarHome){
+				if(new File(sonarHome).exists()){
+					cleanServerLog(sonarHome)
+					installPlugin(sonarHome)
+					assert startSonar(sonarHome) : "Cannot start SonarQube from $sonarHome exiting."
+					didSonarStart = true
+					checkServerLogs(sonarHome)
+				}
+				else {
+					throw new FunctionalSpecException("The folder " + sonarHome + " does not exist.")
+				}
+			}
+		}
+		else {
+			println "SonarQube is already running."
+		}
+	}
+
+	def cleanupSpec(){
+		if(didSonarStart){
+			String sonarHome = System.getenv('SONARHOME')
+			stopSonar(sonarHome)
+		}
+	}
+
+	private String findModuleName() {
+		projectDir.getName().replaceAll(/_\d+/, '')
 	}
 
 	def runSonarRunner(String args = "") {
@@ -100,13 +135,13 @@ abstract class FunctionalSpecBase extends Specification {
 		SonarApiUtils.queryMetrics('http://localhost:9000', moduleName, metrics_to_query.sort())
 	}
 
-	private final String SONAR_ERROR = ".* ERROR .*"
-	private final String SONAR_WARN = ".* WARN .*"
-	private final String SONAR_WARN_TO_IGNORE_RE = ".*H2 database should.*|.*Starting search|.*Starting web"
+	private static final String SONAR_ERROR = ".* ERROR .*"
+	private static final String SONAR_WARN = ".* WARN .*"
+	private static final String SONAR_WARN_TO_IGNORE_RE = ".*H2 database should.*|.*Starting search|.*Starting web|.*WEB DEVELOPMENT MODE IS ENABLED.*"
 
 	public int errors = 0
 	public int warnings = 0
-	def badLines = []
+	static def badLines = []
 
 	def analyseLog(File logpath){
 		logpath.eachLine {
@@ -123,11 +158,11 @@ abstract class FunctionalSpecBase extends Specification {
 	}
 
 	boolean isSonarError(String line){
-		return line.contains(SONAR_ERROR)
+		return line.matches(SONAR_ERROR)
 	}
 
 	boolean isSonarWarning(String line){
-		return line.contains(SONAR_WARN) && !line.contains(SONAR_WARN_TO_IGNORE_RE)
+		return line.matches(SONAR_WARN) && !line.matches(SONAR_WARN_TO_IGNORE_RE)
 	}
 
 	protected File directory(String path, File baseDir = projectDir) {
@@ -159,5 +194,123 @@ abstract class FunctionalSpecBase extends Specification {
 		} else {
 			FileUtils.copyDirectory(resourceFile, destinationFile)
 		}
+	}
+
+	private static String LOG_FILE_PATH = 'logs/sonar.log'
+	private static String PLUGIN_DIR = 'extensions/plugins/'
+	private static String SONAR_URL = 'http://localhost:9000'
+	private static File JAR_PATH = new File('build/libs')
+
+	boolean isInstalled(String sonarHome){
+		new File(sonarHome).exists()
+	}
+
+	def cleanServerLog(String sonarHome){
+		println "Removing ${sonarlog(sonarHome).absoluteFile}"
+		sonarlog(sonarHome).delete()
+	}
+
+	def installPlugin(String sonarHome){
+		println "Installing Plugin"
+
+		File pluginPath = new File(sonarHome, PLUGIN_DIR)
+		for(File path in pluginPath.listFiles()){
+			if(path.isFile() && path=~/sonar-puppet-plugin-.*.jar/) {
+				println "Removing ${path.name}"
+				path.delete()
+			}
+		}
+		def myFile = JAR_PATH.listFiles().find{it.isFile() && it=~/sonar-puppet-plugin-[0-9.]*.jar/}
+		Files.copy(myFile, new File(pluginPath, myFile.name))
+	}
+
+	def startSonar(String sonarHome){
+		println "Starting SonarQube"
+		def cmd = startScript(sonarHome).execute()
+		cmd.waitFor()
+		cmd.exitValue() == 0
+		assert waitForSonar(50)
+		println "SonarQube Started"
+		return true
+	}
+
+	def stopSonar(String sonarHome){
+		println "Stopping SonarQube"
+		def cmd = stopScript(sonarHome).execute()
+		cmd.waitFor()
+		cmd.exitValue() == 0
+		assert waitForSonarDown(300)
+		println "SonarQube Stopped"
+		return true
+	}
+
+	def startScript(String sonarHome){
+		return "$sonarHome/${scriptPath()} start"
+	}
+
+	def stopScript(String sonarHome){
+		return "$sonarHome/${scriptPath()} stop"
+	}
+
+	def scriptPath(){
+		//Just mac/linux atm
+		if( System.getProperty("os.name") == "Mac OS X" && System.getProperty("os.arch") == "x86_64"){
+			return "bin/macosx-universal-64/sonar.sh"
+		}
+		if( System.getProperty("os.name") == "Linux" && System.getProperty("os.arch") == "x86_64"){
+			return "bin/linux-x86-64/sonar.sh"
+		}
+		return "bin/linux-x86-32/sonar.sh"
+	}
+
+	def sonarlog(String sonarHome){
+		return new File(sonarHome, LOG_FILE_PATH)
+	}
+
+	def waitForSonar(int timeout){
+		for (i in 0..timeout){
+			if(isWebuiUp()){
+				return true
+			}
+			sleep(1000)
+		}
+		return false
+	}
+
+	def waitForSonarDown(int timeout){
+		for (i in timeout){
+			if(isWebuiDown()){
+				return true
+			}
+			sleep(1000)
+		}
+		return false
+	}
+
+
+	boolean isWebuiUp(){
+		try {
+			new HTTPBuilder(SONAR_URL).get( path:'') { response ->
+				response.statusLine.statusCode == 200
+			}
+		}
+		catch( e ) { false }
+	}
+
+	boolean isWebuiDown(){
+		try {
+			new HTTPBuilder(SONAR_URL).get( path:'') { response ->
+				response.statusLine.statusCode == 200
+				return false
+			}
+		}
+		catch( e ) { true }
+	}
+
+	def checkServerLogs(String sonarHome){
+		analyseLog(sonarlog(sonarHome))
+		assert badLines.isEmpty() : ("Found following errors and/or warnings lines in the logfile:\n"
+				+ badLines.join("\n")
+				+ "For details see $analysisLog")
 	}
 }
