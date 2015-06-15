@@ -29,21 +29,33 @@ import com.iadams.sonarqube.functional.FunctionalSpecBase
 /**
  * @author iwarapter
  */
-class PplintFunctionalSpec extends FunctionalSpecBase {
+class PuppetResourcesSpec extends FunctionalSpecBase {
 
 	def setup(){
-		copyResources("code_chunks.pp", "code_chunks.pp")
+		copyResources("example_file_resource.pp", "example_file_resource.pp")
+		copyResources("example_user_resource.pp", "example_user_resource.pp")
 	}
 
-	def "run sonar-runner without pplint"(){
+	def "puppet resources are recorded on a file"(){
 		when:
-		deactivateAllRules()
-		activateRepositoryRules('Pplint')
+		resetDefaultProfile()
 		runSonarRunner()
 
 		then:
 		analysisFinishesSuccessfully()
 		analysisLogContainsNoErrorsOrWarnings()
-		theFollowingProjectMetricsHaveTheFollowingValue([violations:8, lines:9])
+		theFollowingFileMetricsHaveTheFollowingValue('example_file_resource.pp',[puppet_resources:1, lines:3])
+		theFollowingFileMetricsHaveTheFollowingValue('example_user_resource.pp',[puppet_resources:1, lines:4])
+	}
+
+	def "puppet resources are recorded on a project"(){
+		when:
+		resetDefaultProfile()
+		runSonarRunner()
+
+		then:
+		analysisFinishesSuccessfully()
+		analysisLogContainsNoErrorsOrWarnings()
+		theFollowingProjectMetricsHaveTheFollowingValue([puppet_resources:2, lines:7])
 	}
 }

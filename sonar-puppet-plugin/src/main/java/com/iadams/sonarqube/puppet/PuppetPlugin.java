@@ -65,6 +65,7 @@ public class PuppetPlugin extends SonarPlugin {
                 PuppetRuleRepository.class,
 
                 PuppetLanguageMetrics.class,
+                PuppetResouresDecorator.class,
 
                 PuppetCommonRulesEngine.class,
 

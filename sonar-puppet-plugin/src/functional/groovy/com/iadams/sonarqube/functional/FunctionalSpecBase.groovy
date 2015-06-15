@@ -130,8 +130,12 @@ abstract class FunctionalSpecBase extends Specification {
 	}
 
 
-	void theFollowingMetricsHaveTheFollowingValue(Map<String, Float> metrics_to_query){
+	void theFollowingProjectMetricsHaveTheFollowingValue(Map<String, Float> metrics_to_query){
 		SonarApiUtils.queryMetrics(SONAR_URL, moduleName, metrics_to_query.sort())
+	}
+
+	void theFollowingFileMetricsHaveTheFollowingValue(String file ,Map<String, Float> metrics_to_query){
+		SonarApiUtils.queryMetrics(SONAR_URL, "$moduleName:$file", metrics_to_query.sort())
 	}
 
 	void activateRepositoryRules(String repository, String profile = "Default", String language = 'pp'){
@@ -140,6 +144,10 @@ abstract class FunctionalSpecBase extends Specification {
 
 	void deactivateAllRules(String profile = 'Default', String language = 'pp'){
 		SonarApiUtils.deactivateAllRules(SONAR_URL, profile, language)
+	}
+
+	void resetDefaultProfile(){
+		SonarApiUtils.resetDefaultProfile(SONAR_URL)
 	}
 
 	private static final String SONAR_ERROR = ".* ERROR .*"

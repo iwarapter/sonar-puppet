@@ -82,6 +82,21 @@ final class SonarApiUtils {
 		}
 	}
 
+	static void resetDefaultProfile(String url, String language = 'pp'){
+		try {
+			def http = new HTTPBuilder(url)
+			http.request(Method.POST){ req->
+				uri.path = '/api/qualityprofiles/restore_built_in'
+				uri.query = [ language: language ]
+				headers.'Authorization' =
+						"Basic ${"admin:admin".bytes.encodeBase64().toString()}"
+			}
+		}
+		catch( HttpResponseException e){
+			throw new FunctionalSpecException("Cannot restore built in profile, details: ${e.message}", e)
+		}
+	}
+
 	static String defaultProfileKey(String url, String profile, String language){
 		try {
 			def http = new HTTPBuilder(url)

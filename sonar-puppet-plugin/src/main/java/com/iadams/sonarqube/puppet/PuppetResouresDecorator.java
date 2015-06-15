@@ -1,4 +1,4 @@
-/*
+/**
  * Sonar Puppet Plugin
  * The MIT License (MIT)
  *
@@ -22,28 +22,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet
+package com.iadams.sonarqube.puppet;
 
-import com.iadams.sonarqube.functional.FunctionalSpecBase
+import com.iadams.sonarqube.puppet.metrics.PuppetLanguageMetrics;
+import org.sonar.api.batch.Decorator;
+import org.sonar.api.batch.DecoratorContext;
+import org.sonar.api.measures.MeasureUtils;
+import org.sonar.api.resources.Project;
+import org.sonar.api.resources.Resource;
+import org.sonar.api.resources.ResourceUtils;
 
 /**
  * @author iwarapter
  */
-class PplintFunctionalSpec extends FunctionalSpecBase {
+public class PuppetResouresDecorator implements Decorator {
 
-	def setup(){
-		copyResources("code_chunks.pp", "code_chunks.pp")
+	public boolean shouldExecuteOnProject(Project project){
+		return true;
 	}
 
-	def "run sonar-runner without pplint"(){
-		when:
-		deactivateAllRules()
-		activateRepositoryRules('Pplint')
-		runSonarRunner()
+	public void decorate(Resource resource, DecoratorContext context){
 
-		then:
-		analysisFinishesSuccessfully()
-		analysisLogContainsNoErrorsOrWarnings()
-		theFollowingProjectMetricsHaveTheFollowingValue([violations:8, lines:9])
+		if(!ResourceUtils.isFile(resource)){
+			context.saveMeasure(PuppetLanguageMetrics.PUPPET_RESOURCES, MeasureUtils.sum(true, context.getChildrenMeasures(PuppetLanguageMetrics.PUPPET_RESOURCES)));
+		}
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName();
 	}
 }
