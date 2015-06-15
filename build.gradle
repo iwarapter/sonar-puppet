@@ -12,14 +12,14 @@ buildscript {
 
 apply from: "$rootDir/gradle/sonar.gradle"
 
-group = 'com.iadams.sonarqube.puppet'
-
 allprojects {
+    group = 'com.iadams.sonarqube'
     version = '0.1'
 }
 
 subprojects {
     apply plugin: 'groovy'
+    apply plugin: 'maven-publish'
     apply plugin: "info.solidsoft.pitest"
     apply from: "$rootDir/gradle/jacoco.gradle"
 
@@ -103,4 +103,20 @@ subprojects {
 
     build.dependsOn sourcesJar
     build.dependsOn javadocJar
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+
+                artifact sourcesJar {
+                    classifier "sources"
+                }
+
+                artifact javadocJar {
+                    classifier "javadoc"
+                }
+            }
+        }
+    }
 }

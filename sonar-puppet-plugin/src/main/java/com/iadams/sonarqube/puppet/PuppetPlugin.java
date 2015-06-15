@@ -27,6 +27,7 @@ package com.iadams.sonarqube.puppet;
 import com.google.common.collect.ImmutableList;
 import com.iadams.sonarqube.puppet.colorizer.PuppetColorizer;
 import com.iadams.sonarqube.puppet.cpd.PuppetCpdMapping;
+import com.iadams.sonarqube.puppet.metrics.PuppetLanguageMetrics;
 import com.iadams.sonarqube.puppet.pplint.PplintConfiguration;
 import com.iadams.sonarqube.puppet.pplint.PplintRuleRepository;
 import com.iadams.sonarqube.puppet.pplint.PplintSensor;
@@ -62,6 +63,8 @@ public class PuppetPlugin extends SonarPlugin {
 
                 PuppetSquidSensor.class,
                 PuppetRuleRepository.class,
+
+                PuppetLanguageMetrics.class,
 
                 PuppetCommonRulesEngine.class,
 

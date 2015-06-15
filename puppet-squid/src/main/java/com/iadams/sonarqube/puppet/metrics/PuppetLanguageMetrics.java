@@ -22,48 +22,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.api;
+package com.iadams.sonarqube.puppet.metrics;
 
-import org.sonar.squidbridge.measures.CalculatedMetricFormula;
-import org.sonar.squidbridge.measures.MetricDef;
+import org.sonar.api.measures.Metric;
+import org.sonar.api.measures.Metrics;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author iwarapter
  */
-public enum PuppetMetric implements MetricDef {
+public final class PuppetLanguageMetrics implements Metrics {
 
-	FILES,
-	LINES,
-	LINES_OF_CODE,
-	STATEMENTS,
-	FUNCTIONS,
-	RESOURCES,
-	CLASSES,
-	COMPLEXITY,
-	COMMENT_LINES;
+	public static final String DOMAIN = "Puppet";
 
-	@Override
-	public String getName(){
-		return name();
-	}
+	public static final String PUPPET_RESOURCES_KEY = "puppet_resources";
+
+	public static final Metric PUPPET_RESOURCES = new Metric.Builder(PuppetLanguageMetrics.PUPPET_RESOURCES_KEY, "Puppet Resources", Metric.ValueType.INT)
+			.setDescription("Puppet Resources")
+			.setDirection(Metric.DIRECTION_BETTER)
+			.setQualitative(false)
+			.setDomain(PuppetLanguageMetrics.DOMAIN)
+			.setHidden(false)
+			.create();
 
 	@Override
-	public boolean isCalculatedMetric() {
-		return false;
-	}
-
-	@Override
-	public boolean aggregateIfThereIsAlreadyAValue() {
-		return true;
-	}
-
-	@Override
-	public boolean isThereAggregationFormula(){
-		return true;
-	}
-
-	@Override
-	public CalculatedMetricFormula getCalculatedMetricFormula() {
-		return null;
+	public List<Metric> getMetrics() {
+		return Arrays.asList(
+				PuppetLanguageMetrics.PUPPET_RESOURCES
+		);
 	}
 }

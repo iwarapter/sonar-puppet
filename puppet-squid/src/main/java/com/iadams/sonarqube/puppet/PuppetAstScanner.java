@@ -84,6 +84,7 @@ public class PuppetAstScanner {
 
 
 		setClassesAnalyser(builder);
+		setResourcesAnalyser(builder);
 
     	/* Metrics */
 		builder.withSquidAstVisitor(new LinesVisitor<Grammar>(PuppetMetric.LINES));
@@ -122,5 +123,22 @@ public class PuppetAstScanner {
 				.build());
 
 		//TODO Handle PuppetGrammar.CLASS_RESOURCE_DEF with another visitor.
+	}
+
+	private static void setResourcesAnalyser(AstScanner.Builder<Grammar> builder) {
+		builder.withSquidAstVisitor(new SourceCodeBuilderVisitor<Grammar>(new SourceCodeBuilderCallback() {
+			@Override
+			public SourceCode createSourceCode(SourceCode parentSourceCode, AstNode astNode) {
+				String functionName = astNode.getTokenValue();
+				SourceClass function = new SourceClass(functionName + ":" + astNode.getToken().getLine());
+				function.setStartAtLine(astNode.getTokenLine());
+				return function;
+			}
+		}, PuppetGrammar.RESOURCE));
+
+		builder.withSquidAstVisitor(CounterVisitor.<Grammar>builder()
+				.setMetricDef(PuppetMetric.RESOURCES)
+				.subscribeTo(PuppetGrammar.RESOURCE)
+				.build());
 	}
 }

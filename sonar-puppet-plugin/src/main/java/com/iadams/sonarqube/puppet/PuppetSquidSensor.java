@@ -28,6 +28,7 @@ import com.google.common.collect.Lists;
 import com.iadams.sonarqube.puppet.api.PuppetMetric;
 import com.iadams.sonarqube.puppet.checks.CheckList;
 import com.iadams.sonarqube.puppet.metrics.FileLinesVisitor;
+import com.iadams.sonarqube.puppet.metrics.PuppetLanguageMetrics;
 import com.sonar.sslr.api.Grammar;
 import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
@@ -41,6 +42,8 @@ import org.sonar.api.issue.Issuable;
 import org.sonar.api.issue.Issue;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.FileLinesContextFactory;
+import org.sonar.api.measures.Measure;
+import org.sonar.api.measures.PersistenceMode;
 import org.sonar.api.resources.Project;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.squidbridge.AstScanner;
@@ -122,6 +125,8 @@ public class PuppetSquidSensor implements Sensor {
 		context.saveMeasure(sonarFile, CoreMetrics.CLASSES, squidFile.getDouble(PuppetMetric.CLASSES));
 		context.saveMeasure(sonarFile, CoreMetrics.COMPLEXITY, squidFile.getDouble(PuppetMetric.COMPLEXITY));
 		context.saveMeasure(sonarFile, CoreMetrics.COMMENT_LINES, squidFile.getDouble(PuppetMetric.COMMENT_LINES));
+
+		context.saveMeasure(sonarFile ,PuppetLanguageMetrics.PUPPET_RESOURCES, squidFile.getDouble(PuppetMetric.RESOURCES));
 	}
 
 	private void saveIssues(InputFile sonarFile, SourceFile squidFile) {

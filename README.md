@@ -15,10 +15,16 @@ Requirements
 Getting Started
 ---------------
 To run an analysis of your Puppet project, we recommend to use SonarQube Runner.
-<!---
-//TODO add sample
--->
+
 Create your own sonar-project.properties file at the root of your project and then run the command "sonar-runner".
+
+Here is an example for the puppetlabs-apache module:
+```
+sonar.projectKey=puppetlabs-apache
+sonar.projectName=puppetlabs-apache
+sonar.sources=manifests
+sonar.projectVersion=1.4.1
+```
 
 Advanced Configuration
 ----------------------

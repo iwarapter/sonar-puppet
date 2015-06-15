@@ -1,5 +1,5 @@
 plugins {
-    id "com.iadams.sonar-packaging" version "0.1"
+    id "com.iadams.sonar-packaging" version "0.1.1"
 }
 
 sourceSets {
