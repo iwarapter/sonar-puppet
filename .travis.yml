@@ -16,7 +16,7 @@ install:
   - gem install puppet-lint
 
 script:
-  - ./gradlew build integTest functionalTest
+  - ./gradlew build integTest
 
 before_install:
  - chmod +x gradlew
