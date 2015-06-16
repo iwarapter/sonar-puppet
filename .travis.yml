@@ -16,9 +16,12 @@ install:
   - unzip sonar-runner-dist-2.4.zip
   - gem install puppet-lint
   - cd -
+  
+before_script:
+  - export SONARHOME=/tmp/sonarqube
 
 scripts:
-  - SONARHOME=/tmp/sonarqube ./gradlew build integTest functionalTest
+  - ./gradlew build integTest functionalTest
 
 before_install:
  - chmod +x gradlew
