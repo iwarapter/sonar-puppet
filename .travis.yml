@@ -9,10 +9,17 @@ env:
   - PATH=$PATH:/tmp/sonar-runner-2.4/bin SONAR_DL=http://downloads.sonarsource.com/sonarqube/sonarqube-5.1.1.zip SONARHOME=/tmp/sonarqube-5.1.1
 
 install:
+  - cd /tmp
+  - wget -O sonarqube.zip $SONAR_DL
+  - unzip sonarqube.zip
+  - wget http://repo1.maven.org/maven2/org/codehaus/sonar/runner/sonar-runner-dist/2.4/sonar-runner-dist-2.4.zip
+  - unzip sonar-runner-dist-2.4.zip
   - gem install puppet-lint
+  - ls -lar
+  - cd -
 
 script:
-  - ./gradlew build integTest
+  - ./gradlew build integTest functionalTest
 
 before_install:
  - chmod +x gradlew
