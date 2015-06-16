@@ -23,3 +23,6 @@ script:
 
 before_install:
  - chmod +x gradlew
+
+after_failure:
+  - cat $SONARHOME/logs/sonar.log
