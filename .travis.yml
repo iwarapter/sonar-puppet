@@ -19,7 +19,7 @@ install:
   - cd -
 
 script:
-  - ./gradlew build integTest functionalTest
+  - ./gradlew build integTest functionalTest --i
 
 before_install:
  - chmod +x gradlew
