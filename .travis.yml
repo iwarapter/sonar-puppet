@@ -26,4 +26,5 @@ before_install:
 
 after_failure:
   - ls -lar $SONARHOME
+  - ls -lar $SONARHOME/logs
   - cat $SONARHOME/logs/sonar.log
