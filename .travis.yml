@@ -19,12 +19,7 @@ install:
   - cd -
 
 script:
-  - ./gradlew build integTest functionalTest --i
+  - ./gradlew build integTest --i
 
 before_install:
  - chmod +x gradlew
-
-after_failure:
-  - ls -lar $SONARHOME
-  - ls -lar $SONARHOME/logs
-  - cat $SONARHOME/logs/sonar.log
