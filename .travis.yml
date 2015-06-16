@@ -20,7 +20,7 @@ install:
 before_script:
   - export SONARHOME=/tmp/sonarqube
 
-scripts:
+script:
   - ./gradlew build integTest functionalTest
 
 before_install:
