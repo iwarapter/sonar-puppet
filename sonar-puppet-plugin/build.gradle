@@ -32,7 +32,7 @@ dependencies {
 
 sonarPackaging {
     serverUrl = 'http://localhost:9000'
-    pluginDir = '/Users/iwarapter/Downloads/sonarqube-5.1/extensions/plugins/'
+    pluginDir = project.getProperty('sonar.pluginDir')
     pluginKey = 'puppet'
     pluginClass = 'com.iadams.sonarqube.puppet.PuppetPlugin'
     pluginName = 'Puppet'
