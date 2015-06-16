@@ -32,7 +32,7 @@ dependencies {
 
 sonarPackaging {
     serverUrl = 'http://localhost:9000'
-    pluginDir = project.getProperty('sonar.pluginDir')
+    pluginDir = project.hasProperty( 'sonar.pluginDir' ) ? project.getProperty( 'sonar.pluginDir') : null
     pluginKey = 'puppet'
     pluginClass = 'com.iadams.sonarqube.puppet.PuppetPlugin'
     pluginName = 'Puppet'
