@@ -25,4 +25,5 @@ before_install:
  - chmod +x gradlew
 
 after_failure:
+  - ls -lar $SONARHOME
   - cat $SONARHOME/logs/sonar.log
