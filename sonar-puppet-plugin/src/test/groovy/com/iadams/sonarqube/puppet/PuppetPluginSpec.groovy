@@ -27,10 +27,11 @@ package com.iadams.sonarqube.puppet
 import spock.lang.Specification
 
 /**
- * Created by iwarapter
+ * @author iwarapter
  */
-class PuppetDefaultProfileSpec extends Specification {
-    def "CreateProfile"() {
-
-    }
+class PuppetPluginSpec extends Specification {
+	def "GetExtensions"() {
+		expect:
+		new PuppetPlugin().getExtensions().size() == 14
+	}
 }

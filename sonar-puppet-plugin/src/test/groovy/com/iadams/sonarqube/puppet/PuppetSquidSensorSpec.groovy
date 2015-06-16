@@ -39,11 +39,10 @@ import org.sonar.api.measures.FileLinesContext
 import org.sonar.api.measures.FileLinesContextFactory
 import org.sonar.api.resources.Project
 import org.sonar.api.rule.RuleKey
-import spock.lang.Ignore
 import spock.lang.Specification
 
 /**
- * Created by iwarapter
+ * @author iwarapter
  */
 class PuppetSquidSensorSpec extends Specification {
 

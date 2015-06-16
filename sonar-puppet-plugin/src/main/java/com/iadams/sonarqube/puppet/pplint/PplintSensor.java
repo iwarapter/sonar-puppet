@@ -46,7 +46,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Created by iwarapter
+ * @author iwarapter
  */
 public class PplintSensor implements Sensor {
 
