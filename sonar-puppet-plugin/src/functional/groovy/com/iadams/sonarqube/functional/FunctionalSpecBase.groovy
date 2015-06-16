@@ -240,7 +240,7 @@ abstract class FunctionalSpecBase extends Specification {
 	}
 
 	def startSonar(String sonarHome){
-		println "Starting SonarQube"
+		println "Starting SonarQube\n ${startScript(sonarHome)}"
 		def cmd = startScript(sonarHome).execute()
 		cmd.waitFor()
 		cmd.exitValue() == 0
@@ -250,7 +250,7 @@ abstract class FunctionalSpecBase extends Specification {
 	}
 
 	def stopSonar(String sonarHome){
-		println "Stopping SonarQube"
+		println "Stopping SonarQube\n ${startScript(sonarHome)}"
 		def cmd = stopScript(sonarHome).execute()
 		cmd.waitFor()
 		cmd.exitValue() == 0
