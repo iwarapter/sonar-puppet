@@ -1,0 +1,40 @@
+buildscript {
+	repositories {
+		jcenter()
+	}
+	dependencies {
+		classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.1'
+	}
+}
+
+//apply plugin: 'com.jfrog.bintray'
+apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
+
+bintray {
+
+	user = project.hasProperty( 'bintray_user' ) ? project.getProperty( 'bintray_user') : null
+	key = project.hasProperty( 'bintray_api_key') ? project.getProperty('bintray_api_key') : null
+
+	publications = ['mavenJava']
+
+	dryRun = false //Whether to run this as dry-run, without deploying
+	publish = true //If version should be auto published after an upload
+
+	pkg {
+		repo = 'sonar-plugins'
+		name = 'sonar-puppet'
+
+		desc = 'SonarQube Plugin for Puppet code.'
+		websiteUrl = 'https://github.com/iwarapter/sonar-puppet'
+		issueTrackerUrl = 'https://github.com/iwarapter/sonar-puppet/issues'
+		vcsUrl = 'https://github.com/iwarapter/sonar-puppet.git'
+		licenses = ['MIT']
+		labels = ['sonar', 'sonarqube', 'plugin']
+		publicDownloadNumbers = true
+
+		version {
+			name = project.version
+			vcsTag = "v$project.version"
+		}
+	}
+}

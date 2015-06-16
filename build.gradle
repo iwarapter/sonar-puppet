@@ -14,7 +14,7 @@ apply from: "$rootDir/gradle/sonar.gradle"
 
 allprojects {
     group = 'com.iadams.sonarqube'
-    version = '0.1'
+    version = '0.1.0'
 }
 
 subprojects {
@@ -22,6 +22,7 @@ subprojects {
     apply plugin: 'maven-publish'
     apply plugin: "info.solidsoft.pitest"
     apply from: "$rootDir/gradle/jacoco.gradle"
+    apply from: "$rootDir/gradle/publishing.gradle"
 
     apply plugin: "com.github.hierynomus.license"
     license {
