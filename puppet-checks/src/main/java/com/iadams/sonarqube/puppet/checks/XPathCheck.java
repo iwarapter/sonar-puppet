@@ -24,25 +24,55 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
-import com.google.common.collect.ImmutableList;
-
-import java.util.List;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Grammar;
+import org.sonar.check.Priority;
+import org.sonar.check.Rule;
+import org.sonar.check.RuleProperty;
+import org.sonar.squidbridge.annotations.NoSqale;
+import org.sonar.squidbridge.annotations.RuleTemplate;
+import org.sonar.squidbridge.checks.AbstractXPathCheck;
 
 /**
  * @author iwarapter
  */
-public final class CheckList {
+@Rule(
+		key = XPathCheck.CHECK_KEY,
+		priority = Priority.MAJOR,
+		name = "XPath rule"
+)
+@NoSqale
+@RuleTemplate
+public class XPathCheck extends AbstractXPathCheck<Grammar> {
+	public static final String CHECK_KEY = "XPath";
+	private static final String DEFAULT_XPATH_QUERY = "";
+	private static final String DEFAULT_MESSAGE = "The XPath expression matches this piece of code";
 
-	public static final String REPOSITORY_KEY = "puppet";
+	@RuleProperty(
+			key = "xpathQuery",
+			defaultValue = "" + DEFAULT_XPATH_QUERY)
+	public String xpathQuery = DEFAULT_XPATH_QUERY;
 
-	public static final String SONAR_WAY_PROFILE = "Default";
+	@RuleProperty(
+			key = "message",
+			defaultValue = "" + DEFAULT_MESSAGE)
+	public String message = DEFAULT_MESSAGE;
 
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				LineLengthCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class,
-				XPathCheck.class
-		);
+	@Override
+	public String getXPathQuery() {
+		return xpathQuery;
 	}
+
+	@Override
+	public String getMessage() {
+		return message;
+	}
+
+	@Override
+	public void visitFile(AstNode fileNode) {
+		if (fileNode != null) {
+			super.visitFile(fileNode);
+		}
+	}
+
 }

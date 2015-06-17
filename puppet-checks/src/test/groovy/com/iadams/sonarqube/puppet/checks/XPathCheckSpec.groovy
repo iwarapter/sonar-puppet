@@ -1,4 +1,4 @@
-/**
+/*
  * Sonar Puppet Plugin
  * The MIT License (MIT)
  *
@@ -22,27 +22,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.checks;
+package com.iadams.sonarqube.puppet.checks
 
-import com.google.common.collect.ImmutableList;
-
-import java.util.List;
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
+import spock.lang.Specification
 
 /**
  * @author iwarapter
  */
-public final class CheckList {
+class XPathCheckSpec extends Specification {
 
-	public static final String REPOSITORY_KEY = "puppet";
+	private XPathCheck check = new XPathCheck()
 
-	public static final String SONAR_WAY_PROFILE = "Default";
+	def "can create custom checks"(){
+		given:
+		check.xpathQuery = "//RESOURCE"
+		check.message = "Avoid resources :D"
 
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				LineLengthCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class,
-				XPathCheck.class
-		);
+		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/xpath.pp"), check);
+
+		expect:
+		CheckMessagesVerifier.verify(file.getCheckMessages())
+				.next().atLine(1).withMessage("Avoid resources :D")
+				.noMore();
+	}
+
+	def "parsing error"(){
+		given:
+		check.xpathQuery = "//RESOURCE"
+
+		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/parsingError.pp"), check);
+
+		expect:
+		CheckMessagesVerifier.verify(file.getCheckMessages())
+				.noMore();
 	}
 }
