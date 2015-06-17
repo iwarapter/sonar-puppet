@@ -34,7 +34,7 @@ bintray {
 
 		version {
 			name = project.version
-			vcsTag = "v$project.version"
+			vcsTag = project.version
 		}
 	}
 }

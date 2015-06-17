@@ -50,7 +50,4 @@ To navigate the AST, download the [SSLR Puppet Toolkit].
 [SonarQube Runner]:http://docs.sonarqube.org/display/SONAR/Installing+and+Configuring+SonarQube+Runner
 [Installing a Plugin]:http://docs.sonarqube.org/display/SONAR/Installing+a+Plugin
 [documentation]:http://docs.sonarqube.org/display/SONAR/Extending+Coding+Rules
-<!---
-//TODO Add url to Toolkit download
--->
-[SSLR Puppet Toolkit]:http://changeme
+[SSLR Puppet Toolkit]:https://bintray.com/iwarapter/sonar-plugins/sonar-puppet/_latestVersion#files
