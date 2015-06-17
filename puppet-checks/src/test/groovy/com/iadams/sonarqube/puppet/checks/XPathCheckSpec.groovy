@@ -41,7 +41,7 @@ class XPathCheckSpec extends Specification {
 		check.xpathQuery = "//RESOURCE"
 		check.message = "Avoid resources :D"
 
-		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/xpath.pp"), check);
+		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/xPath.pp"), check);
 
 		expect:
 		CheckMessagesVerifier.verify(file.getCheckMessages())
