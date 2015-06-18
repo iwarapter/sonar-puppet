@@ -1,4 +1,4 @@
-/**
+/*
  * Sonar Puppet Plugin
  * The MIT License (MIT)
  *
@@ -22,21 +22,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.parser;
+package com.iadams.sonarqube.puppet.metrics
 
-import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.impl.Parser;
-import com.iadams.sonarqube.puppet.PuppetConfiguration;
-import com.iadams.sonarqube.puppet.api.PuppetGrammar;
-import com.iadams.sonarqube.puppet.lexer.PuppetLexer;
+import spock.lang.Specification
 
 /**
- * Created by iwarapter
+ * @author iwarapter
  */
-public class PuppetParser {
+class PuppetLanguageMetricsSpec extends Specification {
+	def "validate metrics"() {
+		given:
+		def metrics = new PuppetLanguageMetrics()
 
-    public static Parser<Grammar> create(PuppetConfiguration conf) {
-        return Parser.builder(PuppetGrammar.create().build())
-                .withLexer(PuppetLexer.create(conf)).build();
-    }
+		expect:
+		metrics.getMetrics().size() == 1
+	}
 }
