@@ -251,16 +251,16 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(RELATIONSHIP_STMT).is(b.firstOf(RELATIONSHIP_LR_STMT, RELATIONSHIP_RL_STMT));
         b.rule(RELATIONSHIP_LR_STMT).is(
-                b.firstOf(RESOURCE, RESOURCE_REF, RESOURCE_COLLECTOR),
+                b.firstOf(RESOURCE, RESOURCE_REF, RESOURCE_COLLECTOR, CLASS_RESOURCE_REF),
                 b.oneOrMore(
                         b.firstOf(IN_EDGE, IN_EDGE_SUB),
-                        b.firstOf(RESOURCE_REF,RESOURCE_COLLECTOR, RESOURCE)
+                        b.firstOf(RESOURCE_REF,RESOURCE_COLLECTOR, RESOURCE, CLASS_RESOURCE_REF)
                 ));
         b.rule(RELATIONSHIP_RL_STMT).is(
-                b.firstOf(RESOURCE, RESOURCE_REF,RESOURCE_COLLECTOR),
+                b.firstOf(RESOURCE, RESOURCE_REF, RESOURCE_COLLECTOR, CLASS_RESOURCE_REF),
                 b.oneOrMore(
                         b.firstOf(OUT_EDGE, OUT_EDGE_SUB),
-                        b.firstOf(RESOURCE_REF,RESOURCE_COLLECTOR, RESOURCE)
+                        b.firstOf(RESOURCE_REF,RESOURCE_COLLECTOR, RESOURCE, CLASS_RESOURCE_REF)
                 ));
 
         b.rule(ACCESSOR).is(VARIABLE, b.oneOrMore(LBRACK, b.firstOf(LITERAL, INTEGER, IDENTIFIER), RBRACK));

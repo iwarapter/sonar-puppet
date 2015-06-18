@@ -27,6 +27,7 @@ package com.iadams.sonarqube.puppet.parser.simple_statements
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.RELATIONSHIP_STMT
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.expressions
 import static org.sonar.sslr.tests.Assertions.assertThat
 
 /**
@@ -74,5 +75,10 @@ class RelationshipStatement extends GrammarSpec {
 								 Package['postgresql-postgis']->
 								 Class['postgresql::server::service']->
 								 anchor { 'postgresql::server::postgis::end': }""")
+	}
+
+	def "class resource ref can be used in relationship"(){
+		expect:
+		assertThat(p).matches('class { "${pg}::passwd": }->  anchor { "${pg}::end": }')
 	}
 }
