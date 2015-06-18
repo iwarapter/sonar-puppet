@@ -105,4 +105,14 @@ public class SelectorStatement extends GrammarSpec {
 						  default => File[\$_loadfile_name],
 						}""")
 	}
+
+	def "selected with default selector using func call as the control var"(){
+		expect:
+		assertThat(p).matches('''$::operatingsystemrelease ? {
+								  /5/     => 'postgis',
+								  default => versioncmp($postgis_version, '2') ? {
+									'-1'    => "postgis${package_version}",
+									default => "postgis2_${package_version}",}
+								}''')
+	}
 }
