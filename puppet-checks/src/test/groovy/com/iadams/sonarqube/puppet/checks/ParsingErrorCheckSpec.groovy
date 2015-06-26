@@ -1,4 +1,4 @@
-/**
+/*
  * Sonar Puppet Plugin
  * The MIT License (MIT)
  *
@@ -22,28 +22,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.checks;
+package com.iadams.sonarqube.puppet.checks
 
-import com.google.common.collect.ImmutableList;
-
-import java.util.List;
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
+import spock.lang.Specification
 
 /**
- * @author iwarapter
+ * Created by iwarapter
  */
-public final class CheckList {
+class ParsingErrorCheckSpec extends Specification {
 
-	public static final String REPOSITORY_KEY = "puppet";
+	def "files that dont parse are marked"(){
+		given:
+		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/parsingError.pp"), new ParsingErrorCheck());
 
-	public static final String SONAR_WAY_PROFILE = "Default";
-
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				LineLengthCheck.class,
-				ParsingErrorCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class,
-				XPathCheck.class
-		);
+		expect:
+		CheckMessagesVerifier.verify(file.getCheckMessages())
+				.next().atLine(1)
+				.noMore();
 	}
 }

@@ -48,6 +48,10 @@ abstract class FunctionalSpecBase extends Specification {
 	protected static boolean didSonarStart
 
 	def setup() {
+		badLines = []
+		errors = 0
+		warnings = 0
+
 		moduleName = findModuleName()
 		analysisLog = new File(projectDir, moduleName + "-analysis.log")
 
@@ -102,7 +106,7 @@ abstract class FunctionalSpecBase extends Specification {
 		log.error(cmd.err.text)
 		def output = cmd.text
 		println output
-		analysisLog.append(output)
+		analysisLog.write(output)
 		returnCode = cmd.exitValue()
 	}
 
@@ -125,8 +129,16 @@ abstract class FunctionalSpecBase extends Specification {
 				+ "For details see $analysisLog")
 	}
 
-	void analysisLogContains(String line){
-		assert analysisLog.text.contains(line)
+	void analysisLogContainsErrorsOrWarnings(){
+		analyseLog(analysisLog)
+		assert badLines.size() != 0 : ("Found zero instances of a warning or error.")
+	}
+
+	boolean analysisLogContains(String line){
+		for(String s : analysisLog.readLines()){
+			if(s.matches(line)){ return true }
+		}
+		false
 	}
 
 

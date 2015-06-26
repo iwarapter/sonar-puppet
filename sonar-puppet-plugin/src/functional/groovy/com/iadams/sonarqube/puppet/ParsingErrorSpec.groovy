@@ -1,4 +1,4 @@
-/**
+/*
  * Sonar Puppet Plugin
  * The MIT License (MIT)
  *
@@ -22,28 +22,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.checks;
+package com.iadams.sonarqube.puppet
 
-import com.google.common.collect.ImmutableList;
-
-import java.util.List;
+import com.iadams.sonarqube.functional.FunctionalSpecBase
 
 /**
  * @author iwarapter
  */
-public final class CheckList {
+class ParsingErrorSpec extends FunctionalSpecBase {
 
-	public static final String REPOSITORY_KEY = "puppet";
+	def setup(){
+		copyResources("parsingError.pp", "parsingError.pp")
+	}
 
-	public static final String SONAR_WAY_PROFILE = "Default";
+	def "run sonar-runner un-parsable file"(){
+		when:
+		resetDefaultProfile()
+		runSonarRunner()
 
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				LineLengthCheck.class,
-				ParsingErrorCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class,
-				XPathCheck.class
-		);
+		then:
+		analysisFinishesSuccessfully()
+		analysisLogContainsErrorsOrWarnings()
+		analysisLogContains(".* ERROR - Unable to parse file: .*/parsingError.pp")
+		theFollowingProjectMetricsHaveTheFollowingValue([violations:1, lines:1 ])
 	}
 }
