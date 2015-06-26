@@ -48,7 +48,7 @@ abstract class FunctionalSpecBase extends Specification {
 	protected static boolean didSonarStart
 
 	def setup() {
-		badLines = []
+		badLines.clear()
 		errors = 0
 		warnings = 0
 
@@ -68,6 +68,10 @@ abstract class FunctionalSpecBase extends Specification {
 	}
 
 	def setupSpec(){
+		badLines.clear()
+		errors = 0
+		warnings = 0
+
 		if(!isWebuiUp()){
 			String sonarHome = System.getenv('SONARHOME')
 			println "SONARHOME: $sonarHome"
@@ -75,7 +79,7 @@ abstract class FunctionalSpecBase extends Specification {
 				if(new File(sonarHome).exists()){
 					cleanServerLog(sonarHome)
 					installPlugin(sonarHome)
-					assert startSonar(sonarHome) : "Cannot start SonarQube from $sonarHome exiting."
+					startSonar(sonarHome)// : "Cannot start SonarQube from $sonarHome exiting."
 					didSonarStart = true
 					checkServerLogs(sonarHome)
 				}
@@ -92,6 +96,7 @@ abstract class FunctionalSpecBase extends Specification {
 	def cleanupSpec(){
 		if(didSonarStart){
 			String sonarHome = System.getenv('SONARHOME')
+			println sonarlog(sonarHome).text
 			stopSonar(sonarHome)
 		}
 	}
@@ -166,8 +171,8 @@ abstract class FunctionalSpecBase extends Specification {
 	private static final String SONAR_WARN = ".* WARN .*"
 	private static final String SONAR_WARN_TO_IGNORE_RE = ".*H2 database should.*|.*Starting search|.*Starting web|.*WEB DEVELOPMENT MODE IS ENABLED.*"
 
-	public int errors = 0
-	public int warnings = 0
+	public static int errors = 0
+	public static int warnings = 0
 	static def badLines = []
 
 	def analyseLog(File logpath){
@@ -242,23 +247,21 @@ abstract class FunctionalSpecBase extends Specification {
 
 		File pluginPath = new File(sonarHome, PLUGIN_DIR)
 		for(File path in pluginPath.listFiles()){
-			if(path.isFile() && path=~/sonar-puppet-plugin-.*.jar/) {
+			if(path.isFile() && path.path.matches( /.*sonar-puppet-plugin-.*.jar/ )) {
 				println "Removing ${path.name}"
 				path.delete()
 			}
 		}
-		def myFile = JAR_PATH.listFiles().find{it.isFile() && it=~/sonar-puppet-plugin-[0-9.]*.jar/}
-		Files.copy(myFile, new File(pluginPath, myFile.name))
+		def myFile = JAR_PATH.listFiles().find{ it.isFile() && it=~/.*sonar-puppet-plugin-[0-9.].*.jar/}
+		Files.copy(myFile, new File(pluginPath, myFile.getName()))
 	}
 
-	def startSonar(String sonarHome){
+	void startSonar(String sonarHome){
 		println "Starting SonarQube\n ${startScript(sonarHome)}"
 		def cmd = startScript(sonarHome).execute()
 		cmd.waitFor()
 		cmd.exitValue() == 0
-		assert waitForSonar(50)
-		println "SonarQube Started"
-		return true
+		waitForSonar(60)
 	}
 
 	def stopSonar(String sonarHome){
@@ -266,9 +269,7 @@ abstract class FunctionalSpecBase extends Specification {
 		def cmd = stopScript(sonarHome).execute()
 		cmd.waitFor()
 		cmd.exitValue() == 0
-		assert waitForSonarDown(300)
-		println "SonarQube Stopped"
-		return true
+		return waitForSonarDown(300)
 	}
 
 	def startScript(String sonarHome){
@@ -281,10 +282,14 @@ abstract class FunctionalSpecBase extends Specification {
 
 	def scriptPath(){
 		//Just mac/linux atm
+
 		if( System.getProperty("os.name") == "Mac OS X" && System.getProperty("os.arch") == "x86_64"){
 			return "bin/macosx-universal-64/sonar.sh"
 		}
 		if( System.getProperty("os.name") == "Linux" && System.getProperty("os.arch") == "x86_64"){
+			return "bin/linux-x86-64/sonar.sh"
+		}
+		if( System.getProperty("os.name") == "Linux" && System.getProperty("os.arch") == "amd64"){
 			return "bin/linux-x86-64/sonar.sh"
 		}
 		return "bin/linux-x86-32/sonar.sh"
