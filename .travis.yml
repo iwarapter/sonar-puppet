@@ -20,6 +20,7 @@ install:
 
 script:
   - ./gradlew build integTest --i
+  - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_BRANCH}" = "master" ] && ./gradlew artifactoryPublish  || true'
 
 before_install:
  - chmod +x gradlew

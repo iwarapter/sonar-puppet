@@ -4,11 +4,13 @@ buildscript {
 	}
 	dependencies {
 		classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.1'
+		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1"
 	}
 }
 
 //apply plugin: 'com.jfrog.bintray'
 apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
+apply plugin: org.jfrog.gradle.plugin.artifactory.ArtifactoryConfigurationsPlugin
 
 bintray {
 
@@ -35,6 +37,19 @@ bintray {
 		version {
 			name = project.version
 			vcsTag = project.version
+		}
+	}
+}
+
+artifactory {
+	contextUrl = 'http://oss.jfrog.org/artifactory'
+	publish {
+		publishIvy = false
+		publishPom = true
+		repository {
+			repoKey = 'oss-snapshot-local'
+			username = System.getenv('SONAR_PUPPET_PLUGIN_BINTRAY_USER')
+			password = System.getenv('SONAR_PUPPET_PLUGIN_BINTRAY_KEY')
 		}
 	}
 }
