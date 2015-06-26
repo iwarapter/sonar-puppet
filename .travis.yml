@@ -20,7 +20,7 @@ install:
 
 script:
   - ./gradlew build integTest --i
-  - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_BRANCH}" = "master" ] && ./gradlew artifactoryPublish  || true'
+  - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_BRANCH}" = "master" ] && ["${SONARHOME" = "/tmp/sonarqube-4.5.4" ] && ./gradlew artifactoryPublish  || true'
 
 before_install:
  - chmod +x gradlew
