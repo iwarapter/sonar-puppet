@@ -24,28 +24,48 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
-import com.google.common.collect.ImmutableList;
-import org.apache.commons.codec.net.QuotedPrintableCodec;
-
-import java.util.List;
+import com.sonar.sslr.api.*;
+import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.check.Priority;
+import org.sonar.check.Rule;
+import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
+import org.sonar.squidbridge.checks.SquidCheck;
 
 /**
  * @author iwarapter
  */
-public final class CheckList {
+@Rule(
+		key = QuotedBooleanCheck.CHECK_KEY,
+		priority = Priority.MAJOR,
+		name = "Avoid Quoted booleans.",
+		tags = Tags.CONFUSING
+)
+@ActivatedByDefault
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
+@SqaleConstantRemediation("10min")
+public class QuotedBooleanCheck extends SquidCheck<Grammar> {
 
-	public static final String REPOSITORY_KEY = "puppet";
+	public static final String CHECK_KEY = "QuotedBoolean";
 
-	public static final String SONAR_WAY_PROFILE = "Default";
+	@Override
+	public void init() {
+		subscribeTo(GenericTokenType.LITERAL);
+	}
 
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				LineLengthCheck.class,
-				ParsingErrorCheck.class,
-				QuotedBooleanCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class,
-				XPathCheck.class
-		);
+	@Override
+	public void visitNode(AstNode node) {
+		String literal = node.getToken().getValue();
+		switch (literal) {
+			case "'false'":
+			case "'true'":
+			case "\"false\"":
+			case "\"true\"":
+				getContext().createLineViolation(this, "Do not use quoted booleans.",node);
+				break;
+			default :
+				break;
+		}
 	}
 }

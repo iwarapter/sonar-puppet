@@ -1,4 +1,4 @@
-/**
+/*
  * Sonar Puppet Plugin
  * The MIT License (MIT)
  *
@@ -22,30 +22,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.checks;
+package com.iadams.sonarqube.puppet.checks
 
-import com.google.common.collect.ImmutableList;
-import org.apache.commons.codec.net.QuotedPrintableCodec;
-
-import java.util.List;
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
+import spock.lang.Specification
 
 /**
  * @author iwarapter
  */
-public final class CheckList {
+class QuotedBooleanCheckSpec extends Specification {
 
-	public static final String REPOSITORY_KEY = "puppet";
+	def "validate rule"() {
+		given:
+		QuotedBooleanCheck check = new QuotedBooleanCheck();
 
-	public static final String SONAR_WAY_PROFILE = "Default";
+		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/QuotedBoolean.pp"), check);
 
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				LineLengthCheck.class,
-				ParsingErrorCheck.class,
-				QuotedBooleanCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class,
-				XPathCheck.class
-		);
+		expect:
+		CheckMessagesVerifier.verify(file.getCheckMessages())
+				.next().atLine(2).withMessage("Do not use quoted booleans.")
+				.next().atLine(6).withMessage("Do not use quoted booleans.")
+				.noMore();
 	}
 }

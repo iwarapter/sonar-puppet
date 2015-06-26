@@ -84,7 +84,7 @@ public class PplintIssuesAnalyzer {
 
         // log any std error output
         if (stdErr.getData().size() > 0) {
-            LOG.warn("Output on the error channel detected: this is probably due to a problem on pylint's side.");
+            LOG.warn("Output on the error channel detected: this is probably due to a problem on pplint's side.");
             LOG.warn("Content of the error stream: \n\"{}\"", StringUtils.join(stdErr.getData(), "\n"));
         }
 
