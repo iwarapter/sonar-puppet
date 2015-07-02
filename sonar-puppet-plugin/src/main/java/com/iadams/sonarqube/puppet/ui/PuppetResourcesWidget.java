@@ -1,4 +1,4 @@
-/*
+/**
  * Sonar Puppet Plugin
  * The MIT License (MIT)
  *
@@ -22,16 +22,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet
+package com.iadams.sonarqube.puppet.ui;
 
-import spock.lang.Specification
+import org.sonar.api.web.AbstractRubyTemplate;
+import org.sonar.api.web.RubyRailsWidget;
+import org.sonar.api.web.UserRole;
+import org.sonar.api.web.WidgetCategory;
 
 /**
  * @author iwarapter
  */
-class PuppetPluginSpec extends Specification {
-	def "GetExtensions"() {
-		expect:
-		new PuppetPlugin().getExtensions().size() == 15
+@UserRole(UserRole.USER)
+@WidgetCategory("Puppet")
+public class PuppetResourcesWidget extends AbstractRubyTemplate implements RubyRailsWidget {
+
+	@Override
+	public String getId() {
+		return "puppet_resources";
+	}
+
+	@Override
+	public String getTitle() {
+		return "Puppet Resources";
+	}
+
+	@Override
+	protected String getTemplatePath() {
+		return "/com/iadams/sonarqube/puppet/puppet_resources_widget.html.erb";
 	}
 }

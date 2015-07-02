@@ -31,6 +31,7 @@ import com.iadams.sonarqube.puppet.metrics.PuppetLanguageMetrics;
 import com.iadams.sonarqube.puppet.pplint.PplintConfiguration;
 import com.iadams.sonarqube.puppet.pplint.PplintRuleRepository;
 import com.iadams.sonarqube.puppet.pplint.PplintSensor;
+import com.iadams.sonarqube.puppet.ui.PuppetResourcesWidget;
 import org.sonar.api.SonarPlugin;
 import org.sonar.api.config.PropertyDefinition;
 import org.sonar.api.resources.Qualifiers;
@@ -69,6 +70,10 @@ public class PuppetPlugin extends SonarPlugin {
 
                 PuppetCommonRulesEngine.class,
 
+                //UI
+                PuppetResourcesWidget.class,
+
+                //Puppet Lint
                 PplintConfiguration.class,
                 PplintSensor.class,
                 PplintRuleRepository.class,
