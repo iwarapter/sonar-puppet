@@ -41,7 +41,7 @@ public final class PuppetLanguageMetrics implements Metrics {
 
 	public static final Metric PUPPET_RESOURCES = new Metric.Builder(PuppetLanguageMetrics.PUPPET_RESOURCES_KEY, "Puppet Resources", Metric.ValueType.INT)
 			.setDescription("Puppet Resources")
-			.setDirection(Metric.DIRECTION_BETTER)
+			.setDirection(Metric.DIRECTION_NONE)
 			.setQualitative(false)
 			.setDomain(PuppetLanguageMetrics.DOMAIN)
 			.setHidden(false)
