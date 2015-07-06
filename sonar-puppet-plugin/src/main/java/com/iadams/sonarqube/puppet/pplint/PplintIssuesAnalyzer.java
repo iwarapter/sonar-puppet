@@ -109,7 +109,7 @@ public class PplintIssuesAnalyzer {
                     Matcher m = PATTERN.matcher(line);
                     if (m.matches() && m.groupCount() == 5) {
                         String filename = m.group(1);
-                        int linenr = Integer.valueOf(m.group(3));
+                        int linenr = Integer.parseInt(m.group(3));
                         String ruleid = m.group(2);
 
                         if(m.group(4).equals("IGNORED ")){

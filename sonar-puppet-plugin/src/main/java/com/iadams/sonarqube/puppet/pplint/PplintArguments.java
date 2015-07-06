@@ -68,6 +68,6 @@ public class PplintArguments {
     }
 
     public String[] arguments() {
-        return arguments;
+        return arguments.clone();
     }
 }
