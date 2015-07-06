@@ -1,0 +1,25 @@
+<p>
+    If a resource declaration includes an ensure attribute, it should be the first attribute specified so a user can quickly see if the resource is being created or deleted.
+</p>
+
+<h2>Noncompliant Code Example</h2>
+
+<pre>
+file { '/tmp/readme.txt':
+  owner  => '0',
+  group  => '0',
+  ensure => file,
+  mode   => '0644',
+}
+</pre>
+
+<h2>Compliant Solution</h2>
+
+<pre>
+file { '/tmp/readme.txt':
+  ensure => file,
+  owner  => '0',
+  group  => '0',
+  mode   => '0644',
+}
+</pre>
