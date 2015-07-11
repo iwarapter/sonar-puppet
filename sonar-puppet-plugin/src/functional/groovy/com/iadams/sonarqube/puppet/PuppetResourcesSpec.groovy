@@ -31,6 +31,10 @@ import com.iadams.sonarqube.functional.FunctionalSpecBase
  */
 class PuppetResourcesSpec extends FunctionalSpecBase {
 
+	def setupSpec(){
+		PLUGIN_NAME_REGEX = ~/.*sonar-puppet-plugin-[0-9.]*(-SNAPSHOT)?\.jar/
+	}
+
 	def setup(){
 		copyResources("example_file_resource.pp", "example_file_resource.pp")
 		copyResources("example_user_resource.pp", "example_user_resource.pp")

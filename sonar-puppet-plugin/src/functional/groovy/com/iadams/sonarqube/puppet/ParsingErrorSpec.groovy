@@ -31,12 +31,13 @@ import com.iadams.sonarqube.functional.FunctionalSpecBase
  */
 class ParsingErrorSpec extends FunctionalSpecBase {
 
-	def setup(){
-		copyResources("parsingError.pp", "parsingError.pp")
+	def setupSpec(){
+		PLUGIN_NAME_REGEX = ~/.*sonar-puppet-plugin-[0-9.]*(-SNAPSHOT)?\.jar/
 	}
 
 	def "run sonar-runner un-parsable file"(){
 		when:
+		copyResources("parsingError.pp", "parsingError.pp")
 		deleteProject()
 		resetDefaultProfile('pp')
 		runSonarRunner()

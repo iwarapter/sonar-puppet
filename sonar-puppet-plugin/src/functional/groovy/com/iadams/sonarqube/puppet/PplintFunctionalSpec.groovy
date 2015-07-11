@@ -31,12 +31,14 @@ import com.iadams.sonarqube.functional.FunctionalSpecBase
  */
 class PplintFunctionalSpec extends FunctionalSpecBase {
 
-	def setup(){
-		copyResources("code_chunks.pp", "code_chunks.pp")
+
+	def setupSpec(){
+		PLUGIN_NAME_REGEX = ~/.*sonar-puppet-plugin-[0-9.]*(-SNAPSHOT)?\.jar/
 	}
 
 	def "run sonar-runner without pplint"(){
 		when:
+		copyResources("code_chunks.pp", "code_chunks.pp")
 		deactivateAllRules('pp', 'Default')
 		activateRepositoryRules('pp', 'Default', 'Pplint')
 		runSonarRunner()
