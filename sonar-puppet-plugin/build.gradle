@@ -26,7 +26,7 @@ dependencies {
     testCompile "org.codehaus.sonar:sonar-testing-harness:$sonarVersion"
     testCompile 'org.apache.maven:maven-project:2.2.1'
     testCompile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
-    testCompile 'com.iadams.sonarqube:sonar-functional-test-harness:0.1.1'
+    testCompile 'com.iadams.sonarqube:sonar-functional-test-harness:0.1.3'
 
     testRuntime 'org.slf4j:slf4j-simple:1.7.12'
 }
