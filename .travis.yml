@@ -4,7 +4,7 @@ jdk:
   - oraclejdk7
 
 env:
-  - PATH=$PATH:/tmp/sonar-runner-2.4/bin SONAR_DL=http://downloads.sonarsource.com/sonarqube/sonarqube-5.1.1.zip SONARHOME=/tmp/sonarqube-5.1.1 RAILS_ENV=production
+  - PATH=$PATH:/tmp/sonar-runner-2.4/bin SONAR_DL=http://downloads.sonarsource.com/sonarqube/sonarqube-5.1.1.zip SONAR_HOME=/tmp/sonarqube-5.1.1 RAILS_ENV=production
 
 install:
   - cd /tmp
