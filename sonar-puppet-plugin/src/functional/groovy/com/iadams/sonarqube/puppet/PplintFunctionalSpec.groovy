@@ -37,13 +37,13 @@ class PplintFunctionalSpec extends FunctionalSpecBase {
 
 	def "run sonar-runner without pplint"(){
 		when:
-		deactivateAllRules()
-		activateRepositoryRules('Pplint')
+		deactivateAllRules('pp', 'Default')
+		activateRepositoryRules('pp', 'Default', 'Pplint')
 		runSonarRunner()
 
 		then:
-		analysisFinishesSuccessfully()
-		analysisLogContainsNoErrorsOrWarnings()
+		analysisFinishedSuccessfully()
+		analysisLogDoesNotContainErrorsOrWarnings()
 		theFollowingProjectMetricsHaveTheFollowingValue([violations:8, lines:9])
 	}
 }

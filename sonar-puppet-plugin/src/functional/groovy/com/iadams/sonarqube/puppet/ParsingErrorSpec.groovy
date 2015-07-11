@@ -37,13 +37,15 @@ class ParsingErrorSpec extends FunctionalSpecBase {
 
 	def "run sonar-runner un-parsable file"(){
 		when:
-		resetDefaultProfile()
+		deleteProject()
+		resetDefaultProfile('pp')
 		runSonarRunner()
 
 		then:
-		analysisFinishesSuccessfully()
+		analysisFinishedSuccessfully()
 		analysisLogContainsErrorsOrWarnings()
 		analysisLogContains(".* ERROR - Unable to parse file: .*/parsingError.pp")
 		theFollowingProjectMetricsHaveTheFollowingValue([violations:1, lines:1 ])
+		theFollowingFileMetricsHaveTheFollowingValue('parsingError.pp', [violations: 1])
 	}
 }

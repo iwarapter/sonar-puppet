@@ -42,8 +42,8 @@ class PuppetResourcesSpec extends FunctionalSpecBase {
 		runSonarRunner()
 
 		then:
-		analysisFinishesSuccessfully()
-		analysisLogContainsNoErrorsOrWarnings()
+		analysisFinishedSuccessfully()
+		analysisLogDoesNotContainErrorsOrWarnings()
 		theFollowingFileMetricsHaveTheFollowingValue('example_file_resource.pp',[puppet_resources:1, lines:3])
 		theFollowingFileMetricsHaveTheFollowingValue('example_user_resource.pp',[puppet_resources:1, lines:4])
 	}
@@ -54,8 +54,8 @@ class PuppetResourcesSpec extends FunctionalSpecBase {
 		runSonarRunner()
 
 		then:
-		analysisFinishesSuccessfully()
-		analysisLogContainsNoErrorsOrWarnings()
+		analysisFinishedSuccessfully()
+		analysisLogDoesNotContainErrorsOrWarnings()
 		theFollowingProjectMetricsHaveTheFollowingValue([puppet_resources:2, lines:7])
 	}
 }
