@@ -29,12 +29,8 @@ import com.iadams.sonarqube.functional.FunctionalSpecBase
 /**
  * @author iwarapter
  */
+
 class PplintFunctionalSpec extends FunctionalSpecBase {
-
-
-	def setupSpec(){
-		PLUGIN_NAME_REGEX = ~/.*sonar-puppet-plugin-[0-9.]*(-SNAPSHOT)?\.jar/
-	}
 
 	def "run sonar-runner without pplint"(){
 		when:
