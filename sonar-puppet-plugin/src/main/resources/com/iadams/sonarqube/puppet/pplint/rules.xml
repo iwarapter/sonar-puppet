@@ -65,6 +65,7 @@ file { '/tmp/foo':
       ]]>
     </description>
     <priority>MINOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>arrow_alignment</key>
