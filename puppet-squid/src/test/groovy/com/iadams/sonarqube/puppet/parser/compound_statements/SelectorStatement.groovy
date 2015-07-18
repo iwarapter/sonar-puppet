@@ -115,4 +115,11 @@ public class SelectorStatement extends GrammarSpec {
 									default => "postgis2_${package_version}",}
 								}''')
 	}
+
+	def "selector with default only should parse"(){
+		expect:
+		assertThat(p).matches('''$env_type ? {
+								  default => '0755\'
+								}''')
+	}
 }

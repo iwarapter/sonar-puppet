@@ -319,7 +319,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 CONTROL_VAR,
                 QMARK,
                 LBRACE,
-                b.oneOrMore(SELECTOR_CASE),
+                b.zeroOrMore(SELECTOR_CASE),
                 b.optional(
                         DEFAULT,
                         FARROW,
