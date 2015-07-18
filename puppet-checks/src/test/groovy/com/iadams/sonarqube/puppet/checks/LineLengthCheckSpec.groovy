@@ -44,6 +44,7 @@ class LineLengthCheckSpec extends Specification {
 		expect:
 		CheckMessagesVerifier.verify(file.getCheckMessages())
 				.next().atLine(1).withMessage("The line contains 40 characters which is greater than 30 authorized.")
+				.next().atLine(3).withMessage("The line contains 53 characters which is greater than 30 authorized.")
 				.noMore();
 	}
 }

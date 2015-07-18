@@ -60,9 +60,12 @@ file { '/tmp/foo':
     <name><![CDATA[80 Character Line Limit]]></name>
     <configKey>80chars</configKey>
     <description>
-      <![CDATA[Your manifests should not contain any lines longer than 80 characters.]]>
+      <![CDATA[Your manifests should not contain any lines longer than 80 characters.
+      <p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:LineLength">LineLength</a> instead.</p>
+      ]]>
     </description>
     <priority>MINOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>arrow_alignment</key>
