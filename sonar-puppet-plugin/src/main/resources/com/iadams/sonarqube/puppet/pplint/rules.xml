@@ -51,9 +51,12 @@ file { '/tmp/foo':
     <name><![CDATA[Trailing Whitespace]]></name>
     <configKey>trailing_whitespace</configKey>
     <description>
-      <![CDATA[Your manifests must not contain any trailing whitespace on any line.]]>
+      <![CDATA[Your manifests must not contain any trailing whitespace on any line.
+      <p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:S1131">S1131</a> instead.</p>
+      ]]>
     </description>
     <priority>MINOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>80chars</key>
