@@ -128,5 +128,8 @@ public class SelectorStatement extends GrammarSpec {
 		assertThat(p).matches('''$titi ? {
 								  24 => 'abc',
 								}''')
+		assertThat(p).matches('''$id ? {
+								 root    => 0,
+								}''')
 	}
 }

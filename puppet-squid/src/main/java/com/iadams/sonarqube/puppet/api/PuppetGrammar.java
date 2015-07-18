@@ -180,12 +180,12 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(DATA_TYPE).is(b.firstOf(TRUE,
                 FALSE,
+                UNDEF,
                 LITERAL,
                 INTEGER,
                 HEX_INTEGER,
                 OCTAL_INTEGER,
                 FLOAT,
-                UNDEF,
                 ARRAY,
                 HASHES,
                 IDENTIFIER,
@@ -330,7 +330,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(SELECTOR_CASE).is(
                 b.firstOf(DATA_TYPE, NAME, FUNC_CALL, REGULAR_EXPRESSION_LITERAL),
                 FARROW,
-                b.firstOf(TRUE, FALSE, UNDEF, FUNC_CALL, NAME, LITERAL, SELECTOR_STMT, VARIABLE, ARRAY),
+                b.firstOf(SELECTOR_STMT, FUNC_CALL, DATA_TYPE),
                 b.optional(COMMA));
 
         b.rule(CONTROL_VAR).is(b.firstOf(VARIABLE, FUNC_CALL));
