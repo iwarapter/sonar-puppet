@@ -83,9 +83,11 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     RESOURCE,
     RESOURCE_NAME,
     RESOURCE_REF,
+    CLASS_REF,
     EXEC_RESOURCE,
     DEFINE_STMT,
     DEFINE_NAME,
+    REQUIRE_STMT,
     VIRTUALRESOURCE,
     COLLECTION,
     FUNC_CALL,
@@ -190,7 +192,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 HASHES,
                 IDENTIFIER,
                 VARIABLE
-                ));
+        ));
     }
 
     /**
@@ -204,7 +206,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RESOURCE,
                 DEFINE_STMT,
                 NODE_STMT,
-                INCLUDE_STMT));
+                INCLUDE_STMT,
+                REQUIRE_STMT));
 
         b.rule(DEFINE_STMT).is(DEFINE,
                 DEFINE_NAME,
@@ -214,6 +217,16 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RBRACE);
 
         b.rule(DEFINE_NAME).is(QUALIFIED_IDENTIFIER);
+
+        b.rule(CLASS_REF).is("Class", ARRAY);
+
+        //https://docs.puppetlabs.com/puppet/latest/reference/lang_classes.html#using-require
+        b.rule(REQUIRE_STMT).is(REQUIRE,
+                b.firstOf(
+                        ARRAY,
+                        b.sequence(CLASS_REF, b.zeroOrMore(COMMA, CLASS_REF)),
+                        b.sequence(CLASSNAME, b.zeroOrMore(COMMA, CLASSNAME))
+                ));
 
         b.rule(PARAM_LIST).is(LPAREN,
                 b.zeroOrMore(PARAMETER, b.optional(COMMA)),
