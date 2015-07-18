@@ -220,7 +220,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RPAREN);
 
         b.rule(PARAMETER).is(VARIABLE,
-                b.optional(EQUALS, DATA_TYPE));
+                b.optional(EQUALS, b.firstOf(FUNC_CALL, DATA_TYPE)));
 
         b.rule(NODE_STMT).is(NODE,
                 NODE_NAME,

@@ -109,4 +109,13 @@ class ClassDefSpec extends GrammarSpec {
         expect:
         assertThat(p).matches('class ssl { }')
     }
+
+
+
+    def "Function call in parameter default value is support"(){
+        expect:
+        assertThat(p).matches('''class ssh (
+								  $domain_name = hiera('abc'),
+								) {}''')
+    }
 }
