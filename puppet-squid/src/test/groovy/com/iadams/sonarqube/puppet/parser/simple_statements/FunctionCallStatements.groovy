@@ -42,5 +42,6 @@ class FunctionCallStatements extends GrammarSpec {
 		expect:
 		assertThat(p).matches('merge($_directory, $_directory_version)')
 		assertThat(p).matches('merge($_directory, $_directory_version,)')
+		assertThat(p).matches("fail 'hello'")
 	}
 }

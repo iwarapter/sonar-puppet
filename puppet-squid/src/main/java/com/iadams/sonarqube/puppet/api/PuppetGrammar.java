@@ -155,9 +155,9 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(FUNC_CALL).is(
                 NAME,
-                LPAREN,
+                b.optional(LPAREN),
                 ARGUMENT_EXPRESSION_LIST,
-                RPAREN);
+                b.optional(RPAREN));
 
         b.rule(ARGUMENT_EXPRESSION_LIST).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION), b.optional(COMMA));
 
