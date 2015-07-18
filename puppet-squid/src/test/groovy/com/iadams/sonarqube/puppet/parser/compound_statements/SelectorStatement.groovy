@@ -122,4 +122,11 @@ public class SelectorStatement extends GrammarSpec {
 								  default => '0755\'
 								}''')
 	}
+
+	def "should handle integers in a selector case"(){
+		expect:
+		assertThat(p).matches('''$titi ? {
+								  24 => 'abc',
+								}''')
+	}
 }
