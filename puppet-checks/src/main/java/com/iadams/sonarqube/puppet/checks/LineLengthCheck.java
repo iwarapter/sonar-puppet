@@ -24,11 +24,12 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
-import com.sonar.sslr.api.AstAndTokenVisitor;
+import com.google.common.io.Files;
+import com.iadams.sonarqube.puppet.CharsetAwareVisitor;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.api.Token;
 import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.api.utils.SonarException;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
@@ -37,11 +38,13 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 
-/**
- * @author iwarapter
- */
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.List;
+
 @Rule(
-		key = LineLengthCheck.CHECK_KEY,
+		key = "LineLength",
 		priority = Priority.MINOR,
 		name = "Lines should not be too long",
 		tags = Tags.CONVENTION
@@ -49,53 +52,39 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("1min")
-public class LineLengthCheck extends SquidCheck<Grammar> implements AstAndTokenVisitor {
+public class LineLengthCheck extends SquidCheck<Grammar> implements CharsetAwareVisitor {
 
-	public static final String CHECK_KEY = "LineLength";
 	private static final int DEFAULT_MAXIMUM_LINE_LENHGTH = 80;
+	private Charset charset;
 
 	@RuleProperty(
 			key = "maximumLineLength",
 			defaultValue = "" + DEFAULT_MAXIMUM_LINE_LENHGTH)
 	public int maximumLineLength = DEFAULT_MAXIMUM_LINE_LENHGTH;
 
-	public int getMaximumLineLength() {
-		return maximumLineLength;
-	}
-
-	private Token previousToken;
-
 	@Override
-	public void visitFile(AstNode astNode) {
-		previousToken = null;
+	public void setCharset(Charset charset) {
+		this.charset = charset;
 	}
 
 	@Override
-	public void leaveFile(AstNode astNode) {
-		previousToken = null;
-	}
-
-	@Override
-	public void visitToken(Token token) {
-		if (!token.isGeneratedCode()) {
-			if (previousToken != null && previousToken.getLine() != token.getLine()) {
-				// Note that AbstractLineLengthCheck doesn't support tokens which span multiple lines - see SONARPLUGINS-2025
-				String[] lines = previousToken.getValue().split("\r?\n|\r", -1);
-				int length = previousToken.getColumn();
-				for (int line = 0; line < lines.length; line++) {
-					length += lines[line].length();
-					if (length > getMaximumLineLength()) {
-						// Note that method from AbstractLineLengthCheck generates other message - see SONARPLUGINS-1809
-						getContext().createLineViolation(this,
-								"The line contains {0,number,integer} characters which is greater than {1,number,integer} authorized.",
-								previousToken.getLine(),
-								length,
-								getMaximumLineLength());
-					}
-					length = 0;
-				}
+	public void visitFile(@Nullable AstNode astNode) {
+		List<String> lines;
+		try {
+			lines = Files.readLines(getContext().getFile(), charset);
+		} catch (IOException e) {
+			throw new SonarException(e);
+		}
+		for (int i = 0; i < lines.size(); i++) {
+			String line = lines.get(i);
+			if (line.length() > maximumLineLength) {
+				getContext().createLineViolation(this,
+						"The line contains {0,number,integer} characters which is greater than {1,number,integer} authorized.",
+						i + 1,
+						line.length(),
+						maximumLineLength);
 			}
-			previousToken = token;
 		}
 	}
+
 }
