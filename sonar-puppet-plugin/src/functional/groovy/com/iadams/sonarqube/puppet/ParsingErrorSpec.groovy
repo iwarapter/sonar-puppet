@@ -42,7 +42,7 @@ class ParsingErrorSpec extends FunctionalSpecBase {
 		analysisFinishedSuccessfully()
 		analysisLogContainsErrorsOrWarnings()
 		analysisLogContains(".* ERROR - Unable to parse file: .*/parsingError.pp")
-		theFollowingProjectMetricsHaveTheFollowingValue([violations:1, lines:1 ])
+		theFollowingProjectMetricsHaveTheFollowingValue([violations:1, lines:2 ])
 		theFollowingFileMetricsHaveTheFollowingValue('parsingError.pp', [violations: 1])
 	}
 }
