@@ -1,0 +1,19 @@
+<p>Shared coding conventions allow teams to collaborate efficiently. This rule checks that all variables match the following regular expression: ^[a-z]+[a-z0-9_]*$</p>
+<h2>Noncompliant Code Example</h2>
+<pre>
+file { $my-file:
+  ensure => file,
+  mode   => $Mode,
+}
+</pre>
+<h2>Compliant Solution</h2>
+<pre>
+file { $my_file:
+  ensure => file,
+  mode   => $mode,
+}
+</pre>
+<h2>See</h2>
+<ul>
+  <li><a href="https://docs.puppetlabs.com/guides/style_guide.html#variable-format">See Puppet Labs Puppet Language Style Guide</a></li>
+</ul>
