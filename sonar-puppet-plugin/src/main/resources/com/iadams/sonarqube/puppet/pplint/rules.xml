@@ -317,9 +317,11 @@ file { '/tmp/foo':
   ensure => present,
   owner  => 'root',
   group  => 'root',
-}</pre>]]>
+}</pre>
+<p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:EnsureOrdering">EnsureOrdering</a> instead.</p>]]>
     </description>
     <priority>MINOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>ensure_not_symlink_target</key>

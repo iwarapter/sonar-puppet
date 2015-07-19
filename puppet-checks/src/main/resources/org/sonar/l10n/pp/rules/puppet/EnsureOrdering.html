@@ -1,5 +1,5 @@
 <p>
-    If a resource declaration includes an ensure attribute, it should be the first attribute specified so a user can quickly see if the resource is being created or deleted.
+    If a resource declaration includes an <code>ensure</code> attribute, it should be the first attribute specified so a user can quickly see if the resource is being created or deleted.
 </p>
 
 <h2>Noncompliant Code Example</h2>
@@ -23,3 +23,7 @@ file { '/tmp/readme.txt':
   mode   => '0644',
 }
 </pre>
+<h2>See</h2>
+<ul>
+  <li><a href="https://docs.puppetlabs.com/guides/style_guide.html#attribute-ordering">See Puppet Labs Puppet Language Style Guide</a></li>
+</ul>
