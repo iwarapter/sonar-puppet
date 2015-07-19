@@ -47,7 +47,7 @@ public class PuppetProfile extends ProfileDefinition {
 		AnnotationBasedProfileBuilder annotationBasedProfileBuilder = new AnnotationBasedProfileBuilder(ruleFinder);
 		return annotationBasedProfileBuilder.build(
 				CheckList.REPOSITORY_KEY,
-				CheckList.SONAR_WAY_PROFILE,
+				CheckList.SONARQUBE_WAY_PROFILE,
 				Puppet.KEY,
 				CheckList.getChecks(),
 				validation);

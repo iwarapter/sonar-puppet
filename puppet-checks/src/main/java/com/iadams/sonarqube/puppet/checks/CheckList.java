@@ -28,14 +28,11 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 
-/**
- * @author iwarapter
- */
 public final class CheckList {
 
 	public static final String REPOSITORY_KEY = "puppet";
 
-	public static final String SONAR_WAY_PROFILE = "Default";
+	public static final String SONARQUBE_WAY_PROFILE = "SonarQube Way";
 
 	public static List<Class> getChecks() {
 		return ImmutableList.<Class>of(
