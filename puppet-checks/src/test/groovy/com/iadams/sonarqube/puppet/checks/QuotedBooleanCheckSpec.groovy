@@ -29,10 +29,9 @@ import org.sonar.squidbridge.api.SourceFile
 import org.sonar.squidbridge.checks.CheckMessagesVerifier
 import spock.lang.Specification
 
-/**
- * @author iwarapter
- */
 class QuotedBooleanCheckSpec extends Specification {
+
+	private static final String MESSAGE = "Remove quotes.";
 
 	def "validate rule"() {
 		given:
@@ -42,8 +41,10 @@ class QuotedBooleanCheckSpec extends Specification {
 
 		expect:
 		CheckMessagesVerifier.verify(file.getCheckMessages())
-				.next().atLine(2).withMessage("Do not use quoted booleans.")
-				.next().atLine(6).withMessage("Do not use quoted booleans.")
+				.next().atLine(2).withMessage(MESSAGE)
+				.next().atLine(6).withMessage(MESSAGE)
+				.next().atLine(10).withMessage(MESSAGE)
+				.next().atLine(14).withMessage(MESSAGE)
 				.noMore();
 	}
 }
