@@ -24,37 +24,35 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
-import com.google.common.collect.ImmutableList;
+import com.iadams.sonarqube.puppet.api.PuppetGrammar;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Grammar;
+import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.check.Priority;
+import org.sonar.check.Rule;
+import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
+import org.sonar.squidbridge.checks.SquidCheck;
 
-import java.util.List;
+@Rule(
+        key = "ResourceDefaultUsed",
+        priority = Priority.INFO,
+        name = "Resource defaults should be used in a very controlled manner.",
+        tags = Tags.PITFALL
+)
+@ActivatedByDefault
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
+@SqaleConstantRemediation("1h")
+public class ResourceDefaultUsedCheck extends SquidCheck<Grammar> {
 
-public final class CheckList {
+    @Override
+    public void init() {
+        subscribeTo(PuppetGrammar.RESOURCE_DEFAULT_STMT);
+    }
 
-	public static final String REPOSITORY_KEY = "puppet";
-
-	public static final String SONAR_WAY_PROFILE = "Default";
-
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				CommentConventionCheck.class,
-				CommentRegularExpressionCheck.class,
-				DuplicatedParametersCheck.class,
-				EnsureOrderingCheck.class,
-				FileNameCheck.class,
-				FixmeTagPresenceCheck.class,
-				LineLengthCheck.class,
-				MissingNewLineAtEndOfFileCheck.class,
-				NosonarTagPresenceCheck.class,
-				ParsingErrorCheck.class,
-				QuotedBooleanCheck.class,
-				ResourceDefaultUsedCheck.class,
-				TabCharacterCheck.class,
-				TodoTagPresenceCheck.class,
-				TrailingWhitespaceCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class,
-				VariableNamingConventionCheck.class,
-				XPathCheck.class
-		);
-	}
+    @Override
+    public void visitNode(AstNode node) {
+        getContext().createLineViolation(this, "Resource defaults should be used in a very controlled manner and should only be declared at the edges of your manifest ecosystem.", node);
+    }
 }

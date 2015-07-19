@@ -22,39 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.checks;
+package com.iadams.sonarqube.puppet.checks
 
-import com.google.common.collect.ImmutableList;
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
+import spock.lang.Specification
 
-import java.util.List;
+class ResourceDefaultUsedCheckSpec extends Specification {
 
-public final class CheckList {
+	private final static String MESSAGE = "Resource defaults should be used in a very controlled manner and should only be declared at the edges of your manifest ecosystem.";
 
-	public static final String REPOSITORY_KEY = "puppet";
+	def "validate rule"() {
+		given:
+		ResourceDefaultUsedCheck check = new ResourceDefaultUsedCheck();
 
-	public static final String SONAR_WAY_PROFILE = "Default";
+		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/resourceDefaultStatements.pp"), check);
 
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				CommentConventionCheck.class,
-				CommentRegularExpressionCheck.class,
-				DuplicatedParametersCheck.class,
-				EnsureOrderingCheck.class,
-				FileNameCheck.class,
-				FixmeTagPresenceCheck.class,
-				LineLengthCheck.class,
-				MissingNewLineAtEndOfFileCheck.class,
-				NosonarTagPresenceCheck.class,
-				ParsingErrorCheck.class,
-				QuotedBooleanCheck.class,
-				ResourceDefaultUsedCheck.class,
-				TabCharacterCheck.class,
-				TodoTagPresenceCheck.class,
-				TrailingWhitespaceCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class,
-				VariableNamingConventionCheck.class,
-				XPathCheck.class
-		);
+		expect:
+		CheckMessagesVerifier.verify(file.getCheckMessages())
+				.next().atLine(1).withMessage(MESSAGE)
+				.next().atLine(8).withMessage(MESSAGE)
+				.noMore();
 	}
 }
