@@ -22,32 +22,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.checks;
+package com.iadams.sonarqube.puppet.checks
 
-import com.google.common.collect.ImmutableList;
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
+import spock.lang.Specification
 
-import java.util.List;
+class MissingNewLineAtEndOfFileCheckSpec extends Specification {
 
-/**
- * @author iwarapter
- */
-public final class CheckList {
+    def "ends with a new line"() {
+        given:
+        MissingNewLineAtEndOfFileCheck check = new MissingNewLineAtEndOfFileCheck();
 
-	public static final String REPOSITORY_KEY = "puppet";
+        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/NewLineEndOfFile.pp"), check);
 
-	public static final String SONAR_WAY_PROFILE = "Default";
+        expect:
+        CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+    }
 
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				EnsureOrderingCheck.class,
-				LineLengthCheck.class,
-				MissingNewLineAtEndOfFileCheck.class,
-				ParsingErrorCheck.class,
-				QuotedBooleanCheck.class,
-				TrailingWhitespaceCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class,
-				XPathCheck.class
-		);
-	}
+    def "does not end with a new line"() {
+        given:
+        MissingNewLineAtEndOfFileCheck check = new MissingNewLineAtEndOfFileCheck();
+
+        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/NoNewLineEndOfFile.pp"), check);
+
+        expect:
+        CheckMessagesVerifier.verify(file.getCheckMessages()).next().withMessage("Add an empty new line at the end of this file.").noMore();
+    }
 }
