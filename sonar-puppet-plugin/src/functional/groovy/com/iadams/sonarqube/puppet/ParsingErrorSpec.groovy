@@ -26,14 +26,11 @@ package com.iadams.sonarqube.puppet
 
 import com.iadams.sonarqube.functional.FunctionalSpecBase
 
-/**
- * @author iwarapter
- */
 class ParsingErrorSpec extends FunctionalSpecBase {
 
 	def "run sonar-runner un-parsable file"(){
 		when:
-		copyResources("parsingError.pp", "parsingError.pp")
+		copyResources("parsing_error.pp", "parsing_error.pp")
 		deleteProject()
 		resetDefaultProfile('pp')
 		runSonarRunner()
@@ -41,8 +38,8 @@ class ParsingErrorSpec extends FunctionalSpecBase {
 		then:
 		analysisFinishedSuccessfully()
 		analysisLogContainsErrorsOrWarnings()
-		analysisLogContains(".* ERROR - Unable to parse file: .*/parsingError.pp")
+		analysisLogContains(".* ERROR - Unable to parse file: .*/parsing_error.pp")
 		theFollowingProjectMetricsHaveTheFollowingValue([violations:1, lines:2 ])
-		theFollowingFileMetricsHaveTheFollowingValue('parsingError.pp', [violations: 1])
+		theFollowingFileMetricsHaveTheFollowingValue('parsing_error.pp', [violations: 1])
 	}
 }

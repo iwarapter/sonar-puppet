@@ -40,6 +40,7 @@ public final class CheckList {
 				DuplicatedParametersCheck.class,
 				EnsureOrderingCheck.class,
 				FixmeTagPresenceCheck.class,
+				FileNameCheck.class,
 				LineLengthCheck.class,
 				MissingNewLineAtEndOfFileCheck.class,
 				NosonarTagPresenceCheck.class,
