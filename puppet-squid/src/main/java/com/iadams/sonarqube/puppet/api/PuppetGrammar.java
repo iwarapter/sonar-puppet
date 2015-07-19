@@ -88,6 +88,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     DEFINE_STMT,
     DEFINE_NAME,
     REQUIRE_STMT,
+    CONTAIN_STMT,
     VIRTUALRESOURCE,
     COLLECTION,
     FUNC_CALL,
@@ -222,6 +223,14 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         //https://docs.puppetlabs.com/puppet/latest/reference/lang_classes.html#using-require
         b.rule(REQUIRE_STMT).is(REQUIRE,
+                b.firstOf(
+                        ARRAY,
+                        b.sequence(CLASS_REF, b.zeroOrMore(COMMA, CLASS_REF)),
+                        b.sequence(CLASSNAME, b.zeroOrMore(COMMA, CLASSNAME))
+                ));
+
+        //https://docs.puppetlabs.com/puppet/latest/reference/lang_classes.html#using-contain
+        b.rule(CONTAIN_STMT).is("contain",
                 b.firstOf(
                         ARRAY,
                         b.sequence(CLASS_REF, b.zeroOrMore(COMMA, CLASS_REF)),
