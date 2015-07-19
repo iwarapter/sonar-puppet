@@ -51,7 +51,7 @@ public class PuppetLexer {
     }
 
     public static final String HASH_LINE_COMMENT = "#[^\\n\\r]*+";
-    public static final String SLASH_LINE_COMMENT = "//[^\\n\\r].*|#[^\\n\\r].*";
+    public static final String SLASH_LINE_COMMENT = "//[^\\n\\r]*+";
     public static final String MULTI_LINE_COMMENT = "/\\*[\\s\\S]*?\\*/";
 
     public static final String COMMENT = "(?:" + HASH_LINE_COMMENT + "|" + SLASH_LINE_COMMENT + "|" + MULTI_LINE_COMMENT + ")";
