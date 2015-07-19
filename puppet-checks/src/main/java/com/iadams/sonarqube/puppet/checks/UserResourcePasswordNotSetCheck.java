@@ -1,4 +1,4 @@
-/**
+/*
  * Sonar Puppet Plugin
  * The MIT License (MIT)
  *
@@ -25,24 +25,18 @@
 package com.iadams.sonarqube.puppet.checks;
 
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
-import com.sonar.sslr.api.AstAndTokenVisitor;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.api.Token;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.check.RuleProperty;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 
-/**
- * @author iwarapter
- */
 @Rule(
-		key = UserResourcePasswordNotSetCheck.CHECK_KEY,
+		key = "ResourcePasswordSet",
 		priority = Priority.MAJOR,
 		name = "User resource should not set password",
 		tags = Tags.SECURITY
@@ -52,8 +46,6 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @SqaleConstantRemediation("10min")
 public class UserResourcePasswordNotSetCheck extends SquidCheck<Grammar> {
 
-	public static final String CHECK_KEY = "ResourcePasswordSet";
-
 	@Override
 	public void init() {
 		subscribeTo(PuppetGrammar.RESOURCE);
@@ -61,13 +53,10 @@ public class UserResourcePasswordNotSetCheck extends SquidCheck<Grammar> {
 
 	@Override
 	public void visitNode(AstNode node) {
-		if(node.getToken().getValue().equals("user")) {
-			for (int n = 0; n < node.getChildren().size(); n++) {
-				AstNode node1 = node.getChildren().get(n);
-				if(node1.getName().equals(PuppetGrammar.ATTRIBUTE.toString())){
-					if(node1.getToken().getValue().equals("password")) {
-						getContext().createLineViolation(this, "Do not set passwords in user resources.", node.getChildren().get(n));
-					}
+		if ("user".equals(node.getTokenValue())) {
+			for (AstNode attributeNode : node.getChildren(PuppetGrammar.ATTRIBUTE)) {
+				if ("password".equals(attributeNode.getTokenValue())) {
+					getContext().createLineViolation(this, "Do not set passwords in user resources.", attributeNode);
 				}
 			}
 		}
