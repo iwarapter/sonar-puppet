@@ -29,10 +29,9 @@ import org.sonar.squidbridge.api.SourceFile
 import org.sonar.squidbridge.checks.CheckMessagesVerifier
 import spock.lang.Specification
 
-/**
- * @author iwarapter
- */
 class UserResourceLiteralNameCheckSpec extends Specification {
+
+	private final static String MESSAGE = "Remove this hardcoded user name.";
 
 	def "validate rule"() {
 		given:
@@ -42,7 +41,8 @@ class UserResourceLiteralNameCheckSpec extends Specification {
 
 		expect:
 		CheckMessagesVerifier.verify(file.getCheckMessages())
-				.next().atLine(1).withMessage("Do not hard code user names.")
+				.next().atLine(1).withMessage(MESSAGE)
+				.next().atLine(13).withMessage(MESSAGE)
 				.noMore();
 	}
 }
