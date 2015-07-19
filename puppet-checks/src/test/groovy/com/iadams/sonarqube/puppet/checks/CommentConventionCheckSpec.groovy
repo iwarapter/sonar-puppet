@@ -22,33 +22,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.checks;
+package com.iadams.sonarqube.puppet.checks
 
-import com.google.common.collect.ImmutableList;
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
+import spock.lang.Specification
 
-import java.util.List;
+class CommentConventionCheckSpec extends Specification {
 
-/**
- * @author iwarapter
- */
-public final class CheckList {
+	private static final String MESSAGE = "Use starting comment token '#' instead.";
 
-	public static final String REPOSITORY_KEY = "puppet";
+	def "validate rule"() {
+		given:
+		CommentConventionCheck check = new CommentConventionCheck();
 
-	public static final String SONAR_WAY_PROFILE = "Default";
+		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/CommentConvention.pp"), check);
 
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				CommentConventionCheck.class,
-				EnsureOrderingCheck.class,
-				LineLengthCheck.class,
-				MissingNewLineAtEndOfFileCheck.class,
-				ParsingErrorCheck.class,
-				QuotedBooleanCheck.class,
-				TrailingWhitespaceCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class,
-				XPathCheck.class
-		);
+		expect:
+		CheckMessagesVerifier.verify(file.getCheckMessages())
+				.next().atLine(1).withMessage(MESSAGE)
+				.next().atLine(2).withMessage(MESSAGE)
+				.next().atLine(4).withMessage(MESSAGE)
+				.next().atLine(5).withMessage(MESSAGE)
+				.noMore();
 	}
 }
