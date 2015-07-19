@@ -54,9 +54,11 @@ public class UserResourcePasswordNotSetCheck extends SquidCheck<Grammar> {
 	@Override
 	public void visitNode(AstNode node) {
 		if ("user".equals(node.getTokenValue())) {
-			for (AstNode attributeNode : node.getChildren(PuppetGrammar.ATTRIBUTE)) {
-				if ("password".equals(attributeNode.getTokenValue())) {
-					getContext().createLineViolation(this, "Do not set passwords in user resources.", attributeNode);
+			for (AstNode body : node.getChildren(PuppetGrammar.RESOURCE_BODY)) {
+				for (AstNode attrib : body.getChildren(PuppetGrammar.ATTRIBUTE)) {
+					if ("password".equals(attrib.getTokenValue())) {
+						getContext().createLineViolation(this, "Do not set passwords in user resources.", attrib);
+					}
 				}
 			}
 		}

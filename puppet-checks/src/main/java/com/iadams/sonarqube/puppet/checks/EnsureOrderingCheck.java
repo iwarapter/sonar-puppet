@@ -63,11 +63,11 @@ public class EnsureOrderingCheck extends SquidCheck<Grammar> {
 		List<AstNode> attributes = new ArrayList<>();
 		boolean containsEnsureAttribute = false;
 		Integer id = null;
-		for(AstNode n : node.getChildren()){
-			if(n.getName().equals("ATTRIBUTE")){
-				attributes.add(n);
-				if(n.getToken().getValue().equals("ensure")){
-					id = attributes.size()-1;
+		for (AstNode body : node.getChildren(PuppetGrammar.RESOURCE_BODY)) {
+			for (AstNode attrib : body.getChildren(PuppetGrammar.ATTRIBUTE)) {
+				attributes.add(attrib);
+				if (attrib.getTokenValue().equals("ensure")) {
+					id = attributes.size() - 1;
 					containsEnsureAttribute = true;
 				}
 			}

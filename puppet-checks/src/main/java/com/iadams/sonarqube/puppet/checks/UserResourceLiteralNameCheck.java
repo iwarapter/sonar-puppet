@@ -60,12 +60,11 @@ public class UserResourceLiteralNameCheck extends SquidCheck<Grammar> {
 
 	@Override
 	public void visitNode(AstNode node) {
-		if(node.getToken().getValue().equals("user")) {
-			for (int n = 0; n < node.getChildren().size(); n++) {
-				AstNode node1 = node.getChildren().get(n);
-				if(node1.getName().equals(PuppetGrammar.RESOURCE_NAME.toString())){
-					if(node1.getToken().getType().toString().equals(GenericTokenType.LITERAL.getName())){
-						getContext().createLineViolation(this, "Do not hard code user names.", node.getChildren().get(n));
+		if ("user".equals(node.getTokenValue())) {
+			for (AstNode body : node.getChildren(PuppetGrammar.RESOURCE_BODY)) {
+				for (AstNode name : body.getChildren(PuppetGrammar.RESOURCE_NAME)) {
+					if(name.getToken().getType().toString().equals(GenericTokenType.LITERAL.getName())){
+						getContext().createLineViolation(this, "Do not hard code user names.", node.getChildren().get(name.getTokenLine()));
 					}
 				}
 			}

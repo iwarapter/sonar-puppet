@@ -82,6 +82,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     STATEMENT,
     RESOURCE,
     RESOURCE_NAME,
+    RESOURCE_BODY,
     RESOURCE_REF,
     CLASS_REF,
     EXEC_RESOURCE,
@@ -174,12 +175,16 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.firstOf(SELECTOR_STMT, EXPRESSION, RESOURCE_REF, LITERALS, IDENTIFIER, TRUE, FALSE),
                 b.optional(COMMA));
 
+        //https://docs.puppetlabs.com/puppet/latest/reference/lang_resources_advanced.html#full-syntax
         b.rule(RESOURCE).is(QUALIFIED_IDENTIFIER,
                 LBRACE,
-                b.optional(RESOURCE_NAME, COLON),
-                b.zeroOrMore(ATTRIBUTE),
+                b.oneOrMore(RESOURCE_BODY, b.optional(SEMIC)),
                 RBRACE);
-        b.rule(RESOURCE_NAME).is(b.firstOf(ARRAY, LITERAL, IDENTIFIER, VARIABLE));
+        b.rule(RESOURCE_NAME).is(b.firstOf(ARRAY, DEFAULT, LITERAL, IDENTIFIER, VARIABLE));
+
+        b.rule(RESOURCE_BODY).is(
+                RESOURCE_NAME, b.optional(COLON),
+                b.zeroOrMore(ATTRIBUTE));
 
         b.rule(DATA_TYPE).is(b.firstOf(TRUE,
                 FALSE,

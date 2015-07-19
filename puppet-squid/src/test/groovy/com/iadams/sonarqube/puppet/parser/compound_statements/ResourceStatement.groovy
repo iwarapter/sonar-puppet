@@ -56,13 +56,6 @@ public class ResourceStatement extends GrammarSpec {
 								 }''')
 	}
 
-	def "support exec resources"(){
-		expect:
-		assertThat(p).matches('''Exec {
-								 	path => '/bin:/sbin:/usr/bin:/usr/sbin',
-								 }''')
-	}
-
 	def "check fully qualified type"(){
 		expect:
 		assertThat(p).matches('''concat::fragment { 'Apache ports header':
@@ -96,5 +89,24 @@ public class ResourceStatement extends GrammarSpec {
 		assertThat(p).matches('''file { 'expires.conf':
 									before  => File[$::apache::mod_dir],
 								  }''')
+	}
+
+	def "handle multiple resource bodies"(){
+		expect:
+		assertThat(p).matches('''file {
+								  default:
+									ensure => file,
+									owner  => "root",
+									group  => "wheel",
+									mode   => "0600",
+								  ;
+								  ['ssh_host_dsa_key', 'ssh_host_key', 'ssh_host_rsa_key']:
+									# use all defaults
+								  ;
+								  ['ssh_config', 'ssh_host_dsa_key.pub', 'ssh_host_key.pub', 'ssh_host_rsa_key.pub', 'sshd_config']:
+									# override mode
+									mode => "0644",
+								  ;
+								}''')
 	}
 }
