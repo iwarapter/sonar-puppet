@@ -1,4 +1,4 @@
-/**
+/*
  * Sonar Puppet Plugin
  * The MIT License (MIT)
  *
@@ -25,7 +25,8 @@
 package com.iadams.sonarqube.puppet.checks;
 
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
-import com.sonar.sslr.api.*;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -34,24 +35,16 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * @author iwarapter
- */
 @Rule(
-		key = EnsureOrderingCheck.CHECK_KEY,
+		key = "EnsureOrdering",
 		priority = Priority.MINOR,
-		name = "Ensure attribute should be the first attribute specified",
+		name = "\"ensure\" attribute should be the first attribute specified",
 		tags = {Tags.CONVENTION, Tags.CONFUSING}
 )
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("1min")
 public class EnsureOrderingCheck extends SquidCheck<Grammar> {
-
-	public static final String CHECK_KEY = "EnsureOrdering";
 
 	@Override
 	public void init() {
@@ -60,23 +53,16 @@ public class EnsureOrderingCheck extends SquidCheck<Grammar> {
 
 	@Override
 	public void visitNode(AstNode node) {
-		List<AstNode> attributes = new ArrayList<>();
-		boolean containsEnsureAttribute = false;
-		Integer id = null;
+		int counter;
 		for (AstNode body : node.getChildren(PuppetGrammar.RESOURCE_BODY)) {
+			counter = 0;
 			for (AstNode attrib : body.getChildren(PuppetGrammar.ATTRIBUTE)) {
-				attributes.add(attrib);
-				if (attrib.getTokenValue().equals("ensure")) {
-					id = attributes.size() - 1;
-					containsEnsureAttribute = true;
+				counter++;
+				if ("ensure".equals(attrib.getTokenValue()) && counter != 1) {
+					getContext().createLineViolation(this, "Move the \"ensure\" attribute to be declared first.", attrib.getTokenLine());
+					break;
 				}
 			}
 		}
-		if(containsEnsureAttribute){
-			if(!attributes.get(0).getToken().getValue().equals("ensure")) {
-				getContext().createLineViolation(this, "Ensure should be declared first.", attributes.get(id));
-			}
-		}
-
 	}
 }
