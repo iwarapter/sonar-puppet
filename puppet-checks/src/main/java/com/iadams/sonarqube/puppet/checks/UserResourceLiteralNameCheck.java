@@ -1,4 +1,4 @@
-/**
+/*
  * Sonar Puppet Plugin
  * The MIT License (MIT)
  *
@@ -25,7 +25,6 @@
 package com.iadams.sonarqube.puppet.checks;
 
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
-import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Grammar;
@@ -37,11 +36,8 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 
-/**
- * @author iwarapter
- */
 @Rule(
-		key = UserResourceLiteralNameCheck.CHECK_KEY,
+		key = "UserResourceLiteralName",
 		priority = Priority.MAJOR,
 		name = "User resource should use variable not literal",
 		tags = Tags.SECURITY
@@ -50,8 +46,6 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.SECURITY_FEATURES)
 @SqaleConstantRemediation("10min")
 public class UserResourceLiteralNameCheck extends SquidCheck<Grammar> {
-
-	public static final String CHECK_KEY = "UserResourceLiteralName";
 
 	@Override
 	public void init() {
@@ -63,8 +57,8 @@ public class UserResourceLiteralNameCheck extends SquidCheck<Grammar> {
 		if ("user".equals(node.getTokenValue())) {
 			for (AstNode body : node.getChildren(PuppetGrammar.RESOURCE_BODY)) {
 				for (AstNode name : body.getChildren(PuppetGrammar.RESOURCE_NAME)) {
-					if(name.getToken().getType().toString().equals(GenericTokenType.LITERAL.getName())){
-						getContext().createLineViolation(this, "Do not hard code user names.", node.getChildren().get(name.getTokenLine()));
+					if (name.getFirstChild(GenericTokenType.LITERAL) != null) {
+						getContext().createLineViolation(this, "Remove this hardcoded user name.", name.getFirstChild(GenericTokenType.LITERAL).getTokenLine());
 					}
 				}
 			}
