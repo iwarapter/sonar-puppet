@@ -603,9 +603,11 @@ $foo-bar</pre>
       <h2>Compliant Solution</h2>
 
       <pre>
-$foo_bar</pre>]]>
+$foo_bar</pre>
+<p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:VariableNamingConvention">VariableNamingConvention</a> instead.</p>]]>
     </description>
     <priority>MINOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>parameter_order</key>

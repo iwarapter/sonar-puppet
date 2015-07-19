@@ -22,30 +22,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.checks;
+package com.iadams.sonarqube.puppet.checks
 
-import com.google.common.collect.ImmutableList;
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
+import spock.lang.Specification
 
-import java.util.List;
+class VariableNamingConventionCheckSpec extends Specification {
 
-public final class CheckList {
+	def "should find some variables not complying with the naming convention"() {
+		given:
+		VariableNamingConventionCheck check = new VariableNamingConventionCheck();
+		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/VariableNamingConvention.pp"), check);
 
-	public static final String REPOSITORY_KEY = "puppet";
-
-	public static final String SONAR_WAY_PROFILE = "Default";
-
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				EnsureOrderingCheck.class,
-				LineLengthCheck.class,
-				MissingNewLineAtEndOfFileCheck.class,
-				ParsingErrorCheck.class,
-				QuotedBooleanCheck.class,
-				TrailingWhitespaceCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class,
-				VariableNamingConventionCheck.class,
-				XPathCheck.class
-		);
+		expect:
+		CheckMessagesVerifier.verify(file.getCheckMessages())
+				.next().atLine(6).withMessage("Rename variable \"Abc\" to match the regular expression: ^[a-z]+[a-z0-9_]*\$")
+				.next().atLine(8).withMessage("Rename variable \"dEf\" to match the regular expression: ^[a-z]+[a-z0-9_]*\$")
+				.next().atLine(11).withMessage("Rename variable \"abc-def\" to match the regular expression: ^[a-z]+[a-z0-9_]*\$")
+				.next().atLine(13).withMessage("Rename variable \"ghi-jkl\" to match the regular expression: ^[a-z]+[a-z0-9_]*\$")
+				.noMore();
 	}
 }
