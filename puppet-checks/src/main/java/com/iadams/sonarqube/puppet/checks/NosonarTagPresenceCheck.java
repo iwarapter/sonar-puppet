@@ -24,31 +24,32 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
-import com.google.common.collect.ImmutableList;
+import com.sonar.sslr.api.AstAndTokenVisitor;
+import com.sonar.sslr.api.Token;
+import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.check.Priority;
+import org.sonar.check.Rule;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
+import org.sonar.squidbridge.checks.SquidCheck;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
-import java.util.List;
+@Rule(
+		key = "Nosonar",
+		name = "\"NOSONAR\" tags should not be used to switch off issues",
+		priority = Priority.INFO)
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.INSTRUCTION_RELIABILITY)
+@SqaleConstantRemediation("1min")
+public class NosonarTagPresenceCheck extends SquidCheck<LexerlessGrammar> implements AstAndTokenVisitor {
 
-public final class CheckList {
+	private static final String PATTERN = "NOSONAR";
+	private static final String MESSAGE = "Is NOSONAR used to exclude false positive or to hide real quality flaw?";
 
-	public static final String REPOSITORY_KEY = "puppet";
+	private final CommentContainsPatternChecker checker = new CommentContainsPatternChecker(this, PATTERN, MESSAGE);
 
-	public static final String SONAR_WAY_PROFILE = "Default";
-
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				CommentRegularExpressionCheck.class,
-				EnsureOrderingCheck.class,
-				FixmeTagPresenceCheck.class,
-				LineLengthCheck.class,
-				MissingNewLineAtEndOfFileCheck.class,
-				NosonarTagPresenceCheck.class,
-				ParsingErrorCheck.class,
-				QuotedBooleanCheck.class,
-				TodoTagPresenceCheck.class,
-				TrailingWhitespaceCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class,
-				XPathCheck.class
-		);
+	@Override
+	public void visitToken(Token token) {
+		checker.visitToken(token);
 	}
+
 }
