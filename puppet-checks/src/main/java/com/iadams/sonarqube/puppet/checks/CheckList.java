@@ -36,6 +36,7 @@ public final class CheckList {
 
 	public static List<Class> getChecks() {
 		return ImmutableList.<Class>of(
+				CommentRegularExpressionCheck.class,
 				EnsureOrderingCheck.class,
 				FixmeTagPresenceCheck.class,
 				LineLengthCheck.class,
