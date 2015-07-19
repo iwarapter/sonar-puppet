@@ -24,29 +24,34 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
-import com.google.common.collect.ImmutableList;
+import com.sonar.sslr.api.AstAndTokenVisitor;
+import com.sonar.sslr.api.Token;
+import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.check.Priority;
+import org.sonar.check.Rule;
+import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
+import org.sonar.squidbridge.checks.SquidCheck;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
-import java.util.List;
+@Rule(
+  key = "S1134",
+  name = "\"FIXME\" tags should be handled",
+  priority = Priority.INFO)
+@ActivatedByDefault
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.UNDERSTANDABILITY)
+@SqaleConstantRemediation("20min")
+public class FixmeTagPresenceCheck extends SquidCheck<LexerlessGrammar> implements AstAndTokenVisitor {
 
-public final class CheckList {
+  private static final String PATTERN = "FIXME";
+  private static final String MESSAGE = "Take the required action to fix the issue indicated by this comment.";
 
-	public static final String REPOSITORY_KEY = "puppet";
+  private final CommentContainsPatternChecker checker = new CommentContainsPatternChecker(this, PATTERN, MESSAGE);
 
-	public static final String SONAR_WAY_PROFILE = "Default";
+  @Override
+  public void visitToken(Token token) {
+    checker.visitToken(token);
+  }
 
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				EnsureOrderingCheck.class,
-				FixmeTagPresenceCheck.class,
-				LineLengthCheck.class,
-				MissingNewLineAtEndOfFileCheck.class,
-				ParsingErrorCheck.class,
-				QuotedBooleanCheck.class,
-				TodoTagPresenceCheck.class,
-				TrailingWhitespaceCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class,
-				XPathCheck.class
-		);
-	}
 }
