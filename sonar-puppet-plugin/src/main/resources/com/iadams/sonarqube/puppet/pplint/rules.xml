@@ -244,9 +244,12 @@ file { '/tmp/foo':
       <pre>
 file { '/tmp/foo':
   purge => true,
-}</pre>]]>
+}</pre>
+<p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:QuotedBoolean">QuotedBoolean</a> instead.</p>
+     ]]>
     </description>
     <priority>CRITICAL</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>puppet_url_without_modules</key>

@@ -1,4 +1,4 @@
-/**
+/*
  * Sonar Puppet Plugin
  * The MIT License (MIT)
  *
@@ -24,7 +24,9 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
-import com.sonar.sslr.api.*;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.GenericTokenType;
+import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -33,21 +35,16 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 
-/**
- * @author iwarapter
- */
 @Rule(
-		key = QuotedBooleanCheck.CHECK_KEY,
+		key = "QuotedBoolean",
 		priority = Priority.MAJOR,
-		name = "Avoid Quoted booleans.",
+		name = "Booleans should not be quoted",
 		tags = Tags.CONFUSING
 )
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
 @SqaleConstantRemediation("10min")
 public class QuotedBooleanCheck extends SquidCheck<Grammar> {
-
-	public static final String CHECK_KEY = "QuotedBoolean";
 
 	@Override
 	public void init() {
@@ -56,15 +53,15 @@ public class QuotedBooleanCheck extends SquidCheck<Grammar> {
 
 	@Override
 	public void visitNode(AstNode node) {
-		String literal = node.getToken().getValue();
+		String literal = node.getTokenValue();
 		switch (literal) {
 			case "'false'":
 			case "'true'":
 			case "\"false\"":
 			case "\"true\"":
-				getContext().createLineViolation(this, "Do not use quoted booleans.",node);
+				getContext().createLineViolation(this, "Remove quotes.", node);
 				break;
-			default :
+			default:
 				break;
 		}
 	}
