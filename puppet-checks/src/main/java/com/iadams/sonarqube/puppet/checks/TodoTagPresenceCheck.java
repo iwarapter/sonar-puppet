@@ -24,28 +24,34 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
-import com.google.common.collect.ImmutableList;
+import com.sonar.sslr.api.AstAndTokenVisitor;
+import com.sonar.sslr.api.Token;
+import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.check.Priority;
+import org.sonar.check.Rule;
+import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
+import org.sonar.squidbridge.checks.SquidCheck;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
-import java.util.List;
+@Rule(
+  key = "S1135",
+  name = "\"TODO\" tags should be handled",
+  priority = Priority.INFO)
+@ActivatedByDefault
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.UNDERSTANDABILITY)
+@SqaleConstantRemediation("20min")
+public class TodoTagPresenceCheck extends SquidCheck<LexerlessGrammar> implements AstAndTokenVisitor {
 
-public final class CheckList {
+  private static final String PATTERN = "TODO";
+  private static final String MESSAGE = "Complete the task associated to this TODO comment.";
 
-	public static final String REPOSITORY_KEY = "puppet";
+  private final CommentContainsPatternChecker checker = new CommentContainsPatternChecker(this, PATTERN, MESSAGE);
 
-	public static final String SONAR_WAY_PROFILE = "Default";
+  @Override
+  public void visitToken(Token token) {
+    checker.visitToken(token);
+  }
 
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				EnsureOrderingCheck.class,
-				LineLengthCheck.class,
-				MissingNewLineAtEndOfFileCheck.class,
-				ParsingErrorCheck.class,
-				QuotedBooleanCheck.class,
-				TodoTagPresenceCheck.class,
-				TrailingWhitespaceCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class,
-				XPathCheck.class
-		);
-	}
 }
