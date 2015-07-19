@@ -55,6 +55,14 @@ class FixmeTagPresenceCheckSpec extends Specification {
                 .next().atLine(18).withMessage(MESSAGE)
                 .next().atLine(19).withMessage(MESSAGE)
                 .next().atLine(20).withMessage(MESSAGE)
+                .next().atLine(23).withMessage(MESSAGE)
+                .next().atLine(24).withMessage(MESSAGE)
+                .next().atLine(25).withMessage(MESSAGE)
+                .next().atLine(27).withMessage(MESSAGE)
+                .next().atLine(28).withMessage(MESSAGE)
+                .next().atLine(29).withMessage(MESSAGE)
+                .next().atLine(30).withMessage(MESSAGE)
+                .next().atLine(31).withMessage(MESSAGE)
                 .noMore();
     }
 
