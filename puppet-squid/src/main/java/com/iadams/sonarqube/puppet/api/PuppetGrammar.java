@@ -99,6 +99,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     NODE_NAME,
     INCLUDE_STMT,
     ARRAY,
+    ARRAY_SECTIONING_STMT,
     HASHES,
     HASH_KEY,
     CLASS_RESOURCE_REF,
@@ -213,7 +214,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 DEFINE_STMT,
                 NODE_STMT,
                 INCLUDE_STMT,
-                REQUIRE_STMT));
+                REQUIRE_STMT,
+                ARRAY_SECTIONING_STMT));
 
         b.rule(DEFINE_STMT).is(DEFINE,
                 DEFINE_NAME,
@@ -273,6 +275,9 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                         b.zeroOrMore(COMMA, b.firstOf(FUNC_CALL, DATA_TYPE))),
                 b.optional(COMMA),
                 RBRACK);
+
+        //https://docs.puppetlabs.com/puppet/latest/reference/lang_data_array.html#array-sectioning
+        b.rule(ARRAY_SECTIONING_STMT).is(VARIABLE, LBRACK, INTEGER, COMMA, INTEGER, RBRACK);
 
         b.rule(RESOURCE_REF).is(QUALIFIED_IDENTIFIER, ARRAY);
 

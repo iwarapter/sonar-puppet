@@ -22,38 +22,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.checks;
+package com.iadams.sonarqube.puppet.parser.simple_statements
 
-import com.google.common.collect.ImmutableList;
+import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import java.util.List;
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.ARRAY_SECTIONING_STMT
+import static org.sonar.sslr.tests.Assertions.assertThat
 
-public final class CheckList {
+class ArraySectioningStatement extends GrammarSpec {
 
-	public static final String REPOSITORY_KEY = "puppet";
+	def setup(){
+		setRootRule(ARRAY_SECTIONING_STMT)
+	}
 
-	public static final String SONAR_WAY_PROFILE = "Default";
-
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				CommentConventionCheck.class,
-				CommentRegularExpressionCheck.class,
-				DuplicatedParametersCheck.class,
-				EnsureOrderingCheck.class,
-				FileNameCheck.class,
-				FixmeTagPresenceCheck.class,
-				LineLengthCheck.class,
-				MissingNewLineAtEndOfFileCheck.class,
-				NosonarTagPresenceCheck.class,
-				ParsingErrorCheck.class,
-				QuotedBooleanCheck.class,
-				TabCharacterCheck.class,
-				TodoTagPresenceCheck.class,
-				TrailingWhitespaceCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class,
-				VariableNamingConventionCheck.class,
-				XPathCheck.class
-		);
+	def "simple array sectioning statement"() {
+		expect:
+		assertThat(p).matches('$foo[2,1]')
+		assertThat(p).matches('$foo[2,2]')
+		assertThat(p).matches('$foo[2,-1]')
+		assertThat(p).matches('$foo[-2,1]')
 	}
 }
