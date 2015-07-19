@@ -48,6 +48,9 @@ class CommentRegularExpressionCheckSpec extends Specification {
 				.next().atLine(5).withMessage(message)
 				.next().atLine(6).withMessage(message)
 				.next().atLine(7).withMessage(message)
+				.next().atLine(9).withMessage(message)
+				.next().atLine(10).withMessage(message)
+				.next().atLine(11).withMessage(message)
 				.noMore();
 	}
 
