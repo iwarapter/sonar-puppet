@@ -22,30 +22,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.checks;
+package com.iadams.sonarqube.puppet.checks
 
-import com.google.common.collect.ImmutableList;
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
+import spock.lang.Specification
 
-import java.util.List;
+class TabCharacterCheckSpec extends Specification {
 
-public final class CheckList {
+    private final TabCharacterCheck check = new TabCharacterCheck();
 
-	public static final String REPOSITORY_KEY = "puppet";
+    def "should contain some tab characters"() {
+        given:
+        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/TabCharacter.pp"), check);
 
-	public static final String SONAR_WAY_PROFILE = "Default";
+        expect:
+        CheckMessagesVerifier.verify(file.getCheckMessages())
+                .next().withMessage("Replace all tab characters in this file by sequences of whitespaces.")
+                .noMore();
+    }
 
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				EnsureOrderingCheck.class,
-				LineLengthCheck.class,
-				MissingNewLineAtEndOfFileCheck.class,
-				ParsingErrorCheck.class,
-				QuotedBooleanCheck.class,
-				TabCharacterCheck.class,
-				TrailingWhitespaceCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class,
-				XPathCheck.class
-		);
-	}
+    def "should not contain any tab characters"() {
+        given:
+        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/NoTabCharacter.pp"), check);
+
+        expect:
+        CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+    }
+
 }
