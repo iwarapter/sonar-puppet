@@ -28,9 +28,6 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 
-/**
- * @author iwarapter
- */
 public final class CheckList {
 
 	public static final String REPOSITORY_KEY = "puppet";
@@ -40,6 +37,7 @@ public final class CheckList {
 	public static List<Class> getChecks() {
 		return ImmutableList.<Class>of(
 				EnsureOrderingCheck.class,
+				FileNameCheck.class,
 				LineLengthCheck.class,
 				MissingNewLineAtEndOfFileCheck.class,
 				ParsingErrorCheck.class,
