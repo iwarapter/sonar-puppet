@@ -84,6 +84,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     RESOURCE_NAME,
     RESOURCE_BODY,
     RESOURCE_REF,
+    RESOURCE_DEFAULT_STMT,
     CLASS_REF,
     EXEC_RESOURCE,
     DEFINE_STMT,
@@ -211,6 +212,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(SIMPLE_STMT).is(b.firstOf(
                 RELATIONSHIP_STMT,
                 RESOURCE,
+                RESOURCE_DEFAULT_STMT,
                 DEFINE_STMT,
                 NODE_STMT,
                 INCLUDE_STMT,
@@ -280,6 +282,12 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(ARRAY_SECTIONING_STMT).is(VARIABLE, LBRACK, INTEGER, COMMA, INTEGER, RBRACK);
 
         b.rule(RESOURCE_REF).is(QUALIFIED_IDENTIFIER, ARRAY);
+
+        b.rule(RESOURCE_DEFAULT_STMT).is(
+                QUALIFIED_IDENTIFIER,
+                LBRACE,
+                b.zeroOrMore(ATTRIBUTE),
+                RBRACE);
 
         b.rule(RELATIONSHIP_STMT).is(b.firstOf(RELATIONSHIP_LR_STMT, RELATIONSHIP_RL_STMT));
         b.rule(RELATIONSHIP_LR_STMT).is(
