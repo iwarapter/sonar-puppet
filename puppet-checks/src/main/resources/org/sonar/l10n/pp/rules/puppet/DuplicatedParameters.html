@@ -1,0 +1,15 @@
+<p>Defining several times the same parameter in a resource declaration leads to unexpected behavior.</p>
+<h2>Noncompliant Code Example</h2>
+<pre>
+file { '/tmp/foo':
+  owner => 'root',
+  owner => 'foo',
+}
+</pre>
+<h2>Compliant Solution</h2>
+<pre>
+file { '/tmp/foo':
+  owner => 'root',
+}
+</pre>
+

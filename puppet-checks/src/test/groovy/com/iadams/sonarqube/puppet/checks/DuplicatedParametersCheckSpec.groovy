@@ -22,30 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.checks;
+package com.iadams.sonarqube.puppet.checks
 
-import com.google.common.collect.ImmutableList;
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
+import spock.lang.Specification
 
-import java.util.List;
+class DuplicatedParametersCheckSpec extends Specification {
 
-public final class CheckList {
+    private final static MESSAGE = "Remove the duplicated parameter \"owner\".";
 
-	public static final String REPOSITORY_KEY = "puppet";
+    def "validate rule"() {
+        given:
+        DuplicatedParametersCheck check = new DuplicatedParametersCheck();
+        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/DuplicatedParameters.pp"), check);
 
-	public static final String SONAR_WAY_PROFILE = "Default";
-
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				DuplicatedParametersCheck.class,
-				EnsureOrderingCheck.class,
-				LineLengthCheck.class,
-				MissingNewLineAtEndOfFileCheck.class,
-				ParsingErrorCheck.class,
-				QuotedBooleanCheck.class,
-				TrailingWhitespaceCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class,
-				XPathCheck.class
-		);
-	}
+        expect:
+        CheckMessagesVerifier.verify(file.getCheckMessages())
+                .next().atLine(5).withMessage(MESSAGE)
+                .next().atLine(18).withMessage(MESSAGE)
+                .next().atLine(21).withMessage(MESSAGE)
+                .noMore();
+    }
 }
