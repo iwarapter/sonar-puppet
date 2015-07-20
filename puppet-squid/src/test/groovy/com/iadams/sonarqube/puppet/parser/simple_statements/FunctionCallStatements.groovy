@@ -29,19 +29,17 @@ import com.iadams.sonarqube.puppet.parser.GrammarSpec
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.FUNC_CALL
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-/**
- * @author iwarapter
- */
 class FunctionCallStatements extends GrammarSpec {
 
-	def setup(){
-		setRootRule(FUNC_CALL)
-	}
+    def setup() {
+        setRootRule(FUNC_CALL)
+    }
 
-	def "simple function call parses"() {
-		expect:
-		assertThat(p).matches('merge($_directory, $_directory_version)')
-		assertThat(p).matches('merge($_directory, $_directory_version,)')
-		assertThat(p).matches("fail 'hello'")
-	}
+    def "simple function call parses"() {
+        expect:
+        assertThat(p).matches('merge($_directory, $_directory_version)')
+        assertThat(p).matches('merge($_directory, $_directory_version,)')
+        assertThat(p).matches("fail 'hello'")
+        assertThat(p).matches('notice ($foo[1,2])')
+    }
 }

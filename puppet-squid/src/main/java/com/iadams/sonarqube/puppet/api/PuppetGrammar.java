@@ -1,4 +1,4 @@
-/**
+/*
  * Sonar Puppet Plugin
  * The MIT License (MIT)
  *
@@ -36,9 +36,6 @@ import static com.sonar.sslr.api.GenericTokenType.*;
 import static com.sonar.sslr.api.GenericTokenType.LITERAL;
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 
-/**
- * Created by iwarapter
- */
 public enum PuppetGrammar  implements GrammarRuleKey {
 
     CONDITION,
@@ -423,6 +420,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 | "(" <exp> ")"
                 | <rightvalue>*/
         b.rule(EXPRESSION).is(b.firstOf(
+                ARRAY_SECTIONING_STMT,
                 ACCESSOR,
                 ASSIGNMENT_EXPRESSION,
                 RIGHT_VALUE,
