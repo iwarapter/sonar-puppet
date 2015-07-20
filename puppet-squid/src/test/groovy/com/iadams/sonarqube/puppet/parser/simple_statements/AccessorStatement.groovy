@@ -50,4 +50,9 @@ class AccessorStatement extends GrammarSpec {
 		assertThat(p).matches('$foo[\'one\'][1]')
 		assertThat(p).matches('$main_site[port][https]')
 	}
+
+	def "accessors can handle complex expressions as identifer"(){
+		expect:
+		assertThat(p).matches('$logstash::conffile[$name]')
+	}
 }

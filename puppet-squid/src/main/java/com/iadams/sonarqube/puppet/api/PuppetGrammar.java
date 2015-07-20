@@ -300,7 +300,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                         b.firstOf(RESOURCE_REF,RESOURCE_COLLECTOR, RESOURCE, CLASS_RESOURCE_REF)
                 ));
 
-        b.rule(ACCESSOR).is(VARIABLE, b.oneOrMore(LBRACK, b.firstOf(LITERAL, INTEGER, IDENTIFIER), RBRACK));
+        b.rule(ACCESSOR).is(VARIABLE, b.oneOrMore(LBRACK, b.firstOf(VARIABLE, LITERAL, INTEGER, IDENTIFIER), RBRACK));
     }
 
     /**
