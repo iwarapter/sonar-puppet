@@ -49,6 +49,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     UNARY_NOT_EXPRESSION,
     UNARY_NEG_EXPRESSION,
 
+    IN_EXPRESSION,
+
     ATOM,
 
     SHIFT_EXPRESSION,
@@ -433,7 +435,9 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(UNARY_NOT_EXPRESSION).is(b.optional(NOT), ATOM).skipIfOneChild();
         b.rule(UNARY_NEG_EXPRESSION).is(b.optional(MINUS), UNARY_NOT_EXPRESSION).skipIfOneChild();
 
-        b.rule(MATCH_EXPRESSION).is(UNARY_NEG_EXPRESSION, b.zeroOrMore(MATCH_OPERATOR, UNARY_NEG_EXPRESSION)).skipIfOneChild();
+        b.rule(IN_EXPRESSION).is(UNARY_NEG_EXPRESSION, b.zeroOrMore(IN, UNARY_NEG_EXPRESSION)).skipIfOneChild();
+
+        b.rule(MATCH_EXPRESSION).is(IN_EXPRESSION, b.zeroOrMore(MATCH_OPERATOR, IN_EXPRESSION)).skipIfOneChild();
         b.rule(MULTIPLICATIVE_EXPRESSION).is(MATCH_EXPRESSION, b.zeroOrMore(M_OPER, MATCH_EXPRESSION)).skipIfOneChild();
         b.rule(ADDITIVE_EXPRESSION).is(MULTIPLICATIVE_EXPRESSION, b.zeroOrMore(A_OPER, MULTIPLICATIVE_EXPRESSION)).skipIfOneChild();
         b.rule(SHIFT_EXPRESSION).is(ADDITIVE_EXPRESSION, b.zeroOrMore(SHIFT_OPER, ADDITIVE_EXPRESSION)).skipIfOneChild();

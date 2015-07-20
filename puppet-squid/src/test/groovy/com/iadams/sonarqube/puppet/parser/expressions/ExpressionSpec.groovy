@@ -30,6 +30,7 @@ import spock.lang.Unroll
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.ADDITIVE_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.ASSIGNMENT_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.BOOL_EXPRESSION
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.EXPORTED_RESOURCE_COLLECTOR
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.MATCH_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.MULTIPLICATIVE_EXPRESSION
@@ -55,7 +56,6 @@ class ExpressionSpec extends GrammarSpec {
 				'5 < 9',
 				'($operatingsystem != \'Solaris\')',
 				'$var = 10',
-				//'$kernel in [\'linux\', \'solaris\']',
 				'!str2bool($is_virtual)']
 	}
 
@@ -135,5 +135,25 @@ class ExpressionSpec extends GrammarSpec {
 
 		expect:
 		assertThat(p).matches('$mod_path =~ /\\//')
+	}
+
+	@Unroll
+	def "in expression is supported: #snippet"(){
+		given:
+		setRootRule(EXPRESSION)
+
+		expect:
+		assertThat(p).matches(snippet)
+
+		where:
+		snippet	<< ["'eat' in 'eaten'",
+				   "'Eat' in 'eaten'",
+				   "'eat' in ['eat', 'ate', 'eating']",
+				   "'Eat' in ['eat', 'ate', 'eating']",
+				   "'eat' in { 'eat' => 'present tense', 'ate' => 'past tense'}",
+				   "'eat' in { 'present' => 'eat', 'past' => 'ate' }",
+				   "/(?i:EAT)/ in ['eat', 'ate', 'eating']",
+				   "Integer[100, 199] in [1, 2, 125]",
+				   "Integer[100, 199] in [1, 2, 25]"]
 	}
 }
