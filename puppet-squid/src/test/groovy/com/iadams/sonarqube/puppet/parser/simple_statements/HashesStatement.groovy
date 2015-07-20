@@ -29,28 +29,26 @@ import com.iadams.sonarqube.puppet.parser.GrammarSpec
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.HASHES
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-/**
- * Created by iwarapter
- */
 class HashesStatement extends GrammarSpec {
 
-	def setup(){
-		setRootRule(HASHES)
-	}
+    def setup() {
+        setRootRule(HASHES)
+    }
 
-	def "example hashes parses correctly"() {
-		expect:
-		assertThat(p).matches("{ key1 => 'val1', key2 => 'val2' }")
-		assertThat(p).matches("{ key1 => 'val1', key2 => 'val2', }")
-	}
+    def "example hashes parses correctly"() {
+        expect:
+        assertThat(p).matches("{ key1 => 'val1', key2 => 'val2' }")
+        assertThat(p).matches("{ key1 => 'val1', key2 => 'val2', }")
+        assertThat(p).matches("{ key1 => template('abc') }")
+    }
 
-	def "hashes with selectors parse"(){
-		expect:
-		assertThat(p).matches('''{
+    def "hashes with selectors parse"() {
+        expect:
+        assertThat(p).matches('''{
 									  'authnz_ldap' => $::apache::version::distrelease ? {
 											'7'     => 'mod_ldap',
 											default => 'mod_authz_ldap',
 									  }
 								 }''')
-	}
+    }
 }

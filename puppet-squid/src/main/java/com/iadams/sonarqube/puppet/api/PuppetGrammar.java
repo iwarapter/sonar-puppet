@@ -266,7 +266,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(INCLUDE_STMT).is("include", b.firstOf(LITERAL, QUALIFIED_IDENTIFIER));
 
         b.rule(HASHES).is(LBRACE,
-                b.zeroOrMore(HASH_KEY, FARROW, b.firstOf(SELECTOR_STMT, DATA_TYPE), b.optional(COMMA)),
+                b.zeroOrMore(HASH_KEY, FARROW, b.firstOf(FUNC_CALL, SELECTOR_STMT, DATA_TYPE), b.optional(COMMA)),
                 RBRACE,
                 b.optional(COMMA));
 
