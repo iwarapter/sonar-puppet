@@ -162,7 +162,10 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 ARGUMENT_EXPRESSION_LIST,
                 b.optional(RPAREN));
 
-        b.rule(ARGUMENT_EXPRESSION_LIST).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION), b.optional(COMMA));
+        b.rule(ARGUMENT_EXPRESSION_LIST).is(
+                b.firstOf(EXPRESSION, VARIABLE, QUALIFIED_IDENTIFIER, IDENTIFIER),
+                b.zeroOrMore(COMMA, EXPRESSION),
+                b.optional(COMMA));
 
         b.rule(ATTRIBUTE).is(b.firstOf(IDENTIFIER,
                         NOTIFY,
