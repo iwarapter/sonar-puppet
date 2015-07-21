@@ -163,7 +163,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.optional(RPAREN));
 
         b.rule(ARGUMENT_EXPRESSION_LIST).is(
-                b.firstOf(EXPRESSION, VARIABLE, IDENTIFIER),
+                b.firstOf(EXPRESSION, VARIABLE, QUALIFIED_IDENTIFIER, IDENTIFIER),
                 b.zeroOrMore(COMMA, EXPRESSION),
                 b.optional(COMMA));
 

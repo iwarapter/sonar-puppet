@@ -42,5 +42,7 @@ class FunctionCallStatements extends GrammarSpec {
         assertThat(p).matches("fail 'hello'")
         assertThat(p).matches('notice ($foo[1,2])')
         assertThat(p).matches('create_resources(user, $myusers)')
+        assertThat(p).matches('create_resources(abc::def, $myusers)')
+        assertThat(p).matches('create_resources($myusers, abc::def )')
     }
 }
