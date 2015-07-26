@@ -509,7 +509,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 INTEGER,
                 HEX_INTEGER,
                 OCTAL_INTEGER,
-                LITERAL)).skipIfOneChild();
+                DOUBLE_QUOTED_STRING_LITERAL,
+                SINGLE_QUOTED_STRING_LITERAL)).skipIfOneChild();
 
         //<regex> ::= '/regex/'
 

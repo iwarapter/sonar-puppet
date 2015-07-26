@@ -31,15 +31,20 @@ import com.sonar.sslr.api.TokenType;
  * Created by iwarapter on 16/12/14.
  */
 public enum PuppetTokenType implements TokenType {
-    VARIABLE,
-    //
-    //<float> | <integer> | <hex-integer> | <octal-integer>
     FLOAT,
     INTEGER,
     HEX_INTEGER,
     OCTAL_INTEGER,
     REGULAR_EXPRESSION_LITERAL,
     EMPTY,
+
+    DOUBLE_QUOTED_STRING_LITERAL,
+    SINGLE_QUOTED_STRING_LITERAL,
+
+    //https://github.com/puppetlabs/puppet-specifications/blob/master/language/lexical_structure.md#identifiers
+    NAME,
+    REF,
+    VARIABLE,
 
     INDENT,
     DEDENT,
