@@ -22,38 +22,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.parser.simple_statements
+package com.iadams.sonarqube.puppet.parser.compound_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.INCLUDE_STMT
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.EXPORTED_RESOURCE
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-class IncludeStatement extends GrammarSpec {
+public class ExportedResourceSpec extends GrammarSpec {
 
 	def setup(){
-		setRootRule(INCLUDE_STMT)
+		setRootRule(EXPORTED_RESOURCE)
 	}
 
-	def "simple include parses correctly"() {
+	def "virtual resources pass"() {
 		expect:
-		assertThat(p).matches('include common')
-		assertThat(p).matches("include 'common'")
-		assertThat(p).matches('include role::solaris')
-	}
-
-	def 'include a class reference'(){
-		expect:
-		assertThat(p).matches("include Class['base::linux']")
-	}
-
-	def 'include a list'(){
-		expect:
-		assertThat(p).matches('include common, apache')
-	}
-
-	def 'including variable (for an array)'(){
-		expect:
-		assertThat(p).matches('include $my_classes')
+		assertThat(p).matches('''@@nagios_service { "check_zfs${hostname}":
+									  use                 => 'generic-service',
+									  host_name           => "$fqdn",
+									  check_command       => 'check_nrpe_1arg!check_zfs',
+									  service_description => "check_zfs${hostname}",
+									  target              => '/etc/nagios3/conf.d/nagios_service.cfg',
+									  notify              => Service[$nagios::params::nagios_service],
+									}''')
 	}
 }

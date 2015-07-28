@@ -26,7 +26,6 @@ package com.iadams.sonarqube.puppet.lexer
 
 import com.google.common.base.Charsets
 import com.iadams.sonarqube.puppet.PuppetConfiguration
-import com.iadams.sonarqube.puppet.api.PuppetTokenType
 import com.sonar.sslr.api.Token
 import com.sonar.sslr.api.TokenType
 import com.sonar.sslr.impl.Lexer
@@ -38,7 +37,7 @@ import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.*
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.*
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.INTEGER
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.VARIABLE;
-import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.REGULAR_EXPRESSION_LITERAL;
 import static com.sonar.sslr.test.lexer.LexerMatchers.hasComment;
 import static com.sonar.sslr.test.lexer.LexerMatchers.hasToken;
 import static org.junit.Assert.assertThat;
@@ -59,6 +58,8 @@ class PuppetLexerSpec extends Specification {
         assertThat(lexer.lex('apache::port'), hasToken('apache::port', NAME))
         assertThat(lexer.lex('::apache'), hasToken('::apache', NAME))
         assertThat(lexer.lex('::apache::port'), hasToken('::apache::port', NAME))
+        //3x pattern only
+        assertThat(lexer.lex('contains-dash'), hasToken('contains-dash', NAME))
     }
 
     def "refs are lexed correctly"(){
@@ -257,6 +258,18 @@ class PuppetLexerSpec extends Specification {
         containsToken('role::solaris', NAME)
     }
 
+    def "virtual resources lex correctly"(){
+        given:
+        lexer.lex("@user {'deploy':")
+
+        expect:
+        containsToken('@', AT)
+        containsToken('user', NAME)
+        containsToken('{', LBRACE)
+        containsToken("'deploy'", SINGLE_QUOTED_STRING_LITERAL)
+        containsToken(':', COLON)
+    }
+
     @Unroll
     def "matches regular expressions"(){
         expect:
@@ -270,7 +283,7 @@ class PuppetLexerSpec extends Specification {
     }
 
     private static void assertRegexp(String regexp) {
-        assertThat(lexer.lex(regexp), hasToken(regexp, PuppetTokenType.REGULAR_EXPRESSION_LITERAL));
+        assertThat(lexer.lex(regexp), hasToken(regexp, REGULAR_EXPRESSION_LITERAL));
     }
 
     private boolean containsToken(String value, TokenType type){

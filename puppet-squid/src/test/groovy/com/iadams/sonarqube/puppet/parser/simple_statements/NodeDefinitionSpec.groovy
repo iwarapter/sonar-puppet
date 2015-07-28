@@ -26,34 +26,38 @@ package com.iadams.sonarqube.puppet.parser.simple_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.INCLUDE_STMT
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.NODE_DEFINITION
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-class IncludeStatement extends GrammarSpec {
+class NodeDefinitionSpec extends GrammarSpec {
 
 	def setup(){
-		setRootRule(INCLUDE_STMT)
+		setRootRule(NODE_DEFINITION)
 	}
 
-	def "simple include parses correctly"() {
+	def "simple node parses correctly"() {
 		expect:
-		assertThat(p).matches('include common')
-		assertThat(p).matches("include 'common'")
-		assertThat(p).matches('include role::solaris')
+		assertThat(p).matches("""node 'server1' {
+									include common
+								}""")
 	}
 
-	def 'include a class reference'(){
+	def "nodes can define inheritance"() {
 		expect:
-		assertThat(p).matches("include Class['base::linux']")
+		assertThat(p).matches("""node 'server1' inherits 'server2' {
+									include common
+								}""")
 	}
 
-	def 'include a list'(){
+	def "multi node definition parses correctly"() {
 		expect:
-		assertThat(p).matches('include common, apache')
-	}
+		assertThat(p).matches("""node 'server1', 'server2', 'server3' {
+									include common
+								}""")
 
-	def 'including variable (for an array)'(){
-		expect:
-		assertThat(p).matches('include $my_classes')
+		assertThat(p).matches("""node 'www1.example.com', 'www2.example.com', 'www3.example.com' {
+								  include common
+								  include apache, squid
+								}""")
 	}
 }

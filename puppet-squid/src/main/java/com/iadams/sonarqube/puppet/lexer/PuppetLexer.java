@@ -55,12 +55,12 @@ public class PuppetLexer {
             .withCharset(conf.getCharset())
             .withFailIfNoChannelToConsumeOneCharacter(true)
 
-            .withChannel(new NameAndKeywordChannel("(::)?[a-z]\\w*(::[a-z]\\w*)*", true, PuppetKeyword.values()))
-
             .withChannel(regexp(PuppetTokenType.HEX_INTEGER, "0(x|X)[0-9a-fA-F]+"))
             .withChannel(regexp(PuppetTokenType.OCTAL_INTEGER, "0[0-7]+"))
             .withChannel(regexp(PuppetTokenType.INTEGER, "[1-9][0-9]*"))
             .withChannel(regexp(PuppetTokenType.FLOAT, "0?\\d+(\\.\\d+)?([eE]-?\\d+)?"))
+
+            .withChannel(new NameAndKeywordChannel("((::)?[a-z0-9][-\\w]*)(::[a-z0-9][-\\w]*)*", true, PuppetKeyword.values()))
 
             .withChannel(regexp(PuppetTokenType.REF, "(::)?[A-Z]\\w*(::[A-Z]\\w*)*"))
             .withChannel(regexp(PuppetTokenType.VARIABLE, "\\$(::)?(\\w+::)*\\w+"))

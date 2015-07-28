@@ -22,33 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.parser.simple_statements
+package com.iadams.sonarqube.puppet.parser.compound_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.NODE_STMT
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.VIRTUAL_RESOURCE
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-/**
- * Created by iwarapter
- */
-class NodeStatement  extends GrammarSpec {
+public class VirtualResourceSpec extends GrammarSpec {
 
 	def setup(){
-		setRootRule(NODE_STMT)
+		setRootRule(VIRTUAL_RESOURCE)
 	}
 
-	def "simple node parses correctly"() {
+	def "virtual resources pass"() {
 		expect:
-		assertThat(p).matches("""node server1 {
-									include common
-								}""")
-	}
-
-	def "multi node definition parses correctly"() {
-		expect:
-		assertThat(p).matches("""node 'server1', 'server2', 'server3' {
-									include common
-								}""")
+		assertThat(p).matches('''@user {'deploy':
+								  uid     => 2004,
+								  comment => 'Deployment User',
+								  group   => www-data,
+								  groups  => ["enterprise"],
+								  tag     => [deploy, web],
+								}''')
 	}
 }
