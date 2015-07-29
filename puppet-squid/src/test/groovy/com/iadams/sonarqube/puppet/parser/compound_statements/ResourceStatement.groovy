@@ -25,8 +25,10 @@
 package com.iadams.sonarqube.puppet.parser.compound_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
+import spock.lang.Unroll
 
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.RESOURCE
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.RESOURCE_NAME
 import static org.sonar.sslr.tests.Assertions.assertThat
 
 /**
@@ -94,19 +96,35 @@ public class ResourceStatement extends GrammarSpec {
 	def "handle multiple resource bodies"(){
 		expect:
 		assertThat(p).matches('''file {
-								  default:
-									ensure => file,
-									owner  => "root",
-									group  => "wheel",
-									mode   => "0600",
-								  ;
-								  ['ssh_host_dsa_key', 'ssh_host_key', 'ssh_host_rsa_key']:
-									# use all defaults
-								  ;
-								  ['ssh_config', 'ssh_host_dsa_key.pub', 'ssh_host_key.pub', 'ssh_host_rsa_key.pub', 'sshd_config']:
-									# override mode
-									mode => "0644",
-								  ;
+								  '/etc/rc.d':
+									ensure => directory,
+									owner  => 'root',
+									group  => 'root',
+									mode   => '0755';
+
+								  '/etc/rc.d/init.d':
+									ensure => directory,
+									owner  => 'root',
+									group  => 'root',
+									mode   => '0755';
+
+								  '/etc/rc.d/rc0.d':
+									ensure => directory,
+									owner  => 'root',
+									group  => 'root',
+									mode   => '0755';
 								}''')
+	}
+
+	@Unroll
+	def "resource names parse"(){
+		given:
+		setRootRule(RESOURCE_NAME)
+
+		expect:
+		assertThat(p).matches(name)
+
+		where:
+		name << ["'dav_svn'", '"dav_svn"' ]
 	}
 }

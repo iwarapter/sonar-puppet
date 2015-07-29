@@ -36,6 +36,9 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL;
+
 @Rule(
 		key = "UserResourceLiteralName",
 		priority = Priority.MAJOR,
@@ -57,8 +60,8 @@ public class UserResourceLiteralNameCheck extends SquidCheck<Grammar> {
 		if ("user".equals(node.getTokenValue())) {
 			for (AstNode body : node.getChildren(PuppetGrammar.RESOURCE_BODY)) {
 				for (AstNode name : body.getChildren(PuppetGrammar.RESOURCE_NAME)) {
-					if (name.getFirstChild(GenericTokenType.LITERAL) != null) {
-						getContext().createLineViolation(this, "Remove this hardcoded user name.", name.getFirstChild(GenericTokenType.LITERAL).getTokenLine());
+					if(name.getToken().getType().equals(SINGLE_QUOTED_STRING_LITERAL) || name.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL)) {
+						getContext().createLineViolation(this, "Remove this hardcoded user name.", name.getTokenLine());
 					}
 				}
 			}

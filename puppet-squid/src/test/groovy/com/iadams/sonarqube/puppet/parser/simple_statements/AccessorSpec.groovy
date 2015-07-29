@@ -32,7 +32,7 @@ import static org.sonar.sslr.tests.Assertions.assertThat
 /**
  * Created by iwarapter
  */
-class AccessorStatement extends GrammarSpec {
+class AccessorSpec extends GrammarSpec {
 
 	def setup(){
 		setRootRule(ACCESSOR)
@@ -42,6 +42,11 @@ class AccessorStatement extends GrammarSpec {
 		expect:
 		assertThat(p).matches('$foo[1]')
 		assertThat(p).matches('$foo[\'one\']')
+	}
+
+	def "negative integer array accessor"() {
+		expect:
+		assertThat(p).matches('$foo[-1]')
 	}
 
 	def "Nested arrays and hashes can be accessed by chaining indexes"() {

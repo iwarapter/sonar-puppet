@@ -32,7 +32,6 @@ import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.*;
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.*;
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.NEWLINE;
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.VARIABLE;
-import static com.sonar.sslr.api.GenericTokenType.*;
 import static com.sonar.sslr.api.GenericTokenType.LITERAL;
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 
@@ -163,24 +162,26 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
     public static void grammar(LexerfulGrammarBuilder b) {
 
-        //b.rule(NAME).is(IDENTIFIER);
-
         b.rule(FUNC_CALL).is(
                 NAME,
                 b.optional(LPAREN),
                 ARGUMENT_EXPRESSION_LIST,
                 b.optional(RPAREN));
 
-        b.rule(ARGUMENT_EXPRESSION_LIST).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION), b.optional(COMMA));
+        b.rule(ARGUMENT_EXPRESSION_LIST).is(
+                b.firstOf(NAME, EXPRESSION),
+                b.zeroOrMore(COMMA,
+                        b.firstOf(NAME, EXPRESSION)),
+                b.optional(COMMA));
 
-        b.rule(ATTRIBUTE).is(b.firstOf(IDENTIFIER,
+        b.rule(ATTRIBUTE).is(b.firstOf(NAME,
                         NOTIFY,
                         REQUIRE,
                         BEFORE,
                         UNLESS,
                         SUBSCRIBE),
                 FARROW,
-                b.firstOf(SELECTOR_STMT, EXPRESSION, RESOURCE_REF, LITERALS, IDENTIFIER, TRUE, FALSE),
+                b.firstOf(SELECTOR_STMT, EXPRESSION, RESOURCE_REF, LITERALS, NAME, TRUE, FALSE),
                 b.optional(COMMA));
 
         //https://docs.puppetlabs.com/puppet/latest/reference/lang_resources_advanced.html#full-syntax
@@ -197,15 +198,13 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 ARRAY,
                 DEFAULT,
                 NAME,
-                VARIABLE,
-                DOUBLE_QUOTED_STRING_LITERAL,
-                SINGLE_QUOTED_STRING_LITERAL));
+                QUOTED_TEXT,
+                VARIABLE));
 
 
         b.rule(DATA_TYPE).is(b.firstOf(TRUE,
                 FALSE,
                 UNDEF,
-                LITERAL,
                 INTEGER,
                 HEX_INTEGER,
                 OCTAL_INTEGER,
@@ -277,10 +276,11 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(INCLUDE_STMT).is(
                 "include",
+                b.firstOf(CLASS_REF, NAME, REF, VARIABLE, QUOTED_TEXT),
                 b.zeroOrMore(
-                        b.firstOf(CLASS_REF, NAME, REF, VARIABLE, QUOTED_TEXT),
-                        b.optional(COMMA)
-                ));
+                        COMMA,
+                        b.firstOf(CLASS_REF, NAME, REF, VARIABLE, QUOTED_TEXT)),
+                b.optional(COMMA));
 
         b.rule(HASHES).is(LBRACE,
                 b.zeroOrMore(HASH_KEY, FARROW, b.firstOf(FUNC_CALL, SELECTOR_STMT, DATA_TYPE), b.optional(COMMA)),
@@ -296,12 +296,12 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RBRACK);
 
         //https://docs.puppetlabs.com/puppet/latest/reference/lang_data_array.html#array-sectioning
-        b.rule(ARRAY_SECTIONING_STMT).is(VARIABLE, LBRACK, INTEGER, COMMA, INTEGER, RBRACK);
+        b.rule(ARRAY_SECTIONING_STMT).is(VARIABLE, LBRACK, EXPRESSION, COMMA, EXPRESSION, RBRACK);
 
         b.rule(RESOURCE_REF).is(REF, ARRAY);
 
         b.rule(RESOURCE_DEFAULT_STMT).is(
-                NAME,
+                REF,
                 LBRACE,
                 b.zeroOrMore(ATTRIBUTE),
                 RBRACE);
@@ -320,7 +320,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                         b.firstOf(RESOURCE_REF, RESOURCE_COLLECTOR, RESOURCE, CLASS_RESOURCE_REF)
                 ));
 
-        b.rule(ACCESSOR).is(VARIABLE, b.oneOrMore(LBRACK, b.firstOf(QUOTED_TEXT, INTEGER, NAME, REF), RBRACK));
+        b.rule(ACCESSOR).is(VARIABLE, b.oneOrMore(LBRACK, b.firstOf(QUOTED_TEXT, EXPRESSION, NAME, REF), RBRACK));
 
 
         b.rule(NODE_DEFINITION).is(
@@ -373,7 +373,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(CLASS_RESOURCE_REF).is(
                 CLASS,
                 LBRACE,
-                LITERAL,
+                QUOTED_TEXT,
                 COLON,
                 b.zeroOrMore(ATTRIBUTE),
                 RBRACE);
@@ -394,8 +394,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.zeroOrMore(CASE_MATCHER),
                 RBRACE);
         b.rule(CASE_MATCHER).is(CASES, COLON, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
-        b.rule(CASES).is(b.firstOf(TRUE, FALSE, NAME, DEFAULT, LITERAL, VARIABLE, FUNC_CALL, REGULAR_EXPRESSION_LITERAL),
-                         b.zeroOrMore(COMMA, b.firstOf(TRUE, FALSE, NAME, DEFAULT, LITERAL, VARIABLE, FUNC_CALL, REGULAR_EXPRESSION_LITERAL)));
+        b.rule(CASES).is(b.firstOf(TRUE, FALSE, NAME, DEFAULT, QUOTED_TEXT, VARIABLE, FUNC_CALL, REGULAR_EXPRESSION_LITERAL),
+                         b.zeroOrMore(COMMA, b.firstOf(TRUE, FALSE, NAME, DEFAULT, QUOTED_TEXT, VARIABLE, FUNC_CALL, REGULAR_EXPRESSION_LITERAL)));
 
         b.rule(SELECTOR_STMT).is(
                 CONTROL_VAR,
@@ -444,7 +444,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 OR,
                 b.firstOf(COLLECTOR_EQ_SEARCH, COLLECTOR_NOTEQ_SEARCH));
 
-        b.rule(EXPORTED_RESOURCE_COLLECTOR).is(NAME, LLCOLLECT, b.optional(RESOURCE_COLLECTOR_SEARCH), RRCOLLECT);
+        b.rule(EXPORTED_RESOURCE_COLLECTOR).is(REF, LLCOLLECT, b.optional(RESOURCE_COLLECTOR_SEARCH), RRCOLLECT);
 
         b.rule(EXPORTED_RESOURCE).is(AT, AT, RESOURCE);
 
@@ -458,7 +458,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
      */
     public static void expressions(LexerfulGrammarBuilder b){
 
-        b.rule(CONDITION).is(ASSIGNMENT_EXPRESSION);
+        b.rule(CONDITION).is(EXPRESSION);
 
         /*<exp> ::=  <exp> <arithop> <exp>
                 | <exp> <boolop> <exp>
@@ -491,6 +491,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(ASSIGNMENT_EXPRESSION).is(BOOL_EXPRESSION, b.zeroOrMore(EQUALS, BOOL_EXPRESSION)).skipIfOneChild();
 
         b.rule(ATOM).is(b.firstOf(
+                ACCESSOR,
                 b.sequence(LPAREN, ASSIGNMENT_EXPRESSION, RPAREN),
                 SELECTOR_STMT,
                 REGULAR_EXPRESSION_LITERAL,

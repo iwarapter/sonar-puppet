@@ -10,7 +10,7 @@ user {
   $username :
     ensure => present
   ;
-  'tim' :
+  "tim" :
     ensure => present
   ;
 }
