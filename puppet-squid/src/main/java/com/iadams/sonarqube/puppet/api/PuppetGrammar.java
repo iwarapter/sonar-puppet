@@ -36,7 +36,6 @@ import static com.sonar.sslr.api.GenericTokenType.EOF;
 
 public enum PuppetGrammar  implements GrammarRuleKey {
 
-    CONDITION,
     ATTRIBUTE,
     DATA_TYPE,
     QUOTED_TEXT,
@@ -297,7 +296,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(HASH_PAIR).is(KEY, FARROW, EXPRESSION);
 
-        b.rule(KEY).is(b.firstOf(NAME, QUOTED_TEXT));
+        b.rule(KEY).is(b.firstOf(NAME, QUOTED_TEXT, REQUIRE));
 
         b.rule(ARRAY).is(LBRACK,
                 b.zeroOrMore(b.firstOf(FUNC_CALL, DATA_TYPE),
@@ -393,14 +392,14 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(CLASSNAME).is(NAME);
 
         b.rule(IF_STMT).is(IF,
-                CONDITION,
+                EXPRESSIONS,
                 LBRACE,
                 b.zeroOrMore(STATEMENT),
                 RBRACE,
                 b.zeroOrMore(ELSEIF_STMT),
                 b.optional(ELSE, LBRACE, b.zeroOrMore(STATEMENT), RBRACE));
 
-        b.rule(ELSEIF_STMT).is(ELSIF, CONDITION, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
+        b.rule(ELSEIF_STMT).is(ELSIF, EXPRESSIONS, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
 
         b.rule(CASE_STMT).is(CASE, b.firstOf(VARIABLE, EXPRESSION), LBRACE,
                 b.zeroOrMore(CASE_MATCHER),
@@ -470,16 +469,13 @@ public enum PuppetGrammar  implements GrammarRuleKey {
      */
     public static void expressions(LexerfulGrammarBuilder b){
 
-        b.rule(CONDITION).is(EXPRESSION);
-
-
         b.rule(EXPRESSION).is(b.firstOf(
+                ASSIGNMENT_EXPRESSION,
+                HASH_ARRAY_ACCESSES,
                 RIGHT_VALUE,
                 HASH,
 
-                ARRAY_SECTIONING_STMT,
-                HASH_ARRAY_ACCESS,
-                ASSIGNMENT_EXPRESSION,
+                //ARRAY_SECTIONING_STMT,
                 RIGHT_VALUE,
                 RESOURCE_REF));
 
