@@ -102,7 +102,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     PARAMETER,
     INCLUDE_STMT,
     ARRAY,
-    ARRAY_SECTIONING_STMT,
     HASH,
     HASH_PAIRS,
     HASH_PAIR,
@@ -244,8 +243,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 //NODE_STMT,
                 NODE_DEFINITION,
                 INCLUDE_STMT,
-                REQUIRE_STMT,
-                ARRAY_SECTIONING_STMT));
+                REQUIRE_STMT));
 
         b.rule(DEFINE_STMT).is(DEFINE,
                 DEFINE_NAME,
@@ -304,9 +302,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.optional(COMMA),
                 RBRACK);
 
-        //https://docs.puppetlabs.com/puppet/latest/reference/lang_data_array.html#array-sectioning
-        b.rule(ARRAY_SECTIONING_STMT).is(VARIABLE, LBRACK, EXPRESSION, COMMA, EXPRESSION, RBRACK);
-
         b.rule(RESOURCE_REF).is(
                 b.firstOf(NAME, REF), LBRACK, EXPRESSIONS, RBRACK);
 
@@ -330,8 +325,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                         b.firstOf(RESOURCE_REF, RESOURCE_COLLECTOR, RESOURCE, CLASS_RESOURCE_REF)
                 ));
 
-        b.rule(HASH_ARRAY_ACCESS).is(VARIABLE, LBRACK, EXPRESSIONS, RBRACK);
-        b.rule(HASH_ARRAY_ACCESSES).is(HASH_ARRAY_ACCESS, b.zeroOrMore(LBRACK, EXPRESSIONS, RBRACK));
+        b.rule(HASH_ARRAY_ACCESS).is(VARIABLE, LBRACK, EXPRESSION, RBRACK);
+        b.rule(HASH_ARRAY_ACCESSES).is(HASH_ARRAY_ACCESS, b.zeroOrMore(LBRACK, EXPRESSION, RBRACK));
 
 
         b.rule(NODE_DEFINITION).is(
