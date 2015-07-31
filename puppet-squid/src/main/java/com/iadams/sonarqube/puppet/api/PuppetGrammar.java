@@ -32,7 +32,6 @@ import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.*;
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.*;
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.NEWLINE;
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.VARIABLE;
-import static com.sonar.sslr.api.GenericTokenType.LITERAL;
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 
 public enum PuppetGrammar  implements GrammarRuleKey {
@@ -42,12 +41,15 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     DATA_TYPE,
     QUOTED_TEXT,
 
-    //EXPRESSIONS
+    TYPE,
+
     EXPRESSION,
+    EXPRESSIONS,
     BOOL_EXPRESSION,
     MATCH_EXPRESSION,
     UNARY_NOT_EXPRESSION,
     UNARY_NEG_EXPRESSION,
+    IN_EXPRESSION,
 
     ATOM,
 
@@ -102,13 +104,16 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     INCLUDE_STMT,
     ARRAY,
     ARRAY_SECTIONING_STMT,
-    HASHES,
-    HASH_KEY,
+    HASH,
+    HASH_PAIRS,
+    HASH_PAIR,
+    KEY,
     CLASS_RESOURCE_REF,
     RELATIONSHIP_STMT,
     RELATIONSHIP_LR_STMT,
     RELATIONSHIP_RL_STMT,
-    ACCESSOR,
+    HASH_ARRAY_ACCESS,
+    HASH_ARRAY_ACCESSES,
 
     RESOURCE_COLLECTOR,
     RESOURCE_COLLECTOR_SEARCH,
@@ -199,7 +204,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 DEFAULT,
                 NAME,
                 QUOTED_TEXT,
-                VARIABLE));
+                VARIABLE,
+                HASH_ARRAY_ACCESSES));
 
 
         b.rule(DATA_TYPE).is(b.firstOf(TRUE,
@@ -210,7 +216,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 OCTAL_INTEGER,
                 FLOAT,
                 ARRAY,
-                HASHES,
+                HASH,
                 QUOTED_TEXT,
                 NAME,
                 REF,
@@ -221,6 +227,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.firstOf(
                         SINGLE_QUOTED_STRING_LITERAL,
                         DOUBLE_QUOTED_STRING_LITERAL));
+
+        b.rule(TYPE).is(REF);
     }
 
     /**
@@ -282,12 +290,14 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                         b.firstOf(CLASS_REF, NAME, REF, VARIABLE, QUOTED_TEXT)),
                 b.optional(COMMA));
 
-        b.rule(HASHES).is(LBRACE,
-                b.zeroOrMore(HASH_KEY, FARROW, b.firstOf(FUNC_CALL, SELECTOR_STMT, DATA_TYPE), b.optional(COMMA)),
-                RBRACE,
-                b.optional(COMMA));
+        b.rule(HASH).is(LBRACE,
+                b.zeroOrMore(HASH_PAIR,
+                        b.optional(COMMA)),
+                RBRACE);
 
-        b.rule(HASH_KEY).is(b.firstOf(NAME, LITERAL, QUOTED_TEXT ,REQUIRE));
+        b.rule(HASH_PAIR).is(KEY, FARROW, EXPRESSION);
+
+        b.rule(KEY).is(b.firstOf(NAME, QUOTED_TEXT));
 
         b.rule(ARRAY).is(LBRACK,
                 b.zeroOrMore(b.firstOf(FUNC_CALL, DATA_TYPE),
@@ -298,7 +308,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         //https://docs.puppetlabs.com/puppet/latest/reference/lang_data_array.html#array-sectioning
         b.rule(ARRAY_SECTIONING_STMT).is(VARIABLE, LBRACK, EXPRESSION, COMMA, EXPRESSION, RBRACK);
 
-        b.rule(RESOURCE_REF).is(REF, ARRAY);
+        b.rule(RESOURCE_REF).is(
+                b.firstOf(NAME, REF), LBRACK, EXPRESSIONS, RBRACK);
 
         b.rule(RESOURCE_DEFAULT_STMT).is(
                 REF,
@@ -311,7 +322,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.firstOf(RESOURCE, RESOURCE_REF, RESOURCE_COLLECTOR, CLASS_RESOURCE_REF),
                 b.oneOrMore(
                         b.firstOf(IN_EDGE, IN_EDGE_SUB),
-                        b.firstOf(RESOURCE_REF,RESOURCE_COLLECTOR, RESOURCE, CLASS_RESOURCE_REF)
+                        b.firstOf(RESOURCE_REF, RESOURCE_COLLECTOR, RESOURCE, CLASS_RESOURCE_REF)
                 ));
         b.rule(RELATIONSHIP_RL_STMT).is(
                 b.firstOf(RESOURCE, RESOURCE_REF, RESOURCE_COLLECTOR, CLASS_RESOURCE_REF),
@@ -320,7 +331,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                         b.firstOf(RESOURCE_REF, RESOURCE_COLLECTOR, RESOURCE, CLASS_RESOURCE_REF)
                 ));
 
-        b.rule(ACCESSOR).is(VARIABLE, b.oneOrMore(LBRACK, b.firstOf(QUOTED_TEXT, EXPRESSION, NAME, REF), RBRACK));
+        b.rule(HASH_ARRAY_ACCESS).is(VARIABLE, LBRACK, EXPRESSIONS, RBRACK);
+        b.rule(HASH_ARRAY_ACCESSES).is(HASH_ARRAY_ACCESS, b.zeroOrMore(LBRACK, EXPRESSIONS, RBRACK));
 
 
         b.rule(NODE_DEFINITION).is(
@@ -460,20 +472,18 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(CONDITION).is(EXPRESSION);
 
-        /*<exp> ::=  <exp> <arithop> <exp>
-                | <exp> <boolop> <exp>
-                | <exp> <compop> <exp>
-                | <exp> <matchop> <regex>
-                | ! <exp>
-                | - <exp>
-                | "(" <exp> ")"
-                | <rightvalue>*/
+
         b.rule(EXPRESSION).is(b.firstOf(
+                RIGHT_VALUE,
+                HASH,
+
                 ARRAY_SECTIONING_STMT,
-                ACCESSOR,
+                HASH_ARRAY_ACCESS,
                 ASSIGNMENT_EXPRESSION,
                 RIGHT_VALUE,
                 RESOURCE_REF));
+
+        b.rule(EXPRESSIONS).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION));
 
         //https://docs.puppetlabs.com/puppet/latest/reference/lang_expressions.html#order-of-operations
 
@@ -482,7 +492,9 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(UNARY_NOT_EXPRESSION).is(b.optional(NOT), ATOM).skipIfOneChild();
         b.rule(UNARY_NEG_EXPRESSION).is(b.optional(MINUS), UNARY_NOT_EXPRESSION).skipIfOneChild();
 
-        b.rule(MATCH_EXPRESSION).is(UNARY_NEG_EXPRESSION, b.zeroOrMore(MATCH_OPERATOR, UNARY_NEG_EXPRESSION)).skipIfOneChild();
+        b.rule(IN_EXPRESSION).is(UNARY_NEG_EXPRESSION, b.zeroOrMore(IN, UNARY_NEG_EXPRESSION)).skipIfOneChild();
+
+        b.rule(MATCH_EXPRESSION).is(IN_EXPRESSION, b.zeroOrMore(MATCH_OPERATOR, IN_EXPRESSION)).skipIfOneChild();
         b.rule(MULTIPLICATIVE_EXPRESSION).is(MATCH_EXPRESSION, b.zeroOrMore(M_OPER, MATCH_EXPRESSION)).skipIfOneChild();
         b.rule(ADDITIVE_EXPRESSION).is(MULTIPLICATIVE_EXPRESSION, b.zeroOrMore(A_OPER, MULTIPLICATIVE_EXPRESSION)).skipIfOneChild();
         b.rule(SHIFT_EXPRESSION).is(ADDITIVE_EXPRESSION, b.zeroOrMore(SHIFT_OPER, ADDITIVE_EXPRESSION)).skipIfOneChild();
@@ -491,7 +503,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(ASSIGNMENT_EXPRESSION).is(BOOL_EXPRESSION, b.zeroOrMore(EQUALS, BOOL_EXPRESSION)).skipIfOneChild();
 
         b.rule(ATOM).is(b.firstOf(
-                ACCESSOR,
+                HASH_ARRAY_ACCESS,
                 b.sequence(LPAREN, ASSIGNMENT_EXPRESSION, RPAREN),
                 SELECTOR_STMT,
                 REGULAR_EXPRESSION_LITERAL,
@@ -503,7 +515,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 FALSE,
                 UNDEF,
                 ARRAY,
-                HASHES
+                HASH
         ));
 
 
@@ -546,12 +558,17 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 MATCH,
                 NOMATCH));
 
-        //<rightvalue> ::= <variable> | <function-call> | <literals>
         b.rule(RIGHT_VALUE).is(b.firstOf(
+                QUOTED_TEXT,
                 FUNC_CALL,
+                NAME,
+                TRUE, FALSE,
+                SELECTOR_STMT,
                 VARIABLE,
-                LITERALS,
-                ARRAY));
+                ARRAY,
+                HASH_ARRAY_ACCESSES,
+                RESOURCE_REF,
+                UNDEF));
 
         //<literals> ::= <float> | <integer> | <hex-integer> | <octal-integer> | <quoted-string>
         b.rule(LITERALS).is(b.firstOf(

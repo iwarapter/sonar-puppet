@@ -26,16 +26,13 @@ package com.iadams.sonarqube.puppet.parser.simple_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.ACCESSOR
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.HASH_ARRAY_ACCESSES
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-/**
- * Created by iwarapter
- */
 class AccessorSpec extends GrammarSpec {
 
 	def setup(){
-		setRootRule(ACCESSOR)
+		setRootRule(HASH_ARRAY_ACCESSES)
 	}
 
 	def "simple array/hashes accessor"() {

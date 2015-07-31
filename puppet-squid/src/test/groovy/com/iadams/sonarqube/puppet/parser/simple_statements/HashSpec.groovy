@@ -26,13 +26,13 @@ package com.iadams.sonarqube.puppet.parser.simple_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.HASHES
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.HASH
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-class HashesStatement extends GrammarSpec {
+class HashSpec extends GrammarSpec {
 
     def setup() {
-        setRootRule(HASHES)
+        setRootRule(HASH)
     }
 
     def "example hashes parses correctly"() {
