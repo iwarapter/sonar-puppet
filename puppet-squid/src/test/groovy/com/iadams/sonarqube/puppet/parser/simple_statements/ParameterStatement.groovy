@@ -26,13 +26,13 @@ package com.iadams.sonarqube.puppet.parser.simple_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.PARAMETER
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.ARGUMENTS
 import static org.sonar.sslr.tests.Assertions.assertThat
 
 class ParameterStatement extends GrammarSpec {
 
     def setup() {
-        setRootRule(PARAMETER)
+        setRootRule(ARGUMENTS)
     }
 
     def "matching"() {

@@ -41,6 +41,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     QUOTED_TEXT,
 
     TYPE,
+    END_COMMA,
 
     EXPRESSION,
     EXPRESSIONS,
@@ -71,6 +72,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     RIGHT_VALUE,
     LITERALS,
     FUNCVALUES,
+    FUNCRVALUE,
     //NAME,
     NAMESPACE_SEP,
 
@@ -90,16 +92,13 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
     RESOURCE_REF,
     RESOURCE_DEFAULT_STMT,
-    CLASS_REF,
-    EXEC_RESOURCE,
-    DEFINE_STMT,
-    DEFINE_NAME,
     REQUIRE_STMT,
-    CONTAIN_STMT,
+    DEFINITION,
     COLLECTION,
     FUNCTION_STMT,
-    PARAM_LIST,
-    PARAMETER,
+    ARGUMENT_LIST,
+    ARGUMENTS,
+    ARGUMENT,
     INCLUDE_STMT,
     ARRAY,
     HASH,
@@ -107,19 +106,21 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     HASH_PAIR,
     KEY,
     CLASS_RESOURCE_REF,
-    RELATIONSHIP_STMT,
-    RELATIONSHIP_LR_STMT,
-    RELATIONSHIP_RL_STMT,
+
+    RELATIONSHIP,
+    RELATIONSHIPS,
+    RELATIONSHIP_SIDE,
+    EDGE,
+
     HASH_ARRAY_ACCESS,
     HASH_ARRAY_ACCESSES,
 
-    RESOURCE_COLLECTOR,
-    RESOURCE_COLLECTOR_SEARCH,
-    COLLECTOR_EQ_SEARCH,
-    COLLECTOR_NOTEQ_SEARCH,
-    COLLECTOR_AND_SEARCH,
-    COLLECTOR_OR_SEARCH,
-    EXPORTED_RESOURCE_COLLECTOR,
+    COLLECTOR_VAL,
+    COLLECTOR,
+    COLLECT_EXPR,
+    COLLECT_JOIN,
+    COLLECT_STMT,
+    COLLECT_STMTS,
 
     NODE_DEFINITION,
     HOST_MATCHES,
@@ -174,6 +175,13 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RIGHT_VALUE,
                 b.zeroOrMore(COMMA, RIGHT_VALUE));
 
+        b.rule(FUNCRVALUE).is(
+                NAME,
+                LPAREN,
+                b.optional(EXPRESSIONS),
+                RPAREN
+        );
+
         b.rule(ATTRIBUTE).is(b.firstOf(NAME,
                         NOTIFY,
                         REQUIRE,
@@ -185,7 +193,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.optional(COMMA));
 
         //https://docs.puppetlabs.com/puppet/latest/reference/lang_resources_advanced.html#full-syntax
-        b.rule(RESOURCE).is(NAME,
+        b.rule(RESOURCE).is(CLASSNAME,
                 LBRACE,
                 b.oneOrMore(RESOURCE_BODY, b.optional(SEMIC)),
                 RBRACE);
@@ -229,6 +237,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                         DOUBLE_QUOTED_STRING_LITERAL));
 
         b.rule(TYPE).is(REF);
+
+        b.rule(END_COMMA).is(b.optional(COMMA));
     }
 
     /**
@@ -238,57 +248,41 @@ public enum PuppetGrammar  implements GrammarRuleKey {
      */
     public static void simpleStatements(LexerfulGrammarBuilder b) {
         b.rule(SIMPLE_STMT).is(b.firstOf(
-                RELATIONSHIP_STMT,
+                RELATIONSHIP,
                 RESOURCE,
                 RESOURCE_DEFAULT_STMT,
                 RESOURCE_OVERRIDE,
-                DEFINE_STMT,
+                DEFINITION,
                 //NODE_STMT,
                 NODE_DEFINITION,
-                INCLUDE_STMT,
-                REQUIRE_STMT));
+                REQUIRE_STMT,
+                INCLUDE_STMT));
 
-        b.rule(DEFINE_STMT).is(DEFINE,
-                DEFINE_NAME,
-                b.optional(PARAM_LIST),
+        b.rule(DEFINITION).is(DEFINE,
+                CLASSNAME,
+                ARGUMENT_LIST,
                 LBRACE,
                 b.zeroOrMore(STATEMENT),
                 RBRACE);
 
-        b.rule(DEFINE_NAME).is(NAME);
+        b.rule(ARGUMENT_LIST).is(b.optional(b.firstOf(
+                b.sequence(LPAREN, RPAREN),
+                b.sequence(LPAREN, ARGUMENTS, END_COMMA, RPAREN)
+        )));
 
-        b.rule(CLASS_REF).is("Class", ARRAY);
+        b.rule(REQUIRE_STMT).is(REQUIRE, FUNCVALUES);
 
-        //https://docs.puppetlabs.com/puppet/latest/reference/lang_classes.html#using-require
-        b.rule(REQUIRE_STMT).is(REQUIRE,
-                b.firstOf(
-                        ARRAY,
-                        b.sequence(CLASS_REF, b.zeroOrMore(COMMA, CLASS_REF)),
-                        b.sequence(CLASSNAME, b.zeroOrMore(COMMA, CLASSNAME))
-                ));
+        b.rule(ARGUMENTS).is(
+                ARGUMENT,
+                b.zeroOrMore(COMMA, ARGUMENT)
+        );
 
-        //https://docs.puppetlabs.com/puppet/latest/reference/lang_classes.html#using-contain
-        b.rule(CONTAIN_STMT).is("contain",
-                b.firstOf(
-                        ARRAY,
-                        b.sequence(CLASS_REF, b.zeroOrMore(COMMA, CLASS_REF)),
-                        b.sequence(CLASSNAME, b.zeroOrMore(COMMA, CLASSNAME))
-                ));
+        b.rule(ARGUMENT).is(b.firstOf(
+                b.sequence(VARIABLE, EQUALS, EXPRESSION),
+                VARIABLE
+        ));
 
-        b.rule(PARAM_LIST).is(LPAREN,
-                b.zeroOrMore(PARAMETER, b.optional(COMMA)),
-                RPAREN);
-
-        b.rule(PARAMETER).is(VARIABLE,
-                b.optional(EQUALS, b.firstOf(FUNCTION_STMT, DATA_TYPE)));
-
-        b.rule(INCLUDE_STMT).is(
-                "include",
-                b.firstOf(CLASS_REF, NAME, REF, VARIABLE, QUOTED_TEXT),
-                b.zeroOrMore(
-                        COMMA,
-                        b.firstOf(CLASS_REF, NAME, REF, VARIABLE, QUOTED_TEXT)),
-                b.optional(COMMA));
+        b.rule(INCLUDE_STMT).is("include", FUNCVALUES);
 
         b.rule(HASH).is(LBRACE,
                 b.zeroOrMore(HASH_PAIR,
@@ -306,7 +300,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RBRACK);
 
         b.rule(RESOURCE_REF).is(
-                b.firstOf(NAME, REF), LBRACK, EXPRESSIONS, RBRACK);
+                b.firstOf(NAME, TYPE), LBRACK, EXPRESSIONS, RBRACK);
 
         b.rule(RESOURCE_DEFAULT_STMT).is(
                 REF,
@@ -314,19 +308,28 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.zeroOrMore(ATTRIBUTE),
                 RBRACE);
 
-        b.rule(RELATIONSHIP_STMT).is(b.firstOf(RELATIONSHIP_LR_STMT, RELATIONSHIP_RL_STMT));
-        b.rule(RELATIONSHIP_LR_STMT).is(
-                b.firstOf(RESOURCE, RESOURCE_REF, RESOURCE_COLLECTOR, CLASS_RESOURCE_REF),
-                b.oneOrMore(
-                        b.firstOf(IN_EDGE, IN_EDGE_SUB),
-                        b.firstOf(RESOURCE_REF, RESOURCE_COLLECTOR, RESOURCE, CLASS_RESOURCE_REF)
-                ));
-        b.rule(RELATIONSHIP_RL_STMT).is(
-                b.firstOf(RESOURCE, RESOURCE_REF, RESOURCE_COLLECTOR, CLASS_RESOURCE_REF),
-                b.oneOrMore(
-                        b.firstOf(OUT_EDGE, OUT_EDGE_SUB),
-                        b.firstOf(RESOURCE_REF, RESOURCE_COLLECTOR, RESOURCE, CLASS_RESOURCE_REF)
-                ));
+        b.rule(RELATIONSHIP).is(
+                RELATIONSHIP_SIDE,
+                EDGE,
+                RELATIONSHIP_SIDE,
+                b.zeroOrMore(
+                        EDGE,
+                        RELATIONSHIP_SIDE
+                )
+        );
+
+        b.rule(RELATIONSHIP_SIDE).is(b.firstOf(
+                RESOURCE,
+                RESOURCE_REF,
+                COLLECTION,
+                VARIABLE,
+                QUOTED_TEXT,
+                SELECTOR_STMT,
+                CASE_STMT,
+                HASH_ARRAY_ACCESSES
+        ));
+
+        b.rule(EDGE).is(b.firstOf(IN_EDGE, OUT_EDGE, IN_EDGE_SUB, OUT_EDGE_SUB));
 
         b.rule(HASH_ARRAY_ACCESS).is(VARIABLE, LBRACK, EXPRESSION, RBRACK);
         b.rule(HASH_ARRAY_ACCESSES).is(HASH_ARRAY_ACCESS, b.zeroOrMore(LBRACK, EXPRESSION, RBRACK));
@@ -366,14 +369,13 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 CLASS_RESOURCE_REF,
                 IF_STMT,
                 CASE_STMT,
-                RESOURCE_COLLECTOR,
-                EXPORTED_RESOURCE_COLLECTOR,
+                COLLECTION,
                 EXPORTED_RESOURCE,
                 VIRTUAL_RESOURCE));
 
         b.rule(CLASSDEF).is(CLASS,
                             CLASSNAME,
-                            b.optional(PARAM_LIST),
+                            b.optional(ARGUMENT_LIST),
                             b.optional(INHERITS, CLASSNAME),
                             LBRACE,
                             b.zeroOrMore(STATEMENT),
@@ -387,7 +389,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.zeroOrMore(ATTRIBUTE),
                 RBRACE);
 
-        b.rule(CLASSNAME).is(NAME);
+        b.rule(CLASSNAME).is(b.firstOf(NAME, CLASS));
 
         b.rule(IF_STMT).is(IF,
                 EXPRESSIONS,
@@ -426,34 +428,34 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(CONTROL_VAR).is(b.firstOf(VARIABLE, FUNCTION_STMT));
 
-        b.rule(RESOURCE_COLLECTOR).is(REF, LCOLLECT, b.optional(RESOURCE_COLLECTOR_SEARCH), RCOLLECT);
-        b.rule(RESOURCE_COLLECTOR_SEARCH).is(
-                b.firstOf(COLLECTOR_AND_SEARCH,
-                        COLLECTOR_OR_SEARCH,
-                        COLLECTOR_EQ_SEARCH,
-                        COLLECTOR_NOTEQ_SEARCH));
+        b.rule(COLLECTION).is(b.firstOf(
+                b.sequence(TYPE, COLLECTOR, LBRACE, b.zeroOrMore(ATTRIBUTE), RBRACE),
+                b.sequence(TYPE, COLLECTOR)
+        ));
 
-        b.rule(COLLECTOR_EQ_SEARCH).is(
-                NAME,
-                ISEQUAL,
-                b.firstOf(VARIABLE, LITERALS, TRUE, FALSE, RESOURCE_REF, UNDEF));
+        b.rule(COLLECTOR).is(b.firstOf(
+                b.sequence(LCOLLECT, COLLECT_STMTS, RCOLLECT),
+                b.sequence(LLCOLLECT, COLLECT_STMTS, RRCOLLECT)
+        ));
 
-        b.rule(COLLECTOR_NOTEQ_SEARCH).is(
-                NAME,
-                NOTEQUAL,
-                b.firstOf(VARIABLE, LITERALS, TRUE, FALSE, RESOURCE_REF, UNDEF));
+        b.rule(COLLECT_STMTS).is(
+                b.optional(COLLECT_STMT),
+                b.zeroOrMore(COLLECT_JOIN, COLLECT_STMT)
+        );
 
-        b.rule(COLLECTOR_AND_SEARCH).is(
-                b.firstOf(COLLECTOR_EQ_SEARCH, COLLECTOR_NOTEQ_SEARCH),
-                AND,
-                b.firstOf(COLLECTOR_EQ_SEARCH, COLLECTOR_NOTEQ_SEARCH));
+        b.rule(COLLECT_STMT).is(b.firstOf(
+                COLLECT_EXPR,
+                b.sequence(LPAREN, COLLECT_STMTS, RBRACE)
+        ));
 
-        b.rule(COLLECTOR_OR_SEARCH).is(
-                b.firstOf(COLLECTOR_EQ_SEARCH, COLLECTOR_NOTEQ_SEARCH),
-                OR,
-                b.firstOf(COLLECTOR_EQ_SEARCH, COLLECTOR_NOTEQ_SEARCH));
+        b.rule(COLLECT_EXPR).is(b.firstOf(
+                b.sequence(COLLECTOR_VAL, ISEQUAL, EXPRESSION),
+                b.sequence(COLLECTOR_VAL, NOTEQUAL, EXPRESSION)
+        ));
 
-        b.rule(EXPORTED_RESOURCE_COLLECTOR).is(REF, LLCOLLECT, b.optional(RESOURCE_COLLECTOR_SEARCH), RRCOLLECT);
+        b.rule(COLLECT_JOIN).is(b.firstOf(AND, OR));
+
+        b.rule(COLLECTOR_VAL).is(b.firstOf(VARIABLE, NAME));
 
         b.rule(EXPORTED_RESOURCE).is(AT, AT, RESOURCE);
 
@@ -554,7 +556,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(RIGHT_VALUE).is(b.firstOf(
                 QUOTED_TEXT,
-                FUNCTION_STMT,
+                FUNCRVALUE,
                 NAME,
                 TRUE, FALSE,
                 SELECTOR_STMT,

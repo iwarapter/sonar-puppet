@@ -26,16 +26,44 @@ package com.iadams.sonarqube.puppet.parser.simple_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.EXPORTED_RESOURCE_COLLECTOR
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.COLLECTION
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-/**
- * @author iwarapter
- */
-class ExportedResourceCollectorStatement extends GrammarSpec {
+class CollectionSpec extends GrammarSpec {
 
 	def setup(){
-		setRootRule(EXPORTED_RESOURCE_COLLECTOR)
+		setRootRule(COLLECTION)
+	}
+
+	def "match examples of resource collectors using =="() {
+		expect:
+		assertThat(p).matches("User <| title == 'luke' |>")
+		assertThat(p).matches("User <| groups == 'admin' |>")
+	}
+
+	def "match examples of resource collectors using !="() {
+		expect:
+		assertThat(p).matches("User <| title != 'luke' |>")
+		assertThat(p).matches("User <| groups != 'admin' |>")
+	}
+
+	def "match examples of resource collectors using and"() {
+		expect:
+		assertThat(p).matches("User <| title == 'luke' and groups != 'admin' |>")
+	}
+
+	def "match examples of resource collectors using or"() {
+		expect:
+		assertThat(p).matches("User <| title == 'luke' or groups != 'admin' |>")
+	}
+
+	def "ammend attributes with collector"(){
+		expect:
+		assertThat(p).matches('''File <| tag == 'base::linux' |> {
+								  owner => 'root',
+								  group => 'root',
+								  mode  => '0640',
+								}''')
 	}
 
 	def "match examples of exported resource collectors using =="() {

@@ -42,4 +42,17 @@ class FunctionSpec extends GrammarSpec {
         assertThat(p).matches("fail 'hello'")
         assertThat(p).matches('notice ($foo[(1 + 2)])')
     }
+
+    def "simple contain statement parse"() {
+        expect:
+        assertThat(p).matches('contain apache')
+        assertThat(p).matches("contain Class['apache']")
+        assertThat(p).matches('contain ntp::service')
+    }
+
+    def "complex contain statements parse"(){
+        expect:
+        assertThat(p).matches('contain [abc, def]')
+        assertThat(p).matches('contain abc, def')
+    }
 }

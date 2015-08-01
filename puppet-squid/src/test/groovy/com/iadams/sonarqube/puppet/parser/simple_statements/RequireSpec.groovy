@@ -26,29 +26,25 @@ package com.iadams.sonarqube.puppet.parser.simple_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.CONTAIN_STMT
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.REQUIRE_STMT
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.RESOURCE_REF
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-/**
- * Created by iwarapter
- */
-class ContainStatement extends GrammarSpec {
+class RequireSpec extends GrammarSpec {
 
 	def setup(){
-		setRootRule(CONTAIN_STMT)
+		setRootRule(REQUIRE_STMT)
 	}
 
 	def "simple require statement parse"() {
 		expect:
-		assertThat(p).matches('contain apache')
-		assertThat(p).matches("contain Class['apache']")
-		assertThat(p).matches('contain ntp::service')
+		assertThat(p).matches('require apache')
+		assertThat(p).matches("require Class['apache']")
 	}
 
 	def "complex require statements parse"(){
 		expect:
-		assertThat(p).matches('contain [abc, def]')
-		assertThat(p).matches('contain abc, def')
+		assertThat(p).matches('require [abc, def]')
+		assertThat(p).matches('require abc, def')
 	}
 }
