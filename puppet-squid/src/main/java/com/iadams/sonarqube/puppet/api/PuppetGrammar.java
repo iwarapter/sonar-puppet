@@ -39,6 +39,14 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     ATTRIBUTE,
     DATA_TYPE,
     QUOTED_TEXT,
+    KEYWORD,
+
+    PARAMS,
+    PARAM,
+    PARAM_NAME,
+    ADD_PARAM,
+    ANY_PARAMS,
+    ANY_PARAM,
 
     TYPE,
     END_COMMA,
@@ -183,16 +191,30 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         );
 
         b.rule(ATTRIBUTE).is(b.firstOf(NAME,
-                        NOTIFY,
-                        REQUIRE,
-                        BEFORE,
-                        UNLESS,
-                        SUBSCRIBE),
+                        UNLESS),
                 FARROW,
                 b.firstOf(SELECTOR_STMT, EXPRESSION, RESOURCE_REF, LITERALS, NAME, TRUE, FALSE),
                 b.optional(COMMA));
 
-        //https://docs.puppetlabs.com/puppet/latest/reference/lang_resources_advanced.html#full-syntax
+        b.rule(PARAM_NAME).is(b.firstOf(KEYWORD, NAME, TRUE, FALSE));
+
+        b.rule(PARAM).is(
+                PARAM_NAME,
+                FARROW,
+                EXPRESSION);
+
+        b.rule(PARAMS).is(b.optional(
+                PARAM,
+                b.zeroOrMore(COMMA, PARAM)));
+
+        b.rule(ADD_PARAM).is(NAME, PARROW, EXPRESSION);
+
+        b.rule(ANY_PARAM).is(b.firstOf(PARAM, ADD_PARAM));
+
+        b.rule(ANY_PARAMS).is(b.optional(
+                ANY_PARAM,
+                b.zeroOrMore(COMMA, ANY_PARAM)));
+
         b.rule(RESOURCE).is(CLASSNAME,
                 LBRACE,
                 b.oneOrMore(RESOURCE_BODY, b.optional(SEMIC)),
@@ -213,7 +235,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(RESOURCE_OVERRIDE).is(
                 RESOURCE_REF,
                 LBRACE,
-                b.oneOrMore(ATTRIBUTE),
+                ANY_PARAMS,
+                END_COMMA,
                 RBRACE);
 
         b.rule(DATA_TYPE).is(b.firstOf(TRUE,
@@ -239,6 +262,23 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(TYPE).is(REF);
 
         b.rule(END_COMMA).is(b.optional(COMMA));
+
+        b.rule(KEYWORD).is(
+                AND,
+                CASE,
+                CLASS,
+                DEFAULT,
+                DEFINE,
+                ELSE,
+                ELSIF,
+                IF,
+                IN,
+                IMPORT,
+                INHERITS,
+                NODE,
+                OR,
+                UNDEF,
+                UNLESS);
     }
 
     /**
@@ -253,10 +293,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RESOURCE_DEFAULT_STMT,
                 RESOURCE_OVERRIDE,
                 DEFINITION,
-                //NODE_STMT,
-                NODE_DEFINITION,
-                REQUIRE_STMT,
-                INCLUDE_STMT));
+                NODE_DEFINITION));
 
         b.rule(DEFINITION).is(DEFINE,
                 CLASSNAME,
@@ -270,8 +307,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.sequence(LPAREN, ARGUMENTS, END_COMMA, RPAREN)
         )));
 
-        b.rule(REQUIRE_STMT).is(REQUIRE, FUNCVALUES);
-
         b.rule(ARGUMENTS).is(
                 ARGUMENT,
                 b.zeroOrMore(COMMA, ARGUMENT)
@@ -282,16 +317,18 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 VARIABLE
         ));
 
-        b.rule(INCLUDE_STMT).is("include", FUNCVALUES);
+        b.rule(HASH).is(b.firstOf(
+                b.sequence(LBRACE, HASH_PAIRS, RBRACE),
+                b.sequence(LBRACE, HASH_PAIRS, COMMA, RBRACE),
+                b.sequence(LBRACE, RBRACE)));
 
-        b.rule(HASH).is(LBRACE,
-                b.zeroOrMore(HASH_PAIR,
-                        b.optional(COMMA)),
-                RBRACE);
+        b.rule(HASH_PAIRS).is(
+                HASH_PAIR,
+                b.zeroOrMore(COMMA, HASH_PAIR));
 
         b.rule(HASH_PAIR).is(KEY, FARROW, EXPRESSION);
 
-        b.rule(KEY).is(b.firstOf(NAME, QUOTED_TEXT, REQUIRE));
+        b.rule(KEY).is(b.firstOf(NAME, QUOTED_TEXT));
 
         b.rule(ARRAY).is(LBRACK,
                 b.zeroOrMore(b.firstOf(FUNCTION_STMT, DATA_TYPE),
@@ -429,7 +466,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(CONTROL_VAR).is(b.firstOf(VARIABLE, FUNCTION_STMT));
 
         b.rule(COLLECTION).is(b.firstOf(
-                b.sequence(TYPE, COLLECTOR, LBRACE, b.zeroOrMore(ATTRIBUTE), RBRACE),
+                b.sequence(TYPE, COLLECTOR, LBRACE, ANY_PARAMS, END_COMMA, RBRACE),
                 b.sequence(TYPE, COLLECTOR)
         ));
 

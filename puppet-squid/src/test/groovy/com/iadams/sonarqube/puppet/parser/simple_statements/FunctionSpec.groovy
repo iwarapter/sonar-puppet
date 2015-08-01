@@ -55,4 +55,39 @@ class FunctionSpec extends GrammarSpec {
         assertThat(p).matches('contain [abc, def]')
         assertThat(p).matches('contain abc, def')
     }
+
+
+    def "simple require statement parse"() {
+        expect:
+        assertThat(p).matches('require apache')
+        assertThat(p).matches("require Class['apache']")
+    }
+
+    def "complex require statements parse"(){
+        expect:
+        assertThat(p).matches('require [abc, def]')
+        assertThat(p).matches('require abc, def')
+    }
+
+    def "simple include parses correctly"() {
+        expect:
+        assertThat(p).matches('include common')
+        assertThat(p).matches("include 'common'")
+        assertThat(p).matches('include role::solaris')
+    }
+
+    def 'include a class reference'(){
+        expect:
+        assertThat(p).matches("include Class['base::linux']")
+    }
+
+    def 'include a list'(){
+        expect:
+        assertThat(p).matches('include common, apache')
+    }
+
+    def 'including variable (for an array)'(){
+        expect:
+        assertThat(p).matches('include $my_classes')
+    }
 }

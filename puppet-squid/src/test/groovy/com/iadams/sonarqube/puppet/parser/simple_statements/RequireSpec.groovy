@@ -35,16 +35,4 @@ class RequireSpec extends GrammarSpec {
 	def setup(){
 		setRootRule(REQUIRE_STMT)
 	}
-
-	def "simple require statement parse"() {
-		expect:
-		assertThat(p).matches('require apache')
-		assertThat(p).matches("require Class['apache']")
-	}
-
-	def "complex require statements parse"(){
-		expect:
-		assertThat(p).matches('require [abc, def]')
-		assertThat(p).matches('require abc, def')
-	}
 }

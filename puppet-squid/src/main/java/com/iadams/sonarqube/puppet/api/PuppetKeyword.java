@@ -28,25 +28,9 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.TokenType;
 
 
-/**
- * Created by iwarapter
- */
 public enum PuppetKeyword implements TokenType {
-
-    /**
-     * Logical AND.
-     */
+    //http://docs.puppetlabs.com/puppet/3.8/reference/lang_reserved.html#reserved-words
     AND("and"),
-    /**
-     * Logical OR.
-     */
-    OR("or"),
-    /**
-     * Comparison IN.
-     */
-    IN("in"),
-
-    BEFORE("before"),
     CASE("case"),
     CLASS("class"),
     DEFAULT("default"),
@@ -55,12 +39,11 @@ public enum PuppetKeyword implements TokenType {
     ELSIF("elsif"),
     FALSE("false"),
     IF("if"),
+    IN("in"),
     IMPORT("import"),
     INHERITS("inherits"),
     NODE("node"),
-    NOTIFY("notify"),
-    REQUIRE("require"),
-    SUBSCRIBE("subscribe"),
+    OR("or"),
     TRUE("true"),
     UNDEF("undef"),
     UNLESS("unless");

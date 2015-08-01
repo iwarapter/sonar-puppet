@@ -88,9 +88,6 @@ class PuppetLexerSpec extends Specification {
         where:
         input       | token
         'and'       | AND
-        'or'        | OR
-        'in'        | IN
-        'before'    | BEFORE
         'case'      | CASE
         'class'     | CLASS
         'default'   | DEFAULT
@@ -99,12 +96,11 @@ class PuppetLexerSpec extends Specification {
         'elsif'     | ELSIF
         'false'     | FALSE
         'if'        | IF
+        'in'        | IN
         'import'    | IMPORT
         'inherits'  | INHERITS
         'node'      | NODE
-        'notify'    | NOTIFY
-        'require'   | REQUIRE
-        'subscribe' | SUBSCRIBE
+        'or'        | OR
         'true'      | TRUE
         'undef'     | UNDEF
         'unless'    | UNLESS
