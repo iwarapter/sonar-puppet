@@ -70,7 +70,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
     RIGHT_VALUE,
     LITERALS,
-    ARGUMENT_EXPRESSION_LIST,
+    FUNCVALUES,
     //NAME,
     NAMESPACE_SEP,
 
@@ -95,9 +95,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     DEFINE_NAME,
     REQUIRE_STMT,
     CONTAIN_STMT,
-    VIRTUALRESOURCE,
     COLLECTION,
-    FUNC_CALL,
+    FUNCTION_STMT,
     PARAM_LIST,
     PARAMETER,
     INCLUDE_STMT,
@@ -124,9 +123,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     NODE_DEFINITION,
     HOST_MATCHES,
     HOST_MATCH,
-
-    //CONDITIONAL STATEMENTS
-    CONDITION_CLAUSE,
 
     // Compound statements
     COMPOUND_STMT,
@@ -165,17 +161,17 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
     public static void grammar(LexerfulGrammarBuilder b) {
 
-        b.rule(FUNC_CALL).is(
-                NAME,
-                b.optional(LPAREN),
-                ARGUMENT_EXPRESSION_LIST,
-                b.optional(RPAREN));
+        b.rule(FUNCTION_STMT).is(
+                b.firstOf(
+                        b.sequence(NAME, LPAREN, EXPRESSIONS, RPAREN),
+                        b.sequence(NAME, LPAREN, EXPRESSIONS, COMMA, RPAREN),
+                        b.sequence(NAME, LPAREN, RPAREN),
+                        b.sequence(NAME, FUNCVALUES)
+                ));
 
-        b.rule(ARGUMENT_EXPRESSION_LIST).is(
-                b.firstOf(NAME, EXPRESSION),
-                b.zeroOrMore(COMMA,
-                        b.firstOf(NAME, EXPRESSION)),
-                b.optional(COMMA));
+        b.rule(FUNCVALUES).is(
+                RIGHT_VALUE,
+                b.zeroOrMore(COMMA, RIGHT_VALUE));
 
         b.rule(ATTRIBUTE).is(b.firstOf(NAME,
                         NOTIFY,
@@ -277,7 +273,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RPAREN);
 
         b.rule(PARAMETER).is(VARIABLE,
-                b.optional(EQUALS, b.firstOf(FUNC_CALL, DATA_TYPE)));
+                b.optional(EQUALS, b.firstOf(FUNCTION_STMT, DATA_TYPE)));
 
         b.rule(INCLUDE_STMT).is(
                 "include",
@@ -297,8 +293,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(KEY).is(b.firstOf(NAME, QUOTED_TEXT, REQUIRE));
 
         b.rule(ARRAY).is(LBRACK,
-                b.zeroOrMore(b.firstOf(FUNC_CALL, DATA_TYPE),
-                        b.zeroOrMore(COMMA, b.firstOf(FUNC_CALL, DATA_TYPE))),
+                b.zeroOrMore(b.firstOf(FUNCTION_STMT, DATA_TYPE),
+                        b.zeroOrMore(COMMA, b.firstOf(FUNCTION_STMT, DATA_TYPE))),
                 b.optional(COMMA),
                 RBRACK);
 
@@ -400,8 +396,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.zeroOrMore(CASE_MATCHER),
                 RBRACE);
         b.rule(CASE_MATCHER).is(CASES, COLON, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
-        b.rule(CASES).is(b.firstOf(TRUE, FALSE, NAME, DEFAULT, QUOTED_TEXT, VARIABLE, FUNC_CALL, REGULAR_EXPRESSION_LITERAL),
-                         b.zeroOrMore(COMMA, b.firstOf(TRUE, FALSE, NAME, DEFAULT, QUOTED_TEXT, VARIABLE, FUNC_CALL, REGULAR_EXPRESSION_LITERAL)));
+        b.rule(CASES).is(b.firstOf(TRUE, FALSE, NAME, DEFAULT, QUOTED_TEXT, VARIABLE, FUNCTION_STMT, REGULAR_EXPRESSION_LITERAL),
+                         b.zeroOrMore(COMMA, b.firstOf(TRUE, FALSE, NAME, DEFAULT, QUOTED_TEXT, VARIABLE, FUNCTION_STMT, REGULAR_EXPRESSION_LITERAL)));
 
         b.rule(SELECTOR_STMT).is(
                 CONTROL_VAR,
@@ -411,17 +407,17 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.optional(
                         DEFAULT,
                         FARROW,
-                        b.firstOf(TRUE, FALSE, UNDEF, SELECTOR_STMT, FUNC_CALL, RESOURCE_REF, NAME, QUOTED_TEXT, VARIABLE, ARRAY),
+                        b.firstOf(TRUE, FALSE, UNDEF, SELECTOR_STMT, FUNCTION_STMT, RESOURCE_REF, NAME, QUOTED_TEXT, VARIABLE, ARRAY),
                         b.optional(COMMA)),
                 RBRACE);
 
         b.rule(SELECTOR_CASE).is(
-                b.firstOf(DATA_TYPE, NAME, FUNC_CALL, REGULAR_EXPRESSION_LITERAL),
+                b.firstOf(DATA_TYPE, NAME, FUNCTION_STMT, REGULAR_EXPRESSION_LITERAL),
                 FARROW,
-                b.firstOf(SELECTOR_STMT, FUNC_CALL, DATA_TYPE),
+                b.firstOf(SELECTOR_STMT, FUNCTION_STMT, DATA_TYPE),
                 b.optional(COMMA));
 
-        b.rule(CONTROL_VAR).is(b.firstOf(VARIABLE, FUNC_CALL));
+        b.rule(CONTROL_VAR).is(b.firstOf(VARIABLE, FUNCTION_STMT));
 
         b.rule(RESOURCE_COLLECTOR).is(REF, LCOLLECT, b.optional(RESOURCE_COLLECTOR_SEARCH), RCOLLECT);
         b.rule(RESOURCE_COLLECTOR_SEARCH).is(
@@ -501,7 +497,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RESOURCE_REF,
                 LITERALS,
                 VARIABLE,
-                FUNC_CALL,
+                FUNCTION_STMT,
                 TRUE,
                 FALSE,
                 UNDEF,
@@ -551,7 +547,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(RIGHT_VALUE).is(b.firstOf(
                 QUOTED_TEXT,
-                FUNC_CALL,
+                FUNCTION_STMT,
                 NAME,
                 TRUE, FALSE,
                 SELECTOR_STMT,

@@ -26,13 +26,13 @@ package com.iadams.sonarqube.puppet.parser.simple_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.FUNC_CALL
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.FUNCTION_STMT
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-class FunctionCallStatements extends GrammarSpec {
+class FunctionSpec extends GrammarSpec {
 
     def setup() {
-        setRootRule(FUNC_CALL)
+        setRootRule(FUNCTION_STMT)
     }
 
     def "simple function call parses"() {
