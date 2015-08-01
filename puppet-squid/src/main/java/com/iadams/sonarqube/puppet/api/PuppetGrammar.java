@@ -82,6 +82,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     RESOURCE,
     RESOURCE_NAME,
     RESOURCE_BODY,
+    RESOURCE_OVERRIDE,
 
     EXPORTED_RESOURCE,
     VIRTUAL_RESOURCE,
@@ -201,6 +202,11 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 VARIABLE,
                 HASH_ARRAY_ACCESSES));
 
+        b.rule(RESOURCE_OVERRIDE).is(
+                RESOURCE_REF,
+                LBRACE,
+                b.oneOrMore(ATTRIBUTE),
+                RBRACE);
 
         b.rule(DATA_TYPE).is(b.firstOf(TRUE,
                 FALSE,
@@ -235,6 +241,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RELATIONSHIP_STMT,
                 RESOURCE,
                 RESOURCE_DEFAULT_STMT,
+                RESOURCE_OVERRIDE,
                 DEFINE_STMT,
                 //NODE_STMT,
                 NODE_DEFINITION,
