@@ -25,19 +25,14 @@
 package com.iadams.sonarqube.puppet.parser.compound_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
-import spock.lang.Ignore
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.SELECTOR_STMT
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.expressions
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.SELECTOR
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-/**
- * @author iwarapter
- */
-public class SelectorStatement extends GrammarSpec {
+public class SelectorSpec extends GrammarSpec {
 
 	def setup(){
-		setRootRule(SELECTOR_STMT)
+		setRootRule(SELECTOR)
 	}
 
 	def "selector statement parses correctly"() {
