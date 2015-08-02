@@ -1,0 +1,18 @@
+<p>
+    The import keyword is deprecated. Using it will cause deprecation warnings to be logged on the Puppet master, and we plan to remove import completely in Puppet 4.
+</p>
+
+<h2>What to Use Instead</h2>
+
+<p>
+    New users should avoid the import keyword, and existing users should stop using it. Instead, do the following:<br>
+
+    <li>To keep your node definitions in separate files, specify a directory as your main manifest.</li>
+    <li>To load classes and defined types, use modules.</li>
+    Together, these two features replace import completely.
+</p>
+
+<h2>See</h2>
+<ul>
+  <li><a href="https://docs.puppetlabs.com/puppet/3.8/reference/lang_import.html#deprecation-notice">See Puppet Labs Puppet Language Deprecation Notice</a></li>
+</ul>

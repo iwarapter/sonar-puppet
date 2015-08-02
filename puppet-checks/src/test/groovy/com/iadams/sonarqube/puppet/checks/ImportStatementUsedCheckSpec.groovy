@@ -22,40 +22,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.checks;
+package com.iadams.sonarqube.puppet.checks
 
-import com.google.common.collect.ImmutableList;
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
+import spock.lang.Specification
 
-import java.util.List;
+class ImportStatementUsedCheckSpec extends Specification {
 
-public final class CheckList {
+	def "check files do not contain import statement"(){
+		given:
+		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/import.pp"), new ImportStatementUsedCheck());
 
-	public static final String REPOSITORY_KEY = "puppet";
-
-	public static final String SONARQUBE_WAY_PROFILE = "SonarQube Way";
-
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				CommentConventionCheck.class,
-				CommentRegularExpressionCheck.class,
-				DuplicatedParametersCheck.class,
-				EnsureOrderingCheck.class,
-				FileNameCheck.class,
-				FixmeTagPresenceCheck.class,
-				ImportStatementUsedCheck.class,
-				LineLengthCheck.class,
-				MissingNewLineAtEndOfFileCheck.class,
-				NosonarTagPresenceCheck.class,
-				ParsingErrorCheck.class,
-				QuotedBooleanCheck.class,
-				ResourceDefaultUsedCheck.class,
-				TabCharacterCheck.class,
-				TodoTagPresenceCheck.class,
-				TrailingWhitespaceCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class,
-				VariableNamingConventionCheck.class,
-				XPathCheck.class
-		);
+		expect:
+		CheckMessagesVerifier.verify(file.getCheckMessages())
+				.next().atLine(2)
+				.noMore();
 	}
 }

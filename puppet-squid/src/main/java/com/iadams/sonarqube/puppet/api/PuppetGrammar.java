@@ -103,6 +103,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     REQUIRE_STMT,
     DEFINITION,
     COLLECTION,
+    UNLESS_STMT,
+	IMPORT_STMT,
     FUNCTION_STMT,
     ARGUMENT_LIST,
     ARGUMENTS,
@@ -139,7 +141,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     CLASSNAME,
     IF_STMT,
     ELSEIF_STMT,
-    UNLESS_STMT,
     CASE_STMT,
     CASE_MATCHER,
     CASES,
@@ -297,6 +298,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RELATIONSHIP,
                 RESOURCE,
                 UNLESS_STMT,
+				IMPORT_STMT,
                 RESOURCE_OVERRIDE,
                 DEFINITION,
                 NODE_DEFINITION));
@@ -395,6 +397,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         ));
 
 		b.rule(UNLESS_STMT).is(UNLESS, EXPRESSION, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
+
+		b.rule(IMPORT_STMT).is(IMPORT, QUOTED_TEXT, b.zeroOrMore(COMMA, QUOTED_TEXT));
     }
 
     /**

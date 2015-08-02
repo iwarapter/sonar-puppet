@@ -22,40 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.checks;
+package com.iadams.sonarqube.puppet.parser.simple_statements
 
-import com.google.common.collect.ImmutableList;
+import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import java.util.List;
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.IMPORT_STMT
+import static org.sonar.sslr.tests.Assertions.assertThat
 
-public final class CheckList {
+class ImportSpec extends GrammarSpec {
 
-	public static final String REPOSITORY_KEY = "puppet";
+    def setup() {
+        setRootRule(IMPORT_STMT)
+    }
 
-	public static final String SONARQUBE_WAY_PROFILE = "SonarQube Way";
+	def "simple import statement parses"(){
+		expect:
+		assertThat(p).matches("import 'nodes.pp'")
+	}
 
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				CommentConventionCheck.class,
-				CommentRegularExpressionCheck.class,
-				DuplicatedParametersCheck.class,
-				EnsureOrderingCheck.class,
-				FileNameCheck.class,
-				FixmeTagPresenceCheck.class,
-				ImportStatementUsedCheck.class,
-				LineLengthCheck.class,
-				MissingNewLineAtEndOfFileCheck.class,
-				NosonarTagPresenceCheck.class,
-				ParsingErrorCheck.class,
-				QuotedBooleanCheck.class,
-				ResourceDefaultUsedCheck.class,
-				TabCharacterCheck.class,
-				TodoTagPresenceCheck.class,
-				TrailingWhitespaceCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class,
-				VariableNamingConventionCheck.class,
-				XPathCheck.class
-		);
+
+	def "import list parses"(){
+		expect:
+		assertThat(p).matches("import 'nodes.pp', 'nodes2.pp'")
 	}
 }

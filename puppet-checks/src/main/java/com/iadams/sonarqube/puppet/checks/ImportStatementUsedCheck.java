@@ -24,38 +24,35 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
-import com.google.common.collect.ImmutableList;
+import com.iadams.sonarqube.puppet.api.PuppetGrammar;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Grammar;
+import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.check.Priority;
+import org.sonar.check.Rule;
+import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
+import org.sonar.squidbridge.checks.SquidCheck;
 
-import java.util.List;
+@Rule(
+		key = "ImportStatementUsed",
+		priority = Priority.MAJOR,
+		name = "Import statement is deprecated",
+		tags = {Tags.CONVENTION, Tags.PITFALL}
+)
+@ActivatedByDefault
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
+@SqaleConstantRemediation("30min")
+public class ImportStatementUsedCheck extends SquidCheck<Grammar> {
 
-public final class CheckList {
+	@Override
+	public void init() {
+		subscribeTo(PuppetGrammar.IMPORT_STMT);
+	}
 
-	public static final String REPOSITORY_KEY = "puppet";
-
-	public static final String SONARQUBE_WAY_PROFILE = "SonarQube Way";
-
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-				CommentConventionCheck.class,
-				CommentRegularExpressionCheck.class,
-				DuplicatedParametersCheck.class,
-				EnsureOrderingCheck.class,
-				FileNameCheck.class,
-				FixmeTagPresenceCheck.class,
-				ImportStatementUsedCheck.class,
-				LineLengthCheck.class,
-				MissingNewLineAtEndOfFileCheck.class,
-				NosonarTagPresenceCheck.class,
-				ParsingErrorCheck.class,
-				QuotedBooleanCheck.class,
-				ResourceDefaultUsedCheck.class,
-				TabCharacterCheck.class,
-				TodoTagPresenceCheck.class,
-				TrailingWhitespaceCheck.class,
-				UserResourceLiteralNameCheck.class,
-				UserResourcePasswordNotSetCheck.class,
-				VariableNamingConventionCheck.class,
-				XPathCheck.class
-		);
+	@Override
+	public void visitNode(AstNode node) {
+		getContext().createLineViolation(this, "The import keyword is deprecated.", node.getTokenLine());
 	}
 }
