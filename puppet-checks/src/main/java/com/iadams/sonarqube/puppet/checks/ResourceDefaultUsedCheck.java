@@ -48,11 +48,13 @@ public class ResourceDefaultUsedCheck extends SquidCheck<Grammar> {
 
     @Override
     public void init() {
-        subscribeTo(PuppetGrammar.RESOURCE_DEFAULT_STMT);
+        subscribeTo(PuppetGrammar.RESOURCE);
     }
 
     @Override
     public void visitNode(AstNode node) {
-        getContext().createLineViolation(this, "Resource defaults should be used in a very controlled manner and should only be declared at the edges of your manifest ecosystem.", node);
+		if(node.getFirstChild().getType().equals(PuppetGrammar.TYPE)) {
+			getContext().createLineViolation(this, "Resource defaults should be used in a very controlled manner and should only be declared at the edges of your manifest ecosystem.", node);
+		}
     }
 }

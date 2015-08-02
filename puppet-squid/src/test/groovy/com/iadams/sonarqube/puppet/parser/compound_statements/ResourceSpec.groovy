@@ -34,7 +34,7 @@ import static org.sonar.sslr.tests.Assertions.assertThat
 /**
  * Created by iwarapter
  */
-public class ResourceStatement extends GrammarSpec {
+public class ResourceSpec extends GrammarSpec {
 
 	def setup(){
 		setRootRule(RESOURCE)
@@ -114,6 +114,22 @@ public class ResourceStatement extends GrammarSpec {
 									group  => 'root',
 									mode   => '0755';
 								}''')
+	}
+
+	def "example resource defaults parses correctly"() {
+		expect:
+		assertThat(p).matches("""Exec {
+                                  path        => '/usr/bin:/bin:/usr/sbin:/sbin',
+                                  environment => 'RUBYLIB=/opt/puppet/lib/ruby/site_ruby/1.8/',
+                                  logoutput   => true,
+                                  timeout     => 180,
+                                }""")
+		assertThat(p).matches("""File {
+                                  owner => 'root',
+                                  group => '0',
+                                  mode  => '0644',
+                                }""")
+
 	}
 
 	@Unroll

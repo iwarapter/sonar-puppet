@@ -29,9 +29,6 @@ import org.sonar.squidbridge.api.SourceFile
 import org.sonar.squidbridge.checks.CheckMessagesVerifier
 import spock.lang.Specification
 
-/**
- * Created by iwarapter
- */
 class ParsingErrorCheckSpec extends Specification {
 
 	def "files that dont parse are marked"(){

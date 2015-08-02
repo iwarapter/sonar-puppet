@@ -26,7 +26,6 @@ package com.iadams.sonarqube.puppet.checks;
 
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
@@ -58,11 +57,9 @@ public class UserResourceLiteralNameCheck extends SquidCheck<Grammar> {
 	@Override
 	public void visitNode(AstNode node) {
 		if ("user".equals(node.getTokenValue())) {
-			for (AstNode body : node.getChildren(PuppetGrammar.RESOURCE_BODY)) {
-				for (AstNode name : body.getChildren(PuppetGrammar.RESOURCE_NAME)) {
-					if(name.getToken().getType().equals(SINGLE_QUOTED_STRING_LITERAL) || name.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL)) {
-						getContext().createLineViolation(this, "Remove this hardcoded user name.", name.getTokenLine());
-					}
+			for (AstNode name : node.getDescendants(PuppetGrammar.RESOURCE_NAME)) {
+				if (name.getToken().getType().equals(SINGLE_QUOTED_STRING_LITERAL) || name.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL)) {
+					getContext().createLineViolation(this, "Remove this hardcoded user name.", name.getTokenLine());
 				}
 			}
 		}

@@ -27,6 +27,7 @@ package com.iadams.sonarqube.puppet.checks;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
+import java.util.List;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -54,11 +55,9 @@ public class UserResourcePasswordNotSetCheck extends SquidCheck<Grammar> {
 	@Override
 	public void visitNode(AstNode node) {
 		if ("user".equals(node.getTokenValue())) {
-			for (AstNode body : node.getChildren(PuppetGrammar.RESOURCE_BODY)) {
-				for (AstNode attrib : body.getChildren(PuppetGrammar.ATTRIBUTE)) {
-					if ("password".equals(attrib.getTokenValue())) {
-						getContext().createLineViolation(this, "Do not set passwords in user resources.", attrib);
-					}
+			for (AstNode param : node.getDescendants(PuppetGrammar.PARAM)) {
+				if ("password".equals(param.getTokenValue())) {
+					getContext().createLineViolation(this, "Do not set passwords in user resources.", param);
 				}
 			}
 		}
