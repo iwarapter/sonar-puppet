@@ -296,7 +296,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(SIMPLE_STMT).is(b.firstOf(
                 RELATIONSHIP,
                 RESOURCE,
-                //RESOURCE_DEFAULT_STMT,
+                UNLESS_STMT,
                 RESOURCE_OVERRIDE,
                 DEFINITION,
                 NODE_DEFINITION));
@@ -344,12 +344,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(RESOURCE_REF).is(
                 b.firstOf(NAME, TYPE), LBRACK, EXPRESSIONS, RBRACK);
-
-        /*b.rule(RESOURCE_DEFAULT_STMT).is(
-                REF,
-                LBRACE,
-                b.zeroOrMore(ATTRIBUTE),
-                RBRACE);*/
 
         b.rule(RELATIONSHIP).is(
                 RELATIONSHIP_SIDE,
@@ -399,6 +393,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 DEFAULT,
                 REGULAR_EXPRESSION_LITERAL
         ));
+
+		b.rule(UNLESS_STMT).is(UNLESS, EXPRESSION, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
     }
 
     /**
