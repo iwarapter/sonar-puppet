@@ -26,34 +26,26 @@ package com.iadams.sonarqube.puppet.parser.simple_statements;
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec;
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.DEFINE_STMT;
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.DEFINITION;
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
-/**
- * Created by iwarapter
- */
 public class DefineStatement extends GrammarSpec {
 
-	def "simple define parses correctly"() {
-		given:
-		setRootRule(DEFINE_STMT)
+	def setup(){
+		setRootRule(DEFINITION)
+	}
 
+	def "simple define parses correctly"() {
 		expect:
 		assertThat(p).matches('define config { }')
 	}
 
 	def "fully qualified name parses correctly"() {
-		given:
-		setRootRule(DEFINE_STMT)
-
 		expect:
 		assertThat(p).matches('define full::qualified { }')
 	}
 
 	def "name with - parses correctly"() {
-		given:
-		setRootRule(DEFINE_STMT)
-
 		expect:
 		assertThat(p).matches('define foo-bar { }')
 	}

@@ -26,7 +26,6 @@ package com.iadams.sonarqube.puppet.lexer
 
 import com.google.common.base.Charsets
 import com.iadams.sonarqube.puppet.PuppetConfiguration
-import com.iadams.sonarqube.puppet.api.PuppetTokenType
 import com.sonar.sslr.api.Token
 import com.sonar.sslr.api.TokenType
 import com.sonar.sslr.impl.Lexer
@@ -38,8 +37,7 @@ import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.*
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.*
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.INTEGER
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.VARIABLE;
-import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER
-import static com.sonar.sslr.api.GenericTokenType.LITERAL;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.REGULAR_EXPRESSION_LITERAL;
 import static com.sonar.sslr.test.lexer.LexerMatchers.hasComment;
 import static com.sonar.sslr.test.lexer.LexerMatchers.hasToken;
 import static org.junit.Assert.assertThat;
@@ -55,11 +53,28 @@ class PuppetLexerSpec extends Specification {
         lexer = PuppetLexer.create(new PuppetConfiguration(Charsets.UTF_8));
     }
 
-    def "lex Identifiers"() {
-        assertThat(lexer.lex("abc"), hasToken("abc", IDENTIFIER));
-        assertThat(lexer.lex("abc0"), hasToken("abc0", IDENTIFIER));
-        assertThat(lexer.lex("abc_0"), hasToken("abc_0", IDENTIFIER));
-        assertThat(lexer.lex("i"), hasToken("i", IDENTIFIER));
+    def "names are lexed correctly"(){
+        expect:
+        assertThat(lexer.lex('apache::port'), hasToken('apache::port', NAME))
+        assertThat(lexer.lex('::apache'), hasToken('::apache', NAME))
+        assertThat(lexer.lex('::apache::port'), hasToken('::apache::port', NAME))
+        //3x pattern only
+        assertThat(lexer.lex('contains-dash'), hasToken('contains-dash', NAME))
+    }
+
+    def "refs are lexed correctly"(){
+        expect:
+        assertThat(lexer.lex('File'), hasToken('File', REF))
+        assertThat(lexer.lex('::File'), hasToken('::File', REF))
+        assertThat(lexer.lex('Class'), hasToken('Class', REF))
+        assertThat(lexer.lex('Integer'), hasToken('Integer', REF))
+    }
+
+    def "variables are lexed correctly"(){
+        expect:
+        assertThat(lexer.lex('$apache::port'), hasToken('$apache::port', VARIABLE))
+        assertThat(lexer.lex('$::apache'), hasToken('$::apache', VARIABLE))
+        assertThat(lexer.lex('$::apache::port'), hasToken('$::apache::port', VARIABLE))
     }
 
     @Unroll
@@ -73,9 +88,6 @@ class PuppetLexerSpec extends Specification {
         where:
         input       | token
         'and'       | AND
-        'or'        | OR
-        'in'        | IN
-        'before'    | BEFORE
         'case'      | CASE
         'class'     | CLASS
         'default'   | DEFAULT
@@ -84,12 +96,11 @@ class PuppetLexerSpec extends Specification {
         'elsif'     | ELSIF
         'false'     | FALSE
         'if'        | IF
+        'in'        | IN
         'import'    | IMPORT
         'inherits'  | INHERITS
         'node'      | NODE
-        'notify'    | NOTIFY
-        'require'   | REQUIRE
-        'subscribe' | SUBSCRIBE
+        'or'        | OR
         'true'      | TRUE
         'undef'     | UNDEF
         'unless'    | UNLESS
@@ -196,10 +207,10 @@ class PuppetLexerSpec extends Specification {
 
         expect:
         containsToken('$variable', VARIABLE )
-        containsToken('"this is a string"', LITERAL)
-        containsToken('user', IDENTIFIER)
+        containsToken('"this is a string"', DOUBLE_QUOTED_STRING_LITERAL)
+        containsToken('user', NAME)
         containsToken('{', LBRACE)
-        containsToken("'katie'", LITERAL)
+        containsToken("'katie'", SINGLE_QUOTED_STRING_LITERAL)
         containsToken(':', COLON)
     }
 
@@ -208,7 +219,7 @@ class PuppetLexerSpec extends Specification {
         lexer.lex('str2bool($is_virtual)')
 
         expect:
-        containsToken('str2bool', IDENTIFIER)
+        containsToken('str2bool', NAME)
         containsToken('(', LPAREN)
         containsToken('$is_virtual', VARIABLE)
         containsToken(')', RPAREN)
@@ -231,7 +242,7 @@ class PuppetLexerSpec extends Specification {
         expect:
         containsToken('$var', VARIABLE)
         containsToken('=', EQUALS)
-        containsToken('"string"', LITERAL)
+        containsToken('"string"', DOUBLE_QUOTED_STRING_LITERAL)
     }
 
     def "fully qualified names"(){
@@ -239,10 +250,20 @@ class PuppetLexerSpec extends Specification {
         lexer.lex('include role::solaris')
 
         expect:
-        containsToken('include', IDENTIFIER)
-        containsToken('role', IDENTIFIER)
-        //containsToken('::', COLON)
-        containsToken('solaris', IDENTIFIER)
+        containsToken('include', NAME)
+        containsToken('role::solaris', NAME)
+    }
+
+    def "virtual resources lex correctly"(){
+        given:
+        lexer.lex("@user {'deploy':")
+
+        expect:
+        containsToken('@', AT)
+        containsToken('user', NAME)
+        containsToken('{', LBRACE)
+        containsToken("'deploy'", SINGLE_QUOTED_STRING_LITERAL)
+        containsToken(':', COLON)
     }
 
     @Unroll
@@ -251,12 +272,14 @@ class PuppetLexerSpec extends Specification {
         assertRegexp(statement);
 
         where:
-        statement << ["/^www\\d+\$/", "/^(foo|bar)\\.example\\.com\$/",
-                      "/^(Debian|Ubuntu)\$/", "/^dev-[^\\s]*\$/"]
+        statement << ["/^www\\d+\$/",
+                      "/^(foo|bar)\\.example\\.com\$/",
+                      "/^(Debian|Ubuntu)\$/",
+                      "/^dev-[^\\s]*\$/"]
     }
 
     private static void assertRegexp(String regexp) {
-        assertThat(lexer.lex(regexp), hasToken(regexp, PuppetTokenType.REGULAR_EXPRESSION_LITERAL));
+        assertThat(lexer.lex(regexp), hasToken(regexp, REGULAR_EXPRESSION_LITERAL));
     }
 
     private boolean containsToken(String value, TokenType type){

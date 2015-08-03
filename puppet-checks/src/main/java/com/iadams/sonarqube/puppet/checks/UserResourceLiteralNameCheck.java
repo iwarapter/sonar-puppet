@@ -26,7 +26,6 @@ package com.iadams.sonarqube.puppet.checks;
 
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
@@ -35,6 +34,9 @@ import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
+
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL;
 
 @Rule(
 		key = "UserResourceLiteralName",
@@ -55,11 +57,9 @@ public class UserResourceLiteralNameCheck extends SquidCheck<Grammar> {
 	@Override
 	public void visitNode(AstNode node) {
 		if ("user".equals(node.getTokenValue())) {
-			for (AstNode body : node.getChildren(PuppetGrammar.RESOURCE_BODY)) {
-				for (AstNode name : body.getChildren(PuppetGrammar.RESOURCE_NAME)) {
-					if (name.getFirstChild(GenericTokenType.LITERAL) != null) {
-						getContext().createLineViolation(this, "Remove this hardcoded user name.", name.getFirstChild(GenericTokenType.LITERAL).getTokenLine());
-					}
+			for (AstNode name : node.getDescendants(PuppetGrammar.RESOURCE_NAME)) {
+				if (name.getToken().getType().equals(SINGLE_QUOTED_STRING_LITERAL) || name.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL)) {
+					getContext().createLineViolation(this, "Remove this hardcoded user name.", name.getTokenLine());
 				}
 			}
 		}

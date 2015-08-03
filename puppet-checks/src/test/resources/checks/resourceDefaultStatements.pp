@@ -10,3 +10,9 @@ File {
   group => '0',
   mode  => '0644',
 }
+
+file { '/tmp/readme.txt':
+  mode   => '0644',
+  owner  => '0',
+  group  => '0',
+}

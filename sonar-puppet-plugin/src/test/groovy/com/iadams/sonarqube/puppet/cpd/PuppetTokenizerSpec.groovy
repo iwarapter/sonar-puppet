@@ -46,6 +46,6 @@ class PuppetTokenizerSpec extends Specification {
 
 		expect:
 		List<TokenEntry> list = cpdTokens.getTokens()
-		list.size() == 23
+		list.size() == 20
 	}
 }

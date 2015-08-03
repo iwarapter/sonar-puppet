@@ -31,6 +31,7 @@ import static com.iadams.sonarqube.puppet.api.PuppetGrammar.ADDITIVE_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.ASSIGNMENT_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.BOOL_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.EXPRESSION
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.EXPRESSIONS
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.MATCH_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.MULTIPLICATIVE_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.SHIFT_EXPRESSION
@@ -135,5 +136,37 @@ class ExpressionSpec extends GrammarSpec {
 
 		expect:
 		assertThat(p).matches('$mod_path =~ /\\//')
+	}
+
+	@Unroll
+	def "expressions parse correctly"() {
+		given:
+		setRootRule(EXPRESSIONS)
+
+		expect:
+		assertThat(p).matches(input)
+
+		where:
+		input << ['1 == 1',
+				  'func($var)',
+				  '$var1 and ! defined(File[$var2])',
+				  'versioncmp($apache_version, \'2.4\') < 0',
+				  '$::operatingsystem == \'Amazon\'']
+	}
+
+	def "2 expressions parses"() {
+		given:
+		setRootRule(EXPRESSIONS)
+
+		expect:
+		assertThat(p).matches('$::operatingsystem == \'Ubuntu\' and $::lsbdistrelease == \'10.04\'')
+	}
+
+	def "complex expressions parse"(){
+		given:
+		setRootRule(EXPRESSIONS)
+
+		expect:
+		assertThat(p).matches('($scriptalias or $scriptaliases != []) or ($redirect_source and $redirect_dest)')
 	}
 }

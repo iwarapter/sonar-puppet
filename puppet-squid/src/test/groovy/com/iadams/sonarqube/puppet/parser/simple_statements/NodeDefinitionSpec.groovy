@@ -26,21 +26,25 @@ package com.iadams.sonarqube.puppet.parser.simple_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.NODE_STMT
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.NODE_DEFINITION
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-/**
- * Created by iwarapter
- */
-class NodeStatement  extends GrammarSpec {
+class NodeDefinitionSpec extends GrammarSpec {
 
 	def setup(){
-		setRootRule(NODE_STMT)
+		setRootRule(NODE_DEFINITION)
 	}
 
 	def "simple node parses correctly"() {
 		expect:
-		assertThat(p).matches("""node server1 {
+		assertThat(p).matches("""node 'server1' {
+									include common
+								}""")
+	}
+
+	def "nodes can define inheritance"() {
+		expect:
+		assertThat(p).matches("""node 'server1' inherits 'server2' {
 									include common
 								}""")
 	}
@@ -49,6 +53,11 @@ class NodeStatement  extends GrammarSpec {
 		expect:
 		assertThat(p).matches("""node 'server1', 'server2', 'server3' {
 									include common
+								}""")
+
+		assertThat(p).matches("""node 'www1.example.com', 'www2.example.com', 'www3.example.com' {
+								  include common
+								  include apache, squid
 								}""")
 	}
 }

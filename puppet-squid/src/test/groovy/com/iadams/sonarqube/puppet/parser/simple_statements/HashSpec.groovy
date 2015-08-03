@@ -26,29 +26,29 @@ package com.iadams.sonarqube.puppet.parser.simple_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.CONTAIN_STMT
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.REQUIRE_STMT
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.HASH
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-/**
- * Created by iwarapter
- */
-class ContainStatement extends GrammarSpec {
+class HashSpec extends GrammarSpec {
 
-	def setup(){
-		setRootRule(CONTAIN_STMT)
-	}
+    def setup() {
+        setRootRule(HASH)
+    }
 
-	def "simple require statement parse"() {
-		expect:
-		assertThat(p).matches('contain apache')
-		assertThat(p).matches("contain Class['apache']")
-		assertThat(p).matches('contain ntp::service')
-	}
+    def "example hashes parses correctly"() {
+        expect:
+        assertThat(p).matches("{ key1 => 'val1', key2 => 'val2' }")
+        assertThat(p).matches("{ key1 => 'val1', key2 => 'val2', }")
+        assertThat(p).matches("{ key1 => template('abc') }")
+    }
 
-	def "complex require statements parse"(){
-		expect:
-		assertThat(p).matches('contain [abc, def]')
-		assertThat(p).matches('contain abc, def')
-	}
+    def "hashes with selectors parse"() {
+        expect:
+        assertThat(p).matches('''{
+									  'authnz_ldap' => $::apache::version::distrelease ? {
+											'7'     => 'mod_ldap',
+											default => 'mod_authz_ldap',
+									  }
+								 }''')
+    }
 }

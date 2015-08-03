@@ -26,29 +26,13 @@ package com.iadams.sonarqube.puppet.parser.simple_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.HASHES
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.REQUIRE_STMT
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.RESOURCE_REF
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-class HashesStatement extends GrammarSpec {
+class RequireSpec extends GrammarSpec {
 
-    def setup() {
-        setRootRule(HASHES)
-    }
-
-    def "example hashes parses correctly"() {
-        expect:
-        assertThat(p).matches("{ key1 => 'val1', key2 => 'val2' }")
-        assertThat(p).matches("{ key1 => 'val1', key2 => 'val2', }")
-        assertThat(p).matches("{ key1 => template('abc') }")
-    }
-
-    def "hashes with selectors parse"() {
-        expect:
-        assertThat(p).matches('''{
-									  'authnz_ldap' => $::apache::version::distrelease ? {
-											'7'     => 'mod_ldap',
-											default => 'mod_authz_ldap',
-									  }
-								 }''')
-    }
+	def setup(){
+		setRootRule(REQUIRE_STMT)
+	}
 }

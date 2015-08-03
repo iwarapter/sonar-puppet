@@ -22,41 +22,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.parser.simple_statements
+package com.iadams.sonarqube.puppet.parser.compound_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.RESOURCE_COLLECTOR
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.EXPORTED_RESOURCE
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-/**
- * @author iwarapter
- */
-class ResourceCollectorStatement extends GrammarSpec {
+public class ExportedResourceSpec extends GrammarSpec {
 
 	def setup(){
-		setRootRule(RESOURCE_COLLECTOR)
+		setRootRule(EXPORTED_RESOURCE)
 	}
 
-	def "match examples of resource collectors using =="() {
+	def "virtual resources pass"() {
 		expect:
-		assertThat(p).matches("User <| title == 'luke' |>")
-		assertThat(p).matches("User <| groups == 'admin' |>")
-	}
-
-	def "match examples of resource collectors using !="() {
-		expect:
-		assertThat(p).matches("User <| title != 'luke' |>")
-		assertThat(p).matches("User <| groups != 'admin' |>")
-	}
-
-	def "match examples of resource collectors using and"() {
-		expect:
-		assertThat(p).matches("User <| title == 'luke' and groups != 'admin' |>")
-	}
-
-	def "match examples of resource collectors using or"() {
-		expect:
-		assertThat(p).matches("User <| title == 'luke' or groups != 'admin' |>")
+		assertThat(p).matches('''@@nagios_service { "check_zfs${hostname}":
+									  use                 => 'generic-service',
+									  host_name           => "$fqdn",
+									  check_command       => 'check_nrpe_1arg!check_zfs',
+									  service_description => "check_zfs${hostname}",
+									  target              => '/etc/nagios3/conf.d/nagios_service.cfg',
+									  notify              => Service[$nagios::params::nagios_service],
+									}''')
 	}
 }

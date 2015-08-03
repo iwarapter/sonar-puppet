@@ -27,6 +27,7 @@ package com.iadams.sonarqube.puppet.checks;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
+import java.util.concurrent.atomic.AtomicLong;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -48,18 +49,17 @@ public class EnsureOrderingCheck extends SquidCheck<Grammar> {
 
 	@Override
 	public void init() {
-		subscribeTo(PuppetGrammar.RESOURCE);
+		subscribeTo(PuppetGrammar.RESOURCE_INST);
 	}
 
 	@Override
 	public void visitNode(AstNode node) {
-		int counter;
-		for (AstNode body : node.getChildren(PuppetGrammar.RESOURCE_BODY)) {
-			counter = 0;
-			for (AstNode attrib : body.getChildren(PuppetGrammar.ATTRIBUTE)) {
+		int counter= 0;
+		for (AstNode params : node.getChildren(PuppetGrammar.PARAMS)) {
+			for(AstNode param : params.getChildren(PuppetGrammar.PARAM)){
 				counter++;
-				if ("ensure".equals(attrib.getTokenValue()) && counter != 1) {
-					getContext().createLineViolation(this, "Move the \"ensure\" attribute to be declared first.", attrib.getTokenLine());
+				if ("ensure".equals(param.getTokenValue()) && counter != 1) {
+					getContext().createLineViolation(this, "Move the \"ensure\" attribute to be declared first.", param.getTokenLine());
 					break;
 				}
 			}

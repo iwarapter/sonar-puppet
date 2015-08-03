@@ -22,44 +22,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.parser.expressions
+package com.iadams.sonarqube.puppet.parser.simple_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
-import spock.lang.Ignore
-import spock.lang.Unroll
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.*
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.UNLESS_STMT
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-/**
- * Created by iwarapter
- */
-class ConditionSpec extends GrammarSpec {
+class UnlessSpec extends GrammarSpec {
 
-	def setup(){
-		setRootRule(CONDITION)
-	}
+    def setup() {
+        setRootRule(UNLESS_STMT)
+    }
 
-	@Unroll
-	def "conditions parse correctly"() {
+	def "simple unless statement parses"(){
 		expect:
-		assertThat(p).matches(input)
-
-		where:
-		input << ['1 == 1',
-				  'func($var)',
-				  '$var1 and ! defined(File[$var2])',
-				  'versioncmp($apache_version, \'2.4\') < 0',
-		 		  '$::operatingsystem == \'Amazon\'']
-	}
-
-	def "condition with 2 expressions parses"() {
-		expect:
-		assertThat(p).matches('$::operatingsystem == \'Ubuntu\' and $::lsbdistrelease == \'10.04\'')
-	}
-
-	def "complex conditions parse"(){
-		expect:
-		assertThat(p).matches('($scriptalias or $scriptaliases != []) or ($redirect_source and $redirect_dest)')
+		assertThat(p).matches('''unless $memorysize > 1024 {
+								  $maxclient = 500
+								}''')
 	}
 }

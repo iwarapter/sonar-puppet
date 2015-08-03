@@ -52,12 +52,12 @@ public class DuplicatedParametersCheck extends SquidCheck<LexerlessGrammar> {
 
 	@Override
 	public void init() {
-		subscribeTo(PuppetGrammar.ATTRIBUTE, PuppetGrammar.RESOURCE_BODY);
+		subscribeTo(PuppetGrammar.PARAM, PuppetGrammar.RESOURCE_INST);
 	}
 
 	@Override
 	public void visitNode(AstNode astNode) {
-		if (astNode.getType().equals(PuppetGrammar.RESOURCE_BODY)) {
+		if (astNode.getType().equals(PuppetGrammar.RESOURCE_INST)) {
 			keys.clear();
 		} else {
 			if (keys.contains(astNode.getTokenValue())) {

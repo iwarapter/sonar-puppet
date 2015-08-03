@@ -27,7 +27,6 @@ package com.iadams.sonarqube.puppet.parser.simple_statements
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.ARRAY
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.HASHES
 import static org.sonar.sslr.tests.Assertions.assertThat
 
 /**

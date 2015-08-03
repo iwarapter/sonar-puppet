@@ -26,28 +26,25 @@ package com.iadams.sonarqube.puppet.parser.simple_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.REQUIRE_STMT
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.RESOURCE_REF
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.RESOURCE_OVERRIDE
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-/**
- * Created by iwarapter
- */
-class RequireStatement extends GrammarSpec {
+class ResourceOverrideSpec extends GrammarSpec {
 
 	def setup(){
-		setRootRule(REQUIRE_STMT)
+		setRootRule(RESOURCE_OVERRIDE)
 	}
 
-	def "simple require statement parse"() {
+	def "example resource references parses correctly"() {
 		expect:
-		assertThat(p).matches('require apache')
-		assertThat(p).matches("require Class['apache']")
-	}
+		assertThat(p).matches('''File['logrotate.conf'] {
+								  content => template('logrotate/spec.erb'),
+								}''')
 
-	def "complex require statements parse"(){
-		expect:
-		assertThat(p).matches('require [abc, def]')
-		assertThat(p).matches('require abc, def')
+		assertThat(p).matches('''File['/etc/passwd'] {
+								  owner => 'root',
+								  group => 'root',
+								  mode  => '0640',
+								}''')
 	}
 }

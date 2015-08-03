@@ -25,7 +25,6 @@
 package com.iadams.sonarqube.puppet.checks;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
@@ -34,6 +33,10 @@ import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
+
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL;
+
 
 @Rule(
 		key = "QuotedBoolean",
@@ -48,7 +51,7 @@ public class QuotedBooleanCheck extends SquidCheck<Grammar> {
 
 	@Override
 	public void init() {
-		subscribeTo(GenericTokenType.LITERAL);
+		subscribeTo(SINGLE_QUOTED_STRING_LITERAL, DOUBLE_QUOTED_STRING_LITERAL);
 	}
 
 	@Override

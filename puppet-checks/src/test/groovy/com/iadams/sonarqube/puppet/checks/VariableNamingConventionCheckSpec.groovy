@@ -40,8 +40,6 @@ class VariableNamingConventionCheckSpec extends Specification {
 		CheckMessagesVerifier.verify(file.getCheckMessages())
 				.next().atLine(6).withMessage("Rename variable \"Abc\" to match the regular expression: ^[a-z]+[a-z0-9_]*\$")
 				.next().atLine(8).withMessage("Rename variable \"dEf\" to match the regular expression: ^[a-z]+[a-z0-9_]*\$")
-				.next().atLine(11).withMessage("Rename variable \"abc-def\" to match the regular expression: ^[a-z]+[a-z0-9_]*\$")
-				.next().atLine(13).withMessage("Rename variable \"ghi-jkl\" to match the regular expression: ^[a-z]+[a-z0-9_]*\$")
 				.noMore();
 	}
 }

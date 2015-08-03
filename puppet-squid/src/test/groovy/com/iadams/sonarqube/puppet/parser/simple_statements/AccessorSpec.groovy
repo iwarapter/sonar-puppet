@@ -26,28 +26,30 @@ package com.iadams.sonarqube.puppet.parser.simple_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.RESOURCE_DEFAULT_STMT
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.HASH_ARRAY_ACCESSES
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-class ResourceDefaultStatement extends GrammarSpec {
+class AccessorSpec extends GrammarSpec {
 
-    def setup(){
-        setRootRule(RESOURCE_DEFAULT_STMT)
-    }
+	def setup(){
+		setRootRule(HASH_ARRAY_ACCESSES)
+	}
 
-    def "example resource references parses correctly"() {
-        expect:
-        assertThat(p).matches("""Exec {
-                                  path        => '/usr/bin:/bin:/usr/sbin:/sbin',
-                                  environment => 'RUBYLIB=/opt/puppet/lib/ruby/site_ruby/1.8/',
-                                  logoutput   => true,
-                                  timeout     => 180,
-                                }""")
-        assertThat(p).matches("""File {
-                                  owner => 'root',
-                                  group => '0',
-                                  mode  => '0644',
-                                }""")
+	def "simple array/hashes accessor"() {
+		expect:
+		assertThat(p).matches('$foo[1]')
+		assertThat(p).matches('$foo[\'one\']')
+	}
 
-    }
+	def "negative integer array accessor"() {
+		expect:
+		assertThat(p).matches('$foo[-1]')
+	}
+
+	def "Nested arrays and hashes can be accessed by chaining indexes"() {
+		expect:
+		assertThat(p).matches('$foo[1][\'third\']')
+		assertThat(p).matches('$foo[\'one\'][1]')
+		assertThat(p).matches('$main_site[port][https]')
+	}
 }
