@@ -8,7 +8,7 @@ SonarQube Puppet Plugin
 
 Description
 -----------
-This plugin enables analysis of [Puppet] projects. It comes with rules provided by [Puppet lint].
+This plugin enables analysis of [Puppet] projects. It comes with rules provided by [Puppet lint]. This is currently written to support the grammar for [Puppet 3.8], support for the future parser is not currently available.
 
 Requirements
 ------------
@@ -51,3 +51,4 @@ To navigate the AST, download the [SSLR Puppet Toolkit].
 [Installing a Plugin]:http://docs.sonarqube.org/display/SONAR/Installing+a+Plugin
 [documentation]:http://docs.sonarqube.org/display/SONAR/Extending+Coding+Rules
 [SSLR Puppet Toolkit]:https://bintray.com/iwarapter/sonar-plugins/sonar-puppet/_latestVersion#files
+[Puppet 3.8]:https://docs.puppetlabs.com/puppet/3.8/reference/index.html
