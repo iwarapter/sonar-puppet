@@ -270,22 +270,23 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(END_COMMA).is(b.optional(COMMA));
 		b.rule(END_SEMIC).is(b.optional(SEMIC));
 
-        b.rule(KEYWORD).is(
-                AND,
-                CASE,
-                CLASS,
-                DEFAULT,
-                DEFINE,
-                ELSE,
-                ELSIF,
-                IF,
-                IN,
-                IMPORT,
-                INHERITS,
-                NODE,
-                OR,
-                UNDEF,
-                UNLESS);
+        b.rule(KEYWORD).is(b.firstOf(
+				AND,
+				CASE,
+				CLASS,
+				DEFAULT,
+				DEFINE,
+				ELSE,
+				ELSIF,
+				IF,
+				IN,
+				IMPORT,
+				INHERITS,
+				NODE,
+				OR,
+				UNDEF,
+				UNLESS));
+
     }
 
     /**
@@ -554,7 +555,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(ASSIGNMENT_EXPRESSION).is(BOOL_EXPRESSION, b.zeroOrMore(EQUALS, BOOL_EXPRESSION)).skipIfOneChild();
 
         b.rule(ATOM).is(b.firstOf(
-                HASH_ARRAY_ACCESS,
+                HASH_ARRAY_ACCESSES,
                 b.sequence(LPAREN, ASSIGNMENT_EXPRESSION, RPAREN),
                 SELECTOR,
                 REGULAR_EXPRESSION_LITERAL,
@@ -616,9 +617,9 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 				NUMBER,
                 NAME,
                 TRUE, FALSE,
+                HASH_ARRAY_ACCESSES,
                 VARIABLE,
                 ARRAY,
-                HASH_ARRAY_ACCESSES,
                 RESOURCE_REF,
                 UNDEF));
 

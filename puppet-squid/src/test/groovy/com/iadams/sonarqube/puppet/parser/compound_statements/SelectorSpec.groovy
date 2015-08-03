@@ -127,4 +127,11 @@ public class SelectorSpec extends GrammarSpec {
 								 root    => 0,
 								}''')
 	}
+
+	def "hash accessors work in selectors"(){
+		expect:
+		assertThat(p).matches('''$abc ? {
+								  false   => $::ntp_server[0],
+								}''')
+	}
 }

@@ -90,4 +90,9 @@ class FunctionSpec extends GrammarSpec {
         expect:
         assertThat(p).matches('include $my_classes')
     }
+
+	def "function using hash array accessor"(){
+		expect:
+		assertThat(p).matches('dirname($logfiles[1][1])')
+	}
 }

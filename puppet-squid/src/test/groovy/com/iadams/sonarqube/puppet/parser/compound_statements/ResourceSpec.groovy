@@ -86,11 +86,11 @@ public class ResourceSpec extends GrammarSpec {
 		assertThat(p).matches('::apache::mod { \'expires\': }')
 	}
 
-	def "resource with before attribute"(){
+	def "resource with unless attribute"(){
 		expect:
-		assertThat(p).matches('''file { 'expires.conf':
-									before  => File[$::apache::mod_dir],
-								  }''')
+		assertThat(p).matches('''exec { 'titi':
+								  unless => 'toto',
+								}''')
 	}
 
 	def "handle multiple resource bodies"(){
