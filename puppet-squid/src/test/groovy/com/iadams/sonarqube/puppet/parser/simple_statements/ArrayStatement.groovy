@@ -38,13 +38,18 @@ class ArrayStatement extends GrammarSpec {
 		setRootRule(ARRAY)
 	}
 
+	def "empty array parses"(){
+		expect:
+		assertThat(p).matches('[]')
+	}
+
 	def "example array parses correctly"() {
 		expect:
 		assertThat(p).matches("[ 'one', 'two', 'three' ]")
 		assertThat(p).matches("[ 'one', 'two', 'three', ]")
 	}
 
-	def "nested arrays parse correctly"(){
+	def "arrays with hash parse correctly"(){
 		expect:
 		assertThat(p).matches("[ 'one', {'second' => 'two', 'third' => 'three'} ]")
 	}
@@ -52,5 +57,28 @@ class ArrayStatement extends GrammarSpec {
 	def "array from function call parses"(){
 		expect:
 		assertThat(p).matches('[ merge($_directory, $_directory_version) ]')
+	}
+
+	def "nested array parses"(){
+		expect:
+		assertThat(p).matches("[['one', 'two'], ['three', 'four']]")
+	}
+
+	def "complex nested array parses"(){
+		expect:
+		assertThat(p).matches('''[$sonarqube_verify_phase ? {
+									  false   => [
+										{
+										  goals       => $mvn_goal_sonarqube,
+										  mvn_version => $mvn_version_sonarqube,
+										}
+									  ],
+									  default => [],
+									},
+									[{
+									  goals       => $mvn_goal_push_to_nexus,
+									  mvn_version => $mvn_version,
+									}]
+								  ]''')
 	}
 }

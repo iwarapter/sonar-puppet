@@ -339,11 +339,10 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(KEY).is(b.firstOf(NAME, QUOTED_TEXT));
 
-        b.rule(ARRAY).is(LBRACK,
-                b.zeroOrMore(b.firstOf(FUNCTION_STMT, DATA_TYPE),
-                        b.zeroOrMore(COMMA, b.firstOf(FUNCTION_STMT, DATA_TYPE))),
-                b.optional(COMMA),
-                RBRACK);
+        b.rule(ARRAY).is(b.firstOf(
+				b.sequence(LBRACK, EXPRESSIONS, RBRACK),
+				b.sequence(LBRACK, EXPRESSIONS, COMMA, RBRACK),
+                b.sequence(LBRACK, RBRACK)));
 
         b.rule(RESOURCE_REF).is(
                 b.firstOf(NAME, TYPE), LBRACK, EXPRESSIONS, RBRACK);
