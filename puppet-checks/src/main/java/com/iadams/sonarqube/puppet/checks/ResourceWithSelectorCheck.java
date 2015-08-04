@@ -24,9 +24,11 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.google.common.collect.Lists;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
+import java.util.List;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -36,31 +38,31 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
-        key = "CaseWithoutDefault",
-        priority = Priority.MAJOR,
-        name = "Case statements should have default cases.",
+        key = "ResourceWithSelector",
+        priority = Priority.MINOR,
+        name = "You should not intermingle conditionals with resource declarations.",
         tags = Tags.PITFALL
 )
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
-@SqaleConstantRemediation("1h")
-public class CaseWithoutDefaultCheck extends SquidCheck<Grammar> {
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
+@SqaleConstantRemediation("10min")
+public class ResourceWithSelectorCheck extends SquidCheck<Grammar> {
 
     @Override
     public void init() {
-        subscribeTo(PuppetGrammar.CASE_STMT);
+        subscribeTo(PuppetGrammar.RESOURCE);
     }
 
     @Override
     public void visitNode(AstNode node) {
-        boolean hasDefault = false;
-		for(AstNode cases : node.getDescendants(PuppetGrammar.CASE_MATCHER)){
-			if(cases.getTokenValue().equals("default")){
-                hasDefault = true;
-            }
+
+        List<AstNode> selectors = Lists.newArrayList();
+
+		for(AstNode selector : node.getDescendants(PuppetGrammar.SELECTOR)){
+			selectors.add(selector);
 		}
-        if(!hasDefault){
-            getContext().createLineViolation(this, "Case statements should have default cases.", node);
+        for(AstNode violation : selectors){
+            getContext().createLineViolation(this, "You should not intermingle conditionals with resource declarations.", violation);
         }
     }
 }

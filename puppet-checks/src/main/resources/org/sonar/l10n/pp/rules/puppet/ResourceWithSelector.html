@@ -1,0 +1,33 @@
+<p>
+  You should not intermingle conditionals with resource declarations. When using conditionals for data assignment, you should separate conditional code from the resource declarations (style guide).
+</p>
+
+<h2>Noncompliant Code Example</h2>
+
+<pre>
+file { '/tmp/readme.txt':
+  mode => $::operatingsystem ? {
+    debian => '0777',
+    redhat => '0776',
+    fedora => '0007',
+  }
+}
+</pre>
+
+<h2>Compliant Solution</h2>
+
+<pre>
+$file_mode = $::operatingsystem ? {
+  debian => '0007',
+  redhat => '0776',
+  fedora => '0007',
+}
+
+file { '/tmp/readme.txt':
+  mode => $file_mode,
+}
+</pre>
+<h2>See</h2>
+<ul>
+  <li><a href="http://docs.puppetlabs.com/guides/style_guide.html#keep-resource-declarations-simple">See Puppet Labs Puppet Language Style Guide</a></li>
+</ul>

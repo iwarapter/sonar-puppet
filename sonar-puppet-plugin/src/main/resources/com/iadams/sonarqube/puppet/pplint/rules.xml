@@ -459,6 +459,7 @@ file { '/tmp/readme.txt':
 }</pre>]]>
     </description>
     <priority>MINOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>case_without_default</key>
