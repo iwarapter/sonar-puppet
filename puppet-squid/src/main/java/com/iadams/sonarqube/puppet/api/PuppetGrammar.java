@@ -37,7 +37,6 @@ import static com.sonar.sslr.api.GenericTokenType.EOF;
 public enum PuppetGrammar  implements GrammarRuleKey {
 
     ATTRIBUTE,
-    DATA_TYPE,
     QUOTED_TEXT,
     KEYWORD,
 
@@ -117,7 +116,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     CLASS_RESOURCE_REF,
 
     RELATIONSHIP,
-    RELATIONSHIPS,
     RELATIONSHIP_SIDE,
     EDGE,
 
@@ -244,21 +242,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 ANY_PARAMS,
                 END_COMMA,
                 RBRACE);
-
-        b.rule(DATA_TYPE).is(b.firstOf(TRUE,
-                FALSE,
-                UNDEF,
-                INTEGER,
-                HEX_INTEGER,
-                OCTAL_INTEGER,
-                FLOAT,
-                ARRAY,
-                HASH,
-                QUOTED_TEXT,
-                NAME,
-                REF,
-                VARIABLE
-        ));
 
         b.rule(QUOTED_TEXT).is(
                 b.firstOf(
