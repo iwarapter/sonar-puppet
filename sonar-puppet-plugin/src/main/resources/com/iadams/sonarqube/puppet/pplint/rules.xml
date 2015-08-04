@@ -494,6 +494,7 @@ case $::operatingsystem {
   }
 }</pre>]]>
     </description>
+    <status>DEPRECATED</status>
     <priority>MINOR</priority>
   </rule>
   <rule>
