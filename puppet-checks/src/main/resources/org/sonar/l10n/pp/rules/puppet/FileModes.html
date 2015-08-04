@@ -1,0 +1,25 @@
+<p>
+  File modes should be represented as 4 digits rather than 3, to explicitly show that they are octal values. File modes can also be represented symbolically e.g. u=rw,g=r.
+</p>
+
+<h2>Noncompliant Code Example</h2>
+
+<pre>
+file { '/var/log/syslog':
+  ensure => present,
+  mode   => 644,
+}
+</pre>
+
+<h2>Compliant Solution</h2>
+
+<pre>
+file { '/var/log/syslog':
+  ensure => file,
+  mode   => 'o-rwx',
+}
+</pre>
+<h2>See</h2>
+<ul>
+  <li><a href="http://docs.puppetlabs.com/guides/style_guide.html#file-modes">See Puppet Labs Puppet Language Style Guide</a></li>
+</ul>

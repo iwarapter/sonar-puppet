@@ -375,6 +375,7 @@ file { '/tmp/foo':
   mode => '0666',
 }</pre>]]>
     </description>
+    <status>DEPRECATED</status>
     <priority>MINOR</priority>
   </rule>
   <rule>
