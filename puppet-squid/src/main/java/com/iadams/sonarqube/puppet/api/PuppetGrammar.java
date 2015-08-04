@@ -36,7 +36,6 @@ import static com.sonar.sslr.api.GenericTokenType.EOF;
 
 public enum PuppetGrammar  implements GrammarRuleKey {
 
-    ATTRIBUTE,
     QUOTED_TEXT,
     KEYWORD,
 
@@ -113,7 +112,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     HASH_PAIRS,
     HASH_PAIR,
     KEY,
-    CLASS_RESOURCE_REF,
 
     RELATIONSHIP,
     RELATIONSHIP_SIDE,
@@ -190,12 +188,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 b.optional(EXPRESSIONS),
                 RPAREN
         );
-
-        b.rule(ATTRIBUTE).is(b.firstOf(NAME,
-                        UNLESS),
-                FARROW,
-                b.firstOf(SELECTOR, EXPRESSION, RESOURCE_REF, LITERALS, NAME, TRUE, FALSE),
-                b.optional(COMMA));
 
         b.rule(PARAM_NAME).is(b.firstOf(KEYWORD, NAME, TRUE, FALSE));
 
@@ -392,7 +384,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     public static void compoundStatements(LexerfulGrammarBuilder b) {
         b.rule(COMPOUND_STMT).is(b.firstOf(
                 CLASSDEF,
-                CLASS_RESOURCE_REF,
                 IF_STMT,
                 CASE_STMT,
                 COLLECTION,
@@ -406,14 +397,6 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                             LBRACE,
                             b.zeroOrMore(STATEMENT),
                             RBRACE);
-        //https://docs.puppetlabs.com/puppet/3.8/reference/lang_classes.html#using-resource-like-declarations
-        b.rule(CLASS_RESOURCE_REF).is(
-                CLASS,
-                LBRACE,
-                QUOTED_TEXT,
-                COLON,
-                b.zeroOrMore(ATTRIBUTE),
-                RBRACE);
 
         b.rule(CLASSNAME).is(b.firstOf(NAME, CLASS));
 

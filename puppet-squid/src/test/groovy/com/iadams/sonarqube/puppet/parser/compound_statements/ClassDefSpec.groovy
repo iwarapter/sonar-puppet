@@ -27,12 +27,9 @@ package com.iadams.sonarqube.puppet.parser.compound_statements
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.CLASSDEF
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.CLASS_RESOURCE_REF
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.RESOURCE
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-/**
- * Created by iwarapter
- */
 class ClassDefSpec extends GrammarSpec {
 
     def setup() {
@@ -77,7 +74,7 @@ class ClassDefSpec extends GrammarSpec {
     //https://docs.puppetlabs.com/puppet/3.8/reference/lang_classes.html#using-resource-like-declarations
     def "class with resource like declaration"(){
         given:
-        setRootRule(CLASS_RESOURCE_REF)
+        setRootRule(RESOURCE)
 
         expect:
         assertThat(p).matches('''class {'base::linux':}''')
