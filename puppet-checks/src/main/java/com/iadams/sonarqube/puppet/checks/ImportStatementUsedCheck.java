@@ -36,23 +36,23 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
-		key = "ImportStatementUsed",
-		priority = Priority.MAJOR,
-		name = "Import statement is deprecated",
-		tags = {Tags.CONVENTION, Tags.PITFALL}
-)
+  key = "ImportStatementUsed",
+  priority = Priority.MAJOR,
+  name = "Import statement is deprecated",
+  tags = {Tags.CONVENTION, Tags.PITFALL})
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
 @SqaleConstantRemediation("30min")
 public class ImportStatementUsedCheck extends SquidCheck<Grammar> {
 
-	@Override
-	public void init() {
-		subscribeTo(PuppetGrammar.IMPORT_STMT);
-	}
+  @Override
+  public void init() {
+    subscribeTo(PuppetGrammar.IMPORT_STMT);
+  }
 
-	@Override
-	public void visitNode(AstNode node) {
-		getContext().createLineViolation(this, "The import keyword is deprecated.", node.getTokenLine());
-	}
+  @Override
+  public void visitNode(AstNode node) {
+    getContext().createLineViolation(this, "The import keyword is deprecated.", node.getTokenLine());
+  }
+
 }
