@@ -1,5 +1,5 @@
 /*
- * Sonar Puppet Plugin
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -27,9 +27,6 @@ package com.iadams.sonarqube.puppet
 import spock.lang.Specification
 import spock.lang.Unroll
 
-/**
- * Created by iwarapter on 23/12/14.
- */
 class PuppetCommentAnalyserSpec extends Specification {
 
     PuppetCommentAnalyser analyser

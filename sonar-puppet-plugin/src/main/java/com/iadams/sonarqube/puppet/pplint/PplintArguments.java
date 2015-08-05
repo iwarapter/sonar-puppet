@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -32,9 +32,6 @@ import org.sonar.api.utils.command.CommandExecutor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by iwarapter
- */
 public class PplintArguments {
 
     private static final Pattern PPLINT_VERSION_PATTERN = Pattern.compile("(.* )([0-9]).([0-9]).([0-9])");

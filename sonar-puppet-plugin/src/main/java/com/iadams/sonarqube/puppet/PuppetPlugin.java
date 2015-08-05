@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -38,9 +38,6 @@ import org.sonar.api.resources.Qualifiers;
 
 import java.util.List;
 
-/**
- * @author iwarapter
- */
 public class PuppetPlugin extends SonarPlugin {
 
     public static final String FILE_SUFFIXES_KEY = "sonar.puppet.file.suffixes";

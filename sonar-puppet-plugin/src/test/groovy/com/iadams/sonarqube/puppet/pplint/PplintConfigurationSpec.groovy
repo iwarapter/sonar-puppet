@@ -1,5 +1,5 @@
 /*
- * Sonar Puppet Plugin
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -27,9 +27,6 @@ package com.iadams.sonarqube.puppet.pplint
 import org.sonar.api.config.Settings
 import spock.lang.Specification
 
-/**
- * Created by iwarapter
- */
 class PplintConfigurationSpec extends Specification {
 
     private Settings settings

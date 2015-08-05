@@ -1,5 +1,5 @@
 /*
- * Sonar Puppet Plugin
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -34,9 +34,6 @@ import org.sonar.api.scan.filesystem.ModuleFileSystem
 import spock.lang.Specification
 import spock.lang.Unroll
 
-/**
- * Created by iwarapter
- */
 class PplintSensorSpec extends Specification {
 
     private ModuleFileSystem fs

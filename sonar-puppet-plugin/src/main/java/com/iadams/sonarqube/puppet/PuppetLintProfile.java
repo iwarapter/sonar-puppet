@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -29,9 +29,6 @@ import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.profiles.XMLProfileParser;
 import org.sonar.api.utils.ValidationMessages;
 
-/**
- * @author iwarapter
- */
 public class PuppetLintProfile extends ProfileDefinition {
 
     private final XMLProfileParser xmlProfileParser;

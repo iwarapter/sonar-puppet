@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -32,9 +32,6 @@ import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
 import org.sonar.api.resources.ResourceUtils;
 
-/**
- * @author iwarapter
- */
 public class PuppetResouresDecorator implements Decorator {
 
 	public boolean shouldExecuteOnProject(Project project){

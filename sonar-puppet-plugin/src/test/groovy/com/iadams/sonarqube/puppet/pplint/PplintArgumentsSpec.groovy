@@ -1,5 +1,5 @@
 /*
- * Sonar Puppet Plugin
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -29,9 +29,6 @@ import org.sonar.api.utils.command.Command
 import spock.lang.Specification
 import spock.lang.Unroll
 
-/**
- * Created by iwarapter
- */
 class PplintArgumentsSpec extends Specification {
 
     def "unknown puppet-lint exec return error"() {

@@ -1,5 +1,5 @@
 /*
- * Sonar Puppet Plugin
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -38,9 +38,6 @@ import static com.iadams.sonarqube.puppet.api.PuppetGrammar.SHIFT_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.UNARY_NOT_EXPRESSION
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-/**
- * Created by iwarapter
- */
 class ExpressionSpec extends GrammarSpec {
 
 	@Unroll

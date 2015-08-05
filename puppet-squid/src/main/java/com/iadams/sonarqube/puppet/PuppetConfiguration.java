@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -27,9 +27,7 @@ package com.iadams.sonarqube.puppet;
 import org.sonar.squidbridge.api.SquidConfiguration;
 
 import java.nio.charset.Charset;
-/**
- * Created by iwarapter
- */
+
 public class PuppetConfiguration extends SquidConfiguration {
 
     private boolean ignoreHeaderComments;

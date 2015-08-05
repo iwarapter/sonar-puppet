@@ -1,5 +1,5 @@
 /*
- * Sonar Puppet Plugin
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -28,9 +28,6 @@ import org.sonar.api.batch.DecoratorContext
 import org.sonar.api.resources.Resource
 import spock.lang.Specification
 
-/**
- * @author iwarapter
- */
 class PuppetResouresDecoratorSpec extends Specification {
 
 	def "should decorate"() {

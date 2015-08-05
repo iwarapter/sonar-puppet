@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -26,9 +26,6 @@ package com.iadams.sonarqube.puppet.colorizer;
 
 import org.sonar.colorizer.MultilinesDocTokenizer;
 
-/**
- * Created by iwarapter
- */
 public class PuppetDocStringTokenizer extends MultilinesDocTokenizer {
 
     public PuppetDocStringTokenizer(String tagBefore, String tagAfter) {

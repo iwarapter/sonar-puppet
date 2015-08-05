@@ -1,5 +1,5 @@
 /*
- * Sonar Puppet Plugin
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -27,10 +27,6 @@ package com.iadams.sonarqube.puppet
 import org.sonar.squidbridge.commonrules.api.CommonRulesRepository
 import spock.lang.Specification
 
-
-/**
- * Created by iwarapter
- */
 class PuppetCommonRulesEngineSpec extends Specification {
 
     def "should provide expected extensions"() {

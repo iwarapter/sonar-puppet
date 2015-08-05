@@ -1,5 +1,5 @@
 /*
- * Sonar Puppet Plugin
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -27,9 +27,6 @@ package com.iadams.sonarqube.puppet.api
 import spock.lang.Specification
 import com.sonar.sslr.api.AstNode
 
-/**
- * Created by iwarapter on 16/12/14.
- */
 class PuppetTokenTypeSpec extends Specification {
     def "test all token exist"(){
         expect:

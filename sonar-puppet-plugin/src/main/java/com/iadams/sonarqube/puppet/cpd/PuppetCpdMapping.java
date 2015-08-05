@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -32,9 +32,6 @@ import org.sonar.api.resources.Language;
 
 import java.nio.charset.Charset;
 
-/**
- * @author iwarapter
- */
 public class PuppetCpdMapping extends AbstractCpdMapping {
 
 	private final Puppet language;

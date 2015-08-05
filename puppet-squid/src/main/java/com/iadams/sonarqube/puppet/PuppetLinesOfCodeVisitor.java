@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -33,9 +33,6 @@ import org.sonar.squidbridge.measures.MetricDef;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 
-/**
- * Created by iwarapter
- */
 public class PuppetLinesOfCodeVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> implements AstAndTokenVisitor {
 
 	private final MetricDef metric;

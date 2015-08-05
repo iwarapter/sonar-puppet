@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -29,9 +29,6 @@ import org.sonar.api.utils.command.StreamConsumer;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by iwarapter
- */
 public class CommandStreamConsumer implements StreamConsumer {
 
     private List<String> data = new LinkedList<String>();

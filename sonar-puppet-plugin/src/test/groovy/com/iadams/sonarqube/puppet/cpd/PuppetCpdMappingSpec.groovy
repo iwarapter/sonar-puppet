@@ -1,5 +1,5 @@
 /*
- * Sonar Puppet Plugin
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -28,9 +28,6 @@ import com.iadams.sonarqube.puppet.Puppet
 import org.sonar.api.batch.fs.FileSystem
 import spock.lang.Specification
 
-/**
- * @author iwarapter
- */
 class PuppetCpdMappingSpec extends Specification {
 
 	def "test cpd mapping"() {

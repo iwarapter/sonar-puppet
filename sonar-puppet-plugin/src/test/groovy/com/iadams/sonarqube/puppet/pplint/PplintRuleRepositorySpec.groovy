@@ -1,5 +1,5 @@
 /*
- * Sonar Puppet Plugin
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -28,9 +28,6 @@ import org.sonar.api.server.rule.RulesDefinition
 import org.sonar.api.server.rule.RulesDefinitionXmlLoader
 import spock.lang.Specification
 
-/**
- * Created by iwarapter
- */
 class PplintRuleRepositorySpec extends Specification {
 
     def "CreateRules"() {
