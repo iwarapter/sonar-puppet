@@ -1,15 +1,15 @@
 <p>
-  Case statements should have default cases. Additionally, the default case should fail the catalog compilation when the resulting behavior cannot be predicted on the majority of platforms the module will be used on. If you want the default case to be “do nothing,” include it as an explicit <code>default: {}</code> for clarity’s sake (style guide).
+  Case statements should have default cases. Additionally, the default case should fail the catalog compilation when the resulting behavior cannot be predicted on the majority of platforms the module will be used on. If you want the default case to be “do nothing,” include it as an explicit <code>default: {}</code> for clarity’s sake.
 </p>
 
 <h2>Noncompliant Code Example</h2>
 
 <pre>
 case $::operatingsystem {
-  centos: {
+  'centos': {
     $version = '1.2.3'
   }
-  solaris: {
+  'solaris': {
     $version = '3.2.1'
   }
 }
@@ -19,10 +19,10 @@ case $::operatingsystem {
 
 <pre>
 case $::operatingsystem {
-  centos: {
+  'centos': {
     $version = '1.2.3'
   }
-  solaris: {
+  'solaris': {
     $version = '3.2.1'
   }
   default: {
