@@ -27,6 +27,9 @@ package com.iadams.sonarqube.puppet.checks;
 import com.google.common.collect.Lists;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
+
+import java.util.List;
+
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -36,35 +39,33 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
-import java.util.List;
-
 @Rule(
-		key = "DuplicatedParameters",
-		name = "Duplicated parameters should be removed",
-		priority = Priority.CRITICAL,
-		tags = {Tags.BUG})
+  key = "DuplicatedParameters",
+  name = "Duplicated parameters should be removed",
+  priority = Priority.CRITICAL,
+  tags = {Tags.BUG})
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.DATA_RELIABILITY)
 @SqaleConstantRemediation("5min")
 @ActivatedByDefault
 public class DuplicatedParametersCheck extends SquidCheck<LexerlessGrammar> {
 
-	private List<String> keys = Lists.newArrayList();
+  private List<String> keys = Lists.newArrayList();
 
-	@Override
-	public void init() {
-		subscribeTo(PuppetGrammar.PARAM, PuppetGrammar.RESOURCE_INST);
-	}
+  @Override
+  public void init() {
+    subscribeTo(PuppetGrammar.PARAM, PuppetGrammar.RESOURCE_INST, PuppetGrammar.RESOURCE);
+  }
 
-	@Override
-	public void visitNode(AstNode astNode) {
-		if (astNode.getType().equals(PuppetGrammar.RESOURCE_INST)) {
-			keys.clear();
-		} else {
-			if (keys.contains(astNode.getTokenValue())) {
-				getContext().createLineViolation(this, "Remove the duplicated parameter \"{0}\".", astNode, astNode.getTokenValue());
-			} else {
-				keys.add(astNode.getTokenValue());
-			}
-		}
-	}
+  @Override
+  public void visitNode(AstNode astNode) {
+    if (astNode.is(PuppetGrammar.RESOURCE_INST) || astNode.is(PuppetGrammar.RESOURCE)) {
+      keys.clear();
+    } else {
+      if (keys.contains(astNode.getTokenValue())) {
+        getContext().createLineViolation(this, "Remove the duplicated parameter \"{0}\".", astNode, astNode.getTokenValue());
+      } else {
+        keys.add(astNode.getTokenValue());
+      }
+    }
+  }
 }
