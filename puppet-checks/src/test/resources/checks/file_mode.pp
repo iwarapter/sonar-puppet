@@ -1,5 +1,5 @@
 file { 'foo':
-  mode => '777'
+  mode => '777'  # Noncompliant
 }
 
 file { 'foo':
@@ -19,7 +19,7 @@ file { 'foo':
 }
 
 file { 'foo':
-  mode => 'undef'
+  mode => 'undef'  # Noncompliant
 }
 
 file { '/etc/passwd':
@@ -29,7 +29,7 @@ file { '/etc/passwd':
 file {
 	'/etc/rc.d':
 		ensure => directory,
-		mode   => '755';
+		mode   => '755';  # Noncompliant
 
 	'/etc/rc.d/init.d':
 		ensure => directory,
@@ -41,7 +41,7 @@ file {
 }
 
 File {
-  mode => '755',
+  mode => '755',  # Noncompliant
 }
 
 File {
@@ -49,35 +49,35 @@ File {
 }
 
 file { 'foo':
-	mode => 755,
+	mode => 755,  # Noncompliant
 }
 
 file { 'foo':
-	mode => 0755,
+	mode => 0755,  # Noncompliant
 }
 
 File {
-	mode => 755,
+	mode => 755,  # Noncompliant
 }
 
 File {
-	mode => 0755,
+	mode => 0755,  # Noncompliant
 }
 
 file { 'foo':
-	mode => "0755",
+	mode => "0755",  # Noncompliant
 }
 
 file { 'foo':
-	mode => "abc",
+	mode => "abc",  # Noncompliant
 }
 
 File {
-	mode => "0755",
+	mode => "0755",  # Noncompliant
 }
 
 File {
-	mode => "abc",
+	mode => "abc",  # Noncompliant
 }
 
 file { 'foo':
