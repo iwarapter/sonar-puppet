@@ -51,7 +51,6 @@ public final class CheckList {
 			NosonarTagPresenceCheck.class,
 			ParsingErrorCheck.class,
 			QuotedBooleanCheck.class,
-			ResourceDefaultUsedCheck.class,
 			ResourceWithSelectorCheck.class,
 			SelectorWithoutDefaultCheck.class,
 			TabCharacterCheck.class,
