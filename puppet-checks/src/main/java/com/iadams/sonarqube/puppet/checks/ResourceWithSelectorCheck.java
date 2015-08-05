@@ -24,13 +24,9 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
-import com.google.common.collect.Lists;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
-
-import java.util.List;
-
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -56,14 +52,9 @@ public class ResourceWithSelectorCheck extends SquidCheck<Grammar> {
 
   @Override
   public void visitNode(AstNode node) {
-
-    List<AstNode> selectors = Lists.newArrayList();
-
     for (AstNode selector : node.getDescendants(PuppetGrammar.SELECTOR)) {
-      selectors.add(selector);
-    }
-    for (AstNode violation : selectors) {
-      getContext().createLineViolation(this, "Extract this conditional from the resource declaration.", violation);
+      getContext().createLineViolation(this, "Extract this conditional from the resource declaration.", selector);
     }
   }
+
 }
