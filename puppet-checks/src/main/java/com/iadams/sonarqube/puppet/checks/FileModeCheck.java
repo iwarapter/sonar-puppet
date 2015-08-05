@@ -25,10 +25,11 @@
 package com.iadams.sonarqube.puppet.checks;
 
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
-import com.iadams.sonarqube.puppet.lexer.PuppetLexer;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
+
 import java.util.regex.Pattern;
+
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -37,21 +38,23 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL;
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.*;
 
 @Rule(
   key = "FileModes",
-  name = "File modes should be represented as 4 digits rather than 3 or symbolically.",
+  name = "File mode should be represented by a valid 4-digit octal value (rather than 3) or symbolically",
   priority = Priority.MINOR,
-  tags = {Tags.CONVENTION})
+  tags = {Tags.BUG})
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
 @SqaleConstantRemediation("10min")
 @ActivatedByDefault
 public class FileModeCheck extends SquidCheck<Grammar> {
 
   private static final String REGEX = "['|\"]?([0-7]{4}|([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*)['|\"]?";
-  private Pattern pattern = Pattern.compile(REGEX);
+  private static final Pattern PATTERN = Pattern.compile(REGEX);
+  private static final String MESSAGE_OCTAL = "Set the file mode to a 4-digit octal value surrounded by single quotes.";
+  private static final String MESSAGE_DOUBLE_QUOTES = "Replace double quotes by single quotes.";
+  private static final String MESSAGE_INVALID = "Update the file mode to a valid value surrounded by single quotes.";
 
   @Override
   public void init() {
@@ -60,22 +63,36 @@ public class FileModeCheck extends SquidCheck<Grammar> {
 
   @Override
   public void visitNode(AstNode node) {
-    if(node.getTokenValue().equals("file")) {
+    if ("file".equals(node.getTokenValue())) {
       for (AstNode body : node.getDescendants(PuppetGrammar.RESOURCE_INST)) {
         for (AstNode name : body.getDescendants(PuppetGrammar.PARAM)) {
-          if(name.getTokenValue().equals("mode")){
+          if ("mode".equals(name.getTokenValue())) {
             checkMode(name.getFirstChild(PuppetGrammar.EXPRESSION));
+          }
+        }
+      }
+    } else if ("File".equals(node.getTokenValue())) {
+      if (node.getFirstChild(PuppetGrammar.PARAMS) != null) {
+        for (AstNode paramNode : node.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
+          if ("mode".equals(paramNode.getTokenValue())) {
+            checkMode(paramNode.getFirstChild(PuppetGrammar.EXPRESSION));
           }
         }
       }
     }
   }
 
-  private void checkMode(AstNode node){
-	if(node.getToken().getType().equals(SINGLE_QUOTED_STRING_LITERAL) || node.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL)) {
-      if (!pattern.matcher(node.getTokenValue()).matches()) {
-        getContext().createLineViolation(this, "File modes should be represented as 4 digits rather than 3, to explicitly show that they are octal values.", node.getTokenLine());
-      }
-	}
+  private void checkMode(AstNode node) {
+    if (node.getToken().getType().equals(OCTAL_INTEGER) || node.getToken().getType().equals(INTEGER)) {
+      getContext().createLineViolation(this, MESSAGE_OCTAL, node.getTokenLine());
+    } else if (node.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL) && PATTERN.matcher(node.getTokenValue()).matches()) {
+      getContext().createLineViolation(this, MESSAGE_DOUBLE_QUOTES, node.getTokenLine());
+    } else if (node.getToken().getType().equals(SINGLE_QUOTED_STRING_LITERAL) && !PATTERN.matcher(node.getTokenValue()).matches()
+      || node.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL) && !PATTERN.matcher(node.getTokenValue()).matches()
+      && !CheckUtils.doesStringContainsVariables(node.getTokenValue())) {
+      getContext().createLineViolation(this, MESSAGE_INVALID, node.getTokenLine());
+    }
+
   }
+
 }

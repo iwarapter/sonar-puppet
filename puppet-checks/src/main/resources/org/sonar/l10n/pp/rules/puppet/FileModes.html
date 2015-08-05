@@ -1,5 +1,9 @@
-<p>
-  File modes should be represented as 4 digits rather than 3, to explicitly show that they are octal values. File modes can also be represented symbolically e.g. u=rw,g=r.
+<p>File modes should be represented either as valid:
+<ul>
+  <li>POSIX numeric notation on 4 digits to explicitly show that they are octal values</li>
+  <li>Or symbolically, e.g. <code>u=rw,g=r</code></li>
+</ul>
+Both representations must be surrounded by single quotes.
 </p>
 
 <h2>Noncompliant Code Example</h2>
@@ -7,7 +11,27 @@
 <pre>
 file { '/var/log/syslog':
   ensure => present,
-  mode   => 644,
+  mode   => 644,      # Should be set to '0644' instead
+}
+
+file { '/var/log/syslog':
+  ensure => present,
+  mode   => '644',    # Should be set to '0644' instead
+}
+
+file { '/var/log/syslog':
+  ensure => present,
+  mode   => "0644",   # Double quotes should be replaced by single quotes
+}
+
+file { '/var/log/syslog':
+  ensure => present,
+  mode   => '0999',   # Invalid file mode value, should be updated to a valid value
+}
+
+file { '/var/log/syslog':
+  ensure => present,
+  mode   => 'blabla', # Invalid file mode value, should be updated to a valid value
 }
 </pre>
 
@@ -15,11 +39,19 @@ file { '/var/log/syslog':
 
 <pre>
 file { '/var/log/syslog':
-  ensure => file,
+  ensure => present,
   mode   => 'o-rwx',
 }
+
+file { '/var/log/syslog':
+  ensure => present,
+  mode   => '0644',
+}
 </pre>
+
 <h2>See</h2>
+See Puppet Labs Puppet Language Style Guide:
 <ul>
-  <li><a href="http://docs.puppetlabs.com/guides/style_guide.html#file-modes">See Puppet Labs Puppet Language Style Guide</a></li>
+  <li><a href="http://docs.puppetlabs.com/guides/style_guide.html#file-modes">File Modes</a></li>
+  <li><a href="https://docs.puppetlabs.com/guides/style_guide.html#quoting">Quoting</a></li>
 </ul>

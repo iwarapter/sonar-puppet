@@ -373,7 +373,8 @@ file { '/tmp/foo':
       <pre>
 file { '/tmp/foo':
   mode => '0666',
-}</pre>]]>
+}</pre>
+<p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:FileModes">FileModes</a> instead.</p>]]>
     </description>
     <status>DEPRECATED</status>
     <priority>MINOR</priority>
@@ -397,9 +398,11 @@ file { '/tmp/foo':
       <pre>
 file { '/tmp/foo':
   mode => '0666',
-}</pre>]]>
+}</pre>
+<p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:FileModes">FileModes</a> instead.</p>]]>
     </description>
     <priority>MINOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>duplicate_params</key>
