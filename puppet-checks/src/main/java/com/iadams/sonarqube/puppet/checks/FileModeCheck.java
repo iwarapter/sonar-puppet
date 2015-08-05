@@ -51,7 +51,10 @@ import static com.iadams.sonarqube.puppet.api.PuppetTokenType.*;
 public class FileModeCheck extends SquidCheck<Grammar> {
 
   private static final String REGEX = "['|\"]?([0-7]{4}|([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*)['|\"]?";
-  private Pattern pattern = Pattern.compile(REGEX);
+  private static final Pattern PATTERN = Pattern.compile(REGEX);
+  private static final String MESSAGE_OCTAL = "Set the file mode to a 4-digit octal value surrounded by single quotes.";
+  private static final String MESSAGE_DOUBLE_QUOTES = "Replace double quotes by single quotes.";
+  private static final String MESSAGE_INVALID = "Update the file mode to a valid value surrounded by single quotes.";
 
   @Override
   public void init() {
@@ -81,11 +84,13 @@ public class FileModeCheck extends SquidCheck<Grammar> {
 
   private void checkMode(AstNode node) {
     if (node.getToken().getType().equals(OCTAL_INTEGER) || node.getToken().getType().equals(INTEGER)) {
-      getContext().createLineViolation(this, "Set the file mode to a 4-digit octal value surrounded by single quotes.", node.getTokenLine());
-    } else if (node.getToken().getType().equals(SINGLE_QUOTED_STRING_LITERAL) || node.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL)) {
-      if (!pattern.matcher(node.getTokenValue()).matches()) {
-        getContext().createLineViolation(this, "File modes should be represented as 4 digits rather than 3, to explicitly show that they are octal values.", node.getTokenLine());
-      }
+      getContext().createLineViolation(this, MESSAGE_OCTAL, node.getTokenLine());
+    } else if (node.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL) && PATTERN.matcher(node.getTokenValue()).matches()) {
+      getContext().createLineViolation(this, MESSAGE_DOUBLE_QUOTES, node.getTokenLine());
+    } else if (node.getToken().getType().equals(SINGLE_QUOTED_STRING_LITERAL) && !PATTERN.matcher(node.getTokenValue()).matches()
+      || node.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL) && !PATTERN.matcher(node.getTokenValue()).matches()) {
+      getContext().createLineViolation(this, MESSAGE_INVALID, node.getTokenLine());
     }
   }
+
 }

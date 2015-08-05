@@ -63,3 +63,19 @@ File {
 File {
 	mode => 0755,
 }
+
+file { 'foo':
+	mode => "0755",
+}
+
+file { 'foo':
+	mode => "abc",
+}
+
+File {
+	mode => "0755",
+}
+
+File {
+	mode => "abc",
+}
