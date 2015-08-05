@@ -24,7 +24,7 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
-import com.iadams.sonarqube.puppet.api.PuppetGrammar;
+import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
@@ -36,25 +36,28 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
-        key = "ResourceDefaultUsed",
-        priority = Priority.INFO,
-        name = "Resource defaults should be used in a very controlled manner.",
-        tags = Tags.PITFALL
-)
+  key = "FaultyDoubleQuotedString",
+  priority = Priority.MINOR,
+  name = "Strings not containing variables or special characters should be single quoted",
+  tags = Tags.CONVENTION)
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
-@SqaleConstantRemediation("1h")
-public class ResourceDefaultUsedCheck extends SquidCheck<Grammar> {
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.UNDERSTANDABILITY)
+@SqaleConstantRemediation("5min")
+public class FaultyDoubleQuotedStringCheck extends SquidCheck<Grammar> {
 
-    @Override
-    public void init() {
-        subscribeTo(PuppetGrammar.RESOURCE);
-    }
+  @Override
+  public void init() {
+    subscribeTo(PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL);
+  }
 
-    @Override
-    public void visitNode(AstNode node) {
-		if(node.getFirstChild().getType().equals(PuppetGrammar.TYPE)) {
-			getContext().createLineViolation(this, "Resource defaults should be used in a very controlled manner and should only be declared at the edges of your manifest ecosystem.", node);
-		}
+  @Override
+  public void visitNode(AstNode node) {
+    String stringWithoutQuotes = node.getTokenValue().substring(1, node.getTokenValue().length() - 1);
+    if (!CheckStringUtils.containsVariable(stringWithoutQuotes) && !CheckStringUtils.containsSpecialCharacter(stringWithoutQuotes)) {
+      getContext().createLineViolation(this, "Surround the string with single quotes instead of double quotes.", node);
+    } else if (CheckStringUtils.containsOnlyVariable(stringWithoutQuotes)) {
+      getContext().createLineViolation(this, "Remove quotes surrounding this variable.", node);
     }
+  }
+
 }
