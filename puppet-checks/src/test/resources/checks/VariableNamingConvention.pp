@@ -7,3 +7,8 @@ file { $Abc:
   ensure => file,
   mode   => $dEf,
 }
+
+file { $abc:
+  ensure => file,
+  mode   => $module::var,
+}
