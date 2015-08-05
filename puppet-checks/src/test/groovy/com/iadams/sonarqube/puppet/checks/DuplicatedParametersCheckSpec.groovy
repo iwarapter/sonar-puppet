@@ -43,6 +43,9 @@ class DuplicatedParametersCheckSpec extends Specification {
                 .next().atLine(5).withMessage(MESSAGE)
                 .next().atLine(18).withMessage(MESSAGE)
                 .next().atLine(21).withMessage(MESSAGE)
+                .next().atLine(27).withMessage(MESSAGE)
+                .next().atLine(36).withMessage(MESSAGE)
+                .next().atLine(48).withMessage(MESSAGE)
                 .noMore();
     }
 }
