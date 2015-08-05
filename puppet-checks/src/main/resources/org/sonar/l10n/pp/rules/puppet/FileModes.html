@@ -21,7 +21,7 @@ file { '/var/log/syslog':
 
 file { '/var/log/syslog':
   ensure => present,
-  mode   => "644",    # Double quotes should be replaced by single quotes
+  mode   => "0644",   # Double quotes should be replaced by single quotes
 }
 
 file { '/var/log/syslog':
