@@ -11,3 +11,9 @@ class apache {
 class without {
 
 }
+
+class bar {
+  class { 'foo':
+    bar => 'foobar'
+  }
+}
