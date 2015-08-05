@@ -43,6 +43,7 @@ class ResourceWithSelectorCheckSpec extends Specification {
                 .next().atLine(2).withMessage(MESSAGE)
                 .next().atLine(20).withMessage(MESSAGE)
                 .next().atLine(26).withMessage(MESSAGE)
+                .next().atLine(33).withMessage(MESSAGE)
                 .noMore();
     }
 }
