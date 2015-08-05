@@ -41,7 +41,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
   name = "Deprecated \"import\" statement should not be used",
   tags = {Tags.CONVENTION, Tags.PITFALL})
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LANGUAGE_RELATED_PORTABILITY)
 @SqaleConstantRemediation("30min")
 public class ImportStatementUsedCheck extends SquidCheck<Grammar> {
 
