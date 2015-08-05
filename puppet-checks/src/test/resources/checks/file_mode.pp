@@ -39,3 +39,11 @@ file {
 		ensure => directory,
 		mode   => '0755';
 }
+
+File {
+  mode => '755',
+}
+
+File {
+	mode => '0755',
+}

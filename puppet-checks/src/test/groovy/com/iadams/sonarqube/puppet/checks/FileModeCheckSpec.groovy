@@ -43,6 +43,7 @@ class FileModeCheckSpec extends Specification {
                 .next().atLine(2).withMessage(MESSAGE)
                 .next().atLine(22).withMessage(MESSAGE)
                 .next().atLine(32).withMessage(MESSAGE)
+                .next().atLine(44).withMessage(MESSAGE)
                 .noMore();
     }
 }

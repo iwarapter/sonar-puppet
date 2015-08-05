@@ -25,10 +25,11 @@
 package com.iadams.sonarqube.puppet.checks;
 
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
-import com.iadams.sonarqube.puppet.lexer.PuppetLexer;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
+
 import java.util.regex.Pattern;
+
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -60,22 +61,30 @@ public class FileModeCheck extends SquidCheck<Grammar> {
 
   @Override
   public void visitNode(AstNode node) {
-    if(node.getTokenValue().equals("file")) {
+    if ("file".equals(node.getTokenValue())) {
       for (AstNode body : node.getDescendants(PuppetGrammar.RESOURCE_INST)) {
         for (AstNode name : body.getDescendants(PuppetGrammar.PARAM)) {
-          if(name.getTokenValue().equals("mode")){
+          if ("mode".equals(name.getTokenValue())) {
             checkMode(name.getFirstChild(PuppetGrammar.EXPRESSION));
+          }
+        }
+      }
+    } else if ("File".equals(node.getTokenValue())) {
+      if (node.getFirstChild(PuppetGrammar.PARAMS) != null) {
+        for (AstNode paramNode : node.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
+          if ("mode".equals(paramNode.getTokenValue())) {
+            checkMode(paramNode.getFirstChild(PuppetGrammar.EXPRESSION));
           }
         }
       }
     }
   }
 
-  private void checkMode(AstNode node){
-	if(node.getToken().getType().equals(SINGLE_QUOTED_STRING_LITERAL) || node.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL)) {
+  private void checkMode(AstNode node) {
+    if (node.getToken().getType().equals(SINGLE_QUOTED_STRING_LITERAL) || node.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL)) {
       if (!pattern.matcher(node.getTokenValue()).matches()) {
         getContext().createLineViolation(this, "File modes should be represented as 4 digits rather than 3, to explicitly show that they are octal values.", node.getTokenLine());
       }
-	}
+    }
   }
 }
