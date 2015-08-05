@@ -462,9 +462,9 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 		b.rule(SVALUES).is(b.firstOf(
 				SELECTVAL,
 				b.sequence(LBRACE, SINTVALUES, END_COMMA, RBRACE)
-		));
+		)).skip();
 
-		b.rule(SINTVALUES).is(SELECTVAL, b.zeroOrMore(COMMA, SELECTVAL));
+		b.rule(SINTVALUES).is(SELECTVAL, b.zeroOrMore(COMMA, SELECTVAL)).skip();
 
 		b.rule(SELECTVAL).is(SELECTLHAND, FARROW, RIGHT_VALUE);
 
@@ -480,7 +480,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 				UNDEF,
 				DEFAULT,
 				REGULAR_EXPRESSION_LITERAL
-		));
+		)).skip();
     }
 
     /**

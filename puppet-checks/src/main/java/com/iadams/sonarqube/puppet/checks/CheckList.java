@@ -52,6 +52,7 @@ public final class CheckList {
 				QuotedBooleanCheck.class,
 				ResourceDefaultUsedCheck.class,
 				ResourceWithSelectorCheck.class,
+				SelectorWithoutDefaultCheck.class,
 				TabCharacterCheck.class,
 				TodoTagPresenceCheck.class,
 				TrailingWhitespaceCheck.class,
