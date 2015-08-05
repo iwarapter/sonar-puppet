@@ -38,7 +38,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @Rule(
   key = "CaseWithoutDefault",
   priority = Priority.MAJOR,
-  name = "Case statements should have default cases.",
+  name = "Case statements should have default cases",
   tags = Tags.PITFALL)
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
@@ -59,7 +59,7 @@ public class CaseWithoutDefaultCheck extends SquidCheck<Grammar> {
       }
     }
     if (!hasDefault) {
-      getContext().createLineViolation(this, "Case statements should have default cases.", node);
+      getContext().createLineViolation(this, "Add a default case.", node);
     }
   }
 
