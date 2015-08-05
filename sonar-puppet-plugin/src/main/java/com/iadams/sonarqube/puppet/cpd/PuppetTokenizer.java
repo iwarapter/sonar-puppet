@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -38,9 +38,6 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.util.List;
 
-/**
- * @author iwarapter
- */
 public class PuppetTokenizer implements Tokenizer {
 
 	private final Charset charset;

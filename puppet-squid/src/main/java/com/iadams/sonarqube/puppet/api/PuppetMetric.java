@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -27,9 +27,6 @@ package com.iadams.sonarqube.puppet.api;
 import org.sonar.squidbridge.measures.CalculatedMetricFormula;
 import org.sonar.squidbridge.measures.MetricDef;
 
-/**
- * @author iwarapter
- */
 public enum PuppetMetric implements MetricDef {
 
 	FILES,

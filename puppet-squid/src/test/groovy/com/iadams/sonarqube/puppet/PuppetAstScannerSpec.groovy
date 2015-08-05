@@ -1,5 +1,5 @@
 /*
- * Sonar Puppet Plugin
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -35,9 +35,6 @@ import org.sonar.squidbridge.indexer.QueryByType
 import spock.lang.Ignore
 import spock.lang.Specification
 
-/**
- * Created by iwarapter
- */
 class PuppetAstScannerSpec extends Specification {
 
 	def "files"() {

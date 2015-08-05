@@ -1,5 +1,5 @@
 /*
- * Sonar Puppet Plugin
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -31,9 +31,6 @@ import static com.iadams.sonarqube.puppet.api.PuppetGrammar.RESOURCE
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.RESOURCE_NAME
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-/**
- * Created by iwarapter
- */
 public class ResourceSpec extends GrammarSpec {
 
 	def setup(){

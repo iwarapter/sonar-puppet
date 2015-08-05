@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -40,9 +40,6 @@ import org.sonar.squidbridge.checks.SquidCheck;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-/**
- * @author iwarapter
- */
 @Rule(
 		key = ParsingErrorCheck.CHECK_KEY,
 		priority = Priority.MAJOR,

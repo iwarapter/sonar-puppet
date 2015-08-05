@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -33,9 +33,6 @@ import org.sonar.squidbridge.annotations.NoSqale;
 import org.sonar.squidbridge.annotations.RuleTemplate;
 import org.sonar.squidbridge.checks.AbstractXPathCheck;
 
-/**
- * @author iwarapter
- */
 @Rule(
 		key = XPathCheck.CHECK_KEY,
 		priority = Priority.MAJOR,

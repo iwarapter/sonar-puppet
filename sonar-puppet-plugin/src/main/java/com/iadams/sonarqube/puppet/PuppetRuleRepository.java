@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -28,9 +28,6 @@ import com.iadams.sonarqube.puppet.checks.CheckList;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.squidbridge.annotations.AnnotationBasedRulesDefinition;
 
-/**
- * @author iwarapter
- */
 public class PuppetRuleRepository implements RulesDefinition {
 
 	private static final String REPOSITORY_NAME = "SonarQube";

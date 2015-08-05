@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -38,9 +38,6 @@ import java.util.Set;
 import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.regexp;
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.REGULAR_EXPRESSION_LITERAL;
 
-/**
- * @author iwarapter
- */
 public class PuppetRegexpChannel extends Channel<Lexer> {
 
     public static final String REGULAR_EXPRESSION = "\\/(?![*\\/]).*\\/";

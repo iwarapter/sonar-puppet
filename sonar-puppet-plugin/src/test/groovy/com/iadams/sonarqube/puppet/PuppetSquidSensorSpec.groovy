@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -41,9 +41,6 @@ import org.sonar.api.resources.Project
 import org.sonar.api.rule.RuleKey
 import spock.lang.Specification
 
-/**
- * @author iwarapter
- */
 class PuppetSquidSensorSpec extends Specification {
 
 	private PuppetSquidSensor sensor

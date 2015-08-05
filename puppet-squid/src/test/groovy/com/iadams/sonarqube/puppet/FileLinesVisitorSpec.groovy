@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -35,9 +35,6 @@ import org.sonar.api.measures.FileLinesContextFactory
 import org.sonar.squidbridge.SquidAstVisitor
 import spock.lang.Specification
 
-/**
- * Created by iwarapter
- */
 class FileLinesVisitorSpec extends Specification {
 
 	static final File BASE_DIR = new File("src/test/resources/metrics")

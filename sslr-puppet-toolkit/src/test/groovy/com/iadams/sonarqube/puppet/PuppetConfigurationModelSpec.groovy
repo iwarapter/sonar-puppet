@@ -1,5 +1,5 @@
 /*
- * Sonar Puppet Plugin
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -27,9 +27,6 @@ package com.iadams.sonarqube.puppet
 import com.google.common.base.Charsets;
 import spock.lang.Specification;
 
-/**
- * Created by iwarapter
- */
 public class PuppetConfigurationModelSpec extends Specification {
 
 	def "get configuration charset"(){

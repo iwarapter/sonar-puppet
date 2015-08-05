@@ -1,5 +1,5 @@
 /*
- * Sonar Puppet Plugin
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -26,9 +26,6 @@ package com.iadams.sonarqube.puppet.metrics
 
 import spock.lang.Specification
 
-/**
- * @author iwarapter
- */
 class PuppetLanguageMetricsSpec extends Specification {
 	def "validate metrics"() {
 		given:

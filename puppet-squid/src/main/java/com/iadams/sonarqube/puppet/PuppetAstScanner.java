@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -44,14 +44,11 @@ import org.sonar.squidbridge.metrics.LinesVisitor;
 import java.io.File;
 import java.util.Collection;
 
-/**
- * Created by iwarapter
- */
 public class PuppetAstScanner {
 
 	private PuppetAstScanner(){}
 
-	/**
+	/*
 	 * Helper method for testing checks without having to deploy them on a Sonar instance.
 	 */
 	public static SourceFile scanSingleFile(File file, SquidAstVisitor<Grammar>... visitors) {

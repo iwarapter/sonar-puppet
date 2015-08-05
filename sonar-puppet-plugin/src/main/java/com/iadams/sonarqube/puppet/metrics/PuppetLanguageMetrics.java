@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -30,9 +30,6 @@ import org.sonar.api.measures.Metrics;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author iwarapter
- */
 public final class PuppetLanguageMetrics implements Metrics {
 
 	public static final String DOMAIN = "Puppet";

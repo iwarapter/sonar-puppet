@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -31,9 +31,6 @@ import org.sonar.api.rules.RuleFinder;
 import org.sonar.api.utils.ValidationMessages;
 import org.sonar.squidbridge.annotations.AnnotationBasedProfileBuilder;
 
-/**
- * @author iwarapter
- */
 public class PuppetProfile extends ProfileDefinition {
 
 	private final RuleFinder ruleFinder;

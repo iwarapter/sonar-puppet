@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -32,9 +32,6 @@ import org.sonar.squidbridge.rules.SqaleXmlLoader;
 
 import java.util.List;
 
-/**
- * @author iwarapter
- */
 public class PplintRuleRepository implements RulesDefinition {
 
     public static final String REPOSITORY_NAME = "Pplint";

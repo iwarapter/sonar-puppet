@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -45,9 +45,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * @author iwarapter
- */
 public class PplintSensor implements Sensor {
 
     private static final Logger LOG = LoggerFactory.getLogger(PplintSensor.class);

@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -41,9 +41,6 @@ import org.sonar.sslr.toolkit.Validators;
 import java.nio.charset.Charset;
 import java.util.List;
 
-/**
- * Created by iwarapter
- */
 public class PuppetConfigurationModel extends AbstractConfigurationModel {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PuppetConfigurationModel.class);

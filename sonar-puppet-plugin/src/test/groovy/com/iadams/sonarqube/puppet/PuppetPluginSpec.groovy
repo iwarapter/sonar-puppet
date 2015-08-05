@@ -1,5 +1,5 @@
 /*
- * Sonar Puppet Plugin
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -26,9 +26,6 @@ package com.iadams.sonarqube.puppet
 
 import spock.lang.Specification
 
-/**
- * @author iwarapter
- */
 class PuppetPluginSpec extends Specification {
 	def "GetExtensions"() {
 		expect:
