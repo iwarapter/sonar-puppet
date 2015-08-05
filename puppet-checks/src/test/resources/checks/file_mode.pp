@@ -47,3 +47,19 @@ File {
 File {
 	mode => '0755',
 }
+
+file { 'foo':
+	mode => 755,
+}
+
+file { 'foo':
+	mode => 0755,
+}
+
+File {
+	mode => 755,
+}
+
+File {
+	mode => 0755,
+}

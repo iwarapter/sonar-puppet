@@ -32,6 +32,7 @@ import spock.lang.Specification
 class FileModeCheckSpec extends Specification {
 
     private static final String MESSAGE = "File modes should be represented as 4 digits rather than 3, to explicitly show that they are octal values.";
+    private static final String MESSAGE_INTEGER = "Set the file mode to a 4-digit octal value surrounded by single quotes.";
 
     def "validate check"() {
         given:
@@ -44,6 +45,10 @@ class FileModeCheckSpec extends Specification {
                 .next().atLine(22).withMessage(MESSAGE)
                 .next().atLine(32).withMessage(MESSAGE)
                 .next().atLine(44).withMessage(MESSAGE)
+                .next().atLine(52).withMessage(MESSAGE_INTEGER)
+                .next().atLine(56).withMessage(MESSAGE_INTEGER)
+                .next().atLine(60).withMessage(MESSAGE_INTEGER)
+                .next().atLine(64).withMessage(MESSAGE_INTEGER)
                 .noMore();
     }
 }

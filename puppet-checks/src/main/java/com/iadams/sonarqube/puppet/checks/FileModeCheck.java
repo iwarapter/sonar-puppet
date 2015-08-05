@@ -38,8 +38,7 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL;
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.*;
 
 @Rule(
   key = "FileModes",
@@ -81,7 +80,9 @@ public class FileModeCheck extends SquidCheck<Grammar> {
   }
 
   private void checkMode(AstNode node) {
-    if (node.getToken().getType().equals(SINGLE_QUOTED_STRING_LITERAL) || node.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL)) {
+    if (node.getToken().getType().equals(OCTAL_INTEGER) || node.getToken().getType().equals(INTEGER)) {
+      getContext().createLineViolation(this, "Set the file mode to a 4-digit octal value surrounded by single quotes.", node.getTokenLine());
+    } else if (node.getToken().getType().equals(SINGLE_QUOTED_STRING_LITERAL) || node.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL)) {
       if (!pattern.matcher(node.getTokenValue()).matches()) {
         getContext().createLineViolation(this, "File modes should be represented as 4 digits rather than 3, to explicitly show that they are octal values.", node.getTokenLine());
       }
