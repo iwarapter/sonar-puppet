@@ -54,7 +54,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @SqaleConstantRemediation("1min")
 public class LineLengthCheck extends SquidCheck<Grammar> implements CharsetAwareVisitor {
 
-  private static final int DEFAULT_MAXIMUM_LINE_LENGTH = 80;
+  private static final int DEFAULT_MAXIMUM_LINE_LENGTH = 140;
   private Charset charset;
 
   @RuleProperty(
