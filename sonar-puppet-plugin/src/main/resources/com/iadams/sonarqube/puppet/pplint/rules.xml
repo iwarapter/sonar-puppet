@@ -555,8 +555,10 @@ class apache {
 
       <h2>Compliant Solution</h2>
 
-      <p>Split these classes and/or defines out into seperate files as described in the <a href="http://docs.puppetlabs.com/puppet/2.7/reference/modules_fundamentals.html#module-layout">module fundamentals documentation</a>.</p>]]>
+      <p>Split these classes and/or defines out into seperate files as described in the <a href="http://docs.puppetlabs.com/puppet/2.7/reference/modules_fundamentals.html#module-layout">module fundamentals documentation</a>.</p>
+      <p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:NestedClassesOrDefines">NestedClassesOrDefines</a> instead.</p>]]>
     </description>
+    <status>DEPRECATED</status>
     <priority>MINOR</priority>
   </rule>
   <rule>

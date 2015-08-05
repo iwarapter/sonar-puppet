@@ -48,7 +48,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
     TYPE,
     END_COMMA,
-	END_SEMIC,
+	  END_SEMIC,
 
     EXPRESSION,
     EXPRESSIONS,
