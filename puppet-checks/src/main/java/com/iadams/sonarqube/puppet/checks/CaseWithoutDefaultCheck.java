@@ -36,31 +36,32 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
-        key = "CaseWithoutDefault",
-        priority = Priority.MAJOR,
-        name = "Case statements should have default cases.",
-        tags = Tags.PITFALL
-)
+  key = "CaseWithoutDefault",
+  priority = Priority.MAJOR,
+  name = "Case statements should have default cases",
+  tags = Tags.PITFALL)
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
 @SqaleConstantRemediation("1h")
 public class CaseWithoutDefaultCheck extends SquidCheck<Grammar> {
 
-    @Override
-    public void init() {
-        subscribeTo(PuppetGrammar.CASE_STMT);
-    }
+  @Override
+  public void init() {
+    subscribeTo(PuppetGrammar.CASE_STMT);
+  }
 
-    @Override
-    public void visitNode(AstNode node) {
-        boolean hasDefault = false;
-		for(AstNode cases : node.getDescendants(PuppetGrammar.CASE_MATCHER)){
-			if(cases.getTokenValue().equals("default")){
-                hasDefault = true;
-            }
-		}
-        if(!hasDefault){
-            getContext().createLineViolation(this, "Case statements should have default cases.", node);
-        }
+  @Override
+  public void visitNode(AstNode node) {
+    boolean hasDefault = false;
+    for (AstNode caseNode : node.getChildren(PuppetGrammar.CASE_MATCHER)) {
+      if ("default".equals(caseNode.getTokenValue())) {
+        hasDefault = true;
+        break;
+      }
     }
+    if (!hasDefault) {
+      getContext().createLineViolation(this, "Add a default case.", node);
+    }
+  }
+
 }

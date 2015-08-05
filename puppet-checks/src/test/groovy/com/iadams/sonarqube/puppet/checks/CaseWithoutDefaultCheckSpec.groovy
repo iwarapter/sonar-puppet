@@ -31,7 +31,7 @@ import spock.lang.Specification
 
 class CaseWithoutDefaultCheckSpec extends Specification {
 
-    private static final String MESSAGE = "Case statements should have default cases.";
+    private static final String MESSAGE = "Add a default case.";
 
     def "validate check"() {
         given:
