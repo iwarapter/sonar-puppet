@@ -53,9 +53,10 @@ public class CaseWithoutDefaultCheck extends SquidCheck<Grammar> {
   @Override
   public void visitNode(AstNode node) {
     boolean hasDefault = false;
-    for (AstNode cases : node.getChildren(PuppetGrammar.CASE_MATCHER)) {
-      if (cases.getTokenValue().equals("default")) {
+    for (AstNode caseNode : node.getChildren(PuppetGrammar.CASE_MATCHER)) {
+      if ("default".equals(caseNode.getTokenValue())) {
         hasDefault = true;
+        break;
       }
     }
     if (!hasDefault) {
