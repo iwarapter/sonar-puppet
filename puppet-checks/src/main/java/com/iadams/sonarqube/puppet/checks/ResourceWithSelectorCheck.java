@@ -28,7 +28,9 @@ import com.google.common.collect.Lists;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
+
 import java.util.List;
+
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -38,31 +40,30 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
-        key = "ResourceWithSelector",
-        priority = Priority.MINOR,
-        name = "You should not intermingle conditionals with resource declarations.",
-        tags = Tags.PITFALL
-)
+  key = "ResourceWithSelector",
+  priority = Priority.MINOR,
+  name = "Conditionals should not be intermingled with resource declarations",
+  tags = {Tags.PITFALL, Tags.BRAIN_OVERLOAD})
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("10min")
 public class ResourceWithSelectorCheck extends SquidCheck<Grammar> {
 
-    @Override
-    public void init() {
-        subscribeTo(PuppetGrammar.RESOURCE);
+  @Override
+  public void init() {
+    subscribeTo(PuppetGrammar.RESOURCE);
+  }
+
+  @Override
+  public void visitNode(AstNode node) {
+
+    List<AstNode> selectors = Lists.newArrayList();
+
+    for (AstNode selector : node.getDescendants(PuppetGrammar.SELECTOR)) {
+      selectors.add(selector);
     }
-
-    @Override
-    public void visitNode(AstNode node) {
-
-        List<AstNode> selectors = Lists.newArrayList();
-
-		for(AstNode selector : node.getDescendants(PuppetGrammar.SELECTOR)){
-			selectors.add(selector);
-		}
-        for(AstNode violation : selectors){
-            getContext().createLineViolation(this, "You should not intermingle conditionals with resource declarations.", violation);
-        }
+    for (AstNode violation : selectors) {
+      getContext().createLineViolation(this, "Extract this conditional from the resource declaration.", violation);
     }
+  }
 }
