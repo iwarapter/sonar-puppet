@@ -459,7 +459,8 @@ $file_mode = $::operatingsystem ? {
 
 file { '/tmp/readme.txt':
   mode => $file_mode,
-}</pre>]]>
+}</pre>
+<p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:ResourceWithSelector">ResourceWithSelector</a> instead.</p>]]>
     </description>
     <priority>MINOR</priority>
     <status>DEPRECATED</status>

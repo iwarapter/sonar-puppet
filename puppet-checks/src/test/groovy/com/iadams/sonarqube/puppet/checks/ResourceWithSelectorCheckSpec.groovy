@@ -31,7 +31,7 @@ import spock.lang.Specification
 
 class ResourceWithSelectorCheckSpec extends Specification {
 
-    private static final String MESSAGE = "You should not intermingle conditionals with resource declarations.";
+    private static final String MESSAGE = "Extract this conditional from the resource declaration.";
 
 	def "validate check"() {
         given:
@@ -43,6 +43,7 @@ class ResourceWithSelectorCheckSpec extends Specification {
                 .next().atLine(2).withMessage(MESSAGE)
                 .next().atLine(20).withMessage(MESSAGE)
                 .next().atLine(26).withMessage(MESSAGE)
+                .next().atLine(33).withMessage(MESSAGE)
                 .noMore();
     }
 }
