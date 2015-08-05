@@ -38,3 +38,16 @@ file {
   '/tmp/readme3.txt':
     owner  => '0';
 }
+
+File['log.conf'] {
+  owner => '0',
+}
+
+File['log.conf'] {
+  owner => '0',
+  owner => '0',
+}
+
+file { 'foo':
+  owner  => '0',
+}
