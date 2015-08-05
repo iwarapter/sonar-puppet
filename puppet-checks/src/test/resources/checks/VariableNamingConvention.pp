@@ -12,3 +12,8 @@ file { $abc:
   ensure => file,
   mode   => $module::var,
 }
+
+file { $abc:
+  ensure => file,
+  mode   => $::var,
+}
