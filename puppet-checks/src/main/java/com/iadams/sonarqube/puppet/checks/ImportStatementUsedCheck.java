@@ -52,7 +52,7 @@ public class ImportStatementUsedCheck extends SquidCheck<Grammar> {
 
   @Override
   public void visitNode(AstNode node) {
-    getContext().createLineViolation(this, "Remove the usage of this \"import\" statement.", node.getTokenLine());
+    getContext().createLineViolation(this, "Remove this usage of the deprecated \"import\" statement.", node.getTokenLine());
   }
 
 }
