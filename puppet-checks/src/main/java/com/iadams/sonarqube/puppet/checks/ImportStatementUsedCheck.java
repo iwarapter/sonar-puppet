@@ -38,7 +38,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @Rule(
   key = "ImportStatementUsed",
   priority = Priority.MAJOR,
-  name = "Import statement is deprecated",
+  name = "Deprecated \"import\" statement should not be used",
   tags = {Tags.CONVENTION, Tags.PITFALL})
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
@@ -52,7 +52,7 @@ public class ImportStatementUsedCheck extends SquidCheck<Grammar> {
 
   @Override
   public void visitNode(AstNode node) {
-    getContext().createLineViolation(this, "The import keyword is deprecated.", node.getTokenLine());
+    getContext().createLineViolation(this, "Remove the usage of this \"import\" statement.", node.getTokenLine());
   }
 
 }
