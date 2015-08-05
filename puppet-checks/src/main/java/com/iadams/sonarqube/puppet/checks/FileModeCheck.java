@@ -88,9 +88,11 @@ public class FileModeCheck extends SquidCheck<Grammar> {
     } else if (node.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL) && PATTERN.matcher(node.getTokenValue()).matches()) {
       getContext().createLineViolation(this, MESSAGE_DOUBLE_QUOTES, node.getTokenLine());
     } else if (node.getToken().getType().equals(SINGLE_QUOTED_STRING_LITERAL) && !PATTERN.matcher(node.getTokenValue()).matches()
-      || node.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL) && !PATTERN.matcher(node.getTokenValue()).matches()) {
+      || node.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL) && !PATTERN.matcher(node.getTokenValue()).matches()
+      && !CheckUtils.doesStringContainsVariables(node.getTokenValue())) {
       getContext().createLineViolation(this, MESSAGE_INVALID, node.getTokenLine());
     }
+
   }
 
 }

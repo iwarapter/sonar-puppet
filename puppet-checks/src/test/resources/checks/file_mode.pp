@@ -79,3 +79,11 @@ File {
 File {
 	mode => "abc",
 }
+
+file { 'foo':
+	mode => "u=${var}",
+}
+
+File {
+	mode => "u=${var}",
+}
