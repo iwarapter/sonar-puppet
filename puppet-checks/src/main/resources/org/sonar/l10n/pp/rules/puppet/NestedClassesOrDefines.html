@@ -1,0 +1,23 @@
+<p>
+    Classes and defines must not be defined within other classes or defines.
+    Classes and defines should be declared as close to node scope as possible. If you have a class or define which
+    requires another class or define, graceful failures must be in place if those required classes or defines are not
+    declared elsewhere.
+</p>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+class apache {
+  class ssl { ... }
+}
+
+class apache {
+  define config() { ... }
+}
+</pre>
+
+<h2>See</h2>
+<ul>
+    <li><a href="http://docs.puppetlabs.com/guides/style_guide.html#nested-classes-or-defines">See Puppet Labs Puppet
+        Language Style Guide</a></li>
+</ul>
