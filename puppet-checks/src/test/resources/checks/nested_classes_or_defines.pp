@@ -8,6 +8,16 @@ class apache {
   define config() { } # non compliant
 }
 
+define apache {
+  class ssl { } # non compliant
+}
+
+define apache {
+  define config() { # non compliant
+    define config2() { } # non compliant
+  }
+}
+
 class without {
 
 }

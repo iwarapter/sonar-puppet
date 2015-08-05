@@ -31,8 +31,6 @@ import spock.lang.Specification
 
 class NestedClassesOrDefinesCheckSpec extends Specification {
 
-  private static final String MESSAGE = "Remove the nested class or define if possible."
-
   def "validate rule"() {
     given:
     NestedClassesOrDefinesCheck check = new NestedClassesOrDefinesCheck();
@@ -41,8 +39,12 @@ class NestedClassesOrDefinesCheckSpec extends Specification {
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(2).withMessage(MESSAGE)
-      .next().atLine(8).withMessage(MESSAGE)
+      .next().atLine(2).withMessage("Move this nested class \"ssl\" outside of class \"apache\".")
+      .next().atLine(8).withMessage("Move this nested define \"config\" outside of class \"apache\".")
+      .next().atLine(12).withMessage("Move this nested class \"ssl\" outside of define \"apache\".")
+      .next().atLine(16).withMessage("Move this nested define \"config\" outside of define \"apache\".")
+      .next().atLine(17).withMessage("Move this nested define \"config2\" outside of define \"apache\".")
+      .next().atLine(17).withMessage("Move this nested define \"config2\" outside of define \"config\".")
       .noMore();
   }
 }

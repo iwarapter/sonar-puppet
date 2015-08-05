@@ -37,23 +37,33 @@ import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "NestedClassesOrDefines",
-  priority = Priority.MAJOR,
-  name = "Classes and defined resource types must not be defined within other classes or defined types.",
+  priority = Priority.CRITICAL,
+  name = "Classes and defines should not be defined within other classes or defines",
   tags = Tags.PITFALL)
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
 @SqaleConstantRemediation("1h")
 public class NestedClassesOrDefinesCheck extends SquidCheck<Grammar> {
 
+  private String message;
+
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.CLASSDEF);
+    subscribeTo(PuppetGrammar.CLASSDEF, PuppetGrammar.DEFINITION);
   }
 
   @Override
   public void visitNode(AstNode node) {
-    for( AstNode nestedNode : node.getDescendants(PuppetGrammar.CLASSDEF, PuppetGrammar.DEFINITION)){
-      getContext().createLineViolation(this, "Remove the nested class or define if possible.", nestedNode);
+    for (AstNode nestedNode : node.getDescendants(PuppetGrammar.CLASSDEF, PuppetGrammar.DEFINITION)) {
+      message = "Move this nested "
+        + (nestedNode.is(PuppetGrammar.CLASSDEF) ? "class " : "define ")
+        + "\"" + nestedNode.getFirstChild(PuppetGrammar.CLASSNAME).getTokenValue() + "\""
+        + " outside of "
+        + (node.is(PuppetGrammar.CLASSDEF) ? "class " : "define ")
+        + "\"" + node.getFirstChild(PuppetGrammar.CLASSNAME).getTokenValue() + "\""
+        + ".";
+      getContext().createLineViolation(this, message, nestedNode);
     }
   }
+
 }
