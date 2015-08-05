@@ -24,54 +24,37 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
-import com.google.common.io.Files;
-import com.iadams.sonarqube.puppet.CharsetAwareVisitor;
+import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
-import org.sonar.api.utils.SonarException;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.List;
 
 @Rule(
-		key = "TabCharacter",
-		name = "Tabulation characters should not be used",
-		priority = Priority.MINOR,
-		tags = {Tags.CONVENTION})
+        key = "ResourceDefaultUsed",
+        priority = Priority.INFO,
+        name = "Resource defaults should be used in a very controlled manner.",
+        tags = Tags.PITFALL
+)
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
-@SqaleConstantRemediation("2min")
-public class TabCharacterCheck extends SquidCheck<LexerlessGrammar> implements CharsetAwareVisitor {
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
+@SqaleConstantRemediation("1h")
+public class ResourceDefaultUsedCheck extends SquidCheck<Grammar> {
 
-	private Charset charset;
+    @Override
+    public void init() {
+        subscribeTo(PuppetGrammar.RESOURCE);
+    }
 
-	@Override
-	public void setCharset(Charset charset) {
-		this.charset = charset;
-	}
-
-	@Override
-	public void visitFile(AstNode astNode) {
-		List<String> lines;
-		try {
-			lines = Files.readLines(getContext().getFile(), charset);
-		} catch (IOException e) {
-			throw new SonarException(e);
+    @Override
+    public void visitNode(AstNode node) {
+		if(node.getFirstChild().getType().equals(PuppetGrammar.TYPE)) {
+			getContext().createLineViolation(this, "Resource defaults should be used in a very controlled manner and should only be declared at the edges of your manifest ecosystem.", node);
 		}
-		for (String line : lines) {
-			if (line.contains("\t")) {
-				getContext().createFileViolation(this, "Replace all tab characters in this file by sequences of whitespaces.");
-				break;
-			}
-		}
-	}
-
+    }
 }

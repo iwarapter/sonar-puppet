@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -26,9 +26,6 @@ package com.iadams.sonarqube.puppet;
 
 import org.sonar.squidbridge.CommentAnalyser;
 
-/**
- * Created by iwarapter
- */
 public class PuppetCommentAnalyser extends CommentAnalyser {
 
     @Override

@@ -29,15 +29,20 @@ import org.sonar.squidbridge.api.SourceFile
 import org.sonar.squidbridge.checks.CheckMessagesVerifier
 import spock.lang.Specification
 
-class ParsingErrorCheckSpec extends Specification {
+class ResourceDefaultUsedCheckSpec extends Specification {
 
-	def "files that dont parse are marked"(){
+	private final static String MESSAGE = "Resource defaults should be used in a very controlled manner and should only be declared at the edges of your manifest ecosystem.";
+
+	def "validate rule"() {
 		given:
-		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/parsingError.pp"), new ParsingErrorCheck());
+		ResourceDefaultUsedCheck check = new ResourceDefaultUsedCheck();
+
+		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/resourceDefaultStatements.pp"), check);
 
 		expect:
 		CheckMessagesVerifier.verify(file.getCheckMessages())
-				.next().atLine(1)
+				.next().atLine(1).withMessage(MESSAGE)
+				.next().atLine(8).withMessage(MESSAGE)
 				.noMore();
 	}
 }

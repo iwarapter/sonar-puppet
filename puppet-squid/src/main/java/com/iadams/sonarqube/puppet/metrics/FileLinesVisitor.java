@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -38,11 +38,6 @@ import org.sonar.squidbridge.SquidAstVisitor;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by iwarapter
- *
- * Visitor that computes {@link CoreMetrics#NCLOC_DATA_KEY} and {@link CoreMetrics#COMMENT_LINES_DATA_KEY} metrics used by the DevCockpit.
- */
 public class FileLinesVisitor extends SquidAstVisitor<Grammar> implements AstAndTokenVisitor {
 
 	private final FileLinesContextFactory fileLinesContextFactory;

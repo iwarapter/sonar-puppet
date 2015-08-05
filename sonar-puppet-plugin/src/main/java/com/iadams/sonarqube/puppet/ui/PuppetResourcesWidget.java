@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -29,9 +29,6 @@ import org.sonar.api.web.RubyRailsWidget;
 import org.sonar.api.web.UserRole;
 import org.sonar.api.web.WidgetCategory;
 
-/**
- * @author iwarapter
- */
 @UserRole(UserRole.USER)
 @WidgetCategory("Puppet")
 public class PuppetResourcesWidget extends AbstractRubyTemplate implements RubyRailsWidget {

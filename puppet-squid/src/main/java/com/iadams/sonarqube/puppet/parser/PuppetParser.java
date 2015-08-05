@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -30,9 +30,6 @@ import com.iadams.sonarqube.puppet.PuppetConfiguration;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.iadams.sonarqube.puppet.lexer.PuppetLexer;
 
-/**
- * Created by iwarapter
- */
 public class PuppetParser {
 
     public static Parser<Grammar> create(PuppetConfiguration conf) {

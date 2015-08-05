@@ -1,5 +1,5 @@
 /*
- * Sonar Puppet Plugin
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -31,9 +31,6 @@ import com.sonar.sslr.impl.Parser;
 import org.sonar.sslr.grammar.GrammarRuleKey
 import spock.lang.Specification;
 
-/**
- * Created by iwarapter
- */
 public class GrammarSpec extends Specification {
     protected Parser<Grammar> p = PuppetParser.create(new PuppetConfiguration(Charsets.UTF_8));
 

@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -32,9 +32,6 @@ import org.sonar.sslr.toolkit.Toolkit;
 
 import java.util.List;
 
-/**
- * Created by iwarapter
- */
 public final class PuppetToolkit {
 
 	private PuppetToolkit() {

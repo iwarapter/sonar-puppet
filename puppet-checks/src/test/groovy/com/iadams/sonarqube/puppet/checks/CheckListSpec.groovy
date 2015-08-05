@@ -1,5 +1,5 @@
 /*
- * Sonar Puppet Plugin
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -28,9 +28,6 @@ import org.sonar.api.rules.AnnotationRuleParser
 import spock.lang.Specification
 import spock.lang.Unroll
 
-/**
- * Created by iwarapter
- */
 class CheckListSpec extends Specification {
 
 	def "each check is defined in list"(){

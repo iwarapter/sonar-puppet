@@ -1,5 +1,5 @@
-/**
- * Sonar Puppet Plugin
+/*
+ * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Iain Adams
@@ -24,9 +24,6 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
-/**
- * @author iwarapter
- */
 public class Tags {
 	public static final String BRAIN_OVERLOAD = "brain-overload";
 	public static final String BUG = "bug";
