@@ -30,36 +30,37 @@ import java.util.List;
 
 public final class CheckList {
 
-	public static final String REPOSITORY_KEY = "puppet";
+  public static final String REPOSITORY_KEY = "puppet";
 
-	public static final String SONARQUBE_WAY_PROFILE = "SonarQube Way";
+  public static final String SONARQUBE_WAY_PROFILE = "SonarQube Way";
 
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-			CaseWithoutDefaultCheck.class,
-			CommentConventionCheck.class,
-			CommentRegularExpressionCheck.class,
-			DuplicatedParametersCheck.class,
-			EnsureOrderingCheck.class,
-			FileModeCheck.class,
-			FileNameCheck.class,
-			FixmeTagPresenceCheck.class,
-			ImportStatementUsedCheck.class,
-			LineLengthCheck.class,
-			MissingNewLineAtEndOfFileCheck.class,
-			NestedClassesOrDefinesCheck.class,
-			NosonarTagPresenceCheck.class,
-			ParsingErrorCheck.class,
-			QuotedBooleanCheck.class,
-			ResourceWithSelectorCheck.class,
-			SelectorWithoutDefaultCheck.class,
-			TabCharacterCheck.class,
-			TodoTagPresenceCheck.class,
-			TrailingWhitespaceCheck.class,
-			UserResourceLiteralNameCheck.class,
-			UserResourcePasswordNotSetCheck.class,
-			VariableNamingConventionCheck.class,
-			XPathCheck.class
-		);
-	}
+  public static List<Class> getChecks() {
+    return ImmutableList.<Class>of(
+      CaseWithoutDefaultCheck.class,
+      CommentConventionCheck.class,
+      CommentRegularExpressionCheck.class,
+      DuplicatedParametersCheck.class,
+      EnsureOrderingCheck.class,
+      FileModeCheck.class,
+      FileNameCheck.class,
+      FixmeTagPresenceCheck.class,
+      ImportStatementUsedCheck.class,
+      LineLengthCheck.class,
+      MissingNewLineAtEndOfFileCheck.class,
+      NestedClassesOrDefinesCheck.class,
+      NosonarTagPresenceCheck.class,
+      ParsingErrorCheck.class,
+      QuotedBooleanCheck.class,
+      ResourceWithSelectorCheck.class,
+      SelectorWithoutDefaultCheck.class,
+      SingleQuotedStringContainingVariablesCheck.class,
+      TabCharacterCheck.class,
+      TodoTagPresenceCheck.class,
+      TrailingWhitespaceCheck.class,
+      UserResourceLiteralNameCheck.class,
+      UserResourcePasswordNotSetCheck.class,
+      VariableNamingConventionCheck.class,
+      XPathCheck.class
+      );
+  }
 }
