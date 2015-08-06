@@ -41,6 +41,7 @@ public final class CheckList {
 			CommentRegularExpressionCheck.class,
 			DuplicatedParametersCheck.class,
 			EnsureOrderingCheck.class,
+			EnsureNotSymlinkTargetCheck.class,
 			FileModeCheck.class,
 			FileNameCheck.class,
 			FixmeTagPresenceCheck.class,

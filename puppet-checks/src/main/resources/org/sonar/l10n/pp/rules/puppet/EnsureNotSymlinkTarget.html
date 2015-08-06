@@ -1,0 +1,21 @@
+<p>In the interest of clarity, symbolic links should be declared by using an ensure value of ensure => link and explicitly specifying a value for the target attribute. Using a path to the target as the ensure value is not recommended.</p>
+
+<h2>Noncompliant Code Example</h2>
+
+<pre>
+file { '/tmp/foo':
+  ensure => '/tmp/bar',
+}</pre>
+
+<h2>Compliant Solution</h2>
+
+<pre>
+file { '/tmp/foo':
+  ensure => link,
+  target => '/tmp/bar',
+}</pre>
+
+<h2>See</h2>
+<ul>
+    <li><a href="https://docs.puppetlabs.com/guides/style_guide.html#symbolic-links">See Puppet Labs Puppet Language Style Guide</a></li>
+</ul>
