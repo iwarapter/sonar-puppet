@@ -533,9 +533,11 @@ Service['httpd'] <- Package['httpd']</pre>
       <h2>Compliant Solution</h2>
 
       <pre>
-Package['httpd'] -> Service['httpd']</pre>]]>
+Package['httpd'] -> Service['httpd']</pre>
+ <p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:RightToLeftChainingArrows">RightToLeftChainingArrows</a> instead.</p>]]>
     </description>
     <priority>MINOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>nested_classes_or_defines</key>
