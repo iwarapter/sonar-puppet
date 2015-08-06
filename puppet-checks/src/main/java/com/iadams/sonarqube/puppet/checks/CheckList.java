@@ -61,6 +61,7 @@ public final class CheckList {
       UserResourceLiteralNameCheck.class,
       UserResourcePasswordNotSetCheck.class,
       VariableNamingConventionCheck.class,
+      VariableNotEnclosedInBracesCheck.class,
       XPathCheck.class
       );
   }
