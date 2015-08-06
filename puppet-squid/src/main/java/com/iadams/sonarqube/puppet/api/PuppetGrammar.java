@@ -343,7 +343,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 				HASH_ARRAY_ACCESSES
 		));
 
-        b.rule(EDGE).is(b.firstOf(IN_EDGE, OUT_EDGE, IN_EDGE_SUB, OUT_EDGE_SUB));
+        b.rule(EDGE).is(b.firstOf(IN_EDGE, OUT_EDGE, IN_EDGE_SUB, OUT_EDGE_SUB)).skip();
 
         b.rule(HASH_ARRAY_ACCESS).is(VARIABLE, LBRACK, EXPRESSION, RBRACK);
         b.rule(HASH_ARRAY_ACCESSES).is(HASH_ARRAY_ACCESS, b.zeroOrMore(LBRACK, EXPRESSION, RBRACK));

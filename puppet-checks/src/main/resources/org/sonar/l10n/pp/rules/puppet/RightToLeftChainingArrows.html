@@ -1,0 +1,41 @@
+<p>As the majority of Puppet’s syntax is written left-to-right, right-to-left chaining arrows (<code>&lt;&#45;</code> and <code>&lt;&#126;</code>) can be confusing and are not recommended.</p>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+service { 'sshd':
+  ensure => running,
+  enable => true,
+}
+<~
+file { '/etc/ssh/sshd_config':
+  ensure => file,
+  mode   => '0600',
+  source => 'puppet:///modules/sshd/sshd_config',
+}
+<-
+package { 'openssh-server':
+  ensure => present,
+}
+</pre>
+
+<h2>Compliant Solution</h2>
+<pre>
+package { 'openssh-server':
+  ensure => present,
+}
+->
+file { '/etc/ssh/sshd_config':
+  ensure => file,
+  mode   => '0600',
+  source => 'puppet:///modules/sshd/sshd_config',
+}
+~>
+service { 'sshd':
+  ensure => running,
+  enable => true,
+}
+</pre>
+<h2>See</h2>
+<ul>
+  <li><a href="https://docs.puppetlabs.com/puppet/latest/reference/lang_relationships.html#reversed-forms">See Puppet Labs recommendations</a></li>
+</ul>
