@@ -198,15 +198,15 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(PARAMS).is(b.optional(
                 PARAM,
-                b.zeroOrMore(COMMA, PARAM)));
+                b.zeroOrMore(COMMA, PARAM))).skip();
 
-        b.rule(ADD_PARAM).is(NAME, PARROW, EXPRESSION);
+        b.rule(ADD_PARAM).is(NAME, PARROW, EXPRESSION).skip();
 
-        b.rule(ANY_PARAM).is(b.firstOf(PARAM, ADD_PARAM));
+        b.rule(ANY_PARAM).is(b.firstOf(PARAM, ADD_PARAM)).skip();
 
         b.rule(ANY_PARAMS).is(b.optional(
 				ANY_PARAM,
-				b.zeroOrMore(COMMA, ANY_PARAM)));
+				b.zeroOrMore(COMMA, ANY_PARAM))).skip();
 
         b.rule(RESOURCE).is(b.firstOf(
 				b.sequence(CLASSNAME, LBRACE, RESOURCE_INSTANCES, END_SEMIC, RBRACE),
@@ -216,7 +216,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
 		b.rule(RESOURCE_INSTANCES).is(
 				RESOURCE_INST,
-				b.zeroOrMore(SEMIC, RESOURCE_INST));
+				b.zeroOrMore(SEMIC, RESOURCE_INST)).skip();
 
         b.rule(RESOURCE_NAME).is(b.firstOf(
 				SELECTOR,
@@ -238,7 +238,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(QUOTED_TEXT).is(
                 b.firstOf(
 						SINGLE_QUOTED_STRING_LITERAL,
-						DOUBLE_QUOTED_STRING_LITERAL));
+						DOUBLE_QUOTED_STRING_LITERAL)).skip();
 
         b.rule(TYPE).is(REF);
 
