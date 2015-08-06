@@ -72,11 +72,9 @@ public class FileModeCheck extends SquidCheck<Grammar> {
         }
       }
     } else if ("File".equals(node.getTokenValue())) {
-      if (node.getFirstChild(PuppetGrammar.PARAMS) != null) {
-        for (AstNode paramNode : node.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
-          if ("mode".equals(paramNode.getTokenValue())) {
-            checkMode(paramNode.getFirstChild(PuppetGrammar.EXPRESSION));
-          }
+      for (AstNode paramNode : node.getChildren(PuppetGrammar.PARAM)) {
+        if ("mode".equals(paramNode.getTokenValue())) {
+          checkMode(paramNode.getFirstChild(PuppetGrammar.EXPRESSION));
         }
       }
     }

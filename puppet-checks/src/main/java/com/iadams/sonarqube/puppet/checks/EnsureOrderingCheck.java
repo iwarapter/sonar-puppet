@@ -55,13 +55,11 @@ public class EnsureOrderingCheck extends SquidCheck<Grammar> {
 	@Override
 	public void visitNode(AstNode node) {
 		int counter= 0;
-		for (AstNode params : node.getChildren(PuppetGrammar.PARAMS)) {
-			for(AstNode param : params.getChildren(PuppetGrammar.PARAM)){
-				counter++;
-				if ("ensure".equals(param.getTokenValue()) && counter != 1) {
-					getContext().createLineViolation(this, "Move the \"ensure\" attribute to be declared first.", param.getTokenLine());
-					break;
-				}
+		for(AstNode param : node.getChildren(PuppetGrammar.PARAM)){
+			counter++;
+			if ("ensure".equals(param.getTokenValue()) && counter != 1) {
+				getContext().createLineViolation(this, "Move the \"ensure\" attribute to be declared first.", param.getTokenLine());
+				break;
 			}
 		}
 	}

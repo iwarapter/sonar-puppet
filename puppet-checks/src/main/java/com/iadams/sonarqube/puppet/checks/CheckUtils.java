@@ -24,6 +24,8 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.api.PuppetTokenType;
+import com.sonar.sslr.api.AstNode;
 import java.util.regex.Pattern;
 
 public class CheckUtils {
@@ -33,6 +35,13 @@ public class CheckUtils {
 
   public static boolean doesStringContainsVariables(String string) {
     return PATTERN_VARIABLE_USAGE.matcher(string).matches();
+  }
+
+  public static boolean isNodeStringLiteral(AstNode node){
+    if(node.getToken().getType().equals(PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL) || node.getToken().getType().equals(PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL)){
+      return true;
+    }
+    return false;
   }
 
 }

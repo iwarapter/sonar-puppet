@@ -198,7 +198,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
         b.rule(PARAMS).is(b.optional(
                 PARAM,
-                b.zeroOrMore(COMMA, PARAM)));
+                b.zeroOrMore(COMMA, PARAM))).skip();
 
         b.rule(ADD_PARAM).is(NAME, PARROW, EXPRESSION);
 
@@ -216,7 +216,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
 		b.rule(RESOURCE_INSTANCES).is(
 				RESOURCE_INST,
-				b.zeroOrMore(SEMIC, RESOURCE_INST));
+				b.zeroOrMore(SEMIC, RESOURCE_INST)).skip();
 
         b.rule(RESOURCE_NAME).is(b.firstOf(
 				SELECTOR,
