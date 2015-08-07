@@ -31,13 +31,13 @@ import static org.sonar.sslr.tests.Assertions.assertThat
 
 class ResourceRefStatement extends GrammarSpec {
 
-	def setup(){
-		setRootRule(RESOURCE_REF)
-	}
+  def setup() {
+    setRootRule(RESOURCE_REF)
+  }
 
-	def "example resource references parses correctly"() {
-		expect:
-		assertThat(p).matches("Class['Apache::Service']")
-		assertThat(p).matches("Concat::Fragment['apache_port_header']")
-	}
+  def "example resource references parses correctly"() {
+    expect:
+    assertThat(p).matches("Class['Apache::Service']")
+    assertThat(p).matches("Concat::Fragment['apache_port_header']")
+  }
 }

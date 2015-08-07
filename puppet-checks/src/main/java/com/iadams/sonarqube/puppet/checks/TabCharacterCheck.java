@@ -42,36 +42,36 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 @Rule(
-		key = "TabCharacter",
-		name = "Tabulation characters should not be used",
-		priority = Priority.MINOR,
-		tags = {Tags.CONVENTION})
+  key = "TabCharacter",
+  name = "Tabulation characters should not be used",
+  priority = Priority.MINOR,
+  tags = {Tags.CONVENTION})
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("2min")
 public class TabCharacterCheck extends SquidCheck<LexerlessGrammar> implements CharsetAwareVisitor {
 
-	private Charset charset;
+  private Charset charset;
 
-	@Override
-	public void setCharset(Charset charset) {
-		this.charset = charset;
-	}
+  @Override
+  public void setCharset(Charset charset) {
+    this.charset = charset;
+  }
 
-	@Override
-	public void visitFile(AstNode astNode) {
-		List<String> lines;
-		try {
-			lines = Files.readLines(getContext().getFile(), charset);
-		} catch (IOException e) {
-			throw new SonarException(e);
-		}
-		for (String line : lines) {
-			if (line.contains("\t")) {
-				getContext().createFileViolation(this, "Replace all tab characters in this file by sequences of whitespaces.");
-				break;
-			}
-		}
-	}
+  @Override
+  public void visitFile(AstNode astNode) {
+    List<String> lines;
+    try {
+      lines = Files.readLines(getContext().getFile(), charset);
+    } catch (IOException e) {
+      throw new SonarException(e);
+    }
+    for (String line : lines) {
+      if (line.contains("\t")) {
+        getContext().createFileViolation(this, "Replace all tab characters in this file by sequences of whitespaces.");
+        break;
+      }
+    }
+  }
 
 }

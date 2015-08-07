@@ -31,25 +31,25 @@ import static org.sonar.sslr.tests.Assertions.assertThat
 
 class AccessorSpec extends GrammarSpec {
 
-	def setup(){
-		setRootRule(HASH_ARRAY_ACCESSES)
-	}
+  def setup() {
+    setRootRule(HASH_ARRAY_ACCESSES)
+  }
 
-	def "simple array/hashes accessor"() {
-		expect:
-		assertThat(p).matches('$foo[1]')
-		assertThat(p).matches('$foo[\'one\']')
-	}
+  def "simple array/hashes accessor"() {
+    expect:
+    assertThat(p).matches('$foo[1]')
+    assertThat(p).matches('$foo[\'one\']')
+  }
 
-	def "negative integer array accessor"() {
-		expect:
-		assertThat(p).matches('$foo[-1]')
-	}
+  def "negative integer array accessor"() {
+    expect:
+    assertThat(p).matches('$foo[-1]')
+  }
 
-	def "Nested arrays and hashes can be accessed by chaining indexes"() {
-		expect:
-		assertThat(p).matches('$foo[1][\'third\']')
-		assertThat(p).matches('$foo[\'one\'][1]')
-		assertThat(p).matches('$main_site[port][https]')
-	}
+  def "Nested arrays and hashes can be accessed by chaining indexes"() {
+    expect:
+    assertThat(p).matches('$foo[1][\'third\']')
+    assertThat(p).matches('$foo[\'one\'][1]')
+    assertThat(p).matches('$main_site[port][https]')
+  }
 }

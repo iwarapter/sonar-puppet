@@ -45,7 +45,8 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @SqaleConstantRemediation("10min")
 public class UserResourcePasswordNotSetCheck extends SquidCheck<Grammar> {
 
-	private static final String MESSAGE = "Do not set passwords in user resources.";
+  private static final String MESSAGE = "Do not set passwords in user resources.";
+
   @Override
   public void init() {
     subscribeTo(PuppetGrammar.RESOURCE);

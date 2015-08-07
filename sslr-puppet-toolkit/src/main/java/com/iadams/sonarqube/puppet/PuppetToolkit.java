@@ -34,16 +34,16 @@ import java.util.List;
 
 public final class PuppetToolkit {
 
-	private PuppetToolkit() {
-	}
+  private PuppetToolkit() {
+  }
 
-	public static void main(String[] args) {
-		Toolkit toolkit = new Toolkit("SSLR :: Puppet :: Toolkit", new PuppetConfigurationModel());
-		toolkit.run();
-	}
+  public static void main(String[] args) {
+    Toolkit toolkit = new Toolkit("SSLR :: Puppet :: Toolkit", new PuppetConfigurationModel());
+    toolkit.run();
+  }
 
-	public static List<Tokenizer> getPuppetTokenizers() {
-		return ImmutableList.of(
-				(Tokenizer) new KeywordsTokenizer("<span class=\"k\">", "</span>", PuppetKeyword.keywordValues()));
-	}
+  public static List<Tokenizer> getPuppetTokenizers() {
+    return ImmutableList.of(
+      (Tokenizer) new KeywordsTokenizer("<span class=\"k\">", "</span>", PuppetKeyword.keywordValues()));
+  }
 }

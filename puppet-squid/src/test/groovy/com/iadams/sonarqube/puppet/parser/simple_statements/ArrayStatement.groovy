@@ -31,39 +31,39 @@ import static org.sonar.sslr.tests.Assertions.assertThat
 
 class ArrayStatement extends GrammarSpec {
 
-	def setup(){
-		setRootRule(ARRAY)
-	}
+  def setup() {
+    setRootRule(ARRAY)
+  }
 
-	def "empty array parses"(){
-		expect:
-		assertThat(p).matches('[]')
-	}
+  def "empty array parses"() {
+    expect:
+    assertThat(p).matches('[]')
+  }
 
-	def "example array parses correctly"() {
-		expect:
-		assertThat(p).matches("[ 'one', 'two', 'three' ]")
-		assertThat(p).matches("[ 'one', 'two', 'three', ]")
-	}
+  def "example array parses correctly"() {
+    expect:
+    assertThat(p).matches("[ 'one', 'two', 'three' ]")
+    assertThat(p).matches("[ 'one', 'two', 'three', ]")
+  }
 
-	def "arrays with hash parse correctly"(){
-		expect:
-		assertThat(p).matches("[ 'one', {'second' => 'two', 'third' => 'three'} ]")
-	}
+  def "arrays with hash parse correctly"() {
+    expect:
+    assertThat(p).matches("[ 'one', {'second' => 'two', 'third' => 'three'} ]")
+  }
 
-	def "array from function call parses"(){
-		expect:
-		assertThat(p).matches('[ merge($_directory, $_directory_version) ]')
-	}
+  def "array from function call parses"() {
+    expect:
+    assertThat(p).matches('[ merge($_directory, $_directory_version) ]')
+  }
 
-	def "nested array parses"(){
-		expect:
-		assertThat(p).matches("[['one', 'two'], ['three', 'four']]")
-	}
+  def "nested array parses"() {
+    expect:
+    assertThat(p).matches("[['one', 'two'], ['three', 'four']]")
+  }
 
-	def "complex nested array parses"(){
-		expect:
-		assertThat(p).matches('''[$sonarqube_verify_phase ? {
+  def "complex nested array parses"() {
+    expect:
+    assertThat(p).matches('''[$sonarqube_verify_phase ? {
 									  false   => [
 										{
 										  goals       => $mvn_goal_sonarqube,
@@ -77,5 +77,5 @@ class ArrayStatement extends GrammarSpec {
 									  mvn_version => $mvn_version,
 									}]
 								  ]''')
-	}
+  }
 }

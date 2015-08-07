@@ -31,50 +31,50 @@ import static org.sonar.sslr.tests.Assertions.assertThat
 
 class RelationshipSpec extends GrammarSpec {
 
-	def setup(){
-		setRootRule(RELATIONSHIP)
-	}
+  def setup() {
+    setRootRule(RELATIONSHIP)
+  }
 
-	def "left right relationship chaining passes correctly"() {
-		expect:
-		assertThat(p).matches("File['/etc/ntp.conf'] ~> Service['ntpd']")
-		assertThat(p).matches("File['/etc/ntp.conf'] -> Service['ntpd']")
-	}
+  def "left right relationship chaining passes correctly"() {
+    expect:
+    assertThat(p).matches("File['/etc/ntp.conf'] ~> Service['ntpd']")
+    assertThat(p).matches("File['/etc/ntp.conf'] -> Service['ntpd']")
+  }
 
-	def "right left relationship chaining passes correctly"() {
-		expect:
-		assertThat(p).matches("File['/etc/ntp.conf'] <~ Service['ntpd']")
-		assertThat(p).matches("File['/etc/ntp.conf'] <- Service['ntpd']")
-	}
+  def "right left relationship chaining passes correctly"() {
+    expect:
+    assertThat(p).matches("File['/etc/ntp.conf'] <~ Service['ntpd']")
+    assertThat(p).matches("File['/etc/ntp.conf'] <- Service['ntpd']")
+  }
 
-	def "nested relationship chains"(){
-		expect:
-		assertThat(p).matches("Package['ntp'] -> File['/etc/ntp.conf'] ~> Service['ntpd']")
-		assertThat(p).matches("Package['ntp'] <- File['/etc/ntp.conf'] <~ Service['ntpd']")
-	}
+  def "nested relationship chains"() {
+    expect:
+    assertThat(p).matches("Package['ntp'] -> File['/etc/ntp.conf'] ~> Service['ntpd']")
+    assertThat(p).matches("Package['ntp'] <- File['/etc/ntp.conf'] <~ Service['ntpd']")
+  }
 
-	def "relationships with collector works"(){
-		expect:
-		assertThat(p).matches('Package[$_package] -> File<| title == "${mod}.conf" |>')
-		assertThat(p).matches('Postgresql::Server::Database<|title == $database_name|> -> Exec[$exec_name]')
-	}
+  def "relationships with collector works"() {
+    expect:
+    assertThat(p).matches('Package[$_package] -> File<| title == "${mod}.conf" |>')
+    assertThat(p).matches('Postgresql::Server::Database<|title == $database_name|> -> Exec[$exec_name]')
+  }
 
-	def "relationship from resource declarations work"(){
-		expect:
-		assertThat(p).matches("anchor { 'postgresql::server::plpython::start': }-> Class['postgresql::server::install']")
-	}
+  def "relationship from resource declarations work"() {
+    expect:
+    assertThat(p).matches("anchor { 'postgresql::server::plpython::start': }-> Class['postgresql::server::install']")
+  }
 
-	def "complex nested relationships parse"(){
-		expect:
-		assertThat(p).matches("""anchor { 'postgresql::server::postgis::start': }->
+  def "complex nested relationships parse"() {
+    expect:
+    assertThat(p).matches("""anchor { 'postgresql::server::postgis::start': }->
 								 Class['postgresql::server::install']->
 								 Package['postgresql-postgis']->
 								 Class['postgresql::server::service']->
 								 anchor { 'postgresql::server::postgis::end': }""")
-	}
+  }
 
-	def "class resource ref can be used in relationship"(){
-		expect:
-		assertThat(p).matches('class { "${pg}::passwd": }->  anchor { "${pg}::end": }')
-	}
+  def "class resource ref can be used in relationship"() {
+    expect:
+    assertThat(p).matches('class { "${pg}::passwd": }->  anchor { "${pg}::end": }')
+  }
 }

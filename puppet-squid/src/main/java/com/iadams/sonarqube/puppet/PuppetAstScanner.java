@@ -46,96 +46,95 @@ import java.util.Collection;
 
 public class PuppetAstScanner {
 
-	private PuppetAstScanner(){}
+  private PuppetAstScanner() {
+  }
 
-	/*
-	 * Helper method for testing checks without having to deploy them on a Sonar instance.
-	 */
-	public static SourceFile scanSingleFile(File file, SquidAstVisitor<Grammar>... visitors) {
-		if (!file.isFile()) {
-			throw new IllegalArgumentException("File '" + file + "' not found.");
-		}
-		AstScanner<Grammar> scanner = create(new PuppetConfiguration(Charsets.UTF_8), visitors);
-		scanner.scanFile(file);
-		Collection<SourceCode> sources = scanner.getIndex().search(new QueryByType(SourceFile.class));
-		if (sources.size() != 1) {
-			throw new IllegalStateException("Only one SourceFile was expected whereas " + sources.size() + " has been returned.");
-		}
-		return (SourceFile) sources.iterator().next();
-	}
+  /*
+   * Helper method for testing checks without having to deploy them on a Sonar instance.
+   */
+  public static SourceFile scanSingleFile(File file, SquidAstVisitor<Grammar>... visitors) {
+    if (!file.isFile()) {
+      throw new IllegalArgumentException("File '" + file + "' not found.");
+    }
+    AstScanner<Grammar> scanner = create(new PuppetConfiguration(Charsets.UTF_8), visitors);
+    scanner.scanFile(file);
+    Collection<SourceCode> sources = scanner.getIndex().search(new QueryByType(SourceFile.class));
+    if (sources.size() != 1) {
+      throw new IllegalStateException("Only one SourceFile was expected whereas " + sources.size() + " has been returned.");
+    }
+    return (SourceFile) sources.iterator().next();
+  }
 
-	public static AstScanner<Grammar> create(PuppetConfiguration conf, SquidAstVisitor<Grammar>... visitors) {
-		final SquidAstVisitorContextImpl<Grammar> context = new SquidAstVisitorContextImpl<Grammar>(new SourceProject("Puppet Project"));
-		final Parser<Grammar> parser = PuppetParser.create(conf);
+  public static AstScanner<Grammar> create(PuppetConfiguration conf, SquidAstVisitor<Grammar>... visitors) {
+    final SquidAstVisitorContextImpl<Grammar> context = new SquidAstVisitorContextImpl<Grammar>(new SourceProject("Puppet Project"));
+    final Parser<Grammar> parser = PuppetParser.create(conf);
 
-		AstScanner.Builder<Grammar> builder = AstScanner.<Grammar>builder(context).setBaseParser(parser);
+    AstScanner.Builder<Grammar> builder = AstScanner.<Grammar>builder(context).setBaseParser(parser);
 
-    	/* Metrics */
-		builder.withMetrics(PuppetMetric.values());
+    /* Metrics */
+    builder.withMetrics(PuppetMetric.values());
 
-		/* Files */
-		builder.setFilesMetric(PuppetMetric.FILES);
+    /* Files */
+    builder.setFilesMetric(PuppetMetric.FILES);
 
-		/* Comments */
-		builder.setCommentAnalyser(new PuppetCommentAnalyser());
+    /* Comments */
+    builder.setCommentAnalyser(new PuppetCommentAnalyser());
 
+    setClassesAnalyser(builder);
+    setResourcesAnalyser(builder);
 
-		setClassesAnalyser(builder);
-		setResourcesAnalyser(builder);
+    /* Metrics */
+    builder.withSquidAstVisitor(new LinesVisitor<Grammar>(PuppetMetric.LINES));
+    builder.withSquidAstVisitor(new PuppetLinesOfCodeVisitor<Grammar>(PuppetMetric.LINES_OF_CODE));
+    builder.withSquidAstVisitor(CommentsVisitor.<Grammar>builder().withCommentMetric(PuppetMetric.COMMENT_LINES)
+      .withNoSonar(true)
+      .withIgnoreHeaderComment(conf.getIgnoreHeaderComments())
+      .build());
 
-    	/* Metrics */
-		builder.withSquidAstVisitor(new LinesVisitor<Grammar>(PuppetMetric.LINES));
-		builder.withSquidAstVisitor(new PuppetLinesOfCodeVisitor<Grammar>(PuppetMetric.LINES_OF_CODE));
-		builder.withSquidAstVisitor(CommentsVisitor.<Grammar>builder().withCommentMetric(PuppetMetric.COMMENT_LINES)
-				.withNoSonar(true)
-				.withIgnoreHeaderComment(conf.getIgnoreHeaderComments())
-				.build());
+    /* External visitors (typically Check ones) */
+    for (SquidAstVisitor<Grammar> visitor : visitors) {
+      if (visitor instanceof CharsetAwareVisitor) {
+        ((CharsetAwareVisitor) visitor).setCharset(conf.getCharset());
+      }
+      builder.withSquidAstVisitor(visitor);
+    }
 
+    return builder.build();
+  }
 
-    	/* External visitors (typically Check ones) */
-		for (SquidAstVisitor<Grammar> visitor : visitors) {
-			if (visitor instanceof CharsetAwareVisitor) {
-				((CharsetAwareVisitor) visitor).setCharset(conf.getCharset());
-			}
-			builder.withSquidAstVisitor(visitor);
-		}
+  private static void setClassesAnalyser(AstScanner.Builder<Grammar> builder) {
+    builder.withSquidAstVisitor(new SourceCodeBuilderVisitor<Grammar>(new SourceCodeBuilderCallback() {
+      @Override
+      public SourceCode createSourceCode(SourceCode parentSourceCode, AstNode astNode) {
+        String functionName = astNode.getFirstChild(PuppetGrammar.CLASSNAME).getFirstChild().getTokenValue();
+        SourceClass function = new SourceClass(functionName + ":" + astNode.getToken().getLine());
+        function.setStartAtLine(astNode.getTokenLine());
+        return function;
+      }
+    }, PuppetGrammar.CLASSDEF));
 
-		return builder.build();
-	}
+    builder.withSquidAstVisitor(CounterVisitor.<Grammar>builder()
+      .setMetricDef(PuppetMetric.CLASSES)
+      .subscribeTo(PuppetGrammar.CLASSDEF)
+      .build());
 
-	private static void setClassesAnalyser(AstScanner.Builder<Grammar> builder) {
-		builder.withSquidAstVisitor(new SourceCodeBuilderVisitor<Grammar>(new SourceCodeBuilderCallback() {
-			@Override
-			public SourceCode createSourceCode(SourceCode parentSourceCode, AstNode astNode) {
-				String functionName = astNode.getFirstChild(PuppetGrammar.CLASSNAME).getFirstChild().getTokenValue();
-				SourceClass function = new SourceClass(functionName + ":" + astNode.getToken().getLine());
-				function.setStartAtLine(astNode.getTokenLine());
-				return function;
-			}
-		}, PuppetGrammar.CLASSDEF));
+    // TODO Handle PuppetGrammar.CLASS_RESOURCE_DEF with another visitor.
+  }
 
-		builder.withSquidAstVisitor(CounterVisitor.<Grammar>builder()
-				.setMetricDef(PuppetMetric.CLASSES)
-				.subscribeTo(PuppetGrammar.CLASSDEF)
-				.build());
+  private static void setResourcesAnalyser(AstScanner.Builder<Grammar> builder) {
+    builder.withSquidAstVisitor(new SourceCodeBuilderVisitor<Grammar>(new SourceCodeBuilderCallback() {
+      @Override
+      public SourceCode createSourceCode(SourceCode parentSourceCode, AstNode astNode) {
+        String functionName = astNode.getTokenValue();
+        SourceClass function = new SourceClass(functionName + ":" + astNode.getToken().getLine());
+        function.setStartAtLine(astNode.getTokenLine());
+        return function;
+      }
+    }, PuppetGrammar.RESOURCE));
 
-		//TODO Handle PuppetGrammar.CLASS_RESOURCE_DEF with another visitor.
-	}
-
-	private static void setResourcesAnalyser(AstScanner.Builder<Grammar> builder) {
-		builder.withSquidAstVisitor(new SourceCodeBuilderVisitor<Grammar>(new SourceCodeBuilderCallback() {
-			@Override
-			public SourceCode createSourceCode(SourceCode parentSourceCode, AstNode astNode) {
-				String functionName = astNode.getTokenValue();
-				SourceClass function = new SourceClass(functionName + ":" + astNode.getToken().getLine());
-				function.setStartAtLine(astNode.getTokenLine());
-				return function;
-			}
-		}, PuppetGrammar.RESOURCE));
-
-		builder.withSquidAstVisitor(CounterVisitor.<Grammar>builder()
-				.setMetricDef(PuppetMetric.RESOURCES)
-				.subscribeTo(PuppetGrammar.RESOURCE)
-				.build());
-	}
+    builder.withSquidAstVisitor(CounterVisitor.<Grammar>builder()
+      .setMetricDef(PuppetMetric.RESOURCES)
+      .subscribeTo(PuppetGrammar.RESOURCE)
+      .build());
+  }
 }

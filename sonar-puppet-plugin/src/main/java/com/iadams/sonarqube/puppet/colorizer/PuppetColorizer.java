@@ -34,24 +34,24 @@ import java.util.List;
 
 public class PuppetColorizer extends CodeColorizerFormat {
 
-    private List<Tokenizer> tokenizers;
-    private static final String END_TAG = "</span>";
+  private List<Tokenizer> tokenizers;
+  private static final String END_TAG = "</span>";
 
-    public PuppetColorizer() {
-        super(Puppet.KEY);
-    }
+  public PuppetColorizer() {
+    super(Puppet.KEY);
+  }
 
-    @Override
-    public List<Tokenizer> getTokenizers() {
-        if (tokenizers == null) {
-            tokenizers = Lists.newArrayList();
-            tokenizers.add(new KeywordsTokenizer("<span class=\"k\">", END_TAG, PuppetKeyword.keywordValues()));
-            tokenizers.add(new PuppetDocStringTokenizer("<span class=\"s\">", END_TAG));
-            tokenizers.add(new StringTokenizer("<span class=\"s\">", END_TAG));
-            tokenizers.add(new PuppetDocTokenizer("<span class=\"cd\">", END_TAG));
-            tokenizers.add(new CDocTokenizer("<span class=\"cd\">", END_TAG));
-            tokenizers.add(new CppDocTokenizer("<span class=\"cppd\">", END_TAG));
-        }
-        return tokenizers;
+  @Override
+  public List<Tokenizer> getTokenizers() {
+    if (tokenizers == null) {
+      tokenizers = Lists.newArrayList();
+      tokenizers.add(new KeywordsTokenizer("<span class=\"k\">", END_TAG, PuppetKeyword.keywordValues()));
+      tokenizers.add(new PuppetDocStringTokenizer("<span class=\"s\">", END_TAG));
+      tokenizers.add(new StringTokenizer("<span class=\"s\">", END_TAG));
+      tokenizers.add(new PuppetDocTokenizer("<span class=\"cd\">", END_TAG));
+      tokenizers.add(new CDocTokenizer("<span class=\"cd\">", END_TAG));
+      tokenizers.add(new CppDocTokenizer("<span class=\"cppd\">", END_TAG));
     }
+    return tokenizers;
+  }
 }

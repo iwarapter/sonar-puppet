@@ -35,21 +35,21 @@ import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
-		key = "Nosonar",
-		name = "\"NOSONAR\" tags should not be used to switch off issues",
-		priority = Priority.INFO)
+  key = "Nosonar",
+  name = "\"NOSONAR\" tags should not be used to switch off issues",
+  priority = Priority.INFO)
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.INSTRUCTION_RELIABILITY)
 @SqaleConstantRemediation("1min")
 public class NosonarTagPresenceCheck extends SquidCheck<LexerlessGrammar> implements AstAndTokenVisitor {
 
-	private static final String PATTERN = "NOSONAR";
-	private static final String MESSAGE = "Is NOSONAR used to exclude false positive or to hide real quality flaw?";
+  private static final String PATTERN = "NOSONAR";
+  private static final String MESSAGE = "Is NOSONAR used to exclude false positive or to hide real quality flaw?";
 
-	private final CommentContainsPatternChecker checker = new CommentContainsPatternChecker(this, PATTERN, MESSAGE);
+  private final CommentContainsPatternChecker checker = new CommentContainsPatternChecker(this, PATTERN, MESSAGE);
 
-	@Override
-	public void visitToken(Token token) {
-		checker.visitToken(token);
-	}
+  @Override
+  public void visitToken(Token token) {
+    checker.visitToken(token);
+  }
 
 }

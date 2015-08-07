@@ -31,20 +31,20 @@ import spock.lang.Specification
 
 class QuotedBooleanCheckSpec extends Specification {
 
-	private static final String MESSAGE = "Remove quotes.";
+  private static final String MESSAGE = "Remove quotes.";
 
-	def "validate rule"() {
-		given:
-		QuotedBooleanCheck check = new QuotedBooleanCheck();
+  def "validate rule"() {
+    given:
+    QuotedBooleanCheck check = new QuotedBooleanCheck();
 
-		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/QuotedBoolean.pp"), check);
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/QuotedBoolean.pp"), check);
 
-		expect:
-		CheckMessagesVerifier.verify(file.getCheckMessages())
-				.next().atLine(2).withMessage(MESSAGE)
-				.next().atLine(6).withMessage(MESSAGE)
-				.next().atLine(10).withMessage(MESSAGE)
-				.next().atLine(14).withMessage(MESSAGE)
-				.noMore();
-	}
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(2).withMessage(MESSAGE)
+      .next().atLine(6).withMessage(MESSAGE)
+      .next().atLine(10).withMessage(MESSAGE)
+      .next().atLine(14).withMessage(MESSAGE)
+      .noMore();
+  }
 }

@@ -32,8 +32,8 @@ import com.iadams.sonarqube.puppet.lexer.PuppetLexer;
 
 public class PuppetParser {
 
-    public static Parser<Grammar> create(PuppetConfiguration conf) {
-        return Parser.builder(PuppetGrammar.create().build())
-                .withLexer(PuppetLexer.create(conf)).build();
-    }
+  public static Parser<Grammar> create(PuppetConfiguration conf) {
+    return Parser.builder(PuppetGrammar.create().build())
+      .withLexer(PuppetLexer.create(conf)).build();
+  }
 }

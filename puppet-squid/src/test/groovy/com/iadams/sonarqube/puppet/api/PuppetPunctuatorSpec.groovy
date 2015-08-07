@@ -29,15 +29,15 @@ import spock.lang.Specification
 
 class PuppetPunctuatorSpec extends Specification {
 
-    def "test"() {
-        given:
-        AstNode astNode = Mock(AstNode)
+  def "test"() {
+    given:
+    AstNode astNode = Mock(AstNode)
 
-        expect:
-        PuppetPunctuator.values().size() == 42
+    expect:
+    PuppetPunctuator.values().size() == 42
 
-        PuppetPunctuator.values().each{
-            it.hasToBeSkippedFromAst(astNode) == false
-        }
+    PuppetPunctuator.values().each {
+      it.hasToBeSkippedFromAst(astNode) == false
     }
+  }
 }

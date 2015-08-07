@@ -29,38 +29,38 @@ import org.sonar.squidbridge.measures.MetricDef;
 
 public enum PuppetMetric implements MetricDef {
 
-	FILES,
-	LINES,
-	LINES_OF_CODE,
-	STATEMENTS,
-	FUNCTIONS,
-	RESOURCES,
-	CLASSES,
-	COMPLEXITY,
-	COMMENT_LINES;
+  FILES,
+  LINES,
+  LINES_OF_CODE,
+  STATEMENTS,
+  FUNCTIONS,
+  RESOURCES,
+  CLASSES,
+  COMPLEXITY,
+  COMMENT_LINES;
 
-	@Override
-	public String getName(){
-		return name();
-	}
+  @Override
+  public String getName() {
+    return name();
+  }
 
-	@Override
-	public boolean isCalculatedMetric() {
-		return false;
-	}
+  @Override
+  public boolean isCalculatedMetric() {
+    return false;
+  }
 
-	@Override
-	public boolean aggregateIfThereIsAlreadyAValue() {
-		return true;
-	}
+  @Override
+  public boolean aggregateIfThereIsAlreadyAValue() {
+    return true;
+  }
 
-	@Override
-	public boolean isThereAggregationFormula(){
-		return true;
-	}
+  @Override
+  public boolean isThereAggregationFormula() {
+    return true;
+  }
 
-	@Override
-	public CalculatedMetricFormula getCalculatedMetricFormula() {
-		return null;
-	}
+  @Override
+  public CalculatedMetricFormula getCalculatedMetricFormula() {
+    return null;
+  }
 }

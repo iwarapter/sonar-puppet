@@ -32,13 +32,13 @@ import static org.sonar.sslr.tests.Assertions.assertThat
 
 class ClassDefSpec extends GrammarSpec {
 
-    def setup() {
-        setRootRule(CLASSDEF)
-    }
+  def setup() {
+    setRootRule(CLASSDEF)
+  }
 
-	def "simple class parses correctly"() {
-		expect:
-		assertThat(p).matches("""# A class with no parameters
+  def "simple class parses correctly"() {
+    expect:
+    assertThat(p).matches("""# A class with no parameters
             class apache {
               file { '/etc/passwd':
                 owner => 'root',
@@ -47,21 +47,21 @@ class ClassDefSpec extends GrammarSpec {
               }
             }
         """)
-	}
+  }
 
-    def "class with inherits parses correctly"() {
-        expect:
-        assertThat(p).matches('class ssh inherits server { }')
-    }
+  def "class with inherits parses correctly"() {
+    expect:
+    assertThat(p).matches('class ssh inherits server { }')
+  }
 
-    def "scoped classname with inherits parses correctly"(){
-        expect:
-        assertThat(p).matches('class ssh::client inherits workstation { }')
-    }
+  def "scoped classname with inherits parses correctly"() {
+    expect:
+    assertThat(p).matches('class ssh::client inherits workstation { }')
+  }
 
-    def "classes with complex parameters"(){
-        expect:
-        assertThat(p).matches('''class apache(
+  def "classes with complex parameters"() {
+    expect:
+    assertThat(p).matches('''class apache(
                                     $apache_name            = $::apache::params::apache_name,
                                     $default_mods           = true,
                                     $default_charset        = undef,
@@ -69,50 +69,49 @@ class ClassDefSpec extends GrammarSpec {
                                     $default_type           = 'none',
                                     $log_formats            = {},
                                  ) inherits ::apache::params { }''')
-    }
+  }
 
-    //https://docs.puppetlabs.com/puppet/3.8/reference/lang_classes.html#using-resource-like-declarations
-    def "class with resource like declaration"(){
-        given:
-        setRootRule(RESOURCE)
+  //https://docs.puppetlabs.com/puppet/3.8/reference/lang_classes.html#using-resource-like-declarations
+  def "class with resource like declaration"() {
+    given:
+    setRootRule(RESOURCE)
 
-        expect:
-        assertThat(p).matches('''class {'base::linux':}''')
-        assertThat(p).matches('''class {'apache':
+    expect:
+    assertThat(p).matches('''class {'base::linux':}''')
+    assertThat(p).matches('''class {'apache':
                                     version => '2.2.21',
                                  }''')
-    }
+  }
 
-    def "class with relationship statement"(){
-        expect:
-        assertThat(p).matches('''class apache::mod::proxy_http {
+  def "class with relationship statement"() {
+    expect:
+    assertThat(p).matches('''class apache::mod::proxy_http {
                                   Class['::apache::mod::proxy'] -> Class['::apache::mod::proxy_http']
                                   ::apache::mod { 'proxy_http': }
                                 }''')
-    }
+  }
 
-    def "class with empty resource"(){
-        expect:
-        assertThat(p).matches('''class apache::mod::dav_svn (
+  def "class with empty resource"() {
+    expect:
+    assertThat(p).matches('''class apache::mod::dav_svn (
                                   $authz_svn_enabled = false,
                                 ) {
                                   Class['::apache::mod::dav'] -> Class['::apache::mod::dav_svn']
                                   include ::apache::mod::dav
                                   ::apache::mod { 'dav_svn': }
                                 }''')
-    }
+  }
 
-    def "empty class def parses"(){
-        expect:
-        assertThat(p).matches('class ssl { }')
-    }
+  def "empty class def parses"() {
+    expect:
+    assertThat(p).matches('class ssl { }')
+  }
 
 
-
-    def "Function call in parameter default value is support"(){
-        expect:
-        assertThat(p).matches('''class ssh (
+  def "Function call in parameter default value is support"() {
+    expect:
+    assertThat(p).matches('''class ssh (
 								  $domain_name = hiera('abc'),
 								) {}''')
-    }
+  }
 }

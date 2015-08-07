@@ -28,31 +28,31 @@ import com.iadams.sonarqube.functional.FunctionalSpecBase
 
 class PuppetResourcesSpec extends FunctionalSpecBase {
 
-	def setup(){
-		copyResources("example_file_resource.pp", "example_file_resource.pp")
-		copyResources("example_user_resource.pp", "example_user_resource.pp")
-	}
+  def setup() {
+    copyResources("example_file_resource.pp", "example_file_resource.pp")
+    copyResources("example_user_resource.pp", "example_user_resource.pp")
+  }
 
-	def "puppet resources are recorded on a file"(){
-		when:
-		resetDefaultProfile()
-		runSonarRunner()
+  def "puppet resources are recorded on a file"() {
+    when:
+    resetDefaultProfile()
+    runSonarRunner()
 
-		then:
-		analysisFinishedSuccessfully()
-		analysisLogDoesNotContainErrorsOrWarnings()
-		theFollowingFileMetricsHaveTheFollowingValue('example_file_resource.pp',[puppet_resources:1, lines:3])
-		theFollowingFileMetricsHaveTheFollowingValue('example_user_resource.pp',[puppet_resources:1, lines:4])
-	}
+    then:
+    analysisFinishedSuccessfully()
+    analysisLogDoesNotContainErrorsOrWarnings()
+    theFollowingFileMetricsHaveTheFollowingValue('example_file_resource.pp', [puppet_resources: 1, lines: 3])
+    theFollowingFileMetricsHaveTheFollowingValue('example_user_resource.pp', [puppet_resources: 1, lines: 4])
+  }
 
-	def "puppet resources are recorded on a project"(){
-		when:
-		resetDefaultProfile()
-		runSonarRunner()
+  def "puppet resources are recorded on a project"() {
+    when:
+    resetDefaultProfile()
+    runSonarRunner()
 
-		then:
-		analysisFinishedSuccessfully()
-		analysisLogDoesNotContainErrorsOrWarnings()
-		theFollowingProjectMetricsHaveTheFollowingValue([puppet_resources:2, lines:7])
-	}
+    then:
+    analysisFinishedSuccessfully()
+    analysisLogDoesNotContainErrorsOrWarnings()
+    theFollowingProjectMetricsHaveTheFollowingValue([puppet_resources: 2, lines: 7])
+  }
 }
