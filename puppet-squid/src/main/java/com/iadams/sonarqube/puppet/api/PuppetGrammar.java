@@ -362,7 +362,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 HOST_MATCH,
                 b.zeroOrMore(COMMA, HOST_MATCH),
                 b.optional(COMMA)
-        );
+        ).skip();
 
         b.rule(HOST_MATCH).is(b.firstOf(
                 SINGLE_QUOTED_STRING_LITERAL,

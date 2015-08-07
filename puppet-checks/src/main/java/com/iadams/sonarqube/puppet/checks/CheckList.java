@@ -39,6 +39,7 @@ public final class CheckList {
       CaseWithoutDefaultCheck.class,
       CommentConventionCheck.class,
       CommentRegularExpressionCheck.class,
+      DeprecatedNodeInheritanceCheck.class,
       DuplicatedParametersCheck.class,
       EnsureOrderingCheck.class,
       FaultyDoubleQuotedStringCheck.class,
