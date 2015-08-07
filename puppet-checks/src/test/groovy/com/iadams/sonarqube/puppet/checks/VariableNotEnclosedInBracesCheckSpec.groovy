@@ -29,19 +29,19 @@ import org.sonar.squidbridge.api.SourceFile
 import org.sonar.squidbridge.checks.CheckMessagesVerifier
 import spock.lang.Specification
 
-class UserResourcePasswordNotSetCheckSpec extends Specification {
+class VariableNotEnclosedInBracesCheckSpec extends Specification {
 
-	def "validate rule"() {
-		given:
-		UserResourcePasswordNotSetCheck check = new UserResourcePasswordNotSetCheck();
+  private static final String MESSAGE = "Enclose variables in braces.";
 
-		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/UserWithPassword.pp"), check);
+  def "validate check"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/variable_not_enclosed_in_braces.pp"),
+      new VariableNotEnclosedInBracesCheck());
 
-		expect:
-		CheckMessagesVerifier.verify(file.getCheckMessages())
-				.next().atLine(2).withMessage("Do not set passwords in user resources.")
-				.next().atLine(15).withMessage("Do not set passwords in user resources.")
-				.next().atLine(17).withMessage("Do not set passwords in user resources.")
-				.noMore();
-	}
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(1).withMessage(MESSAGE)
+      .noMore();
+  }
 }

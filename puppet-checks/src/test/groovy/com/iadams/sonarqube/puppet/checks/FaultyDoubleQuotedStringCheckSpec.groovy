@@ -22,17 +22,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.checks;
+package com.iadams.sonarqube.puppet.checks
 
-import java.util.regex.Pattern;
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
+import spock.lang.Specification
 
-public class CheckUtils {
+class FaultyDoubleQuotedStringCheckSpec extends Specification {
 
-  private static final String REGEX_VARIABLE_USAGE = ".*\\$\\{.*";
-  private static final Pattern PATTERN_VARIABLE_USAGE = Pattern.compile(REGEX_VARIABLE_USAGE);
+  private final static String MESSAGE_USE_SINGLE_QUOTES = "Surround the string with single quotes instead of double quotes.";
+  private final static String MESSAGE_REMOVE_QUOTES = "Remove quotes surrounding this variable.";
 
-  public static boolean doesStringContainsVariables(String string) {
-    return PATTERN_VARIABLE_USAGE.matcher(string).matches();
+  def "validate check"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/faulty_double_quoted_string.pp"),
+      new FaultyDoubleQuotedStringCheck());
+
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(2).withMessage(MESSAGE_USE_SINGLE_QUOTES)
+      .next().atLine(3).withMessage(MESSAGE_USE_SINGLE_QUOTES)
+      .next().atLine(4).withMessage(MESSAGE_USE_SINGLE_QUOTES)
+      .next().atLine(5).withMessage(MESSAGE_REMOVE_QUOTES)
+      .next().atLine(6).withMessage(MESSAGE_REMOVE_QUOTES)
+      .noMore();
   }
 
 }
