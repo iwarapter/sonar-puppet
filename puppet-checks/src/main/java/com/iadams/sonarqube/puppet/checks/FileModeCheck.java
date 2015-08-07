@@ -65,16 +65,18 @@ public class FileModeCheck extends SquidCheck<Grammar> {
   public void visitNode(AstNode node) {
     if ("file".equals(node.getTokenValue())) {
       for (AstNode resourceInstNode : node.getChildren(PuppetGrammar.RESOURCE_INST)) {
-        for (AstNode paramNode : resourceInstNode.getChildren(PuppetGrammar.PARAM)) {
+        for (AstNode paramNode : resourceInstNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
           if ("mode".equals(paramNode.getTokenValue())) {
             checkMode(paramNode.getFirstChild(PuppetGrammar.EXPRESSION));
           }
         }
       }
     } else if ("File".equals(node.getTokenValue())) {
-      for (AstNode paramNode : node.getChildren(PuppetGrammar.PARAM)) {
-        if ("mode".equals(paramNode.getTokenValue())) {
-          checkMode(paramNode.getFirstChild(PuppetGrammar.EXPRESSION));
+      if (node.getFirstChild(PuppetGrammar.PARAMS) != null) {
+        for (AstNode paramNode : node.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
+          if ("mode".equals(paramNode.getTokenValue())) {
+            checkMode(paramNode.getFirstChild(PuppetGrammar.EXPRESSION));
+          }
         }
       }
     }

@@ -47,7 +47,7 @@ public class EnsureOrderingCheck extends SquidCheck<Grammar> {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.RESOURCE_INST);
+    subscribeTo(PuppetGrammar.PARAMS);
   }
 
   @Override
