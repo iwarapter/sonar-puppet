@@ -24,6 +24,7 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
@@ -55,7 +56,7 @@ public class FaultyDoubleQuotedStringCheck extends SquidCheck<Grammar> {
     String stringWithoutQuotes = node.getTokenValue().substring(1, node.getTokenValue().length() - 1);
     if (!CheckStringUtils.containsVariable(stringWithoutQuotes) && !CheckStringUtils.containsSpecialCharacter(stringWithoutQuotes)) {
       getContext().createLineViolation(this, "Surround the string with single quotes instead of double quotes.", node);
-    } else if (CheckStringUtils.containsOnlyVariable(stringWithoutQuotes)) {
+    } else if (!node.getParent().is(PuppetGrammar.RESOURCE_NAME) && CheckStringUtils.containsOnlyVariable(stringWithoutQuotes)) {
       getContext().createLineViolation(this, "Remove quotes surrounding this variable.", node);
     }
   }
