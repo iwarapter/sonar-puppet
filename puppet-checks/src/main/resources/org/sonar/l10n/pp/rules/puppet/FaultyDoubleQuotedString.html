@@ -5,7 +5,7 @@
 </p>
 <h2>Noncompliant Code Example</h2>
 <pre>
-abc { 'foo'
+abc { 'foo':
   text1 => "abc",                # Noncompliant, no variables, no special characters => single quotes should be used
   text2 => "Dollar sign is $",   # Noncompliant, no variables, no special characters => single quotes should be used
   text3 => "$var",               # Noncompliant, variable only => quotes should be removed
@@ -14,7 +14,7 @@ abc { 'foo'
 </pre>
 <h2>Compliant Solution</h2>
 <pre>
-abc { 'foo'
+abc { 'foo':
   text1 => 'var',
   text2 => 'Dollar sign is $',
   text3 => $var,
