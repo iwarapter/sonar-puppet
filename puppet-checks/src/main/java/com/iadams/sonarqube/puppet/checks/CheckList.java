@@ -45,6 +45,7 @@ public final class CheckList {
       FileModeCheck.class,
       FileNameCheck.class,
       FixmeTagPresenceCheck.class,
+      IfStatementWithoutElseClauseCheck.class,
       ImportStatementUsedCheck.class,
       LineLengthCheck.class,
       MissingNewLineAtEndOfFileCheck.class,
