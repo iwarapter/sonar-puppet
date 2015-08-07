@@ -58,6 +58,7 @@ public final class CheckList {
       ResourceWithSelectorCheck.class,
       RightToLeftChainingArrowsCheck.class,
       SelectorWithoutDefaultCheck.class,
+      SingleQuotedStringContainingVariablesCheck.class,
       TabCharacterCheck.class,
       TodoTagPresenceCheck.class,
       TrailingWhitespaceCheck.class,
