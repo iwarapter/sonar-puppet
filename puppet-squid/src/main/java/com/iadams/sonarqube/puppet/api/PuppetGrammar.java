@@ -289,12 +289,12 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(ARGUMENT_LIST).is(b.optional(b.firstOf(
 				b.sequence(LPAREN, RPAREN),
 				b.sequence(LPAREN, ARGUMENTS, END_COMMA, RPAREN)
-		)));
+		))).skip();
 
         b.rule(ARGUMENTS).is(
                 ARGUMENT,
                 b.zeroOrMore(COMMA, ARGUMENT)
-        );
+        ).skip();
 
         b.rule(ARGUMENT).is(b.firstOf(
                 b.sequence(VARIABLE, EQUALS, EXPRESSION),
