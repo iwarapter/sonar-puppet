@@ -45,7 +45,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @ActivatedByDefault
 public class VariableNamingConventionCheck extends SquidCheck<LexerlessGrammar> {
 
-	private static final String FORMAT = "^\\$([a-z]|::)([a-z0-9_]|::)*$";
+	private static final String FORMAT = "^\\$(::)?([a-z0-9_]+::)*[a-z0-9_]+$";
 
 	@Override
 	public void init() {
@@ -55,7 +55,7 @@ public class VariableNamingConventionCheck extends SquidCheck<LexerlessGrammar> 
 	@Override
 	public void leaveNode(AstNode node) {
 		if (!node.getTokenValue().matches(FORMAT)) {
-			getContext().createLineViolation(this, "Rename variable \"{0}\" to match the regular expression: ^([a-z]|::)([a-z0-9_]|::)*$", node, node.getTokenValue().substring(1));
+			getContext().createLineViolation(this, "Rename variable \"{0}\" to match the regular expression: ^\\$(::)?([a-z0-9_]+::)*[a-z0-9_]+$", node, node.getTokenValue().substring(1));
 		}
 	}
 
