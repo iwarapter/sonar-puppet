@@ -47,6 +47,7 @@ class FaultyDoubleQuotedStringCheckSpec extends Specification {
       .next().atLine(4).withMessage(MESSAGE_USE_SINGLE_QUOTES)
       .next().atLine(5).withMessage(MESSAGE_REMOVE_QUOTES)
       .next().atLine(6).withMessage(MESSAGE_REMOVE_QUOTES)
+      .next().atLine(11).withMessage(MESSAGE_USE_SINGLE_QUOTES)
       .noMore();
   }
 
