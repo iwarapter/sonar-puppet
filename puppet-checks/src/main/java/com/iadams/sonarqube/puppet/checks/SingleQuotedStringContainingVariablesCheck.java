@@ -52,7 +52,7 @@ public class SingleQuotedStringContainingVariablesCheck extends SquidCheck<Lexer
 
   @Override
   public void visitNode(AstNode astNode) {
-    if (CheckUtils.doesStringContainsVariables(astNode.getTokenValue())) {
+    if (CheckStringUtils.containsVariable(astNode.getTokenValue())) {
       getContext().createLineViolation(this, "Use double quotes instead of single quotes for the string to be interpolated.", astNode, astNode.getTokenLine());
     }
   }
