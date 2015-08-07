@@ -1,0 +1,28 @@
+<p>This rule applies whenever an <code>if</code> statement is followed by one or more <code>elsif</code> statements, the final <code>elsif</code> shall be
+    followed by an <code>else</code> statement.
+    The requirement for a final <code>else</code> statement is defensive programming. The <code>else</code> statement should either take
+    appropriate action or contain a suitable comment as to why no action is taken.</p>
+
+<h2>Noncompliant Code Example</h2>
+
+<pre>
+if $is_virtual {
+  do_something
+}
+elsif $operatingsystem == 'Windows' {
+  do_something_else
+}
+</pre>
+
+<h2>Compliant Solution</h2>
+<pre>
+if $is_virtual {
+  do_something
+}
+elsif $operatingsystem == 'Windows' {
+  do_something_else
+}
+else {
+  # Do nothing because...
+}
+</pre>

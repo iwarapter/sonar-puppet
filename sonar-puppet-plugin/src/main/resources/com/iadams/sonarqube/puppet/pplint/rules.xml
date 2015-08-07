@@ -160,9 +160,11 @@ $foo = "bar"
 
       <pre>
 $foo = 'bar'
-      </pre>]]>
+      </pre>
+      <p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:FaultyDoubleQuotedString">FaultyDoubleQuotedString</a> instead.</p>]]>
     </description>
     <priority>MINOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>variables_not_enclosed</key>
@@ -181,9 +183,11 @@ $foo = "bar $baz"
 
       <pre>
 $foo = "bar ${baz}"
-      </pre>]]>
+      </pre>
+      <p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:VariableNotEnclosedInBraces">VariableNotEnclosedInBraces</a> instead.</p>]]>
     </description>
     <priority>MINOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>only_variable_string</key>
@@ -204,9 +208,11 @@ file { '/tmp/foo':
       <pre>
 file { '/tmp/foo':
   owner => $file_owner,
-}</pre>]]>
+}</pre>
+<p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:FaultyDoubleQuotedString">FaultyDoubleQuotedString</a> instead.</p>]]>
     </description>
     <priority>MINOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>single_quote_string_with_variables</key>
@@ -225,9 +231,11 @@ $foo = 'bar ${baz}'
 
       <pre>
 $foo = "bar ${baz}"
-      </pre>]]>
+      </pre>
+      <p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:SingleQuotedStringContainingVariables">SingleQuotedStringContainingVariables</a> instead.]]>
     </description>
     <priority>CRITICAL</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>quoted_booleans</key>
@@ -297,9 +305,11 @@ service { apache:
       <pre>
 service { 'apache':
   ensure => running,
-}</pre>]]>
+}</pre>
+<p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:UnquotedResourceTitle">UnquotedResourceTitle</a> instead.</p>]]>
     </description>
     <priority>MINOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>ensure_first_param</key>
@@ -531,9 +541,11 @@ Service['httpd'] <- Package['httpd']</pre>
       <h2>Compliant Solution</h2>
 
       <pre>
-Package['httpd'] -> Service['httpd']</pre>]]>
+Package['httpd'] -> Service['httpd']</pre>
+ <p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:RightToLeftChainingArrows">RightToLeftChainingArrows</a> instead.</p>]]>
     </description>
     <priority>MINOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>nested_classes_or_defines</key>
@@ -731,9 +743,11 @@ class foo::bar-baz {}</pre>
       <h2>Compliant Solution</h2>
 
       <pre>
-class foo::bar_baz</pre>]]>
+class foo::bar_baz</pre>
+<p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:ClassAndDefineNamingConvention">ClassAndDefineNamingConvention</a> instead.</p>]]>
     </description>
     <priority>MAJOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>documentation</key>
@@ -784,9 +798,11 @@ node server1 {
 
       <pre>
 node 'server1' {
-}</pre>]]>
+}</pre>
+<p>This rule is deprecated. As this syntax is not valid according to the language specifications, a parsing error is raised in such a case.</p>]]>
     </description>
     <priority>MAJOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>IgnoredPuppetLintRule</key>

@@ -2,7 +2,7 @@
  * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Iain Adams
+ * Copyright (c) 2015 Iain Adams and David RACODON
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,21 +31,21 @@ import spock.lang.Specification
 
 class DuplicatedParametersCheckSpec extends Specification {
 
-    private final static MESSAGE = "Remove the duplicated parameter \"owner\".";
+  private final static String MESSAGE = "Remove the duplicated parameter \"owner\".";
 
-    def "validate rule"() {
-        given:
-        DuplicatedParametersCheck check = new DuplicatedParametersCheck();
-        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/DuplicatedParameters.pp"), check);
+  def "validate rule"() {
+    given:
+    DuplicatedParametersCheck check = new DuplicatedParametersCheck();
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/DuplicatedParameters.pp"), check);
 
-        expect:
-        CheckMessagesVerifier.verify(file.getCheckMessages())
-                .next().atLine(5).withMessage(MESSAGE)
-                .next().atLine(18).withMessage(MESSAGE)
-                .next().atLine(21).withMessage(MESSAGE)
-                .next().atLine(27).withMessage(MESSAGE)
-                .next().atLine(36).withMessage(MESSAGE)
-                .next().atLine(48).withMessage(MESSAGE)
-                .noMore();
-    }
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(5).withMessage(MESSAGE)
+      .next().atLine(18).withMessage(MESSAGE)
+      .next().atLine(21).withMessage(MESSAGE)
+      .next().atLine(27).withMessage(MESSAGE)
+      .next().atLine(36).withMessage(MESSAGE)
+      .next().atLine(48).withMessage(MESSAGE)
+      .noMore();
+  }
 }

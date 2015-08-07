@@ -2,7 +2,7 @@
  * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Iain Adams
+ * Copyright (c) 2015 Iain Adams and David RACODON
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,21 +25,15 @@
 package com.iadams.sonarqube.puppet.checks;
 
 public class Tags {
-	public static final String BRAIN_OVERLOAD = "brain-overload";
-	public static final String BUG = "bug";
-	public static final String CLUMSY = "clumsy";
-	public static final String CONVENTION = "convention";
-	public static final String OBSOLETE = "obsolete";
-	public static final String SECURITY = "security";
-	public static final String UNUSED = "unused";
-	public static final String CERT = "cert";
-	public static final String PITFALL = "pitfall";
-	public static final String MISRA = "misra";
-	public static final String CONFUSING = "confusing";
-	public static final String CWE = "cwe";
-	public static final String PERFORMANCE = "performance";
+  public static final String BRAIN_OVERLOAD = "brain-overload";
+  public static final String BUG = "bug";
+  public static final String CONVENTION = "convention";
+  public static final String OBSOLETE = "obsolete";
+  public static final String SECURITY = "security";
+  public static final String PITFALL = "pitfall";
+  public static final String CONFUSING = "confusing";
 
-	private Tags() {
-		// This class only defines constants
-	}
+  private Tags() {
+    // This class only defines constants
+  }
 }

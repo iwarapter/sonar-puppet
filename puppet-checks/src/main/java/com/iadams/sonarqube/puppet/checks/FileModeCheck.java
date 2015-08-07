@@ -2,7 +2,7 @@
  * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Iain Adams
+ * Copyright (c) 2015 Iain Adams and David RACODON
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -64,10 +64,10 @@ public class FileModeCheck extends SquidCheck<Grammar> {
   @Override
   public void visitNode(AstNode node) {
     if ("file".equals(node.getTokenValue())) {
-      for (AstNode body : node.getDescendants(PuppetGrammar.RESOURCE_INST)) {
-        for (AstNode name : body.getDescendants(PuppetGrammar.PARAM)) {
-          if ("mode".equals(name.getTokenValue())) {
-            checkMode(name.getFirstChild(PuppetGrammar.EXPRESSION));
+      for (AstNode resourceInstNode : node.getChildren(PuppetGrammar.RESOURCE_INST)) {
+        for (AstNode paramNode : resourceInstNode.getChildren(PuppetGrammar.PARAM)) {
+          if ("mode".equals(paramNode.getTokenValue())) {
+            checkMode(paramNode.getFirstChild(PuppetGrammar.EXPRESSION));
           }
         }
       }
@@ -87,7 +87,7 @@ public class FileModeCheck extends SquidCheck<Grammar> {
       getContext().createLineViolation(this, MESSAGE_DOUBLE_QUOTES, node.getTokenLine());
     } else if (node.getToken().getType().equals(SINGLE_QUOTED_STRING_LITERAL) && !PATTERN.matcher(node.getTokenValue()).matches()
       || node.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL) && !PATTERN.matcher(node.getTokenValue()).matches()
-      && !CheckUtils.doesStringContainsVariables(node.getTokenValue())) {
+      && !CheckStringUtils.containsVariable(node.getTokenValue())) {
       getContext().createLineViolation(this, MESSAGE_INVALID, node.getTokenLine());
     }
 

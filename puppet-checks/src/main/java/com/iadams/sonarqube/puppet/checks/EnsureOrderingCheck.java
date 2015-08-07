@@ -2,7 +2,7 @@
  * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Iain Adams
+ * Copyright (c) 2015 Iain Adams and David RACODON
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,6 @@ package com.iadams.sonarqube.puppet.checks;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
-import java.util.concurrent.atomic.AtomicLong;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -37,30 +36,29 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
-		key = "EnsureOrdering",
-		priority = Priority.MINOR,
-		name = "\"ensure\" attribute should be the first attribute specified",
-		tags = {Tags.CONVENTION, Tags.CONFUSING}
-)
+  key = "EnsureOrdering",
+  priority = Priority.MINOR,
+  name = "\"ensure\" attribute should be the first attribute specified",
+  tags = {Tags.CONVENTION, Tags.CONFUSING})
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("1min")
 public class EnsureOrderingCheck extends SquidCheck<Grammar> {
 
-	@Override
-	public void init() {
-		subscribeTo(PuppetGrammar.RESOURCE_INST);
-	}
+  @Override
+  public void init() {
+    subscribeTo(PuppetGrammar.RESOURCE_INST);
+  }
 
-	@Override
-	public void visitNode(AstNode node) {
-		int counter= 0;
-		for(AstNode param : node.getChildren(PuppetGrammar.PARAM)){
-			counter++;
-			if ("ensure".equals(param.getTokenValue()) && counter != 1) {
-				getContext().createLineViolation(this, "Move the \"ensure\" attribute to be declared first.", param.getTokenLine());
-				break;
-			}
-		}
-	}
+  @Override
+  public void visitNode(AstNode node) {
+    int counter = 0;
+    for (AstNode param : node.getChildren(PuppetGrammar.PARAM)) {
+      counter++;
+      if ("ensure".equals(param.getTokenValue()) && counter != 1) {
+        getContext().createLineViolation(this, "Move the \"ensure\" attribute to be declared first.", param.getTokenLine());
+        break;
+      }
+    }
+  }
 }

@@ -2,7 +2,7 @@
  * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Iain Adams
+ * Copyright (c) 2015 Iain Adams and David RACODON
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,19 +29,21 @@ import org.sonar.squidbridge.api.SourceFile
 import org.sonar.squidbridge.checks.CheckMessagesVerifier
 import spock.lang.Specification
 
-class EnsureNotSymlinkTargetCheckSpec extends Specification {
+class ClassAndDefineNamingConventionCheckSpec extends Specification {
 
-  private static final String MESSAGE = "Remove the file reference and use link instead.";
-
-  def "validate rule"() {
+  def "validate check"() {
     given:
-    EnsureNotSymlinkTargetCheck check = new EnsureNotSymlinkTargetCheck();
-    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/ensure_not_symlink_target.pp"), check);
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/class_and_define_naming_convention.pp"),
+      new ClassAndDefineNamingConventionCheck()
+    );
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(7).withMessage(MESSAGE)
-      .next().atLine(20).withMessage(MESSAGE)
+      .next().atLine(1).withMessage("Rename class \"my-class\" to match the regular expression: ^(::)?([a-z0-9_]+::)*[a-z0-9_]+\$")
+      .next().atLine(2).withMessage("Rename define \"my-define\" to match the regular expression: ^(::)?([a-z0-9_]+::)*[a-z0-9_]+\$")
+      .next().atLine(3).withMessage("Rename define \"myDefine\" to match the regular expression: ^(::)?([a-z0-9_]+::)*[a-z0-9_]+\$")
       .noMore();
   }
+
 }

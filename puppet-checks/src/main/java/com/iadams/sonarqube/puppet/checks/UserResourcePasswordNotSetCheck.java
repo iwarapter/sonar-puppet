@@ -2,7 +2,7 @@
  * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Iain Adams
+ * Copyright (c) 2015 Iain Adams and David RACODON
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,6 @@ package com.iadams.sonarqube.puppet.checks;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
-import java.util.List;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -37,29 +36,37 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
-		key = "ResourcePasswordSet",
-		priority = Priority.MAJOR,
-		name = "User resource should not set password",
-		tags = Tags.SECURITY
-)
+  key = "ResourcePasswordSet",
+  priority = Priority.MAJOR,
+  name = "User resource should not set password",
+  tags = Tags.SECURITY)
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.SECURITY_FEATURES)
 @SqaleConstantRemediation("10min")
 public class UserResourcePasswordNotSetCheck extends SquidCheck<Grammar> {
 
-	@Override
-	public void init() {
-		subscribeTo(PuppetGrammar.RESOURCE);
-	}
+	private static final String MESSAGE = "Do not set passwords in user resources.";
+  @Override
+  public void init() {
+    subscribeTo(PuppetGrammar.RESOURCE);
+  }
 
-	@Override
-	public void visitNode(AstNode node) {
-		if ("user".equals(node.getTokenValue())) {
-			for (AstNode param : node.getDescendants(PuppetGrammar.PARAM)) {
-				if ("password".equals(param.getTokenValue())) {
-					getContext().createLineViolation(this, "Do not set passwords in user resources.", param);
-				}
-			}
-		}
-	}
+  @Override
+  public void visitNode(AstNode node) {
+    if ("user".equals(node.getTokenValue())) {
+      for (AstNode paramNode : node.getChildren(PuppetGrammar.PARAM)) {
+        if ("password".equals(paramNode.getTokenValue())) {
+          getContext().createLineViolation(this, MESSAGE, paramNode);
+        }
+      }
+      for (AstNode resourceInstNode : node.getChildren(PuppetGrammar.RESOURCE_INST)) {
+        for (AstNode paramNode : resourceInstNode.getChildren(PuppetGrammar.PARAM)) {
+          if ("password".equals(paramNode.getTokenValue())) {
+            getContext().createLineViolation(this, MESSAGE, paramNode);
+          }
+        }
+      }
+    }
+  }
+
 }

@@ -2,7 +2,7 @@
  * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Iain Adams
+ * Copyright (c) 2015 Iain Adams and David RACODON
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,24 +24,39 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.api.PuppetGrammar;
+import com.iadams.sonarqube.puppet.api.PuppetKeyword;
 import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
-import java.util.regex.Pattern;
+import com.sonar.sslr.api.Grammar;
+import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.check.Priority;
+import org.sonar.check.Rule;
+import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
+import org.sonar.squidbridge.checks.SquidCheck;
 
-public class CheckUtils {
+@Rule(
+  key = "DeprecatedNodeInheritance",
+  priority = Priority.MAJOR,
+  name = "Deprecated node inheritance should not be used",
+  tags = {Tags.OBSOLETE})
+@ActivatedByDefault
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LANGUAGE_RELATED_PORTABILITY)
+@SqaleConstantRemediation("30min")
+public class DeprecatedNodeInheritanceCheck extends SquidCheck<Grammar> {
 
-  private static final String REGEX_VARIABLE_USAGE = ".*\\$\\{.*";
-  private static final Pattern PATTERN_VARIABLE_USAGE = Pattern.compile(REGEX_VARIABLE_USAGE);
-
-  public static boolean doesStringContainsVariables(String string) {
-    return PATTERN_VARIABLE_USAGE.matcher(string).matches();
+  @Override
+  public void init() {
+    subscribeTo(PuppetGrammar.NODE_DEFINITION);
   }
 
-  public static boolean isNodeStringLiteral(AstNode node){
-    if(node.getToken().getType().equals(PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL) || node.getToken().getType().equals(PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL)){
-      return true;
+  @Override
+  public void visitNode(AstNode node) {
+    if (node.getFirstChild(PuppetKeyword.INHERITS) != null) {
+      getContext().createLineViolation(this, "Remove this usage of the deprecated node inheritance.", node.getTokenLine());
     }
-    return false;
   }
 
 }

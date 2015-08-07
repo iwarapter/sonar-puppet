@@ -1,0 +1,27 @@
+<p>
+    Node inheritance is deprecated since version 3.7 and no longer supported since version 4.
+</p>
+
+<h2>Non compliant Code Example</h2>
+<pre>
+node 'www1.example.com' inherits 'common' {
+  include ntp
+  include apache
+}
+</pre>
+
+<h2>What to Use Instead</h2>
+<p>
+<ul>
+    <li>Node inheritance often causes ambiguous or counterintuitive behavior. More effective code reuse can be achieved using classes and defined types.</li>
+    <li>Most users who need hierarchical data should keep it in an external source and have their manifests look it up. The best solution right now is <a href="https://docs.puppetlabs.com/hiera/latest">Hiera</a>, which is available by default in Puppet 3 and later. See our <a href="https://docs.puppetlabs.com/hiera/latest">Hiera guides</a> for more information about using it.</li>
+    <li><a href="https://docs.puppetlabs.com/guides/external_nodes.html">ENCs</a> can look up data from any arbitrary source and return it to Puppet as top-scope variables.</li>
+    <li>If you have node-specific data in an external CMDB, you can easily write <a href="https://docs.puppetlabs.com/guides/custom_functions.html">custom Puppet functions</a> to query it.</li>
+    <li>For very small numbers of nodes, you can copy and paste to make complete node definitions for special-case nodes.</li>
+</ul>
+</p>
+
+<h2>See</h2>
+<ul>
+  <li><a href="https://docs.puppetlabs.com/puppet/3.8/reference/lang_node_definitions.html#alternatives-to-node-inheritance">See Alternatives to Node Inheritance</a></li>
+</ul>

@@ -2,7 +2,7 @@
  * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Iain Adams
+ * Copyright (c) 2015 Iain Adams and David RACODON
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -200,13 +200,13 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 PARAM,
                 b.zeroOrMore(COMMA, PARAM))).skip();
 
-        b.rule(ADD_PARAM).is(NAME, PARROW, EXPRESSION);
+        b.rule(ADD_PARAM).is(NAME, PARROW, EXPRESSION).skip();
 
-        b.rule(ANY_PARAM).is(b.firstOf(PARAM, ADD_PARAM));
+        b.rule(ANY_PARAM).is(b.firstOf(PARAM, ADD_PARAM)).skip();
 
         b.rule(ANY_PARAMS).is(b.optional(
 				ANY_PARAM,
-				b.zeroOrMore(COMMA, ANY_PARAM)));
+				b.zeroOrMore(COMMA, ANY_PARAM))).skip();
 
         b.rule(RESOURCE).is(b.firstOf(
 				b.sequence(CLASSNAME, LBRACE, RESOURCE_INSTANCES, END_SEMIC, RBRACE),
@@ -238,7 +238,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(QUOTED_TEXT).is(
                 b.firstOf(
 						SINGLE_QUOTED_STRING_LITERAL,
-						DOUBLE_QUOTED_STRING_LITERAL));
+						DOUBLE_QUOTED_STRING_LITERAL)).skip();
 
         b.rule(TYPE).is(REF);
 
@@ -343,7 +343,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 				HASH_ARRAY_ACCESSES
 		));
 
-        b.rule(EDGE).is(b.firstOf(IN_EDGE, OUT_EDGE, IN_EDGE_SUB, OUT_EDGE_SUB));
+        b.rule(EDGE).is(b.firstOf(IN_EDGE, OUT_EDGE, IN_EDGE_SUB, OUT_EDGE_SUB)).skip();
 
         b.rule(HASH_ARRAY_ACCESS).is(VARIABLE, LBRACK, EXPRESSION, RBRACK);
         b.rule(HASH_ARRAY_ACCESSES).is(HASH_ARRAY_ACCESS, b.zeroOrMore(LBRACK, EXPRESSION, RBRACK));
@@ -362,7 +362,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 HOST_MATCH,
                 b.zeroOrMore(COMMA, HOST_MATCH),
                 b.optional(COMMA)
-        );
+        ).skip();
 
         b.rule(HOST_MATCH).is(b.firstOf(
                 SINGLE_QUOTED_STRING_LITERAL,
@@ -500,7 +500,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RIGHT_VALUE,
                 RESOURCE_REF));
 
-        b.rule(EXPRESSIONS).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION));
+        b.rule(EXPRESSIONS).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION)).skip();
 
         //https://docs.puppetlabs.com/puppet/latest/reference/lang_expressions.html#order-of-operations
 
@@ -533,7 +533,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 UNDEF,
                 ARRAY,
                 HASH
-        ));
+        )).skip();
 
 
 

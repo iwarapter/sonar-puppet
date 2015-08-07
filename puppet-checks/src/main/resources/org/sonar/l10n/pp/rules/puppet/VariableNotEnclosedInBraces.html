@@ -1,0 +1,16 @@
+<p>All variables should be enclosed in <code>{}</code> (braces) when being interpolated in a string.</p>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+warning "Variable $var is undefined"
+</pre>
+
+<h2>Compliant Solution</h2>
+<pre>
+warning "Variable ${var} is undefined"
+</pre>
+
+<h2>See</h2>
+<ul>
+  <li><a href="https://docs.puppetlabs.com/guides/style_guide.html#quoting">See Puppet Labs Puppet Language Style Guide</a></li>
+</ul>

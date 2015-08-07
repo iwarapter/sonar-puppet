@@ -2,7 +2,7 @@
  * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Iain Adams
+ * Copyright (c) 2015 Iain Adams and David RACODON
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 package com.iadams.sonarqube.puppet.checks;
 
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
+import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
@@ -36,33 +37,36 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
-  key = "EnsureNotSymlinkTarget",
+  key = "UnquotedResourceTitle",
   priority = Priority.MINOR,
-  name = "\"ensure\" parameter should not be a symlink target",
-  tags = { Tags.CONFUSING, Tags.CONVENTION})
+  name = "Resource titles should be quoted",
+  tags = Tags.CONVENTION)
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
-@SqaleConstantRemediation("10min")
-public class EnsureNotSymlinkTargetCheck extends SquidCheck<Grammar> {
+@SqaleConstantRemediation("2min")
+public class UnquotedResourceTitleCheck extends SquidCheck<Grammar> {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.RESOURCE);
+    subscribeTo(PuppetGrammar.RESOURCE_NAME);
   }
 
   @Override
   public void visitNode(AstNode node) {
-		if ("file".equals(node.getTokenValue())) {
-      for(AstNode inst : node.getChildren(PuppetGrammar.RESOURCE_INST)){
-        for(AstNode param : inst.getChildren(PuppetGrammar.PARAM)){
-          if(param.getTokenValue().equals("ensure")){
-            AstNode expression = param.getFirstChild().getNextSibling().getNextSibling();
-            if(CheckUtils.isNodeStringLiteral(expression)){
-              getContext().createLineViolation(this, "Remove the file reference and use link instead.", expression, expression.getTokenValue());
-            }
-          }
+    if (node.getFirstChild(PuppetTokenType.NAME) != null || node.getFirstChild(PuppetTokenType.VARIABLE) != null) {
+      getContext().createLineViolation(this, "Quote this resource title.", node);
+    } else if (node.getFirstChild(PuppetGrammar.ARRAY) != null) {
+      boolean hasUnquotedTitle = false;
+      for (AstNode expressionNode : node.getFirstChild(PuppetGrammar.ARRAY).getChildren(PuppetGrammar.EXPRESSION)) {
+        if (expressionNode.getFirstChild(PuppetTokenType.NAME) != null || expressionNode.getFirstChild(PuppetTokenType.VARIABLE) != null) {
+          hasUnquotedTitle = true;
+          break;
         }
       }
-		}
+      if (hasUnquotedTitle) {
+        getContext().createLineViolation(this, "Quote each resource title of this array.", node);
+      }
+    }
   }
+
 }

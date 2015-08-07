@@ -2,7 +2,7 @@
  * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Iain Adams
+ * Copyright (c) 2015 Iain Adams and David RACODON
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,37 +30,45 @@ import java.util.List;
 
 public final class CheckList {
 
-	public static final String REPOSITORY_KEY = "puppet";
+  public static final String REPOSITORY_KEY = "puppet";
 
-	public static final String SONARQUBE_WAY_PROFILE = "SonarQube Way";
+  public static final String SONARQUBE_WAY_PROFILE = "SonarQube Way";
 
-	public static List<Class> getChecks() {
-		return ImmutableList.<Class>of(
-			CaseWithoutDefaultCheck.class,
-			CommentConventionCheck.class,
-			CommentRegularExpressionCheck.class,
-			DuplicatedParametersCheck.class,
-			EnsureOrderingCheck.class,
-			EnsureNotSymlinkTargetCheck.class,
-			FileModeCheck.class,
-			FileNameCheck.class,
-			FixmeTagPresenceCheck.class,
-			ImportStatementUsedCheck.class,
-			LineLengthCheck.class,
-			MissingNewLineAtEndOfFileCheck.class,
-			NestedClassesOrDefinesCheck.class,
-			NosonarTagPresenceCheck.class,
-			ParsingErrorCheck.class,
-			QuotedBooleanCheck.class,
-			ResourceWithSelectorCheck.class,
-			SelectorWithoutDefaultCheck.class,
-			TabCharacterCheck.class,
-			TodoTagPresenceCheck.class,
-			TrailingWhitespaceCheck.class,
-			UserResourceLiteralNameCheck.class,
-			UserResourcePasswordNotSetCheck.class,
-			VariableNamingConventionCheck.class,
-			XPathCheck.class
-		);
-	}
+  public static List<Class> getChecks() {
+    return ImmutableList.<Class>of(
+      CaseWithoutDefaultCheck.class,
+      ClassAndDefineNamingConventionCheck.class,
+      CommentConventionCheck.class,
+      CommentRegularExpressionCheck.class,
+      DeprecatedNodeInheritanceCheck.class,
+      DuplicatedParametersCheck.class,
+      EnsureOrderingCheck.class,
+      FaultyDoubleQuotedStringCheck.class,
+      FileEnsurePropertyIsValidCheck.class,
+      FileModeCheck.class,
+      FileNameCheck.class,
+      FixmeTagPresenceCheck.class,
+      IfStatementWithoutElseClauseCheck.class,
+      ImportStatementUsedCheck.class,
+      LineLengthCheck.class,
+      MissingNewLineAtEndOfFileCheck.class,
+      NestedClassesOrDefinesCheck.class,
+      NosonarTagPresenceCheck.class,
+      ParsingErrorCheck.class,
+      QuotedBooleanCheck.class,
+      ResourceWithSelectorCheck.class,
+      RightToLeftChainingArrowsCheck.class,
+      SelectorWithoutDefaultCheck.class,
+      SingleQuotedStringContainingVariablesCheck.class,
+      TabCharacterCheck.class,
+      TodoTagPresenceCheck.class,
+      TrailingWhitespaceCheck.class,
+      UnquotedResourceTitleCheck.class,
+      UserResourceLiteralNameCheck.class,
+      UserResourcePasswordNotSetCheck.class,
+      VariableNamingConventionCheck.class,
+      VariableNotEnclosedInBracesCheck.class,
+      XPathCheck.class
+    );
+  }
 }

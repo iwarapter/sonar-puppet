@@ -2,7 +2,7 @@
  * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Iain Adams
+ * Copyright (c) 2015 Iain Adams and David RACODON
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,33 +35,34 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL;
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL;
 
 @Rule(
-		key = "UserResourceLiteralName",
-		priority = Priority.MAJOR,
-		name = "User resource should use variable not literal",
-		tags = Tags.SECURITY
-)
+  key = "UserResourceLiteralName",
+  priority = Priority.MAJOR,
+  name = "User resource should use variable not literal",
+  tags = Tags.SECURITY)
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.SECURITY_FEATURES)
 @SqaleConstantRemediation("10min")
 public class UserResourceLiteralNameCheck extends SquidCheck<Grammar> {
 
-	@Override
-	public void init() {
-		subscribeTo(PuppetGrammar.RESOURCE);
-	}
+  @Override
+  public void init() {
+    subscribeTo(PuppetGrammar.RESOURCE);
+  }
 
-	@Override
-	public void visitNode(AstNode node) {
-		if ("user".equals(node.getTokenValue())) {
-			for (AstNode name : node.getDescendants(PuppetGrammar.RESOURCE_NAME)) {
-				if (name.getToken().getType().equals(SINGLE_QUOTED_STRING_LITERAL) || name.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL)) {
-					getContext().createLineViolation(this, "Remove this hardcoded user name.", name.getTokenLine());
-				}
-			}
-		}
-	}
+  @Override
+  public void visitNode(AstNode node) {
+    if ("user".equals(node.getTokenValue())) {
+      for (AstNode resourceInstanceNode : node.getChildren(PuppetGrammar.RESOURCE_INST)) {
+        AstNode resourceNameNode = resourceInstanceNode.getFirstChild(PuppetGrammar.RESOURCE_NAME);
+        if (resourceNameNode.getFirstChild().is(SINGLE_QUOTED_STRING_LITERAL, DOUBLE_QUOTED_STRING_LITERAL)) {
+          getContext().createLineViolation(this, "Remove this hardcoded user name.", resourceNameNode.getTokenLine());
+        }
+      }
+    }
+  }
+
 }
