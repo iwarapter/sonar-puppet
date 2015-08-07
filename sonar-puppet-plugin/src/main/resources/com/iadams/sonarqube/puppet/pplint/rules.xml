@@ -790,9 +790,11 @@ node server1 {
 
       <pre>
 node 'server1' {
-}</pre>]]>
+}</pre>
+<p>This rule is deprecated. As this syntax is not valid according to the language specifications, a parsing error is raised in such a case.</p>]]>
     </description>
     <priority>MAJOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>IgnoredPuppetLintRule</key>
