@@ -53,7 +53,6 @@ public final class CheckList {
       ParsingErrorCheck.class,
       QuotedBooleanCheck.class,
       ResourceWithSelectorCheck.class,
-      SelectorWithoutDefaultCheck.class,
       RightToLeftChainingArrowsCheck.class,
       SelectorWithoutDefaultCheck.class,
       SingleQuotedStringContainingVariablesCheck.class,
