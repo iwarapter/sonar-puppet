@@ -39,7 +39,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
   key = "ImportStatementUsed",
   priority = Priority.MAJOR,
   name = "Deprecated \"import\" statement should not be used",
-  tags = {Tags.CONVENTION, Tags.PITFALL})
+  tags = {Tags.OBSOLETE})
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LANGUAGE_RELATED_PORTABILITY)
 @SqaleConstantRemediation("30min")
