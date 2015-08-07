@@ -500,7 +500,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RIGHT_VALUE,
                 RESOURCE_REF));
 
-        b.rule(EXPRESSIONS).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION));
+        b.rule(EXPRESSIONS).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION)).skip();
 
         //https://docs.puppetlabs.com/puppet/latest/reference/lang_expressions.html#order-of-operations
 
@@ -533,7 +533,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 UNDEF,
                 ARRAY,
                 HASH
-        ));
+        )).skip();
 
 
 
