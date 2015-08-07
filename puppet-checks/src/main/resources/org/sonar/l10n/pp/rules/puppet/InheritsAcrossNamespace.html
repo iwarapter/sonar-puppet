@@ -1,0 +1,28 @@
+<p>
+    Inheritance can be used within a module, but must not be used across module namespaces. Cross-module dependencies should be satisfied in a more portable way, such as with include statements or relationship declarations.
+</p>
+
+<h2>Noncompliant Code Example</h2>
+
+<pre>
+class ssh inherits server { ... }
+
+class ssh::client inherits workstation { ... }
+
+class wordpress inherits apache { ... }
+</pre>
+
+<h2>Compliant Solution</h2>
+
+<pre>
+class ssh { ... }
+
+class ssh::client inherits ssh { ... }
+
+class ssh::server inherits ssh { ... }
+</pre>
+
+<h2>See</h2>
+<ul>
+  <li><a href="https://docs.puppetlabs.com/guides/style_guide.html#class-inheritance">See Puppet Labs Puppet Language Deprecation Notice</a></li>
+</ul>
