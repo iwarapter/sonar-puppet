@@ -37,6 +37,7 @@ public final class CheckList {
   public static List<Class> getChecks() {
     return ImmutableList.<Class>of(
       CaseWithoutDefaultCheck.class,
+      ClassAndDefineNamingConventionCheck.class,
       CommentConventionCheck.class,
       CommentRegularExpressionCheck.class,
       DuplicatedParametersCheck.class,
