@@ -37,35 +37,33 @@ import org.sonar.squidbridge.checks.SquidCheck;
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL;
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL;
 
-
 @Rule(
-		key = "QuotedBoolean",
-		priority = Priority.MAJOR,
-		name = "Booleans should not be quoted",
-		tags = Tags.CONFUSING
-)
+  key = "QuotedBoolean",
+  priority = Priority.MAJOR,
+  name = "Booleans should not be quoted",
+  tags = Tags.CONFUSING)
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
 @SqaleConstantRemediation("10min")
 public class QuotedBooleanCheck extends SquidCheck<Grammar> {
 
-	@Override
-	public void init() {
-		subscribeTo(SINGLE_QUOTED_STRING_LITERAL, DOUBLE_QUOTED_STRING_LITERAL);
-	}
+  @Override
+  public void init() {
+    subscribeTo(SINGLE_QUOTED_STRING_LITERAL, DOUBLE_QUOTED_STRING_LITERAL);
+  }
 
-	@Override
-	public void visitNode(AstNode node) {
-		String literal = node.getTokenValue();
-		switch (literal) {
-			case "'false'":
-			case "'true'":
-			case "\"false\"":
-			case "\"true\"":
-				getContext().createLineViolation(this, "Remove quotes.", node);
-				break;
-			default:
-				break;
-		}
-	}
+  @Override
+  public void visitNode(AstNode node) {
+    String literal = node.getTokenValue();
+    switch (literal) {
+      case "'false'":
+      case "'true'":
+      case "\"false\"":
+      case "\"true\"":
+        getContext().createLineViolation(this, "Remove quotes.", node);
+        break;
+      default:
+        break;
+    }
+  }
 }

@@ -28,16 +28,16 @@ import com.iadams.sonarqube.functional.FunctionalSpecBase
 
 class PplintFunctionalSpec extends FunctionalSpecBase {
 
-	def "run sonar-runner without pplint"(){
-		when:
-		copyResources("code_chunks.pp", "code_chunks.pp")
-		deactivateAllRules('pp', 'SonarQube Way')
-		activateRepositoryRules('pp', 'SonarQube Way', 'Pplint')
-		runSonarRunner()
+  def "run sonar-runner without pplint"() {
+    when:
+    copyResources("code_chunks.pp", "code_chunks.pp")
+    deactivateAllRules('pp', 'SonarQube Way')
+    activateRepositoryRules('pp', 'SonarQube Way', 'Pplint')
+    runSonarRunner()
 
-		then:
-		analysisFinishedSuccessfully()
-		analysisLogDoesNotContainErrorsOrWarnings()
-		theFollowingProjectMetricsHaveTheFollowingValue([violations:8, lines:9])
-	}
+    then:
+    analysisFinishedSuccessfully()
+    analysisLogDoesNotContainErrorsOrWarnings()
+    theFollowingProjectMetricsHaveTheFollowingValue([violations: 8, lines: 9])
+  }
 }

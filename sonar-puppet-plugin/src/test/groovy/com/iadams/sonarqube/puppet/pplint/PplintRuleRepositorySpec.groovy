@@ -30,14 +30,14 @@ import spock.lang.Specification
 
 class PplintRuleRepositorySpec extends Specification {
 
-    def "CreateRules"() {
-        given:
-        PplintRuleRepository ruleRepository = new PplintRuleRepository(new RulesDefinitionXmlLoader())
-        RulesDefinition.Context context = new RulesDefinition.Context();
-        ruleRepository.define(context);
-        List<RulesDefinition.Rule> rules = context.repository(PplintRuleRepository.REPOSITORY_KEY).rules();
+  def "CreateRules"() {
+    given:
+    PplintRuleRepository ruleRepository = new PplintRuleRepository(new RulesDefinitionXmlLoader())
+    RulesDefinition.Context context = new RulesDefinition.Context();
+    ruleRepository.define(context);
+    List<RulesDefinition.Rule> rules = context.repository(PplintRuleRepository.REPOSITORY_KEY).rules();
 
-        expect:
-        rules.size() == 34
-    }
+    expect:
+    rules.size() == 34
+  }
 }

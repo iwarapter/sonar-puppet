@@ -30,14 +30,14 @@ import spock.lang.Specification
 
 class PuppetCpdMappingSpec extends Specification {
 
-	def "test cpd mapping"() {
-		given:
-		Puppet language = Mock()
-		FileSystem fs = Mock()
-		PuppetCpdMapping mapping = new PuppetCpdMapping(language, fs)
+  def "test cpd mapping"() {
+    given:
+    Puppet language = Mock()
+    FileSystem fs = Mock()
+    PuppetCpdMapping mapping = new PuppetCpdMapping(language, fs)
 
-		expect:
-		mapping.language == language
-		mapping.tokenizer instanceof PuppetTokenizer
-	}
+    expect:
+    mapping.language == language
+    mapping.tokenizer instanceof PuppetTokenizer
+  }
 }

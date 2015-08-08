@@ -26,36 +26,36 @@ package com.iadams.sonarqube.puppet.pplint;
 
 public class Issue {
 
-    private final String filename;
-    private final int line;
-    private final String ruleId;
-    private final String descr;
+  private final String filename;
+  private final int line;
+  private final String ruleId;
+  private final String descr;
 
-    Issue(String filename, int line, String ruleId, String descr) {
-        this.filename = filename;
-        this.line = line;
-        this.ruleId = ruleId;
-        this.descr = descr;
-    }
+  Issue(String filename, int line, String ruleId, String descr) {
+    this.filename = filename;
+    this.line = line;
+    this.ruleId = ruleId;
+    this.descr = descr;
+  }
 
-    @Override
-    public String toString() {
-        return "(" + filename + ", " + line + ", " + ruleId + ", " + descr + ")";
-    }
+  @Override
+  public String toString() {
+    return "(" + filename + ", " + line + ", " + ruleId + ", " + descr + ")";
+  }
 
-    String getFilename() {
-        return filename;
-    }
+  String getFilename() {
+    return filename;
+  }
 
-    int getLine() {
-        return line;
-    }
+  int getLine() {
+    return line;
+  }
 
-    String getRuleId() {
-        return ruleId;
-    }
+  String getRuleId() {
+    return ruleId;
+  }
 
-    String getDescr() {
-        return descr;
-    }
+  String getDescr() {
+    return descr;
+  }
 }

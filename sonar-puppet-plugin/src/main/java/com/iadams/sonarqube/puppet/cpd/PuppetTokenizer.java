@@ -40,27 +40,27 @@ import java.util.List;
 
 public class PuppetTokenizer implements Tokenizer {
 
-	private final Charset charset;
+  private final Charset charset;
 
-	public PuppetTokenizer(Charset charset){
-		this.charset = charset;
-	}
+  public PuppetTokenizer(Charset charset) {
+    this.charset = charset;
+  }
 
-	@Override
-	public final void tokenize(SourceCode source, Tokens cpdTokens){
-		Lexer lexer = PuppetLexer.create(new PuppetConfiguration(charset));
-		String fileName = source.getFileName();
-		List<Token> tokens = lexer.lex(new File(fileName));
-		for(Token token : tokens){
-			if (!token.getType().equals(PuppetTokenType.NEWLINE) && !token.getType().equals(PuppetTokenType.DEDENT) && !token.getType().equals(PuppetTokenType.INDENT)) {
-				TokenEntry cpdToken = new TokenEntry(getTokenImage(token), fileName, token.getLine());
-				cpdTokens.add(cpdToken);
-			}
-		}
-		cpdTokens.add(TokenEntry.getEOF());
-	}
+  @Override
+  public final void tokenize(SourceCode source, Tokens cpdTokens) {
+    Lexer lexer = PuppetLexer.create(new PuppetConfiguration(charset));
+    String fileName = source.getFileName();
+    List<Token> tokens = lexer.lex(new File(fileName));
+    for (Token token : tokens) {
+      if (!token.getType().equals(PuppetTokenType.NEWLINE) && !token.getType().equals(PuppetTokenType.DEDENT) && !token.getType().equals(PuppetTokenType.INDENT)) {
+        TokenEntry cpdToken = new TokenEntry(getTokenImage(token), fileName, token.getLine());
+        cpdTokens.add(cpdToken);
+      }
+    }
+    cpdTokens.add(TokenEntry.getEOF());
+  }
 
-	private String getTokenImage(Token token) {
-		return token.getValue();
-	}
+  private String getTokenImage(Token token) {
+    return token.getValue();
+  }
 }

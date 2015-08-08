@@ -34,21 +34,21 @@ import java.nio.charset.Charset;
 
 public class PuppetCpdMapping extends AbstractCpdMapping {
 
-	private final Puppet language;
-	private final Charset charset;
+  private final Puppet language;
+  private final Charset charset;
 
-	public PuppetCpdMapping(Puppet language, FileSystem fs) {
-		this.language = language;
-		this.charset = fs.encoding();
-	}
+  public PuppetCpdMapping(Puppet language, FileSystem fs) {
+    this.language = language;
+    this.charset = fs.encoding();
+  }
 
-	@Override
-	public Tokenizer getTokenizer(){
-		return new PuppetTokenizer(charset);
-	}
+  @Override
+  public Tokenizer getTokenizer() {
+    return new PuppetTokenizer(charset);
+  }
 
-	@Override
-	public Language getLanguage() {
-		return language;
-	}
+  @Override
+  public Language getLanguage() {
+    return language;
+  }
 }

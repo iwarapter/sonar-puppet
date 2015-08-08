@@ -34,42 +34,41 @@ import org.sonar.squidbridge.annotations.RuleTemplate;
 import org.sonar.squidbridge.checks.AbstractXPathCheck;
 
 @Rule(
-		key = XPathCheck.CHECK_KEY,
-		priority = Priority.MAJOR,
-		name = "XPath rule"
-)
+  key = XPathCheck.CHECK_KEY,
+  priority = Priority.MAJOR,
+  name = "XPath rule")
 @NoSqale
 @RuleTemplate
 public class XPathCheck extends AbstractXPathCheck<Grammar> {
-	public static final String CHECK_KEY = "XPath";
-	private static final String DEFAULT_XPATH_QUERY = "";
-	private static final String DEFAULT_MESSAGE = "The XPath expression matches this piece of code";
+  public static final String CHECK_KEY = "XPath";
+  private static final String DEFAULT_XPATH_QUERY = "";
+  private static final String DEFAULT_MESSAGE = "The XPath expression matches this piece of code";
 
-	@RuleProperty(
-			key = "xpathQuery",
-			defaultValue = "" + DEFAULT_XPATH_QUERY)
-	public String xpathQuery = DEFAULT_XPATH_QUERY;
+  @RuleProperty(
+    key = "xpathQuery",
+    defaultValue = "" + DEFAULT_XPATH_QUERY)
+  public String xpathQuery = DEFAULT_XPATH_QUERY;
 
-	@RuleProperty(
-			key = "message",
-			defaultValue = "" + DEFAULT_MESSAGE)
-	public String message = DEFAULT_MESSAGE;
+  @RuleProperty(
+    key = "message",
+    defaultValue = "" + DEFAULT_MESSAGE)
+  public String message = DEFAULT_MESSAGE;
 
-	@Override
-	public String getXPathQuery() {
-		return xpathQuery;
-	}
+  @Override
+  public String getXPathQuery() {
+    return xpathQuery;
+  }
 
-	@Override
-	public String getMessage() {
-		return message;
-	}
+  @Override
+  public String getMessage() {
+    return message;
+  }
 
-	@Override
-	public void visitFile(AstNode fileNode) {
-		if (fileNode != null) {
-			super.visitFile(fileNode);
-		}
-	}
+  @Override
+  public void visitFile(AstNode fileNode) {
+    if (fileNode != null) {
+      super.visitFile(fileNode);
+    }
+  }
 
 }

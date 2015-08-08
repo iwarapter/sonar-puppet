@@ -31,7 +31,8 @@ import spock.lang.Specification
 
 class FaultyDoubleQuotedStringCheckSpec extends Specification {
 
-  private final static String MESSAGE_USE_SINGLE_QUOTES = "Surround the string with single quotes instead of double quotes.";
+  private final
+  static String MESSAGE_USE_SINGLE_QUOTES = "Surround the string with single quotes instead of double quotes.";
   private final static String MESSAGE_REMOVE_QUOTES = "Remove quotes surrounding this variable.";
 
   def "validate check"() {

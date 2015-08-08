@@ -41,28 +41,27 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 @Rule(
-		key = ParsingErrorCheck.CHECK_KEY,
-		priority = Priority.MAJOR,
-		name = "Parser failure"
-)
+  key = ParsingErrorCheck.CHECK_KEY,
+  priority = Priority.MAJOR,
+  name = "Parser failure")
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.INSTRUCTION_RELIABILITY)
 @SqaleConstantRemediation("30min")
 public class ParsingErrorCheck extends SquidCheck<Grammar> implements AstScannerExceptionHandler {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ParsingErrorCheck.class);
-	public static final String CHECK_KEY = "ParsingError";
+  private static final Logger LOG = LoggerFactory.getLogger(ParsingErrorCheck.class);
+  public static final String CHECK_KEY = "ParsingError";
 
-	@Override
-	public void processException(Exception e){
-		StringWriter exception = new StringWriter();
-		e.printStackTrace(new PrintWriter(exception));
-		LOG.debug("Parsing error", e);
-		getContext().createFileViolation(this, e.getMessage());
-	}
+  @Override
+  public void processException(Exception e) {
+    StringWriter exception = new StringWriter();
+    e.printStackTrace(new PrintWriter(exception));
+    LOG.debug("Parsing error", e);
+    getContext().createFileViolation(this, e.getMessage());
+  }
 
-	@Override
-	public void processRecognitionException(RecognitionException e){
-		getContext().createLineViolation(this, e.getMessage(), e.getLine());
-	}
+  @Override
+  public void processRecognitionException(RecognitionException e) {
+    getContext().createLineViolation(this, e.getMessage(), e.getLine());
+  }
 }

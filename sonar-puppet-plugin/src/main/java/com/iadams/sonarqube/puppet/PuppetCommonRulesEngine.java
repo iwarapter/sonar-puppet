@@ -28,17 +28,17 @@ import org.sonar.squidbridge.commonrules.api.CommonRulesEngine;
 import org.sonar.squidbridge.commonrules.api.CommonRulesRepository;
 
 public class PuppetCommonRulesEngine extends CommonRulesEngine {
-    public PuppetCommonRulesEngine() {
-        super(Puppet.KEY);
-    }
+  public PuppetCommonRulesEngine() {
+    super(Puppet.KEY);
+  }
 
-    @Override
-    protected void doEnableRules(CommonRulesRepository repository) {
-        repository
-                .enableDuplicatedBlocksRule()
-                .enableInsufficientCommentDensityRule(null)
-                .enableInsufficientLineCoverageRule(null)
-                .enableInsufficientBranchCoverageRule(null);
-    }
+  @Override
+  protected void doEnableRules(CommonRulesRepository repository) {
+    repository
+      .enableDuplicatedBlocksRule()
+      .enableInsufficientCommentDensityRule(null)
+      .enableInsufficientLineCoverageRule(null)
+      .enableInsufficientBranchCoverageRule(null);
+  }
 
 }

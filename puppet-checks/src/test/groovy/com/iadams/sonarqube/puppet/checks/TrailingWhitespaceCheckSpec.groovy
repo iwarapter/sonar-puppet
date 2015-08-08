@@ -31,18 +31,18 @@ import spock.lang.Specification
 
 class TrailingWhitespaceCheckSpec extends Specification {
 
-    def "validate rule"() {
-        given:
-        TrailingWhitespaceCheck check = new TrailingWhitespaceCheck();
+  def "validate rule"() {
+    given:
+    TrailingWhitespaceCheck check = new TrailingWhitespaceCheck();
 
-        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/trailingWhitespace.pp"), check);
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/trailingWhitespace.pp"), check);
 
-        expect:
-        CheckMessagesVerifier.verify(file.getCheckMessages())
-                .next().atLine(2).withMessage("Remove the useless trailing whitespaces at the end of this line.")
-                .next().atLine(3).withMessage("Remove the useless trailing whitespaces at the end of this line.")
-                .next().atLine(4).withMessage("Remove the useless trailing whitespaces at the end of this line.")
-                .next().atLine(6).withMessage("Remove the useless trailing whitespaces at the end of this line.")
-                .noMore();
-    }
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(2).withMessage("Remove the useless trailing whitespaces at the end of this line.")
+      .next().atLine(3).withMessage("Remove the useless trailing whitespaces at the end of this line.")
+      .next().atLine(4).withMessage("Remove the useless trailing whitespaces at the end of this line.")
+      .next().atLine(6).withMessage("Remove the useless trailing whitespaces at the end of this line.")
+      .noMore();
+  }
 }

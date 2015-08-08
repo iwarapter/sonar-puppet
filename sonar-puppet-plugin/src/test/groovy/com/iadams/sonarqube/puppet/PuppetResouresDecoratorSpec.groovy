@@ -30,16 +30,16 @@ import spock.lang.Specification
 
 class PuppetResouresDecoratorSpec extends Specification {
 
-	def "should decorate"() {
-		given:
-		Resource resource = Mock()
-		DecoratorContext context = Mock()
-		PuppetResouresDecorator decorator = new PuppetResouresDecorator()
+  def "should decorate"() {
+    given:
+    Resource resource = Mock()
+    DecoratorContext context = Mock()
+    PuppetResouresDecorator decorator = new PuppetResouresDecorator()
 
-		when:
-		decorator.decorate(resource, context)
+    when:
+    decorator.decorate(resource, context)
 
-		then:
-		1 * context.saveMeasure(_, _)
-	}
+    then:
+    1 * context.saveMeasure(_, _)
+  }
 }

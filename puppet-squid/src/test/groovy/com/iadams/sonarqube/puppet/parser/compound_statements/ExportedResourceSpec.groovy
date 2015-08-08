@@ -31,13 +31,13 @@ import static org.sonar.sslr.tests.Assertions.assertThat
 
 public class ExportedResourceSpec extends GrammarSpec {
 
-	def setup(){
-		setRootRule(EXPORTED_RESOURCE)
-	}
+  def setup() {
+    setRootRule(EXPORTED_RESOURCE)
+  }
 
-	def "virtual resources pass"() {
-		expect:
-		assertThat(p).matches('''@@nagios_service { "check_zfs${hostname}":
+  def "virtual resources pass"() {
+    expect:
+    assertThat(p).matches('''@@nagios_service { "check_zfs${hostname}":
 									  use                 => 'generic-service',
 									  host_name           => "$fqdn",
 									  check_command       => 'check_nrpe_1arg!check_zfs',
@@ -45,5 +45,5 @@ public class ExportedResourceSpec extends GrammarSpec {
 									  target              => '/etc/nagios3/conf.d/nagios_service.cfg',
 									  notify              => Service[$nagios::params::nagios_service],
 									}''')
-	}
+  }
 }

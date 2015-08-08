@@ -29,46 +29,46 @@ import spock.lang.Unroll
 
 class PuppetCommentAnalyserSpec extends Specification {
 
-    PuppetCommentAnalyser analyser
+  PuppetCommentAnalyser analyser
 
-    def setup(){
-        analyser = new PuppetCommentAnalyser()
-    }
+  def setup() {
+    analyser = new PuppetCommentAnalyser()
+  }
 
-    @Unroll
-    def "check line with #testFor is blank #output"() {
-        expect:
-        analyser.isBlank(input) == output
+  @Unroll
+  def "check line with #testFor is blank #output"() {
+    expect:
+    analyser.isBlank(input) == output
 
-        where:
-        input   | output    | testFor
-        '    '  | true      | 'spaces'
-        '   '   | true      | 'tabs'
-        'words' | false     | 'letters'
-        '12345' | false     | 'numbers'
-        '12wor' | false     | 'letters and numbers'
-    }
+    where:
+    input   | output | testFor
+    '    '  | true   | 'spaces'
+    '   '   | true   | 'tabs'
+    'words' | false  | 'letters'
+    '12345' | false  | 'numbers'
+    '12wor' | false  | 'letters and numbers'
+  }
 
-    //https://docs.puppetlabs.com/puppet/latest/reference/lang_comments.html
+  //https://docs.puppetlabs.com/puppet/latest/reference/lang_comments.html
 
-    @Unroll
-    def "get comments"(){
-        expect:
-        analyser.getContents(input) == output
+  @Unroll
+  def "get comments"() {
+    expect:
+    analyser.getContents(input) == output
 
-        where:
-        input                       | output
-        '# comment'                 | ' comment'
-        '// comment'                | ' comment'
-        '/* comment */'             | ' comment '
-        '/* comment1\ncomment2 */'  | ' comment1\ncomment2 '
-    }
+    where:
+    input                      | output
+    '# comment'                | ' comment'
+    '// comment'               | ' comment'
+    '/* comment */'            | ' comment '
+    '/* comment1\ncomment2 */' | ' comment1\ncomment2 '
+  }
 
-    def "unknown comment type"(){
-        when:
-        analyser.getContents('')
+  def "unknown comment type"() {
+    when:
+    analyser.getContents('')
 
-        then:
-        thrown(IllegalArgumentException)
-    }
+    then:
+    thrown(IllegalArgumentException)
+  }
 }

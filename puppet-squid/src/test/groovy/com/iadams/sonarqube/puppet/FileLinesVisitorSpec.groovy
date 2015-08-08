@@ -37,42 +37,42 @@ import spock.lang.Specification
 
 class FileLinesVisitorSpec extends Specification {
 
-	static final File BASE_DIR = new File("src/test/resources/metrics")
+  static final File BASE_DIR = new File("src/test/resources/metrics")
 
-	FileLinesContextFactory fileLinesContextFactory
-	DefaultFileSystem fileSystem
-	FileLinesContext fileLinesContext
+  FileLinesContextFactory fileLinesContextFactory
+  DefaultFileSystem fileSystem
+  FileLinesContext fileLinesContext
 
-	def setup(){
-		fileLinesContextFactory = Mock()
-		fileSystem = new DefaultFileSystem()
-		fileLinesContext = Mock()
-	}
+  def setup() {
+    fileLinesContextFactory = Mock()
+    fileSystem = new DefaultFileSystem()
+    fileLinesContext = Mock()
+  }
 
-	def "check metrics calculate correctly"() {
-		when:
+  def "check metrics calculate correctly"() {
+    when:
 
-		File file = new File(BASE_DIR, "lines.pp")
-		InputFile inputFile = new DefaultInputFile(file.getPath())
+    File file = new File(BASE_DIR, "lines.pp")
+    InputFile inputFile = new DefaultInputFile(file.getPath())
 
-		fileSystem.add(inputFile)
-		fileLinesContextFactory.createFor(inputFile) >> fileLinesContext
+    fileSystem.add(inputFile)
+    fileLinesContextFactory.createFor(inputFile) >> fileLinesContext
 
-		SquidAstVisitor<Grammar> visitor = new FileLinesVisitor(fileLinesContextFactory, fileSystem);
+    SquidAstVisitor<Grammar> visitor = new FileLinesVisitor(fileLinesContextFactory, fileSystem);
 
-		PuppetAstScanner.scanSingleFile(file, visitor);
+    PuppetAstScanner.scanSingleFile(file, visitor);
 
-		then:
-		1 * fileLinesContext.setIntValue(CoreMetrics.NCLOC_DATA_KEY, 1, 0)
-		1 * fileLinesContext.setIntValue(CoreMetrics.NCLOC_DATA_KEY, 2, 0)
-		1 * fileLinesContext.setIntValue(CoreMetrics.NCLOC_DATA_KEY, 3, 0)
-		1 * fileLinesContext.setIntValue(CoreMetrics.NCLOC_DATA_KEY, 4, 0)
-		1 * fileLinesContext.setIntValue(CoreMetrics.NCLOC_DATA_KEY, 5, 1)
-		1 * fileLinesContext.setIntValue(CoreMetrics.COMMENT_LINES_DATA_KEY, 1, 1)
-		1 * fileLinesContext.setIntValue(CoreMetrics.COMMENT_LINES_DATA_KEY, 2, 1)
-		1 * fileLinesContext.setIntValue(CoreMetrics.COMMENT_LINES_DATA_KEY, 3, 1)
-		1 * fileLinesContext.setIntValue(CoreMetrics.COMMENT_LINES_DATA_KEY, 4, 0)
-		1 * fileLinesContext.setIntValue(CoreMetrics.COMMENT_LINES_DATA_KEY, 5, 0)
-		1 * fileLinesContext.save()
-	}
+    then:
+    1 * fileLinesContext.setIntValue(CoreMetrics.NCLOC_DATA_KEY, 1, 0)
+    1 * fileLinesContext.setIntValue(CoreMetrics.NCLOC_DATA_KEY, 2, 0)
+    1 * fileLinesContext.setIntValue(CoreMetrics.NCLOC_DATA_KEY, 3, 0)
+    1 * fileLinesContext.setIntValue(CoreMetrics.NCLOC_DATA_KEY, 4, 0)
+    1 * fileLinesContext.setIntValue(CoreMetrics.NCLOC_DATA_KEY, 5, 1)
+    1 * fileLinesContext.setIntValue(CoreMetrics.COMMENT_LINES_DATA_KEY, 1, 1)
+    1 * fileLinesContext.setIntValue(CoreMetrics.COMMENT_LINES_DATA_KEY, 2, 1)
+    1 * fileLinesContext.setIntValue(CoreMetrics.COMMENT_LINES_DATA_KEY, 3, 1)
+    1 * fileLinesContext.setIntValue(CoreMetrics.COMMENT_LINES_DATA_KEY, 4, 0)
+    1 * fileLinesContext.setIntValue(CoreMetrics.COMMENT_LINES_DATA_KEY, 5, 0)
+    1 * fileLinesContext.save()
+  }
 }

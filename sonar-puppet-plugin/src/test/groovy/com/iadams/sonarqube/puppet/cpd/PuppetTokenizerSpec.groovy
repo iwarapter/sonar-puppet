@@ -33,16 +33,16 @@ import java.nio.charset.Charset
 
 class PuppetTokenizerSpec extends Specification {
 
-	def "should work on valid input"(){
-		given:
-		File file = new File(getClass().getResource("/com/iadams/sonarqube/puppet/code_chunks.pp").toURI());
-		SourceCode source = new SourceCode(new SourceCode.FileCodeLoader(file, "key"))
-		Tokens cpdTokens = new Tokens();
-		PuppetTokenizer tokenizer = new PuppetTokenizer(Charset.forName("UTF-8"))
-		tokenizer.tokenize(source, cpdTokens)
+  def "should work on valid input"() {
+    given:
+    File file = new File(getClass().getResource("/com/iadams/sonarqube/puppet/code_chunks.pp").toURI());
+    SourceCode source = new SourceCode(new SourceCode.FileCodeLoader(file, "key"))
+    Tokens cpdTokens = new Tokens();
+    PuppetTokenizer tokenizer = new PuppetTokenizer(Charset.forName("UTF-8"))
+    tokenizer.tokenize(source, cpdTokens)
 
-		expect:
-		List<TokenEntry> list = cpdTokens.getTokens()
-		list.size() == 20
-	}
+    expect:
+    List<TokenEntry> list = cpdTokens.getTokens()
+    list.size() == 20
+  }
 }

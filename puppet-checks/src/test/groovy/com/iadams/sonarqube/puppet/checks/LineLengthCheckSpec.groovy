@@ -31,17 +31,17 @@ import spock.lang.Specification
 
 class LineLengthCheckSpec extends Specification {
 
-	def "validate rule"() {
-		given:
-		LineLengthCheck check = new LineLengthCheck();
-		check.maximumLineLength = 30;
+  def "validate rule"() {
+    given:
+    LineLengthCheck check = new LineLengthCheck();
+    check.maximumLineLength = 30;
 
-		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/lineLength.pp"), check);
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/lineLength.pp"), check);
 
-		expect:
-		CheckMessagesVerifier.verify(file.getCheckMessages())
-				.next().atLine(1).withMessage("The line contains 40 characters which is greater than 30 authorized.")
-				.next().atLine(3).withMessage("The line contains 53 characters which is greater than 30 authorized.")
-				.noMore();
-	}
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(1).withMessage("The line contains 40 characters which is greater than 30 authorized.")
+      .next().atLine(3).withMessage("The line contains 53 characters which is greater than 30 authorized.")
+      .noMore();
+  }
 }

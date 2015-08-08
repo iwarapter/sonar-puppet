@@ -27,51 +27,50 @@ package com.iadams.sonarqube.puppet.api;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.TokenType;
 
-
 public enum PuppetKeyword implements TokenType {
-    //http://docs.puppetlabs.com/puppet/3.8/reference/lang_reserved.html#reserved-words
-    AND("and"),
-    CASE("case"),
-    CLASS("class"),
-    DEFAULT("default"),
-    DEFINE("define"),
-    ELSE("else"),
-    ELSIF("elsif"),
-    FALSE("false"),
-    IF("if"),
-    IN("in"),
-    IMPORT("import"),
-    INHERITS("inherits"),
-    NODE("node"),
-    OR("or"),
-    TRUE("true"),
-    UNDEF("undef"),
-    UNLESS("unless");
+  // http://docs.puppetlabs.com/puppet/3.8/reference/lang_reserved.html#reserved-words
+  AND("and"),
+  CASE("case"),
+  CLASS("class"),
+  DEFAULT("default"),
+  DEFINE("define"),
+  ELSE("else"),
+  ELSIF("elsif"),
+  FALSE("false"),
+  IF("if"),
+  IN("in"),
+  IMPORT("import"),
+  INHERITS("inherits"),
+  NODE("node"),
+  OR("or"),
+  TRUE("true"),
+  UNDEF("undef"),
+  UNLESS("unless");
 
-    private final String value;
+  private final String value;
 
-    private PuppetKeyword(String value) {
-        this.value = value;
+  private PuppetKeyword(String value) {
+    this.value = value;
+  }
+
+  public String getName() {
+    return name();
+  }
+
+  public String getValue() {
+    return value;
+  }
+
+  public boolean hasToBeSkippedFromAst(AstNode node) {
+    return false;
+  }
+
+  public static String[] keywordValues() {
+    PuppetKeyword[] keywordsEnum = PuppetKeyword.values();
+    String[] keywords = new String[keywordsEnum.length];
+    for (int i = 0; i < keywords.length; i++) {
+      keywords[i] = keywordsEnum[i].getValue();
     }
-
-    public String getName() {
-        return name();
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public boolean hasToBeSkippedFromAst(AstNode node) {
-        return false;
-    }
-
-    public static String[] keywordValues() {
-        PuppetKeyword[] keywordsEnum = PuppetKeyword.values();
-        String[] keywords = new String[keywordsEnum.length];
-        for (int i = 0; i < keywords.length; i++) {
-            keywords[i] = keywordsEnum[i].getValue();
-        }
-        return keywords;
-    }
+    return keywords;
+  }
 }

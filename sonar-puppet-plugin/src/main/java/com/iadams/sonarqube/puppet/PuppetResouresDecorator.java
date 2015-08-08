@@ -34,19 +34,19 @@ import org.sonar.api.resources.ResourceUtils;
 
 public class PuppetResouresDecorator implements Decorator {
 
-	public boolean shouldExecuteOnProject(Project project){
-		return true;
-	}
+  public boolean shouldExecuteOnProject(Project project) {
+    return true;
+  }
 
-	public void decorate(Resource resource, DecoratorContext context){
+  public void decorate(Resource resource, DecoratorContext context) {
 
-		if(!ResourceUtils.isFile(resource)){
-			context.saveMeasure(PuppetLanguageMetrics.PUPPET_RESOURCES, MeasureUtils.sum(true, context.getChildrenMeasures(PuppetLanguageMetrics.PUPPET_RESOURCES)));
-		}
-	}
+    if (!ResourceUtils.isFile(resource)) {
+      context.saveMeasure(PuppetLanguageMetrics.PUPPET_RESOURCES, MeasureUtils.sum(true, context.getChildrenMeasures(PuppetLanguageMetrics.PUPPET_RESOURCES)));
+    }
+  }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
-	}
+  @Override
+  public String toString() {
+    return getClass().getSimpleName();
+  }
 }

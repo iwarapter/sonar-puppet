@@ -45,52 +45,52 @@ import static com.iadams.sonarqube.puppet.api.PuppetTokenType.NAME;
  */
 public class NameAndKeywordChannel extends Channel<Lexer> {
 
-    private final Map<String, TokenType> keywordsMap;
-    private final StringBuilder tmpBuilder = new StringBuilder();
-    private final Matcher matcher;
-    private final boolean caseSensitive;
-    private final Token.Builder tokenBuilder = Token.builder();
+  private final Map<String, TokenType> keywordsMap;
+  private final StringBuilder tmpBuilder = new StringBuilder();
+  private final Matcher matcher;
+  private final boolean caseSensitive;
+  private final Token.Builder tokenBuilder = Token.builder();
 
-    /**
-     * @throws java.util.regex.PatternSyntaxException if the expression's syntax is invalid
-     */
-    public NameAndKeywordChannel(String regexp, boolean caseSensitive, TokenType[]... keywordSets) {
-        ImmutableMap.Builder<String, TokenType> keywordsMapBuilder = ImmutableMap.builder();
-        for (TokenType[] keywords : keywordSets) {
-            for (TokenType keyword : keywords) {
-                String keywordValue = caseSensitive ? keyword.getValue() : keyword.getValue().toUpperCase();
-                keywordsMapBuilder.put(keywordValue, keyword);
-            }
-        }
-        this.keywordsMap = keywordsMapBuilder.build();
-        this.caseSensitive = caseSensitive;
-        matcher = Pattern.compile(regexp).matcher("");
+  /**
+   * @throws java.util.regex.PatternSyntaxException if the expression's syntax is invalid
+   */
+  public NameAndKeywordChannel(String regexp, boolean caseSensitive, TokenType[]... keywordSets) {
+    ImmutableMap.Builder<String, TokenType> keywordsMapBuilder = ImmutableMap.builder();
+    for (TokenType[] keywords : keywordSets) {
+      for (TokenType keyword : keywords) {
+        String keywordValue = caseSensitive ? keyword.getValue() : keyword.getValue().toUpperCase();
+        keywordsMapBuilder.put(keywordValue, keyword);
+      }
     }
+    this.keywordsMap = keywordsMapBuilder.build();
+    this.caseSensitive = caseSensitive;
+    matcher = Pattern.compile(regexp).matcher("");
+  }
 
-    @Override
-    public boolean consume(CodeReader code, Lexer lexer) {
-        if (code.popTo(matcher, tmpBuilder) > 0) {
-            String word = tmpBuilder.toString();
-            String wordOriginal = word;
-            if (!caseSensitive) {
-                word = word.toUpperCase();
-            }
+  @Override
+  public boolean consume(CodeReader code, Lexer lexer) {
+    if (code.popTo(matcher, tmpBuilder) > 0) {
+      String word = tmpBuilder.toString();
+      String wordOriginal = word;
+      if (!caseSensitive) {
+        word = word.toUpperCase();
+      }
 
-            TokenType keywordType = keywordsMap.get(word);
-            Token token = tokenBuilder
-                    .setType(keywordType == null ? NAME : keywordType)
-                    .setValueAndOriginalValue(word, wordOriginal)
-                    .setURI(lexer.getURI())
-                    .setLine(code.getPreviousCursor().getLine())
-                    .setColumn(code.getPreviousCursor().getColumn())
-                    .build();
+      TokenType keywordType = keywordsMap.get(word);
+      Token token = tokenBuilder
+        .setType(keywordType == null ? NAME : keywordType)
+        .setValueAndOriginalValue(word, wordOriginal)
+        .setURI(lexer.getURI())
+        .setLine(code.getPreviousCursor().getLine())
+        .setColumn(code.getPreviousCursor().getColumn())
+        .build();
 
-            lexer.addToken(token);
+      lexer.addToken(token);
 
-            tmpBuilder.delete(0, tmpBuilder.length());
-            return true;
-        }
-        return false;
+      tmpBuilder.delete(0, tmpBuilder.length());
+      return true;
     }
+    return false;
+  }
 
 }

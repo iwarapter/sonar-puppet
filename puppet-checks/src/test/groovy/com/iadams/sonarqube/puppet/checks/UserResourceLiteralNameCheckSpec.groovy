@@ -31,18 +31,18 @@ import spock.lang.Specification
 
 class UserResourceLiteralNameCheckSpec extends Specification {
 
-	private final static String MESSAGE = "Remove this hardcoded user name.";
+  private final static String MESSAGE = "Remove this hardcoded user name.";
 
-	def "validate rule"() {
-		given:
-		UserResourceLiteralNameCheck check = new UserResourceLiteralNameCheck();
+  def "validate rule"() {
+    given:
+    UserResourceLiteralNameCheck check = new UserResourceLiteralNameCheck();
 
-		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/UserResourceLiteralName.pp"), check);
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/UserResourceLiteralName.pp"), check);
 
-		expect:
-		CheckMessagesVerifier.verify(file.getCheckMessages())
-				.next().atLine(1).withMessage(MESSAGE)
-				.next().atLine(13).withMessage(MESSAGE)
-				.noMore();
-	}
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(1).withMessage(MESSAGE)
+      .next().atLine(13).withMessage(MESSAGE)
+      .noMore();
+  }
 }

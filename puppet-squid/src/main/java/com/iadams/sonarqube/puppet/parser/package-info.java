@@ -27,3 +27,4 @@
 package com.iadams.sonarqube.puppet.parser;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+

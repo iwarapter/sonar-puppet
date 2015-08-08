@@ -40,94 +40,94 @@ import static com.iadams.sonarqube.puppet.api.PuppetTokenType.REGULAR_EXPRESSION
 
 public class PuppetRegexpChannel extends Channel<Lexer> {
 
-    public static final String REGULAR_EXPRESSION = "\\/(?![*\\/]).*\\/";
+  public static final String REGULAR_EXPRESSION = "\\/(?![*\\/]).*\\/";
 
-    private final Channel<Lexer> delegate;
+  private final Channel<Lexer> delegate;
 
-    public PuppetRegexpChannel() {
-        this.delegate = regexp(REGULAR_EXPRESSION_LITERAL, REGULAR_EXPRESSION);
+  public PuppetRegexpChannel() {
+    this.delegate = regexp(REGULAR_EXPRESSION_LITERAL, REGULAR_EXPRESSION);
+  }
+
+  @Override
+  public boolean consume(CodeReader code, Lexer output) {
+    if (code.peek() == '/') {
+      Token lastToken = getLastToken(output);
+      if (lastToken == null || guessNextIsRegexp(lastToken.getValue())) {
+        return delegate.consume(code, output);
+      }
     }
+    return false;
+  }
 
-    @Override
-    public boolean consume(CodeReader code, Lexer output) {
-        if (code.peek() == '/') {
-            Token lastToken = getLastToken(output);
-            if (lastToken == null || guessNextIsRegexp(lastToken.getValue())) {
-                return delegate.consume(code, output);
-            }
-        }
-        return false;
+  private static Token getLastToken(Lexer output) {
+    List<Token> tokens = output.getTokens();
+    return tokens.isEmpty() ? null : tokens.get(tokens.size() - 1);
+  }
+
+  private static final Set<String> WHOLE_TOKENS = ImmutableSet.of(
+    // Binary operators which cannot be followed by a division operator:
+    // Match + but not ++. += is handled below.
+    "+",
+    // Match - but not --. -= is handled below.
+    "-",
+    // Match . but not a number with a trailing decimal.
+    ".",
+    // Match /, but not a regexp. /= is handled below
+    "/",
+    // Second binary operand cannot start a division.
+    ",",
+    // Ditto binary operand.
+    "*");
+
+  private static final String[] ENDS = new String[] {
+    // ! prefix operator operand cannot start with a division
+    "!",
+    // % second binary operand cannot start with a division
+    "%",
+    // &, && ditto binary operand
+    "&",
+    // ( expression cannot start with a division
+    "(",
+    // : property value, labelled statement, and operand of ?: cannot start with a division
+    ":",
+    // ; statement & for condition cannot start with division
+    ";",
+    // <, <<, << ditto binary operand
+    "<",
+    // !=, !==, %=, &&=, &=, *=, +=, -=, /=, <<=, <=, =, ==, ===, >=, >>=, >>>=, ^=, |=, ||=
+    // All are binary operands (assignment ops or comparisons) whose right
+    // operand cannot start with a division operator
+    "=",
+    // >, >>, >>> ditto binary operand
+    ">",
+    // ? expression in ?: cannot start with a division operator
+    "?",
+    // [ first array value & key expression cannot start with a division
+    "[",
+    // ^ ditto binary operand
+    "^",
+    // { statement in block and object property key cannot start with a division
+    "{",
+    // |, || ditto binary operand
+    "|",
+    // } PROBLEMATIC: could be an object literal divided or a block.
+    // More likely to be start of a statement after a block which cannot start with a /.
+    "}",
+    // ~ ditto binary operand
+    "~"
+  };
+
+  @VisibleForTesting
+  static boolean guessNextIsRegexp(String preceder) {
+    if (WHOLE_TOKENS.contains(preceder)) {
+      return true;
     }
-
-    private static Token getLastToken(Lexer output) {
-        List<Token> tokens = output.getTokens();
-        return tokens.isEmpty() ? null : tokens.get(tokens.size() - 1);
+    for (String end : ENDS) {
+      if (preceder.endsWith(end)) {
+        return true;
+      }
     }
-
-    private static final Set<String> WHOLE_TOKENS = ImmutableSet.of(
-            // Binary operators which cannot be followed by a division operator:
-            // Match + but not ++. += is handled below.
-            "+",
-            // Match - but not --. -= is handled below.
-            "-",
-            // Match . but not a number with a trailing decimal.
-            ".",
-            // Match /, but not a regexp. /= is handled below
-            "/",
-            // Second binary operand cannot start a division.
-            ",",
-            // Ditto binary operand.
-            "*");
-
-    private static final String[] ENDS = new String[] {
-            // ! prefix operator operand cannot start with a division
-            "!",
-            // % second binary operand cannot start with a division
-            "%",
-            // &, && ditto binary operand
-            "&",
-            // ( expression cannot start with a division
-            "(",
-            // : property value, labelled statement, and operand of ?: cannot start with a division
-            ":",
-            // ; statement & for condition cannot start with division
-            ";",
-            // <, <<, << ditto binary operand
-            "<",
-            // !=, !==, %=, &&=, &=, *=, +=, -=, /=, <<=, <=, =, ==, ===, >=, >>=, >>>=, ^=, |=, ||=
-            // All are binary operands (assignment ops or comparisons) whose right
-            // operand cannot start with a division operator
-            "=",
-            // >, >>, >>> ditto binary operand
-            ">",
-            // ? expression in ?: cannot start with a division operator
-            "?",
-            // [ first array value & key expression cannot start with a division
-            "[",
-            // ^ ditto binary operand
-            "^",
-            // { statement in block and object property key cannot start with a division
-            "{",
-            // |, || ditto binary operand
-            "|",
-            // } PROBLEMATIC: could be an object literal divided or a block.
-            // More likely to be start of a statement after a block which cannot start with a /.
-            "}",
-            // ~ ditto binary operand
-            "~"
-    };
-
-    @VisibleForTesting
-    static boolean guessNextIsRegexp(String preceder) {
-        if (WHOLE_TOKENS.contains(preceder)) {
-            return true;
-        }
-        for (String end : ENDS) {
-            if (preceder.endsWith(end)) {
-                return true;
-            }
-        }
-        return false;
-    }
+    return false;
+  }
 
 }

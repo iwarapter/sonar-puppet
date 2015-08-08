@@ -27,5 +27,5 @@ package com.iadams.sonarqube.puppet;
 import java.nio.charset.Charset;
 
 public interface CharsetAwareVisitor {
-	void setCharset(Charset charset);
+  void setCharset(Charset charset);
 }
