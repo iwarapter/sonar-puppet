@@ -260,15 +260,15 @@ public enum PuppetGrammar implements GrammarRuleKey {
 
     b.rule(PARAMS).is(b.optional(
       PARAM,
-      b.zeroOrMore(COMMA, PARAM))).skip();
+      b.zeroOrMore(COMMA, PARAM)));
 
-    b.rule(ADD_PARAM).is(NAME, PARROW, EXPRESSION).skip();
+    b.rule(ADD_PARAM).is(NAME, PARROW, EXPRESSION);
 
     b.rule(ANY_PARAM).is(b.firstOf(PARAM, ADD_PARAM)).skip();
 
     b.rule(ANY_PARAMS).is(b.optional(
       ANY_PARAM,
-      b.zeroOrMore(COMMA, ANY_PARAM))).skip();
+      b.zeroOrMore(COMMA, ANY_PARAM)));
 
     b.rule(RESOURCE).is(b.firstOf(
       b.sequence(CLASSNAME, LBRACE, RESOURCE_INSTANCES, END_SEMIC, RBRACE),
@@ -370,7 +370,7 @@ public enum PuppetGrammar implements GrammarRuleKey {
 
     b.rule(HASH_PAIRS).is(
       HASH_PAIR,
-      b.zeroOrMore(COMMA, HASH_PAIR));
+      b.zeroOrMore(COMMA, HASH_PAIR)).skip();
 
     b.rule(HASH_PAIR).is(KEY, FARROW, EXPRESSION);
 
@@ -545,12 +545,12 @@ public enum PuppetGrammar implements GrammarRuleKey {
       UNDEF,
       DEFAULT,
       REGULAR_EXPRESSION_LITERAL
-      )).skip();
+      ));
   }
 
   /**
    * Expressions
-   * https://docs.puppetlabs.com/puppet/latest/reference/lang_expressions.html
+   * https://docs.puppetlabs.com/puppet/latest/reference/lang_expressions.htmls
    * @param b
    */
   public static void expressions(LexerfulGrammarBuilder b) {
