@@ -130,6 +130,8 @@ public enum PuppetGrammar implements GrammarRuleKey {
     COMPOUND_STMT,
     CLASSDEF,
     CLASSNAME,
+  CLASSNAME_OR_DEFAULT,
+  CLASS_PARENT,
     IF_STMT,
     ELSEIF_STMT,
     CASE_STMT,
@@ -195,6 +197,7 @@ public enum PuppetGrammar implements GrammarRuleKey {
                 PARAM,
                 b.zeroOrMore(COMMA, PARAM)));
 
+
         b.rule(RESOURCE).is(b.firstOf(
 				b.sequence(CLASSNAME, LBRACE, RESOURCE_INSTANCES, END_SEMIC, RBRACE),
 				b.sequence(TYPE, LBRACE, PARAMS, END_COMMA, RBRACE)));
@@ -223,9 +226,9 @@ public enum PuppetGrammar implements GrammarRuleKey {
                 RBRACE);
 
         b.rule(QUOTED_TEXT).is(
-                b.firstOf(
-						SINGLE_QUOTED_STRING_LITERAL,
-						DOUBLE_QUOTED_STRING_LITERAL)).skip();
+          b.firstOf(
+            SINGLE_QUOTED_STRING_LITERAL,
+            DOUBLE_QUOTED_STRING_LITERAL)).skip();
 
         b.rule(TYPE).is(REF);
 
@@ -377,15 +380,19 @@ public enum PuppetGrammar implements GrammarRuleKey {
                 EXPORTED_RESOURCE,
                 VIRTUAL_RESOURCE));
 
-        b.rule(CLASSDEF).is(CLASS,
-                            CLASSNAME,
-                            b.optional(ARGUMENT_LIST),
-                            b.optional(INHERITS, CLASSNAME),
-                            LBRACE,
-                            b.zeroOrMore(STATEMENT),
-                            RBRACE);
+      b.rule(CLASSDEF).is(CLASS,
+                          CLASSNAME,
+                          ARGUMENT_LIST,
+                          b.optional(CLASS_PARENT),
+                          LBRACE,
+                          b.zeroOrMore(STATEMENT),
+                          RBRACE);
 
-        b.rule(CLASSNAME).is(b.firstOf(NAME, CLASS));
+      b.rule(CLASSNAME).is(b.firstOf(NAME, CLASS));
+
+      b.rule(CLASSNAME_OR_DEFAULT).is(b.firstOf(CLASSNAME, DEFAULT));
+
+      b.rule(CLASS_PARENT).is(INHERITS, CLASSNAME_OR_DEFAULT);
 
         b.rule(IF_STMT).is(IF,
                 EXPRESSIONS,
