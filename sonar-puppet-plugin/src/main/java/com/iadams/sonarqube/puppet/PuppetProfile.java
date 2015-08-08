@@ -33,20 +33,20 @@ import org.sonar.squidbridge.annotations.AnnotationBasedProfileBuilder;
 
 public class PuppetProfile extends ProfileDefinition {
 
-	private final RuleFinder ruleFinder;
+  private final RuleFinder ruleFinder;
 
-	public PuppetProfile(RuleFinder ruleFinder){
-		this.ruleFinder = ruleFinder;
-	}
+  public PuppetProfile(RuleFinder ruleFinder) {
+    this.ruleFinder = ruleFinder;
+  }
 
-	@Override
-	public RulesProfile createProfile(ValidationMessages validation) {
-		AnnotationBasedProfileBuilder annotationBasedProfileBuilder = new AnnotationBasedProfileBuilder(ruleFinder);
-		return annotationBasedProfileBuilder.build(
-				CheckList.REPOSITORY_KEY,
-				CheckList.SONARQUBE_WAY_PROFILE,
-				Puppet.KEY,
-				CheckList.getChecks(),
-				validation);
-	}
+  @Override
+  public RulesProfile createProfile(ValidationMessages validation) {
+    AnnotationBasedProfileBuilder annotationBasedProfileBuilder = new AnnotationBasedProfileBuilder(ruleFinder);
+    return annotationBasedProfileBuilder.build(
+      CheckList.REPOSITORY_KEY,
+      CheckList.SONARQUBE_WAY_PROFILE,
+      Puppet.KEY,
+      CheckList.getChecks(),
+      validation);
+  }
 }

@@ -27,11 +27,11 @@ package com.iadams.sonarqube.puppet.metrics
 import spock.lang.Specification
 
 class PuppetLanguageMetricsSpec extends Specification {
-	def "validate metrics"() {
-		given:
-		def metrics = new PuppetLanguageMetrics()
+  def "validate metrics"() {
+    given:
+    def metrics = new PuppetLanguageMetrics()
 
-		expect:
-		metrics.getMetrics().size() == 1
-	}
+    expect:
+    metrics.getMetrics().size() == 1
+  }
 }

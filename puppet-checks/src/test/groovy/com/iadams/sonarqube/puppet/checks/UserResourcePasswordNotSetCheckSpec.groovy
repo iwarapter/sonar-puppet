@@ -31,17 +31,17 @@ import spock.lang.Specification
 
 class UserResourcePasswordNotSetCheckSpec extends Specification {
 
-	def "validate rule"() {
-		given:
-		UserResourcePasswordNotSetCheck check = new UserResourcePasswordNotSetCheck();
+  def "validate rule"() {
+    given:
+    UserResourcePasswordNotSetCheck check = new UserResourcePasswordNotSetCheck();
 
-		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/UserWithPassword.pp"), check);
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/UserWithPassword.pp"), check);
 
-		expect:
-		CheckMessagesVerifier.verify(file.getCheckMessages())
-				.next().atLine(2).withMessage("Do not set passwords in user resources.")
-				.next().atLine(15).withMessage("Do not set passwords in user resources.")
-				.next().atLine(17).withMessage("Do not set passwords in user resources.")
-				.noMore();
-	}
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(2).withMessage("Do not set passwords in user resources.")
+      .next().atLine(15).withMessage("Do not set passwords in user resources.")
+      .next().atLine(17).withMessage("Do not set passwords in user resources.")
+      .noMore();
+  }
 }

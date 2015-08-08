@@ -31,41 +31,41 @@ import spock.lang.Specification
 
 class FileNameCheckSpec extends Specification {
 
-    private final FileNameCheck check = new FileNameCheck();
+  private final FileNameCheck check = new FileNameCheck();
 
-    def "should follow default file naming convention"() {
-        given:
-        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/file_naming_convention_ok.pp"), check);
+  def "should follow default file naming convention"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/file_naming_convention_ok.pp"), check);
 
-        expect:
-        CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
-    }
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+  }
 
-    def "should not follow default file naming convention"() {
-        given:
-        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/file_naming_convention_KO.pp"), check);
+  def "should not follow default file naming convention"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/file_naming_convention_KO.pp"), check);
 
-        expect:
-        CheckMessagesVerifier.verify(file.getCheckMessages()).next().withMessage("Rename this file to match this regular expression: \"[a-z][a-z0-9_]+\\.pp\"").noMore();
-    }
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages()).next().withMessage("Rename this file to match this regular expression: \"[a-z][a-z0-9_]+\\.pp\"").noMore();
+  }
 
-    def "should follow custom file naming convention"() {
-        given:
-        check.setFormat("[a-zA-z0-9]+\\.pp");
-        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/FileNamingConventionCustom.pp"), check);
+  def "should follow custom file naming convention"() {
+    given:
+    check.setFormat("[a-zA-z0-9]+\\.pp");
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/FileNamingConventionCustom.pp"), check);
 
-        expect:
-        CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
-    }
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+  }
 
 
-    def "should not follow custom file naming convention"() {
-        given:
-        check.setFormat("[a-z][a-zA-z0-9]+\\.pp");
-        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/FileNamingConventionCustom.pp"), check);
+  def "should not follow custom file naming convention"() {
+    given:
+    check.setFormat("[a-z][a-zA-z0-9]+\\.pp");
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/FileNamingConventionCustom.pp"), check);
 
-        expect:
-        CheckMessagesVerifier.verify(file.getCheckMessages()).next().withMessage("Rename this file to match this regular expression: \"[a-z][a-zA-z0-9]+\\.pp\"").noMore();
-    }
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages()).next().withMessage("Rename this file to match this regular expression: \"[a-z][a-zA-z0-9]+\\.pp\"").noMore();
+  }
 
 }

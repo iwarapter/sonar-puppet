@@ -29,21 +29,21 @@ import spock.lang.Specification
 
 class PuppetCommonRulesEngineSpec extends Specification {
 
-    def "should provide expected extensions"() {
-        given:
-        PuppetCommonRulesEngine engine = new PuppetCommonRulesEngine()
+  def "should provide expected extensions"() {
+    given:
+    PuppetCommonRulesEngine engine = new PuppetCommonRulesEngine()
 
-        expect:
-        !engine.provide().isEmpty()
-    }
+    expect:
+    !engine.provide().isEmpty()
+  }
 
-    def "enable common rules"() {
-        given:
-        PuppetCommonRulesEngine engine = new PuppetCommonRulesEngine()
-        CommonRulesRepository repo = engine.newRepository()
+  def "enable common rules"() {
+    given:
+    PuppetCommonRulesEngine engine = new PuppetCommonRulesEngine()
+    CommonRulesRepository repo = engine.newRepository()
 
-        expect:
-        repo.enabledRuleKeys().size() == 4
-        repo.enableInsufficientCommentDensityRule(null) != null
-    }
+    expect:
+    repo.enabledRuleKeys().size() == 4
+    repo.enableInsufficientCommentDensityRule(null) != null
+  }
 }

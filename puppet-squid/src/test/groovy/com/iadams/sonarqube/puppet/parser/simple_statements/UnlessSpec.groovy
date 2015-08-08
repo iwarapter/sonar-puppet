@@ -31,14 +31,14 @@ import static org.sonar.sslr.tests.Assertions.assertThat
 
 class UnlessSpec extends GrammarSpec {
 
-    def setup() {
-        setRootRule(UNLESS_STMT)
-    }
+  def setup() {
+    setRootRule(UNLESS_STMT)
+  }
 
-	def "simple unless statement parses"(){
-		expect:
-		assertThat(p).matches('''unless $memorysize > 1024 {
+  def "simple unless statement parses"() {
+    expect:
+    assertThat(p).matches('''unless $memorysize > 1024 {
 								  $maxclient = 500
 								}''')
-	}
+  }
 }

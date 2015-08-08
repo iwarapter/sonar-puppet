@@ -30,18 +30,18 @@ import java.nio.charset.Charset;
 
 public class PuppetConfiguration extends SquidConfiguration {
 
-    private boolean ignoreHeaderComments;
+  private boolean ignoreHeaderComments;
 
-    public PuppetConfiguration(Charset charset) {
-        super(charset);
-    }
+  public PuppetConfiguration(Charset charset) {
+    super(charset);
+  }
 
-    public void setIgnoreHeaderComments(boolean ignoreHeaderComments) {
-        this.ignoreHeaderComments = ignoreHeaderComments;
-    }
+  public void setIgnoreHeaderComments(boolean ignoreHeaderComments) {
+    this.ignoreHeaderComments = ignoreHeaderComments;
+  }
 
-    public boolean getIgnoreHeaderComments() {
-        return ignoreHeaderComments;
-    }
+  public boolean getIgnoreHeaderComments() {
+    return ignoreHeaderComments;
+  }
 
 }

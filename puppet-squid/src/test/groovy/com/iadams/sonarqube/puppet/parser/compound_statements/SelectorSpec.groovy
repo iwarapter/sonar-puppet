@@ -31,107 +31,107 @@ import static org.sonar.sslr.tests.Assertions.assertThat
 
 public class SelectorSpec extends GrammarSpec {
 
-	def setup(){
-		setRootRule(SELECTOR)
-	}
+  def setup() {
+    setRootRule(SELECTOR)
+  }
 
-	def "selector statement parses correctly"() {
-		expect:
-		assertThat(p).matches('''$osfamily ? {
+  def "selector statement parses correctly"() {
+    expect:
+    assertThat(p).matches('''$osfamily ? {
 			'Solaris'          => 'wheel',
 			/(Darwin|FreeBSD)/ => 'wheel',
 			default            => 'root',
 		}''')
-	}
+  }
 
-	def "another selector example"(){
-		expect:
-		assertThat(p).matches('''$::osfamily ? {
+  def "another selector example"() {
+    expect:
+    assertThat(p).matches('''$::osfamily ? {
 								  'freebsd' => true,
 								  default   => false
 								}
 							''')
-	}
+  }
 
-	def "selector case testing"(){
-		expect:
-		assertThat(p).matches('''$default_ssl_vhost ? {
+  def "selector case testing"() {
+    expect:
+    assertThat(p).matches('''$default_ssl_vhost ? {
 								  true  => 'present',
 								  false => 'absent\'
 								}''')
-	}
+  }
 
-	def "selector with an undef assignment"(){
-		expect:
-		assertThat(p).matches('''$::apache::apache_version ? {
+  def "selector with an undef assignment"() {
+    expect:
+    assertThat(p).matches('''$::apache::apache_version ? {
 						   		   '2.4'   => 'mod_pagespeed_ap24.so',
 								   default => undef
 								}''')
-	}
+  }
 
-	def "nested selector statements"(){
-		expect:
-		assertThat(p).matches('''$source ? {
+  def "nested selector statements"() {
+    expect:
+    assertThat(p).matches('''$source ? {
 									undef   => $content ? {
 									  undef   => template($template),
 									  default => $content,
 									},
 									default => undef,
 								  }''')
-	}
+  }
 
-	def "selector with arrays"(){
-		expect:
-		assertThat(p).matches("""\$::apache::params::distrelease ? {
+  def "selector with arrays"() {
+    expect:
+    assertThat(p).matches("""\$::apache::params::distrelease ? {
 									'6'     => ['/usr/lib/libxml2.so.2'],
 									'10'    => ['/usr/lib/libxml2.so.2'],
 									default => ["/usr/lib/\${gnu_path}-linux-gnu/libxml2.so.2"],
 								  }
 								""")
-	}
+  }
 
-	def "selector with default resource ref"(){
-		expect:
-		assertThat(p).matches("""\$::osfamily ? {
+  def "selector with default resource ref"() {
+    expect:
+    assertThat(p).matches("""\$::osfamily ? {
 						  'freebsd' => [
 							File[\$_loadfile_name],
 							File["\${::apache::conf_dir}/\${::apache::params::conf_file}"]
 						  ],
 						  default => File[\$_loadfile_name],
 						}""")
-	}
+  }
 
-	def "selected with default selector using func call as the control var"(){
-		expect:
-		assertThat(p).matches('''$::operatingsystemrelease ? {
+  def "selected with default selector using func call as the control var"() {
+    expect:
+    assertThat(p).matches('''$::operatingsystemrelease ? {
 								  /5/     => 'postgis',
 								  default => versioncmp($postgis_version, '2') ? {
 									'-1'    => "postgis${package_version}",
 									default => "postgis2_${package_version}",}
 								}''')
-	}
+  }
 
-	def "selector with default only should parse"(){
-		expect:
-		assertThat(p).matches('''$env_type ? {
+  def "selector with default only should parse"() {
+    expect:
+    assertThat(p).matches('''$env_type ? {
 								  default => '0755\'
 								}''')
-	}
+  }
 
-	def "should handle integers in a selector case"(){
-		expect:
-		assertThat(p).matches('''$titi ? {
+  def "should handle integers in a selector case"() {
+    expect:
+    assertThat(p).matches('''$titi ? {
 								  24 => 'abc',
 								}''')
-		assertThat(p).matches('''$id ? {
+    assertThat(p).matches('''$id ? {
 								 root    => 0,
 								}''')
-	}
+  }
 
-	def "hash accessors work in selectors"(){
-		expect:
-		assertThat(p).matches('''$abc ? {
+  def "hash accessors work in selectors"() {
+    expect:
+    assertThat(p).matches('''$abc ? {
 								  false   => $::ntp_server[0],
 								}''')
-	}
+  }
 }

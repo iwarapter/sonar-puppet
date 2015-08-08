@@ -31,16 +31,16 @@ import spock.lang.Specification
 
 class CaseWithoutDefaultCheckSpec extends Specification {
 
-    private static final String MESSAGE = "Add a default case.";
+  private static final String MESSAGE = "Add a default case.";
 
-    def "validate check"() {
-        given:
-        final CaseWithoutDefaultCheck check = new CaseWithoutDefaultCheck();
-        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/case_without_default.pp"), check);
+  def "validate check"() {
+    given:
+    final CaseWithoutDefaultCheck check = new CaseWithoutDefaultCheck();
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/case_without_default.pp"), check);
 
-        expect:
-        CheckMessagesVerifier.verify(file.getCheckMessages())
-                .next().atLine(13).withMessage(MESSAGE)
-                .noMore();
-    }
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(13).withMessage(MESSAGE)
+      .noMore();
+  }
 }

@@ -33,40 +33,40 @@ import static org.sonar.sslr.tests.Assertions.assertThat
 
 public class ResourceSpec extends GrammarSpec {
 
-	def setup(){
-		setRootRule(RESOURCE)
-	}
+  def setup() {
+    setRootRule(RESOURCE)
+  }
 
-	def "resource with class notify parses correctly"() {
-		expect:
-		assertThat(p).matches('''package { 'httpd':
+  def "resource with class notify parses correctly"() {
+    expect:
+    assertThat(p).matches('''package { 'httpd':
 								 	ensure => $package_ensure,
 								 	name   => $apache_name,
 								 	notify => Class['Apache::Service'],
 								 }''')
-	}
+  }
 
-	def "resource with package require parses correctly"() {
-		expect:
-		assertThat(p).matches('''user { $user:
+  def "resource with package require parses correctly"() {
+    expect:
+    assertThat(p).matches('''user { $user:
 									ensure  => present,
 									gid     => $group,
 									require => Package['httpd'],
 								 }''')
-	}
+  }
 
-	def "check fully qualified type"(){
-		expect:
-		assertThat(p).matches('''concat::fragment { 'Apache ports header':
+  def "check fully qualified type"() {
+    expect:
+    assertThat(p).matches('''concat::fragment { 'Apache ports header':
 								ensure  => present,
 								target  => $ports_file,
 								content => template('apache/ports_header.erb')
 							  }''')
-	}
+  }
 
-	def "array of titles"(){
-		expect:
-		assertThat(p).matches('''file { ['/etc',
+  def "array of titles"() {
+    expect:
+    assertThat(p).matches('''file { ['/etc',
 										'/etc/rc.d',
 										'/etc/rc.d/init.d',
 										'/etc/rc.d/rc0.d',
@@ -76,23 +76,23 @@ public class ResourceSpec extends GrammarSpec {
 								  group  => 'root',
 								  mode   => '0755',
 								}''')
-	}
+  }
 
-	def "resource with no attributes"(){
-		expect:
-		assertThat(p).matches('::apache::mod { \'expires\': }')
-	}
+  def "resource with no attributes"() {
+    expect:
+    assertThat(p).matches('::apache::mod { \'expires\': }')
+  }
 
-	def "resource with unless attribute"(){
-		expect:
-		assertThat(p).matches('''exec { 'titi':
+  def "resource with unless attribute"() {
+    expect:
+    assertThat(p).matches('''exec { 'titi':
 								  unless => 'toto',
 								}''')
-	}
+  }
 
-	def "handle multiple resource bodies"(){
-		expect:
-		assertThat(p).matches('''file {
+  def "handle multiple resource bodies"() {
+    expect:
+    assertThat(p).matches('''file {
 								  '/etc/rc.d':
 									ensure => directory,
 									owner  => 'root',
@@ -111,33 +111,33 @@ public class ResourceSpec extends GrammarSpec {
 									group  => 'root',
 									mode   => '0755';
 								}''')
-	}
+  }
 
-	def "example resource defaults parses correctly"() {
-		expect:
-		assertThat(p).matches("""Exec {
+  def "example resource defaults parses correctly"() {
+    expect:
+    assertThat(p).matches("""Exec {
                                   path        => '/usr/bin:/bin:/usr/sbin:/sbin',
                                   environment => 'RUBYLIB=/opt/puppet/lib/ruby/site_ruby/1.8/',
                                   logoutput   => true,
                                   timeout     => 180,
                                 }""")
-		assertThat(p).matches("""File {
+    assertThat(p).matches("""File {
                                   owner => 'root',
                                   group => '0',
                                   mode  => '0644',
                                 }""")
 
-	}
+  }
 
-	@Unroll
-	def "resource names parse"(){
-		given:
-		setRootRule(RESOURCE_NAME)
+  @Unroll
+  def "resource names parse"() {
+    given:
+    setRootRule(RESOURCE_NAME)
 
-		expect:
-		assertThat(p).matches(name)
+    expect:
+    assertThat(p).matches(name)
 
-		where:
-		name << ["'dav_svn'", '"dav_svn"' ]
-	}
+    where:
+    name << ["'dav_svn'", '"dav_svn"']
+  }
 }

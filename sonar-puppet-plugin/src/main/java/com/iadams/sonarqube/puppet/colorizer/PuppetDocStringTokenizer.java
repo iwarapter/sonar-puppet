@@ -28,7 +28,7 @@ import org.sonar.colorizer.MultilinesDocTokenizer;
 
 public class PuppetDocStringTokenizer extends MultilinesDocTokenizer {
 
-    public PuppetDocStringTokenizer(String tagBefore, String tagAfter) {
-        super("\"\"\"", "\"\"\"", tagBefore, tagAfter);
-    }
+  public PuppetDocStringTokenizer(String tagBefore, String tagAfter) {
+    super("\"\"\"", "\"\"\"", tagBefore, tagAfter);
+  }
 }

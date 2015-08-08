@@ -31,20 +31,20 @@ import static org.sonar.sslr.tests.Assertions.assertThat
 
 class ResourceOverrideSpec extends GrammarSpec {
 
-	def setup(){
-		setRootRule(RESOURCE_OVERRIDE)
-	}
+  def setup() {
+    setRootRule(RESOURCE_OVERRIDE)
+  }
 
-	def "example resource references parses correctly"() {
-		expect:
-		assertThat(p).matches('''File['logrotate.conf'] {
+  def "example resource references parses correctly"() {
+    expect:
+    assertThat(p).matches('''File['logrotate.conf'] {
 								  content => template('logrotate/spec.erb'),
 								}''')
 
-		assertThat(p).matches('''File['/etc/passwd'] {
+    assertThat(p).matches('''File['/etc/passwd'] {
 								  owner => 'root',
 								  group => 'root',
 								  mode  => '0640',
 								}''')
-	}
+  }
 }

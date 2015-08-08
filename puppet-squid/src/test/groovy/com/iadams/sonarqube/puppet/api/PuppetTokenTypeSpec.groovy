@@ -28,13 +28,13 @@ import spock.lang.Specification
 import com.sonar.sslr.api.AstNode
 
 class PuppetTokenTypeSpec extends Specification {
-    def "test all token exist"(){
-        expect:
-        AstNode astNode = Mock(AstNode)
-        for(PuppetTokenType tokenType : PuppetTokenType.values()){
-            tokenType.getName() == tokenType.name
-            tokenType.getValue() == tokenType.name
-            tokenType.hasToBeSkippedFromAst(astNode) == false
-        }
+  def "test all token exist"() {
+    expect:
+    AstNode astNode = Mock(AstNode)
+    for (PuppetTokenType tokenType : PuppetTokenType.values()) {
+      tokenType.getName() == tokenType.name
+      tokenType.getValue() == tokenType.name
+      tokenType.hasToBeSkippedFromAst(astNode) == false
     }
+  }
 }

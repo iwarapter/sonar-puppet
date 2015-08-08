@@ -40,41 +40,41 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 
 @Rule(
-		key = "EmptyLineEndOfFile",
-		name = "Files should contain an empty new line at the end",
-		priority = Priority.MINOR,
-		tags = {Tags.CONVENTION})
+  key = "EmptyLineEndOfFile",
+  name = "Files should contain an empty new line at the end",
+  priority = Priority.MINOR,
+  tags = {Tags.CONVENTION})
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("1min")
 @ActivatedByDefault
 public class MissingNewLineAtEndOfFileCheck extends SquidCheck<LexerlessGrammar> {
 
-	@Override
-	public void visitFile(AstNode astNode) {
-		RandomAccessFile randomAccessFile = null;
-		try {
-			randomAccessFile = new RandomAccessFile(getContext().getFile(), "r");
-			if (!endsWithNewline(randomAccessFile)) {
-				getContext().createFileViolation(this, "Add an empty new line at the end of this file.");
-			}
-		} catch (IOException e) {
-			throw new SonarException(e);
-		} finally {
-			Closeables.closeQuietly(randomAccessFile);
-		}
-	}
+  @Override
+  public void visitFile(AstNode astNode) {
+    RandomAccessFile randomAccessFile = null;
+    try {
+      randomAccessFile = new RandomAccessFile(getContext().getFile(), "r");
+      if (!endsWithNewline(randomAccessFile)) {
+        getContext().createFileViolation(this, "Add an empty new line at the end of this file.");
+      }
+    } catch (IOException e) {
+      throw new SonarException(e);
+    } finally {
+      Closeables.closeQuietly(randomAccessFile);
+    }
+  }
 
-	private static boolean endsWithNewline(RandomAccessFile randomAccessFile) throws IOException {
-		if (randomAccessFile.length() < 1) {
-			return false;
-		}
-		randomAccessFile.seek(randomAccessFile.length() - 1);
-		byte[] chars = new byte[1];
-		if (randomAccessFile.read(chars) < 1) {
-			return false;
-		}
-		String ch = new String(chars);
-		return "\n".equals(ch) || "\r".equals(ch);
-	}
+  private static boolean endsWithNewline(RandomAccessFile randomAccessFile) throws IOException {
+    if (randomAccessFile.length() < 1) {
+      return false;
+    }
+    randomAccessFile.seek(randomAccessFile.length() - 1);
+    byte[] chars = new byte[1];
+    if (randomAccessFile.read(chars) < 1) {
+      return false;
+    }
+    String ch = new String(chars);
+    return "\n".equals(ch) || "\r".equals(ch);
+  }
 
 }

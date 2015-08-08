@@ -29,33 +29,33 @@ import spock.lang.Specification;
 
 public class PuppetConfigurationModelSpec extends Specification {
 
-	def "get configuration charset"(){
-		given:
-		PuppetConfigurationModel model = new PuppetConfigurationModel()
+  def "get configuration charset"() {
+    given:
+    PuppetConfigurationModel model = new PuppetConfigurationModel()
 
-		when:
-		model.charsetProperty.setValue("UTF-8")
+    when:
+    model.charsetProperty.setValue("UTF-8")
 
-		then:
-		model.getCharset().equals(Charsets.UTF_8)
-		model.getConfiuration().getCharset().equals(Charsets.UTF_8)
+    then:
+    model.getCharset().equals(Charsets.UTF_8)
+    model.getConfiuration().getCharset().equals(Charsets.UTF_8)
 
-		when:
-		model.charsetProperty.setValue("ISO-8859-1")
+    when:
+    model.charsetProperty.setValue("ISO-8859-1")
 
-		then:
-		model.getCharset().equals(Charsets.ISO_8859_1)
-		model.getConfiuration().getCharset().equals(Charsets.ISO_8859_1)
-	}
+    then:
+    model.getCharset().equals(Charsets.ISO_8859_1)
+    model.getConfiuration().getCharset().equals(Charsets.ISO_8859_1)
+  }
 
-	def "get property or default value with property set"(){
-		given:
-		String oldValue = System.getProperty('foo')
+  def "get property or default value with property set"() {
+    given:
+    String oldValue = System.getProperty('foo')
 
-		when:
-		System.setProperty('foo', 'bar')
+    when:
+    System.setProperty('foo', 'bar')
 
-		then:
-		PuppetConfigurationModel.getPropertyOrDefaultValue('foo', 'baz').equals('bar')
-	}
+    then:
+    PuppetConfigurationModel.getPropertyOrDefaultValue('foo', 'baz').equals('bar')
+  }
 }

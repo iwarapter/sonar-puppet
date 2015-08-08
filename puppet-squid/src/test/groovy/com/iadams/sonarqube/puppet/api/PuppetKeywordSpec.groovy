@@ -27,9 +27,9 @@ package com.iadams.sonarqube.puppet.api
 import spock.lang.Specification
 
 class PuppetKeywordSpec extends Specification {
-    def "KeywordValues"() {
-        expect:
-        PuppetKeyword.values().size() == 17
-        PuppetKeyword.keywordValues().size() == PuppetKeyword.values().size()
-    }
+  def "KeywordValues"() {
+    expect:
+    PuppetKeyword.values().size() == 17
+    PuppetKeyword.keywordValues().size() == PuppetKeyword.values().size()
+  }
 }

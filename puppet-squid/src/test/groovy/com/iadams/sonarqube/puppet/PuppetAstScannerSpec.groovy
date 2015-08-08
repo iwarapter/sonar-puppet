@@ -37,54 +37,54 @@ import spock.lang.Specification
 
 class PuppetAstScannerSpec extends Specification {
 
-	def "files"() {
-		given:
-		AstScanner<Grammar> scanner = PuppetAstScanner.create(new PuppetConfiguration(Charsets.UTF_8))
-		scanner.scanFiles(ImmutableList.of(new File("src/test/resources/metrics/lines_of_code.pp"), new File("src/test/resources/metrics/comments.pp")))
-		SourceProject project = (SourceProject) scanner.getIndex().search(new QueryByType(SourceProject.class)).iterator().next()
+  def "files"() {
+    given:
+    AstScanner<Grammar> scanner = PuppetAstScanner.create(new PuppetConfiguration(Charsets.UTF_8))
+    scanner.scanFiles(ImmutableList.of(new File("src/test/resources/metrics/lines_of_code.pp"), new File("src/test/resources/metrics/comments.pp")))
+    SourceProject project = (SourceProject) scanner.getIndex().search(new QueryByType(SourceProject.class)).iterator().next()
 
-		expect:
-		project.getInt(PuppetMetric.FILES) == 2
-	}
+    expect:
+    project.getInt(PuppetMetric.FILES) == 2
+  }
 
-	def "comments"() {
-		given:
-		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/metrics/comments.pp"))
+  def "comments"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/metrics/comments.pp"))
 
-		expect:
-		file.getInt(PuppetMetric.COMMENT_LINES) == 1
-		file.getNoSonarTagLines().contains(3)
-	}
+    expect:
+    file.getInt(PuppetMetric.COMMENT_LINES) == 1
+    file.getNoSonarTagLines().contains(3)
+  }
 
-	def "lines"() {
-		given:
-		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/metrics/lines.pp"))
+  def "lines"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/metrics/lines.pp"))
 
-		expect:
-		file.getInt(PuppetMetric.LINES) == 5
-	}
+    expect:
+    file.getInt(PuppetMetric.LINES) == 5
+  }
 
-	def "lines of code"(){
-		given:
-		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/metrics/lines_of_code.pp"))
+  def "lines of code"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/metrics/lines_of_code.pp"))
 
-		expect:
-		file.getInt(PuppetMetric.LINES_OF_CODE) == 6
-	}
+    expect:
+    file.getInt(PuppetMetric.LINES_OF_CODE) == 6
+  }
 
-	def "resources"() {
-		given:
-		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/metrics/resources.pp"));
+  def "resources"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/metrics/resources.pp"));
 
-		expect:
-		file.getInt(PuppetMetric.RESOURCES) == 2
-	}
+    expect:
+    file.getInt(PuppetMetric.RESOURCES) == 2
+  }
 
-	def "classes"() {
-		given:
-		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/metrics/classes.pp"));
+  def "classes"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/metrics/classes.pp"));
 
-		expect:
-		file.getInt(PuppetMetric.CLASSES) == 1
-	}
+    expect:
+    file.getInt(PuppetMetric.CLASSES) == 1
+  }
 }

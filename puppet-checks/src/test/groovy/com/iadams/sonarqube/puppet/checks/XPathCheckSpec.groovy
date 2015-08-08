@@ -31,29 +31,29 @@ import spock.lang.Specification
 
 class XPathCheckSpec extends Specification {
 
-	private XPathCheck check = new XPathCheck()
+  private XPathCheck check = new XPathCheck()
 
-	def "can create custom checks"(){
-		given:
-		check.xpathQuery = "//RESOURCE"
-		check.message = "Avoid resources :D"
+  def "can create custom checks"() {
+    given:
+    check.xpathQuery = "//RESOURCE"
+    check.message = "Avoid resources :D"
 
-		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/xPath.pp"), check);
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/xPath.pp"), check);
 
-		expect:
-		CheckMessagesVerifier.verify(file.getCheckMessages())
-				.next().atLine(1).withMessage("Avoid resources :D")
-				.noMore();
-	}
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(1).withMessage("Avoid resources :D")
+      .noMore();
+  }
 
-	def "parsing error"(){
-		given:
-		check.xpathQuery = "//RESOURCE"
+  def "parsing error"() {
+    given:
+    check.xpathQuery = "//RESOURCE"
 
-		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/parsingError.pp"), check);
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/parsingError.pp"), check);
 
-		expect:
-		CheckMessagesVerifier.verify(file.getCheckMessages())
-				.noMore();
-	}
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .noMore();
+  }
 }

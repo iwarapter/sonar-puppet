@@ -30,31 +30,33 @@ import spock.lang.Unroll
 
 class CheckListSpec extends Specification {
 
-	def "each check is defined in list"(){
-		given:
-		def count = new File('src/main/java/com/iadams/sonarqube/puppet/checks/').listFiles().count{ it.name.endsWith('Check.java') }
+  def "each check is defined in list"() {
+    given:
+    def count = new File('src/main/java/com/iadams/sonarqube/puppet/checks/').listFiles().count {
+      it.name.endsWith('Check.java')
+    }
 
-		expect:
-		count == CheckList.getChecks().size()
-	}
+    expect:
+    count == CheckList.getChecks().size()
+  }
 
-	@Unroll
-	def "Check #check.getSimpleName() has test"(){
-		expect:
-		String testName = '/' + check.getName().replace('.', '/') + "Spec.class";
-		assert getClass().getResource(testName)
+  @Unroll
+  def "Check #check.getSimpleName() has test"() {
+    expect:
+    String testName = '/' + check.getName().replace('.', '/') + "Spec.class";
+    assert getClass().getResource(testName)
 
-		where:
-		check << CheckList.getChecks();
-	}
+    where:
+    check << CheckList.getChecks();
+  }
 
-	@Unroll
-	def "Check #rule.getKey() has description"(){
-		expect:
-		getClass().getResource("/org/sonar/l10n/pp/rules/puppet/" + rule.getKey() + ".html")
-		!rule.getDescription()
+  @Unroll
+  def "Check #rule.getKey() has description"() {
+    expect:
+    getClass().getResource("/org/sonar/l10n/pp/rules/puppet/" + rule.getKey() + ".html")
+    !rule.getDescription()
 
-		where:
-		rule << new AnnotationRuleParser().parse("repositoryKey", CheckList.checks);
-	}
+    where:
+    rule << new AnnotationRuleParser().parse("repositoryKey", CheckList.checks);
+  }
 }

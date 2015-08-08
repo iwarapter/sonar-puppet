@@ -40,40 +40,40 @@ import java.util.List;
 
 public class PuppetPlugin extends SonarPlugin {
 
-    public static final String FILE_SUFFIXES_KEY = "sonar.puppet.file.suffixes";
+  public static final String FILE_SUFFIXES_KEY = "sonar.puppet.file.suffixes";
 
-    public List getExtensions() {
-        return ImmutableList.of(
+  public List getExtensions() {
+    return ImmutableList.of(
 
-                PropertyDefinition.builder(FILE_SUFFIXES_KEY)
-                        .name("File Suffixes")
-                        .description("Comma-separated list of suffixes of Puppet files to analyze.")
-                        .category("Puppet")
-                        .onQualifiers(Qualifiers.PROJECT)
-                        .defaultValue("pp")
-                        .build(),
+      PropertyDefinition.builder(FILE_SUFFIXES_KEY)
+        .name("File Suffixes")
+        .description("Comma-separated list of suffixes of Puppet files to analyze.")
+        .category("Puppet")
+        .onQualifiers(Qualifiers.PROJECT)
+        .defaultValue("pp")
+        .build(),
 
-                Puppet.class,
-                PuppetColorizer.class,
-                PuppetCpdMapping.class,
+      Puppet.class,
+      PuppetColorizer.class,
+      PuppetCpdMapping.class,
 
-                PuppetProfile.class,
+      PuppetProfile.class,
 
-                PuppetSquidSensor.class,
-                PuppetRuleRepository.class,
+      PuppetSquidSensor.class,
+      PuppetRuleRepository.class,
 
-                PuppetLanguageMetrics.class,
-                PuppetResouresDecorator.class,
+      PuppetLanguageMetrics.class,
+      PuppetResouresDecorator.class,
 
-                PuppetCommonRulesEngine.class,
+      PuppetCommonRulesEngine.class,
 
-                //UI
-                PuppetResourcesWidget.class,
+      // UI
+      PuppetResourcesWidget.class,
 
-                //Puppet Lint
-                PplintConfiguration.class,
-                PplintSensor.class,
-                PplintRuleRepository.class,
-                PuppetLintProfile.class);
-    }
+      // Puppet Lint
+      PplintConfiguration.class,
+      PplintSensor.class,
+      PplintRuleRepository.class,
+      PuppetLintProfile.class);
+  }
 }

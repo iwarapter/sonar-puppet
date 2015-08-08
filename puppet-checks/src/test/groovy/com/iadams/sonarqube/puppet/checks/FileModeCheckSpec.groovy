@@ -31,29 +31,29 @@ import spock.lang.Specification
 
 class FileModeCheckSpec extends Specification {
 
-    private static final String MESSAGE_OCTAL = "Set the file mode to a 4-digit octal value surrounded by single quotes.";
-    private static final String MESSAGE_DOUBLE_QUOTES = "Replace double quotes by single quotes.";
-    private static final String MESSAGE_INVALID = "Update the file mode to a valid value surrounded by single quotes.";
+  private static final String MESSAGE_OCTAL = "Set the file mode to a 4-digit octal value surrounded by single quotes.";
+  private static final String MESSAGE_DOUBLE_QUOTES = "Replace double quotes by single quotes.";
+  private static final String MESSAGE_INVALID = "Update the file mode to a valid value surrounded by single quotes.";
 
-    def "validate check"() {
-        given:
-        final FileModeCheck check = new FileModeCheck();
-        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/file_mode.pp"), check);
+  def "validate check"() {
+    given:
+    final FileModeCheck check = new FileModeCheck();
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/file_mode.pp"), check);
 
-        expect:
-        CheckMessagesVerifier.verify(file.getCheckMessages())
-                .next().atLine(2).withMessage(MESSAGE_INVALID)
-                .next().atLine(22).withMessage(MESSAGE_INVALID)
-                .next().atLine(32).withMessage(MESSAGE_INVALID)
-                .next().atLine(44).withMessage(MESSAGE_INVALID)
-                .next().atLine(52).withMessage(MESSAGE_OCTAL)
-                .next().atLine(56).withMessage(MESSAGE_OCTAL)
-                .next().atLine(60).withMessage(MESSAGE_OCTAL)
-                .next().atLine(64).withMessage(MESSAGE_OCTAL)
-                .next().atLine(68).withMessage(MESSAGE_DOUBLE_QUOTES)
-                .next().atLine(72).withMessage(MESSAGE_INVALID)
-                .next().atLine(76).withMessage(MESSAGE_DOUBLE_QUOTES)
-                .next().atLine(80).withMessage(MESSAGE_INVALID)
-                .noMore();
-    }
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(2).withMessage(MESSAGE_INVALID)
+      .next().atLine(22).withMessage(MESSAGE_INVALID)
+      .next().atLine(32).withMessage(MESSAGE_INVALID)
+      .next().atLine(44).withMessage(MESSAGE_INVALID)
+      .next().atLine(52).withMessage(MESSAGE_OCTAL)
+      .next().atLine(56).withMessage(MESSAGE_OCTAL)
+      .next().atLine(60).withMessage(MESSAGE_OCTAL)
+      .next().atLine(64).withMessage(MESSAGE_OCTAL)
+      .next().atLine(68).withMessage(MESSAGE_DOUBLE_QUOTES)
+      .next().atLine(72).withMessage(MESSAGE_INVALID)
+      .next().atLine(76).withMessage(MESSAGE_DOUBLE_QUOTES)
+      .next().atLine(80).withMessage(MESSAGE_INVALID)
+      .noMore();
+  }
 }

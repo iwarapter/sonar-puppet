@@ -43,70 +43,70 @@ import spock.lang.Specification
 
 class PuppetSquidSensorSpec extends Specification {
 
-	private PuppetSquidSensor sensor
-	private DefaultFileSystem fs = new DefaultFileSystem()
-	ResourcePerspectives perspectives
+  private PuppetSquidSensor sensor
+  private DefaultFileSystem fs = new DefaultFileSystem()
+  ResourcePerspectives perspectives
 
-	def setup() {
-		FileLinesContextFactory fileLinesContextFactory = Mock()
-		FileLinesContext fileLinesContext = Mock()
+  def setup() {
+    FileLinesContextFactory fileLinesContextFactory = Mock()
+    FileLinesContext fileLinesContext = Mock()
 
-		fileLinesContextFactory.createFor(_ as InputFile) >> fileLinesContext
-		ActiveRules activeRules = (new ActiveRulesBuilder())
-				.create(RuleKey.of(CheckList.REPOSITORY_KEY, "LineLength"))
-				.setName("Lines should not be too long")
-				.activate()
-				.build();
-		CheckFactory checkFactory = new CheckFactory(activeRules)
-		perspectives = Mock()
-		sensor = new PuppetSquidSensor( fileLinesContextFactory, fs, perspectives, checkFactory)
-	}
+    fileLinesContextFactory.createFor(_ as InputFile) >> fileLinesContext
+    ActiveRules activeRules = (new ActiveRulesBuilder())
+      .create(RuleKey.of(CheckList.REPOSITORY_KEY, "LineLength"))
+      .setName("Lines should not be too long")
+      .activate()
+      .build();
+    CheckFactory checkFactory = new CheckFactory(activeRules)
+    perspectives = Mock()
+    sensor = new PuppetSquidSensor(fileLinesContextFactory, fs, perspectives, checkFactory)
+  }
 
-	def "should execute on puppet project"() {
-		when:
-		Project project = Mock()
+  def "should execute on puppet project"() {
+    when:
+    Project project = Mock()
 
-		then:
-		sensor.toString() == "PuppetSquidSensor"
-		sensor.shouldExecuteOnProject(project) == false
+    then:
+    sensor.toString() == "PuppetSquidSensor"
+    sensor.shouldExecuteOnProject(project) == false
 
-		when:
-		fs.add(new DefaultInputFile("test.pp").setLanguage(Puppet.KEY))
+    when:
+    fs.add(new DefaultInputFile("test.pp").setLanguage(Puppet.KEY))
 
-		then:
-		sensor.shouldExecuteOnProject(project) == true
-	}
+    then:
+    sensor.shouldExecuteOnProject(project) == true
+  }
 
-	def "should_analyse"() {
-		given:
-		String relativePath = "src/test/resources/com/iadams/sonarqube/puppet/code_chunks.pp"
-		DefaultInputFile inputFile = new DefaultInputFile(relativePath).setLanguage(Puppet.KEY)
-		inputFile.setAbsolutePath((new File(relativePath)).getAbsolutePath())
-		fs.add(inputFile)
+  def "should_analyse"() {
+    given:
+    String relativePath = "src/test/resources/com/iadams/sonarqube/puppet/code_chunks.pp"
+    DefaultInputFile inputFile = new DefaultInputFile(relativePath).setLanguage(Puppet.KEY)
+    inputFile.setAbsolutePath((new File(relativePath)).getAbsolutePath())
+    fs.add(inputFile)
 
-		Issuable issuable = Mock()
-		Issuable.IssueBuilder issueBuilder = Mock()
-		perspectives.as(_, _) >> issuable
-		issuable.newIssueBuilder() >> issueBuilder
-		issueBuilder.ruleKey(_)  >> issueBuilder
-		issueBuilder.line(_) >> issueBuilder
-		issueBuilder.message(_) >> issueBuilder
+    Issuable issuable = Mock()
+    Issuable.IssueBuilder issueBuilder = Mock()
+    perspectives.as(_, _) >> issuable
+    issuable.newIssueBuilder() >> issueBuilder
+    issueBuilder.ruleKey(_) >> issueBuilder
+    issueBuilder.line(_) >> issueBuilder
+    issueBuilder.message(_) >> issueBuilder
 
-		Project project = new Project("key")
-		SensorContext context = Mock()
+    Project project = new Project("key")
+    SensorContext context = Mock()
 
-		when:
-		sensor.analyse(project, context)
+    when:
+    sensor.analyse(project, context)
 
-		then:
-		1 * context.saveMeasure(_, CoreMetrics.FILES, 1.0)
-		//1 * context.saveMeasure(_, CoreMetrics.LINES, 1.0)
-		/*verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.NCLOC), Mockito.eq(25.0));
-		verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.STATEMENTS), Mockito.eq(23.0));
-		verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.FUNCTIONS), Mockito.eq(4.0));
-		verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.COMPLEXITY), Mockito.eq(4.0));*/
-		1 * context.saveMeasure(_, CoreMetrics.CLASSES, 2.0)
-		1 * context.saveMeasure(_, CoreMetrics.COMMENT_LINES, 2.0)
+    then:
+    1 * context.saveMeasure(_, CoreMetrics.FILES, 1.0)
+    //1 * context.saveMeasure(_, CoreMetrics.LINES, 1.0)
+    /*verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.NCLOC), Mockito.eq(25.0));
+    verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.STATEMENTS), Mockito.eq(23.0));
+    verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.FUNCTIONS), Mockito.eq(4.0));
+    verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.COMPLEXITY), Mockito.eq(4.0));*/
+    1 * context.saveMeasure(_, CoreMetrics.CLASSES, 2.0)
+    1 * context.saveMeasure(_, CoreMetrics.COMMENT_LINES, 2.0)
 
-	}
+  }
 }

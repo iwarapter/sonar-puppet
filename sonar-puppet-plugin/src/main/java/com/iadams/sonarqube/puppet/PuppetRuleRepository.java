@@ -30,14 +30,14 @@ import org.sonar.squidbridge.annotations.AnnotationBasedRulesDefinition;
 
 public class PuppetRuleRepository implements RulesDefinition {
 
-	private static final String REPOSITORY_NAME = "SonarQube";
+  private static final String REPOSITORY_NAME = "SonarQube";
 
-	@Override
-	public void define(Context context){
-		NewRepository repository = context
-				.createRepository(CheckList.REPOSITORY_KEY, Puppet.KEY)
-				.setName(REPOSITORY_NAME);
-		AnnotationBasedRulesDefinition.load(repository, Puppet.KEY, CheckList.getChecks());
-		repository.done();
-	}
+  @Override
+  public void define(Context context) {
+    NewRepository repository = context
+      .createRepository(CheckList.REPOSITORY_KEY, Puppet.KEY)
+      .setName(REPOSITORY_NAME);
+    AnnotationBasedRulesDefinition.load(repository, Puppet.KEY, CheckList.getChecks());
+    repository.done();
+  }
 }

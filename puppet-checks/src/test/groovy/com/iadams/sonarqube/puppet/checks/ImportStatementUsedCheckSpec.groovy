@@ -31,13 +31,13 @@ import spock.lang.Specification
 
 class ImportStatementUsedCheckSpec extends Specification {
 
-    def "check files do not contain import statement"() {
-        given:
-        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/import.pp"), new ImportStatementUsedCheck());
+  def "check files do not contain import statement"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/import.pp"), new ImportStatementUsedCheck());
 
-        expect:
-        CheckMessagesVerifier.verify(file.getCheckMessages())
-                .next().atLine(2).withMessage("Remove this usage of the deprecated \"import\" statement.")
-                .noMore();
-    }
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(2).withMessage("Remove this usage of the deprecated \"import\" statement.")
+      .noMore();
+  }
 }

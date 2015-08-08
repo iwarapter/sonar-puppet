@@ -33,18 +33,18 @@ import org.sonar.api.web.WidgetCategory;
 @WidgetCategory("Puppet")
 public class PuppetResourcesWidget extends AbstractRubyTemplate implements RubyRailsWidget {
 
-	@Override
-	public String getId() {
-		return "puppet_resources";
-	}
+  @Override
+  public String getId() {
+    return "puppet_resources";
+  }
 
-	@Override
-	public String getTitle() {
-		return "Puppet Resources";
-	}
+  @Override
+  public String getTitle() {
+    return "Puppet Resources";
+  }
 
-	@Override
-	protected String getTemplatePath() {
-		return "/com/iadams/sonarqube/puppet/puppet_resources_widget.html.erb";
-	}
+  @Override
+  protected String getTemplatePath() {
+    return "/com/iadams/sonarqube/puppet/puppet_resources_widget.html.erb";
+  }
 }

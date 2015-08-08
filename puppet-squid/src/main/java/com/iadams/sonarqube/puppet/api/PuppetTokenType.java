@@ -28,35 +28,35 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.TokenType;
 
 public enum PuppetTokenType implements TokenType {
-    FLOAT,
-    INTEGER,
-    HEX_INTEGER,
-    OCTAL_INTEGER,
-    REGULAR_EXPRESSION_LITERAL,
-    EMPTY,
+  FLOAT,
+  INTEGER,
+  HEX_INTEGER,
+  OCTAL_INTEGER,
+  REGULAR_EXPRESSION_LITERAL,
+  EMPTY,
 
-    DOUBLE_QUOTED_STRING_LITERAL,
-    SINGLE_QUOTED_STRING_LITERAL,
+  DOUBLE_QUOTED_STRING_LITERAL,
+  SINGLE_QUOTED_STRING_LITERAL,
 
-    //https://github.com/puppetlabs/puppet-specifications/blob/master/language/lexical_structure.md#identifiers
-    NAME,
-    REF,
-    VARIABLE,
+  // https://github.com/puppetlabs/puppet-specifications/blob/master/language/lexical_structure.md#identifiers
+  NAME,
+  REF,
+  VARIABLE,
 
-    INDENT,
-    DEDENT,
-    NEWLINE;
+  INDENT,
+  DEDENT,
+  NEWLINE;
 
-    public String getName() {
-        return name();
-    }
+  public String getName() {
+    return name();
+  }
 
-    public String getValue() {
-        return name();
-    }
+  public String getValue() {
+    return name();
+  }
 
-    public boolean hasToBeSkippedFromAst(AstNode node) {
-        return false;
-    }
+  public boolean hasToBeSkippedFromAst(AstNode node) {
+    return false;
+  }
 
 }

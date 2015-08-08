@@ -32,9 +32,9 @@ import org.sonar.sslr.grammar.GrammarRuleKey
 import spock.lang.Specification;
 
 public class GrammarSpec extends Specification {
-    protected Parser<Grammar> p = PuppetParser.create(new PuppetConfiguration(Charsets.UTF_8));
+  protected Parser<Grammar> p = PuppetParser.create(new PuppetConfiguration(Charsets.UTF_8));
 
-    protected void setRootRule(GrammarRuleKey ruleKey) {
-        p.setRootRule(p.getGrammar().rule(ruleKey));
-    }
+  protected void setRootRule(GrammarRuleKey ruleKey) {
+    p.setRootRule(p.getGrammar().rule(ruleKey));
+  }
 }
