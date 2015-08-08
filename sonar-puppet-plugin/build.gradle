@@ -38,12 +38,12 @@ sonarPackaging {
     pluginClass = 'com.iadams.sonarqube.puppet.PuppetPlugin'
     pluginName = 'Puppet'
     pluginDescription = 'Enable analysis and reporting on Puppet projects.'
-    pluginDevelopers = 'Iain Adams'
+    pluginDevelopers = 'Iain Adams and David RACODON'
     pluginLicense = 'MIT'
     pluginUrl = 'https://bitbucket.org/iwarapter/sonar-puppet'
     pluginIssueTrackerUrl = 'https://bitbucket.org/iwarapter/sonar-puppet/issues'
     organization {
-        name = 'Iain Adams'
+        name = 'Iain Adams and David RACODON'
     }
 }
 

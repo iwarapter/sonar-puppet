@@ -233,9 +233,11 @@ $foo = 'bar ${baz}'
 
       <pre>
 $foo = "bar ${baz}"
-      </pre>]]>
+      </pre>
+      <p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:SingleQuotedStringContainingVariables">SingleQuotedStringContainingVariables</a> instead.]]>
     </description>
     <priority>CRITICAL</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>quoted_booleans</key>
@@ -305,9 +307,11 @@ service { apache:
       <pre>
 service { 'apache':
   ensure => running,
-}</pre>]]>
+}</pre>
+<p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:UnquotedResourceTitle">UnquotedResourceTitle</a> instead.</p>]]>
     </description>
     <priority>MINOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>ensure_first_param</key>
@@ -596,9 +600,11 @@ class ssh::client inherits ssh { }
 
 class ssh::server inherits ssh { }
 
-class ssh::server::solaris inherits ssh::server { }</pre>]]>
+class ssh::server::solaris inherits ssh::server { }</pre>
+<p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:InheritsAcrossNamespace">InheritsAcrossNamespace</a> instead.</p>]]>
     </description>
     <priority>MINOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>variable_scope</key>
@@ -655,9 +661,11 @@ define foo($bar='baz', $gronk) { }</pre>
       <h2>Compliant Solution</h2>
 
       <pre>
-define foo($gronk, $bar='baz') { }</pre>]]>
+define foo($gronk, $bar='baz') { }</pre>
+<p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:RequiredParametersFirst">RequiredParametersFirst</a> instead.</p>]]>
     </description>
     <priority>MINOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>class_parameter_defaults</key>
@@ -739,9 +747,11 @@ class foo::bar-baz {}</pre>
       <h2>Compliant Solution</h2>
 
       <pre>
-class foo::bar_baz</pre>]]>
+class foo::bar_baz</pre>
+<p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:ClassAndDefineNamingConvention">ClassAndDefineNamingConvention</a> instead.</p>]]>
     </description>
     <priority>MAJOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>documentation</key>
@@ -767,9 +777,11 @@ define config() { }
 
 # Install and configure an NTP server
 # You should feel free to expand on this and document any parameters etc
-class ntp {}</pre>]]>
+class ntp {}</pre>
+<p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:DocumentClassesAndDefines">DocumentClassesAndDefines</a> instead.</p>]]>
     </description>
     <priority>MAJOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>unquoted_node_name</key>
@@ -792,9 +804,11 @@ node server1 {
 
       <pre>
 node 'server1' {
-}</pre>]]>
+}</pre>
+<p>This rule is deprecated. As this syntax is not valid according to the language specifications, a parsing error is raised in such a case.</p>]]>
     </description>
     <priority>MAJOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>IgnoredPuppetLintRule</key>

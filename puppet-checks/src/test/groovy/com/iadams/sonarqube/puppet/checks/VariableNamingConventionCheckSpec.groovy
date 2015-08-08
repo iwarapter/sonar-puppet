@@ -2,7 +2,7 @@
  * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Iain Adams
+ * Copyright (c) 2015 Iain Adams and David RACODON
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,8 +38,8 @@ class VariableNamingConventionCheckSpec extends Specification {
 
 		expect:
 		CheckMessagesVerifier.verify(file.getCheckMessages())
-				.next().atLine(6).withMessage("Rename variable \"Abc\" to match the regular expression: ^([a-z]|::)([a-z0-9_]|::)*\$")
-				.next().atLine(8).withMessage("Rename variable \"dEf\" to match the regular expression: ^([a-z]|::)([a-z0-9_]|::)*\$")
+				.next().atLine(6).withMessage("Rename variable \"Abc\" to match the regular expression: ^\\\$(::)?([a-z0-9_]+::)*[a-z0-9_]+\$")
+				.next().atLine(8).withMessage("Rename variable \"dEf\" to match the regular expression: ^\\\$(::)?([a-z0-9_]+::)*[a-z0-9_]+\$")
 				.noMore();
 	}
 }

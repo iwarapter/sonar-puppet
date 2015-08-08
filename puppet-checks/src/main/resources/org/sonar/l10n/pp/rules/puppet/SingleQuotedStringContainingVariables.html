@@ -1,0 +1,22 @@
+<p>Single quoted strings do not get interpolated. Thus, embedding variables in single quoted strings is useless. Strings containing variables should be surrounded with double quotes instead.</p>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+warning 'Variable ${my_var} is undefined'
+</pre>
+
+<h2>Compliant Solution</h2>
+<pre>
+warning "Variable ${my_var} is undefined"
+</pre>
+
+<h2>Notes</h2>
+If the string is to be interpolated by another tool (and not by Puppet), to avoid confusion and make it explicit, prefer:
+<pre>
+$to_be_interpolated_by_another_tool = "\${git_branch}"
+</pre>
+to
+<pre>
+$to_be_interpolated_by_another_tool = '${git_branch}'
+</pre>
+A comment in this case might also make sense to clarify the intent.

@@ -2,7 +2,7 @@
  * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Iain Adams
+ * Copyright (c) 2015 Iain Adams and David RACODON
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -135,6 +135,8 @@ public enum PuppetGrammar  implements GrammarRuleKey {
     COMPOUND_STMT,
     CLASSDEF,
     CLASSNAME,
+  CLASSNAME_OR_DEFAULT,
+  CLASS_PARENT,
     IF_STMT,
     ELSEIF_STMT,
     CASE_STMT,
@@ -236,9 +238,9 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RBRACE);
 
         b.rule(QUOTED_TEXT).is(
-                b.firstOf(
-						SINGLE_QUOTED_STRING_LITERAL,
-						DOUBLE_QUOTED_STRING_LITERAL)).skip();
+          b.firstOf(
+            SINGLE_QUOTED_STRING_LITERAL,
+            DOUBLE_QUOTED_STRING_LITERAL)).skip();
 
         b.rule(TYPE).is(REF);
 
@@ -289,12 +291,12 @@ public enum PuppetGrammar  implements GrammarRuleKey {
         b.rule(ARGUMENT_LIST).is(b.optional(b.firstOf(
 				b.sequence(LPAREN, RPAREN),
 				b.sequence(LPAREN, ARGUMENTS, END_COMMA, RPAREN)
-		)));
+		))).skip();
 
         b.rule(ARGUMENTS).is(
                 ARGUMENT,
                 b.zeroOrMore(COMMA, ARGUMENT)
-        );
+        ).skip();
 
         b.rule(ARGUMENT).is(b.firstOf(
                 b.sequence(VARIABLE, EQUALS, EXPRESSION),
@@ -362,7 +364,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 HOST_MATCH,
                 b.zeroOrMore(COMMA, HOST_MATCH),
                 b.optional(COMMA)
-        );
+        ).skip();
 
         b.rule(HOST_MATCH).is(b.firstOf(
                 SINGLE_QUOTED_STRING_LITERAL,
@@ -390,15 +392,19 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 EXPORTED_RESOURCE,
                 VIRTUAL_RESOURCE));
 
-        b.rule(CLASSDEF).is(CLASS,
-                            CLASSNAME,
-                            b.optional(ARGUMENT_LIST),
-                            b.optional(INHERITS, CLASSNAME),
-                            LBRACE,
-                            b.zeroOrMore(STATEMENT),
-                            RBRACE);
+      b.rule(CLASSDEF).is(CLASS,
+                          CLASSNAME,
+                          ARGUMENT_LIST,
+                          b.optional(CLASS_PARENT),
+                          LBRACE,
+                          b.zeroOrMore(STATEMENT),
+                          RBRACE);
 
-        b.rule(CLASSNAME).is(b.firstOf(NAME, CLASS));
+      b.rule(CLASSNAME).is(b.firstOf(NAME, CLASS));
+
+      b.rule(CLASSNAME_OR_DEFAULT).is(b.firstOf(CLASSNAME, DEFAULT));
+
+      b.rule(CLASS_PARENT).is(INHERITS, CLASSNAME_OR_DEFAULT);
 
         b.rule(IF_STMT).is(IF,
                 EXPRESSIONS,
@@ -500,7 +506,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 RIGHT_VALUE,
                 RESOURCE_REF));
 
-        b.rule(EXPRESSIONS).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION));
+        b.rule(EXPRESSIONS).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION)).skip();
 
         //https://docs.puppetlabs.com/puppet/latest/reference/lang_expressions.html#order-of-operations
 
@@ -533,7 +539,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 UNDEF,
                 ARRAY,
                 HASH
-        ));
+        )).skip();
 
 
 

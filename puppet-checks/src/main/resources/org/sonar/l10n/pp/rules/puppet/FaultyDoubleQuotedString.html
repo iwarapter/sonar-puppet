@@ -1,11 +1,12 @@
 <p>
     All strings should be enclosed in single quotes, unless they contain variables or the following characters:
     <code>"</code> (double quotes), <code>'</code> (single quote), <code>\n</code>, <code>\r</code>, <code>\t</code>.
-    Note that if the string only contains a variable, quotes should be removed.
+    Note that if the string only contains a variable, quotes should be removed. An exception though on resource titles
+    that should always be quoted even if they only contain a variable.
 </p>
 <h2>Noncompliant Code Example</h2>
 <pre>
-abc { 'foo'
+abc { 'foo':
   text1 => "abc",                # Noncompliant, no variables, no special characters => single quotes should be used
   text2 => "Dollar sign is $",   # Noncompliant, no variables, no special characters => single quotes should be used
   text3 => "$var",               # Noncompliant, variable only => quotes should be removed
@@ -14,13 +15,16 @@ abc { 'foo'
 </pre>
 <h2>Compliant Solution</h2>
 <pre>
-abc { 'foo'
+abc { 'foo':
   text1 => 'var',
   text2 => 'Dollar sign is $',
   text3 => $var,
   text4 => $var,
   text5 => "My variable is ${var}",
   text6 => "blabla\n blabla\n",
+}
+
+resource { "${title}":  # Compliant because it is a resource title
 }
 </pre>
 <h2>See</h2>
