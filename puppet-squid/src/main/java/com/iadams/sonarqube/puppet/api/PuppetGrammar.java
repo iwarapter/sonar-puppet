@@ -24,76 +24,13 @@
  */
 package com.iadams.sonarqube.puppet.api;
 
-import static com.iadams.sonarqube.puppet.api.PuppetKeyword.AND;
-import static com.iadams.sonarqube.puppet.api.PuppetKeyword.CASE;
-import static com.iadams.sonarqube.puppet.api.PuppetKeyword.CLASS;
-import static com.iadams.sonarqube.puppet.api.PuppetKeyword.DEFAULT;
-import static com.iadams.sonarqube.puppet.api.PuppetKeyword.DEFINE;
-import static com.iadams.sonarqube.puppet.api.PuppetKeyword.ELSE;
-import static com.iadams.sonarqube.puppet.api.PuppetKeyword.ELSIF;
-import static com.iadams.sonarqube.puppet.api.PuppetKeyword.FALSE;
-import static com.iadams.sonarqube.puppet.api.PuppetKeyword.IF;
-import static com.iadams.sonarqube.puppet.api.PuppetKeyword.IMPORT;
-import static com.iadams.sonarqube.puppet.api.PuppetKeyword.IN;
-import static com.iadams.sonarqube.puppet.api.PuppetKeyword.INHERITS;
-import static com.iadams.sonarqube.puppet.api.PuppetKeyword.NODE;
-import static com.iadams.sonarqube.puppet.api.PuppetKeyword.OR;
-import static com.iadams.sonarqube.puppet.api.PuppetKeyword.TRUE;
-import static com.iadams.sonarqube.puppet.api.PuppetKeyword.UNDEF;
-import static com.iadams.sonarqube.puppet.api.PuppetKeyword.UNLESS;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.AT;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.COLON;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.COMMA;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.DIV;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.EQUALS;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.FARROW;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.GREATEREQUAL;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.GREATERTHAN;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.IN_EDGE;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.IN_EDGE_SUB;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.ISEQUAL;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.LBRACE;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.LBRACK;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.LCOLLECT;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.LESSEQUAL;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.LESSTHAN;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.LLCOLLECT;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.LPAREN;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.LSHIFT;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.MATCH;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.MINUS;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.MODULO;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.MUL;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.NOMATCH;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.NOT;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.NOTEQUAL;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.OUT_EDGE;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.OUT_EDGE_SUB;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.PARROW;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.PLUS;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.QMARK;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.RBRACE;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.RBRACK;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.RCOLLECT;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.RPAREN;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.RRCOLLECT;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.RSHIFT;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.SEMIC;
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL;
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.FLOAT;
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.HEX_INTEGER;
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.INTEGER;
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.NAME;
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.NEWLINE;
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.OCTAL_INTEGER;
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.REF;
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.REGULAR_EXPRESSION_LITERAL;
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL;
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.VARIABLE;
-import static com.sonar.sslr.api.GenericTokenType.EOF;
-
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerfulGrammarBuilder;
+
+import static com.iadams.sonarqube.puppet.api.PuppetKeyword.*;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.*;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.*;
+import static com.sonar.sslr.api.GenericTokenType.EOF;
 
 public enum PuppetGrammar implements GrammarRuleKey {
 
@@ -518,10 +455,9 @@ public enum PuppetGrammar implements GrammarRuleKey {
 
     b.rule(COLLECTOR_VAL).is(b.firstOf(VARIABLE, NAME));
 
-    /**
+    /*
      * Selectors
      */
-
     b.rule(SELECTOR).is(SELECTLHAND, QMARK, SVALUES);
 
     b.rule(SVALUES).is(b.firstOf(
@@ -548,10 +484,9 @@ public enum PuppetGrammar implements GrammarRuleKey {
       ));
   }
 
-  /**
+  /*
    * Expressions
    * https://docs.puppetlabs.com/puppet/latest/reference/lang_expressions.htmls
-   * @param b
    */
   public static void expressions(LexerfulGrammarBuilder b) {
 
@@ -560,9 +495,7 @@ public enum PuppetGrammar implements GrammarRuleKey {
       HASH_ARRAY_ACCESSES,
       RIGHT_VALUE,
       HASH,
-
       // ARRAY_SECTIONING_STMT,
-      RIGHT_VALUE,
       RESOURCE_REF));
 
     b.rule(EXPRESSIONS).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION)).skip();
@@ -647,7 +580,7 @@ public enum PuppetGrammar implements GrammarRuleKey {
       VARIABLE,
       ARRAY,
       RESOURCE_REF,
-      UNDEF));
+      UNDEF)).skip();
 
     // <literals> ::= <float> | <integer> | <hex-integer> | <octal-integer> | <quoted-string>
     b.rule(LITERALS).is(b.firstOf(

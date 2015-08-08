@@ -47,6 +47,7 @@ public final class CheckList {
       DuplicatedParametersCheck.class,
       EnsureOrderingCheck.class,
       FaultyDoubleQuotedStringCheck.class,
+      FileEnsurePropertyIsValidCheck.class,
       FileModeCheck.class,
       FileNameCheck.class,
       FixmeTagPresenceCheck.class,
@@ -73,6 +74,6 @@ public final class CheckList {
       VariableNamingConventionCheck.class,
       VariableNotEnclosedInBracesCheck.class,
       XPathCheck.class
-      );
+    );
   }
 }
