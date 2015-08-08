@@ -598,9 +598,11 @@ class ssh::client inherits ssh { }
 
 class ssh::server inherits ssh { }
 
-class ssh::server::solaris inherits ssh::server { }</pre>]]>
+class ssh::server::solaris inherits ssh::server { }</pre>
+<p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:InheritsAcrossNamespace">InheritsAcrossNamespace</a> instead.</p>]]>
     </description>
     <priority>MINOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>variable_scope</key>
