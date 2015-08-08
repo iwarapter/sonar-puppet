@@ -66,7 +66,7 @@ public class FileEnsurePropertyIsValidCheck extends SquidCheck<Grammar> {
   private void checkResourceInstance(AstNode resourceNode) {
     if ("file".equals(resourceNode.getTokenValue())) {
       for (AstNode instNode : resourceNode.getChildren(PuppetGrammar.RESOURCE_INST)) {
-        for (AstNode paramNode : instNode.getChildren(PuppetGrammar.PARAM)) {
+        for (AstNode paramNode : instNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
           checkEnsureValid(paramNode);
         }
       }
@@ -75,7 +75,7 @@ public class FileEnsurePropertyIsValidCheck extends SquidCheck<Grammar> {
 
   private void checkResourceDefault(AstNode resourceNode) {
     if ("File".equals(resourceNode.getTokenValue())) {
-      for (AstNode paramNode : resourceNode.getChildren(PuppetGrammar.PARAM)) {
+      for (AstNode paramNode : resourceNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
         checkEnsureValid(paramNode);
       }
     }
@@ -83,7 +83,7 @@ public class FileEnsurePropertyIsValidCheck extends SquidCheck<Grammar> {
 
   private void checkResourceOverride(AstNode resourceOverrideNode) {
     if ("File".equals(resourceOverrideNode.getTokenValue())) {
-      for (AstNode paramNode : resourceOverrideNode.getChildren(PuppetGrammar.PARAM)) {
+      for (AstNode paramNode : resourceOverrideNode.getFirstChild(PuppetGrammar.ANY_PARAMS).getChildren(PuppetGrammar.PARAM)) {
         checkEnsureValid(paramNode);
       }
     }
