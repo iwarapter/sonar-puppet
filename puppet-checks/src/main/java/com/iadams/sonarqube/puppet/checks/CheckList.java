@@ -43,6 +43,7 @@ public final class CheckList {
       CommentRegularExpressionCheck.class,
       DocumentClassesAndDefinesCheck.class,
       DeprecatedNodeInheritanceCheck.class,
+      DuplicatedHashKeysCheck.class,
       DuplicatedParametersCheck.class,
       EnsureOrderingCheck.class,
       FaultyDoubleQuotedStringCheck.class,
