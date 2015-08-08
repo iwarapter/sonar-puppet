@@ -63,3 +63,19 @@ file { '/etc/current':
   target  => '/etc/example',
   ensure  => 'link',
 }
+
+File {
+  ensure => '/etc/rc.d/rc0.d', # Noncompliant
+}
+
+File {
+  ensure => present,
+}
+
+File['/etc/current'] {
+  ensure => '/etc/example', # Noncompliant
+}
+
+File {
+  ensure => present,
+}

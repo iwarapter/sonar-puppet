@@ -42,6 +42,8 @@ class FileEnsurePropertyIsValidCheckSpec extends Specification {
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(7).withMessage(MESSAGE)
       .next().atLine(20).withMessage(MESSAGE)
+      .next().atLine(68).withMessage(MESSAGE)
+      .next().atLine(76).withMessage(MESSAGE)
       .noMore();
   }
 }

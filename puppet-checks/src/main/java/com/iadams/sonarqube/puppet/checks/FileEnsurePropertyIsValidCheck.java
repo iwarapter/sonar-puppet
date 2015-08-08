@@ -49,16 +49,25 @@ public class FileEnsurePropertyIsValidCheck extends SquidCheck<Grammar> {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.RESOURCE);
+    subscribeTo(PuppetGrammar.RESOURCE, PuppetGrammar.RESOURCE_OVERRIDE);
   }
 
   @Override
   public void visitNode(AstNode node) {
-		if ("file".equals(node.getTokenValue())) {
-      for(AstNode inst : node.getChildren(PuppetGrammar.RESOURCE_INST)){
-        for(AstNode param : inst.getChildren(PuppetGrammar.PARAM)){
-          if(param.getTokenValue().equals("ensure")){
-            AstNode expression = param.getFirstChild().getNextSibling().getNextSibling();
+    if (node.is(PuppetGrammar.RESOURCE)) {
+      checkResourceInstance(node);
+      checkResourceDefault(node);
+    } else if (node.is(PuppetGrammar.RESOURCE_OVERRIDE)) {
+      checkResourceOverride(node);
+    }
+  }
+
+  private void checkResourceInstance(AstNode resourceNode){
+    if ("file".equals(resourceNode.getTokenValue())) {
+      for(AstNode instNode : resourceNode.getChildren(PuppetGrammar.RESOURCE_INST)){
+        for(AstNode paramNode : instNode.getChildren(PuppetGrammar.PARAM)){
+          if(paramNode.getTokenValue().equals("ensure")){
+            AstNode expression = paramNode.getFirstChild().getNextSibling().getNextSibling();
             if(CheckStringUtils.isNodeStringLiteral(expression)){
               if(!CheckStringUtils.containsOnlyVariable(expression.getTokenValue()) && !expression.getTokenValue().matches(ACCEPTED_NAMES) ) {
                 getContext().createLineViolation(this, "Remove the file reference and use link instead.", expression, expression.getTokenValue());
@@ -67,6 +76,36 @@ public class FileEnsurePropertyIsValidCheck extends SquidCheck<Grammar> {
           }
         }
       }
-		}
+    }
+  }
+
+  private void checkResourceDefault(AstNode resourceNode) {
+    if ("File".equals(resourceNode.getTokenValue())) {
+      for (AstNode paramNode : resourceNode.getChildren(PuppetGrammar.PARAM)) {
+        if(paramNode.getTokenValue().equals("ensure")){
+          AstNode expression = paramNode.getFirstChild().getNextSibling().getNextSibling();
+          if(CheckStringUtils.isNodeStringLiteral(expression)){
+            if(!CheckStringUtils.containsOnlyVariable(expression.getTokenValue()) && !expression.getTokenValue().matches(ACCEPTED_NAMES) ) {
+              getContext().createLineViolation(this, "Remove the file reference and use link instead.", expression, expression.getTokenValue());
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private void checkResourceOverride(AstNode resourceOverrideNode) {
+    if ("File".equals(resourceOverrideNode.getTokenValue())) {
+      for (AstNode paramNode : resourceOverrideNode.getChildren(PuppetGrammar.PARAM)) {
+        if(paramNode.getTokenValue().equals("ensure")){
+          AstNode expression = paramNode.getFirstChild().getNextSibling().getNextSibling();
+          if(CheckStringUtils.isNodeStringLiteral(expression)){
+            if(!CheckStringUtils.containsOnlyVariable(expression.getTokenValue()) && !expression.getTokenValue().matches(ACCEPTED_NAMES) ) {
+              getContext().createLineViolation(this, "Remove the file reference and use link instead.", expression, expression.getTokenValue());
+            }
+          }
+        }
+      }
+    }
   }
 }
