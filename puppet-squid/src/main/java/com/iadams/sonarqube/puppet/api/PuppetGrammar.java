@@ -24,15 +24,76 @@
  */
 package com.iadams.sonarqube.puppet.api;
 
-import org.sonar.sslr.grammar.GrammarRuleKey;
-import org.sonar.sslr.grammar.LexerfulGrammarBuilder;
-
-import static com.iadams.sonarqube.puppet.api.PuppetKeyword.*;
-import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.*;
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.*;
+import static com.iadams.sonarqube.puppet.api.PuppetKeyword.AND;
+import static com.iadams.sonarqube.puppet.api.PuppetKeyword.CASE;
+import static com.iadams.sonarqube.puppet.api.PuppetKeyword.CLASS;
+import static com.iadams.sonarqube.puppet.api.PuppetKeyword.DEFAULT;
+import static com.iadams.sonarqube.puppet.api.PuppetKeyword.DEFINE;
+import static com.iadams.sonarqube.puppet.api.PuppetKeyword.ELSE;
+import static com.iadams.sonarqube.puppet.api.PuppetKeyword.ELSIF;
+import static com.iadams.sonarqube.puppet.api.PuppetKeyword.FALSE;
+import static com.iadams.sonarqube.puppet.api.PuppetKeyword.IF;
+import static com.iadams.sonarqube.puppet.api.PuppetKeyword.IMPORT;
+import static com.iadams.sonarqube.puppet.api.PuppetKeyword.IN;
+import static com.iadams.sonarqube.puppet.api.PuppetKeyword.INHERITS;
+import static com.iadams.sonarqube.puppet.api.PuppetKeyword.NODE;
+import static com.iadams.sonarqube.puppet.api.PuppetKeyword.OR;
+import static com.iadams.sonarqube.puppet.api.PuppetKeyword.TRUE;
+import static com.iadams.sonarqube.puppet.api.PuppetKeyword.UNDEF;
+import static com.iadams.sonarqube.puppet.api.PuppetKeyword.UNLESS;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.AT;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.COLON;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.COMMA;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.DIV;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.EQUALS;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.FARROW;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.GREATEREQUAL;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.GREATERTHAN;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.IN_EDGE;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.IN_EDGE_SUB;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.ISEQUAL;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.LBRACE;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.LBRACK;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.LCOLLECT;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.LESSEQUAL;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.LESSTHAN;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.LLCOLLECT;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.LPAREN;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.LSHIFT;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.MATCH;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.MINUS;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.MODULO;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.MUL;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.NOMATCH;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.NOT;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.NOTEQUAL;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.OUT_EDGE;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.OUT_EDGE_SUB;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.PARROW;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.PLUS;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.QMARK;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.RBRACE;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.RBRACK;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.RCOLLECT;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.RPAREN;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.RRCOLLECT;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.RSHIFT;
+import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.SEMIC;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.FLOAT;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.HEX_INTEGER;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.INTEGER;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.NAME;
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.NEWLINE;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.OCTAL_INTEGER;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.REF;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.REGULAR_EXPRESSION_LITERAL;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL;
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.VARIABLE;
 import static com.sonar.sslr.api.GenericTokenType.EOF;
+
+import org.sonar.sslr.grammar.GrammarRuleKey;
+import org.sonar.sslr.grammar.LexerfulGrammarBuilder;
 
 public enum PuppetGrammar implements GrammarRuleKey {
 
@@ -134,6 +195,8 @@ public enum PuppetGrammar implements GrammarRuleKey {
   COMPOUND_STMT,
   CLASSDEF,
   CLASSNAME,
+  CLASSNAME_OR_DEFAULT,
+  CLASS_PARENT,
   IF_STMT,
   ELSEIF_STMT,
   CASE_STMT,
@@ -288,12 +351,12 @@ public enum PuppetGrammar implements GrammarRuleKey {
     b.rule(ARGUMENT_LIST).is(b.optional(b.firstOf(
       b.sequence(LPAREN, RPAREN),
       b.sequence(LPAREN, ARGUMENTS, END_COMMA, RPAREN)
-      )));
+      ))).skip();
 
     b.rule(ARGUMENTS).is(
       ARGUMENT,
       b.zeroOrMore(COMMA, ARGUMENT)
-      );
+      ).skip();
 
     b.rule(ARGUMENT).is(b.firstOf(
       b.sequence(VARIABLE, EQUALS, EXPRESSION),
@@ -390,13 +453,17 @@ public enum PuppetGrammar implements GrammarRuleKey {
 
     b.rule(CLASSDEF).is(CLASS,
       CLASSNAME,
-      b.optional(ARGUMENT_LIST),
-      b.optional(INHERITS, CLASSNAME),
+      ARGUMENT_LIST,
+      b.optional(CLASS_PARENT),
       LBRACE,
       b.zeroOrMore(STATEMENT),
       RBRACE);
 
     b.rule(CLASSNAME).is(b.firstOf(NAME, CLASS));
+
+    b.rule(CLASSNAME_OR_DEFAULT).is(b.firstOf(CLASSNAME, DEFAULT));
+
+    b.rule(CLASS_PARENT).is(INHERITS, CLASSNAME_OR_DEFAULT);
 
     b.rule(IF_STMT).is(IF,
       EXPRESSIONS,
