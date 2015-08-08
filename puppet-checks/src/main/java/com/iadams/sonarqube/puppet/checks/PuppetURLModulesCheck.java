@@ -87,7 +87,7 @@ public class PuppetURLModulesCheck extends SquidCheck<LexerlessGrammar> {
 
   private void checkResourceOverride(AstNode resourceOverrideNode) {
     if ("File".equals(resourceOverrideNode.getTokenValue())) {
-      for (AstNode paramNode : resourceOverrideNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
+      for (AstNode paramNode : resourceOverrideNode.getFirstChild(PuppetGrammar.ANY_PARAMS).getChildren(PuppetGrammar.PARAM, PuppetGrammar.ADD_PARAM)) {
         if ("source".equals(paramNode.getTokenValue())) {
           checkSourcePath(paramNode.getFirstChild(PuppetGrammar.EXPRESSION));
         }
