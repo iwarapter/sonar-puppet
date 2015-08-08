@@ -20,3 +20,46 @@ file {
     ensure => '/etc/rc.d/rc0.d', # Noncompliant
     mode   => '0755';
 }
+
+file { '/etc/example':
+  ensure  => directory,
+}
+
+file { '/etc/example':
+  ensure  => absent,
+}
+
+file { '/etc/example':
+  ensure  => false,
+}
+
+file { '/etc/example':
+  ensure  => file,
+}
+
+file { '/etc/current':
+  target  => '/etc/example',
+  ensure  => link,
+}
+
+
+file { '/etc/example':
+  ensure  => 'directory',
+}
+
+file { '/etc/example':
+  ensure  => 'absent',
+}
+
+file { '/etc/example':
+  ensure  => 'false',
+}
+
+file { '/etc/example':
+  ensure  => 'file',
+}
+
+file { '/etc/current':
+  target  => '/etc/example',
+  ensure  => 'link',
+}

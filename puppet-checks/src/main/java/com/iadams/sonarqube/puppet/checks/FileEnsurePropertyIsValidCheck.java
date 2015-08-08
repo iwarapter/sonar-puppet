@@ -45,6 +45,8 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @SqaleConstantRemediation("10min")
 public class FileEnsurePropertyIsValidCheck extends SquidCheck<Grammar> {
 
+  private static final String ACCEPTED_NAMES = "('|\")?(present|absent|false|file|directory|link)('|\")?";
+
   @Override
   public void init() {
     subscribeTo(PuppetGrammar.RESOURCE);
@@ -58,7 +60,9 @@ public class FileEnsurePropertyIsValidCheck extends SquidCheck<Grammar> {
           if(param.getTokenValue().equals("ensure")){
             AstNode expression = param.getFirstChild().getNextSibling().getNextSibling();
             if(CheckStringUtils.isNodeStringLiteral(expression)){
-              getContext().createLineViolation(this, "Remove the file reference and use link instead.", expression, expression.getTokenValue());
+              if(!CheckStringUtils.containsOnlyVariable(expression.getTokenValue()) && !expression.getTokenValue().matches(ACCEPTED_NAMES) ) {
+                getContext().createLineViolation(this, "Remove the file reference and use link instead.", expression, expression.getTokenValue());
+              }
             }
           }
         }
