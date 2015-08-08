@@ -87,3 +87,31 @@ file { 'foo':
 File {
 	mode => "u=${var}",
 }
+
+File['/tmp/foo'] {
+	mode => '755',  # Noncompliant
+}
+
+File['/tmp/foo'] {
+	mode => '0755',
+}
+
+File['/tmp/foo'] {
+	mode => 755,  # Noncompliant
+}
+
+File['/tmp/foo'] {
+	mode => 0755,  # Noncompliant
+}
+
+File['/tmp/foo'] {
+	mode => "0755",  # Noncompliant
+}
+
+File['/tmp/foo'] {
+	mode => "abc",  # Noncompliant
+}
+
+File['/tmp/foo'] {
+	mode => "u=${var}",
+}
