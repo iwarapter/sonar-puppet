@@ -1,0 +1,28 @@
+<p>
+    In parameterized class and define declarations, required parameters should be listed before optional parameters
+    (i.e., parameters with defaults).
+</p>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+class ntp (
+  $options   = "iburst",
+  $servers,              # Noncompliant
+  $multicast = false
+) {}
+</pre>
+
+<h2>Compliant Solution</h2>
+<pre>
+class ntp (
+  $servers,
+  $options   = "iburst",
+  $multicast = false
+) {}
+</pre>
+
+<h2>See</h2>
+<ul>
+    <li><a href="https://docs.puppetlabs.com/guides/style_guide.html#display-order-of-parameters">See Puppet Labs Puppet
+        Language Style Guide</a></li>
+</ul>
