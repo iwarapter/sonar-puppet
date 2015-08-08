@@ -52,18 +52,18 @@ public class ArrowsAlignmentCheck extends SquidCheck<Grammar> {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.HASH, PuppetGrammar.PARAMS, PuppetGrammar.ANY_PARAMS, PuppetGrammar.SELECTOR);
+    subscribeTo(PuppetGrammar.HASH_PAIRS, PuppetGrammar.PARAMS, PuppetGrammar.ANY_PARAMS, PuppetGrammar.SINTVALUES);
   }
 
   @Override
   public void visitNode(AstNode node) {
     if (node.is(PuppetGrammar.ANY_PARAMS)) {
       checkAllArrowsAlignment(node);
-    } else if (node.is(PuppetGrammar.HASH)) {
+    } else if (node.is(PuppetGrammar.HASH_PAIRS)) {
       checkHashRocketsAlignment(node, PuppetGrammar.HASH_PAIR, PuppetGrammar.KEY);
     } else if (node.is(PuppetGrammar.PARAMS)) {
       checkHashRocketsAlignment(node, PuppetGrammar.PARAM, PuppetGrammar.PARAM_NAME);
-    } else if (node.is(PuppetGrammar.SELECTOR)) {
+    } else if (node.is(PuppetGrammar.SINTVALUES)) {
       checkHashRocketsAlignment(node, PuppetGrammar.SELECTVAL, PuppetGrammar.SELECTLHAND);
     }
   }

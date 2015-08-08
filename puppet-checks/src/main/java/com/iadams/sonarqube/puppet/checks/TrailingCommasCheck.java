@@ -25,6 +25,7 @@
 package com.iadams.sonarqube.puppet.checks;
 
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
+import com.iadams.sonarqube.puppet.api.PuppetPunctuator;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
@@ -36,31 +37,33 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
-  key = "SelectorWithoutDefault",
-  priority = Priority.MAJOR,
-  name = "Selector statements should have default cases",
-  tags = Tags.PITFALL)
+  key = "TrailingCommas",
+  priority = Priority.MINOR,
+  name = "A trailing comma should be added after each resource attribute, parameter definition, hash pair and selector case",
+  tags = Tags.CONVENTION)
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
-@SqaleConstantRemediation("1h")
-public class SelectorWithoutDefaultCheck extends SquidCheck<Grammar> {
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
+@SqaleConstantRemediation("5min")
+public class TrailingCommasCheck extends SquidCheck<Grammar> {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.SINTVALUES);
+    subscribeTo(
+      PuppetGrammar.HASH_PAIRS,
+      PuppetGrammar.PARAMS,
+      PuppetGrammar.ANY_PARAMS,
+      PuppetGrammar.SINTVALUES,
+      PuppetGrammar.ARGUMENTS);
   }
 
   @Override
   public void visitNode(AstNode node) {
-    boolean hasDefault = false;
-    for (AstNode caseNode : node.getChildren(PuppetGrammar.SELECTVAL)) {
-      if ("default".equals(caseNode.getTokenValue())) {
-        hasDefault = true;
-        break;
-      }
-    }
-    if (!hasDefault) {
-      getContext().createLineViolation(this, "Add a default case.", node.getFirstAncestor(PuppetGrammar.SELECTOR));
+    if (node.is(PuppetGrammar.PARAMS) && node.getChildren(PuppetGrammar.PARAM).size() != node.getChildren(PuppetPunctuator.COMMA).size()
+      || node.is(PuppetGrammar.ANY_PARAMS) && node.getChildren(PuppetGrammar.PARAM, PuppetGrammar.ADD_PARAM).size() != node.getChildren(PuppetPunctuator.COMMA).size()
+      || node.is(PuppetGrammar.HASH_PAIRS) && node.getChildren(PuppetGrammar.HASH_PAIR).size() != node.getChildren(PuppetPunctuator.COMMA).size()
+      || node.is(PuppetGrammar.SINTVALUES) && node.getChildren(PuppetGrammar.SELECTVAL).size() != node.getChildren(PuppetPunctuator.COMMA).size()
+      || node.is(PuppetGrammar.ARGUMENTS) && node.getChildren(PuppetGrammar.ARGUMENT).size() != node.getChildren(PuppetPunctuator.COMMA).size()) {
+      getContext().createLineViolation(this, "Add the missing trailing comma.", node);
     }
   }
 

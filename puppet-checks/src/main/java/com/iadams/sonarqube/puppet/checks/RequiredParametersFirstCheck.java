@@ -54,7 +54,7 @@ public class RequiredParametersFirstCheck extends SquidCheck<Grammar> {
   @Override
   public void visitNode(AstNode node) {
     boolean foundOptionalParameter = false;
-    for (AstNode argumentNode : node.getChildren(PuppetGrammar.ARGUMENT)) {
+    for (AstNode argumentNode : node.getFirstChild(PuppetGrammar.ARGUMENTS).getChildren(PuppetGrammar.ARGUMENT)) {
       if (argumentNode.getFirstChild(PuppetPunctuator.EQUALS) != null) {
         foundOptionalParameter = true;
       } else if (foundOptionalParameter && argumentNode.getFirstChild(PuppetPunctuator.EQUALS) == null) {
