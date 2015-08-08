@@ -31,20 +31,20 @@ import spock.lang.Specification
 
 class CommentConventionCheckSpec extends Specification {
 
-	private static final String MESSAGE = "Use starting comment token '#' instead.";
+  private static final String MESSAGE = "Use starting comment token '#' instead.";
 
-	def "validate rule"() {
-		given:
-		CommentConventionCheck check = new CommentConventionCheck();
+  def "validate rule"() {
+    given:
+    CommentConventionCheck check = new CommentConventionCheck();
 
-		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/CommentConvention.pp"), check);
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/CommentConvention.pp"), check);
 
-		expect:
-		CheckMessagesVerifier.verify(file.getCheckMessages())
-				.next().atLine(1).withMessage(MESSAGE)
-				.next().atLine(2).withMessage(MESSAGE)
-				.next().atLine(4).withMessage(MESSAGE)
-				.next().atLine(5).withMessage(MESSAGE)
-				.noMore();
-	}
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(1).withMessage(MESSAGE)
+      .next().atLine(2).withMessage(MESSAGE)
+      .next().atLine(4).withMessage(MESSAGE)
+      .next().atLine(5).withMessage(MESSAGE)
+      .noMore();
+  }
 }

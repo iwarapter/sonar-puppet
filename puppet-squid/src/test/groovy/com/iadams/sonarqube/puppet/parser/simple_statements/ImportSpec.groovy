@@ -31,18 +31,18 @@ import static org.sonar.sslr.tests.Assertions.assertThat
 
 class ImportSpec extends GrammarSpec {
 
-    def setup() {
-        setRootRule(IMPORT_STMT)
-    }
+  def setup() {
+    setRootRule(IMPORT_STMT)
+  }
 
-	def "simple import statement parses"(){
-		expect:
-		assertThat(p).matches("import 'nodes.pp'")
-	}
+  def "simple import statement parses"() {
+    expect:
+    assertThat(p).matches("import 'nodes.pp'")
+  }
 
 
-	def "import list parses"(){
-		expect:
-		assertThat(p).matches("import 'nodes.pp', 'nodes2.pp'")
-	}
+  def "import list parses"() {
+    expect:
+    assertThat(p).matches("import 'nodes.pp', 'nodes2.pp'")
+  }
 }

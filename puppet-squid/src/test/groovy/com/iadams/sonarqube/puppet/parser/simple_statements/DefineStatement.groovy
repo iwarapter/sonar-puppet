@@ -31,22 +31,22 @@ import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class DefineStatement extends GrammarSpec {
 
-	def setup(){
-		setRootRule(DEFINITION)
-	}
+  def setup() {
+    setRootRule(DEFINITION)
+  }
 
-	def "simple define parses correctly"() {
-		expect:
-		assertThat(p).matches('define config { }')
-	}
+  def "simple define parses correctly"() {
+    expect:
+    assertThat(p).matches('define config { }')
+  }
 
-	def "fully qualified name parses correctly"() {
-		expect:
-		assertThat(p).matches('define full::qualified { }')
-	}
+  def "fully qualified name parses correctly"() {
+    expect:
+    assertThat(p).matches('define full::qualified { }')
+  }
 
-	def "name with - parses correctly"() {
-		expect:
-		assertThat(p).matches('define foo-bar { }')
-	}
+  def "name with - parses correctly"() {
+    expect:
+    assertThat(p).matches('define foo-bar { }')
+  }
 }

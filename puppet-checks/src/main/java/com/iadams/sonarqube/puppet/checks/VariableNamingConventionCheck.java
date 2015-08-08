@@ -36,27 +36,28 @@ import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
-		key = "VariableNamingConvention",
-		name = "Variables should follow a naming convention",
-		priority = Priority.MINOR,
-		tags = {Tags.CONVENTION})
+  key = "VariableNamingConvention",
+  name = "Variables should follow a naming convention",
+  priority = Priority.MINOR,
+  tags = {Tags.CONVENTION})
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("5min")
 @ActivatedByDefault
 public class VariableNamingConventionCheck extends SquidCheck<LexerlessGrammar> {
 
-	private static final String FORMAT = "^\\$(::)?([a-z0-9_]+::)*[a-z0-9_]+$";
+  private static final String FORMAT = "^\\$(::)?([a-z0-9_]+::)*[a-z0-9_]+$";
 
-	@Override
-	public void init() {
-		subscribeTo(PuppetTokenType.VARIABLE);
-	}
+  @Override
+  public void init() {
+    subscribeTo(PuppetTokenType.VARIABLE);
+  }
 
-	@Override
-	public void leaveNode(AstNode node) {
-		if (!node.getTokenValue().matches(FORMAT)) {
-			getContext().createLineViolation(this, "Rename variable \"{0}\" to match the regular expression: ^\\$(::)?([a-z0-9_]+::)*[a-z0-9_]+$", node, node.getTokenValue().substring(1));
-		}
-	}
+  @Override
+  public void leaveNode(AstNode node) {
+    if (!node.getTokenValue().matches(FORMAT)) {
+      getContext().createLineViolation(this, "Rename variable \"{0}\" to match the regular expression: ^\\$(::)?([a-z0-9_]+::)*[a-z0-9_]+$", node,
+        node.getTokenValue().substring(1));
+    }
+  }
 
 }

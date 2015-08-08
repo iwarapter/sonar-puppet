@@ -29,45 +29,45 @@ import spock.lang.Specification
 
 class PuppetColorizerSpec extends Specification {
 
-    PuppetColorizer puppetColorizer
-    CodeColorizer codeColorizer
+  PuppetColorizer puppetColorizer
+  CodeColorizer codeColorizer
 
-    def setup(){
-        puppetColorizer = new PuppetColorizer()
-        codeColorizer = new CodeColorizer(puppetColorizer.getTokenizers())
-    }
+  def setup() {
+    puppetColorizer = new PuppetColorizer()
+    codeColorizer = new CodeColorizer(puppetColorizer.getTokenizers())
+  }
 
-    /*def "keywords are coloured"(){
-        expect:
-        colorize("false").contains('<span class="k">false</span>')
-    }*/
+  /*def "keywords are coloured"(){
+      expect:
+      colorize("false").contains('<span class="k">false</span>')
+  }*/
 
-    def "# comment should colorize"(){
-        expect:
-        colorize("# comment").contains("<span class=\"cd\"># comment</span>")
-    }
+  def "# comment should colorize"() {
+    expect:
+    colorize("# comment").contains("<span class=\"cd\"># comment</span>")
+  }
 
-    def "// comment should colorize"(){
-        expect:
-        colorize("// comment").contains("<span class=\"cd\">// comment</span>")
-    }
+  def "// comment should colorize"() {
+    expect:
+    colorize("// comment").contains("<span class=\"cd\">// comment</span>")
+  }
 
-    def "/* */ comment should colorize"(){
-        expect:
-        colorize("/* comment */").contains("<span class=\"cppd\">/* comment */</span>")
-    }
+  def "/* */ comment should colorize"() {
+    expect:
+    colorize("/* comment */").contains("<span class=\"cppd\">/* comment */</span>")
+  }
 
-    def "should colorize short string literals"(){
-        expect:
-        colorize('"string"').contains("<span class=\"s\">\"string\"</span>")
-    }
+  def "should colorize short string literals"() {
+    expect:
+    colorize('"string"').contains("<span class=\"s\">\"string\"</span>")
+  }
 
-    def "should colorize long string literals"(){
-        expect:
-        colorize('"string"').contains('<span class="s">"string"</span>')
-    }
+  def "should colorize long string literals"() {
+    expect:
+    colorize('"string"').contains('<span class="s">"string"</span>')
+  }
 
-    private String colorize(String sourceCode) {
-        return codeColorizer.toHtml(new StringReader(sourceCode))
-    }
+  private String colorize(String sourceCode) {
+    return codeColorizer.toHtml(new StringReader(sourceCode))
+  }
 }

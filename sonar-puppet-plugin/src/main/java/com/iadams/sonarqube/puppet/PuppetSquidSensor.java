@@ -59,92 +59,92 @@ import java.util.Locale;
 
 public class PuppetSquidSensor implements Sensor {
 
-	private final Checks<SquidAstVisitor<Grammar>> checks;
-	private final FileLinesContextFactory fileLinesContextFactory;
+  private final Checks<SquidAstVisitor<Grammar>> checks;
+  private final FileLinesContextFactory fileLinesContextFactory;
 
-	private SensorContext context;
-	private AstScanner<Grammar> scanner;
-	private FileSystem fileSystem;
-	private ResourcePerspectives resourcePerspectives;
+  private SensorContext context;
+  private AstScanner<Grammar> scanner;
+  private FileSystem fileSystem;
+  private ResourcePerspectives resourcePerspectives;
 
-	public PuppetSquidSensor(FileLinesContextFactory fileLinesContextFactory, FileSystem fileSystem, ResourcePerspectives perspectives, CheckFactory checkFactory) {
-		this.checks = checkFactory
-				.<SquidAstVisitor<Grammar>>create(CheckList.REPOSITORY_KEY)
-				.addAnnotatedChecks(CheckList.getChecks());
-		this.fileLinesContextFactory = fileLinesContextFactory;
-		this.fileSystem = fileSystem;
-		this.resourcePerspectives = perspectives;
-	}
+  public PuppetSquidSensor(FileLinesContextFactory fileLinesContextFactory, FileSystem fileSystem, ResourcePerspectives perspectives, CheckFactory checkFactory) {
+    this.checks = checkFactory
+      .<SquidAstVisitor<Grammar>>create(CheckList.REPOSITORY_KEY)
+      .addAnnotatedChecks(CheckList.getChecks());
+    this.fileLinesContextFactory = fileLinesContextFactory;
+    this.fileSystem = fileSystem;
+    this.resourcePerspectives = perspectives;
+  }
 
-	@Override
-	public boolean shouldExecuteOnProject(Project project) {
-		FilePredicates p = fileSystem.predicates();
-		return fileSystem.hasFiles(p.and(p.hasType(InputFile.Type.MAIN), p.hasLanguage(Puppet.KEY)));
-	}
+  @Override
+  public boolean shouldExecuteOnProject(Project project) {
+    FilePredicates p = fileSystem.predicates();
+    return fileSystem.hasFiles(p.and(p.hasType(InputFile.Type.MAIN), p.hasLanguage(Puppet.KEY)));
+  }
 
-	@Override
-	public void analyse(Project project, SensorContext context) {
-		this.context = context;
+  @Override
+  public void analyse(Project project, SensorContext context) {
+    this.context = context;
 
-		List<SquidAstVisitor<Grammar>> visitors = Lists.newArrayList(checks.all());
-		visitors.add(new FileLinesVisitor(fileLinesContextFactory, fileSystem));
-		this.scanner = PuppetAstScanner.create(createConfiguration(), visitors.toArray(new SquidAstVisitor[visitors.size()]));
-		FilePredicates p = fileSystem.predicates();
-		scanner.scanFiles(Lists.newArrayList(fileSystem.files(p.and(p.hasType(InputFile.Type.MAIN), p.hasLanguage(Puppet.KEY)))));
+    List<SquidAstVisitor<Grammar>> visitors = Lists.newArrayList(checks.all());
+    visitors.add(new FileLinesVisitor(fileLinesContextFactory, fileSystem));
+    this.scanner = PuppetAstScanner.create(createConfiguration(), visitors.toArray(new SquidAstVisitor[visitors.size()]));
+    FilePredicates p = fileSystem.predicates();
+    scanner.scanFiles(Lists.newArrayList(fileSystem.files(p.and(p.hasType(InputFile.Type.MAIN), p.hasLanguage(Puppet.KEY)))));
 
-		Collection<SourceCode> squidSourceFiles = scanner.getIndex().search(new QueryByType(SourceFile.class));
-		save(squidSourceFiles);
-	}
+    Collection<SourceCode> squidSourceFiles = scanner.getIndex().search(new QueryByType(SourceFile.class));
+    save(squidSourceFiles);
+  }
 
-	private PuppetConfiguration createConfiguration() {
-		return new PuppetConfiguration(fileSystem.encoding());
-	}
+  private PuppetConfiguration createConfiguration() {
+    return new PuppetConfiguration(fileSystem.encoding());
+  }
 
-	private void save(Collection<SourceCode> squidSourceFiles) {
-		for (SourceCode squidSourceFile : squidSourceFiles) {
-			SourceFile squidFile = (SourceFile) squidSourceFile;
+  private void save(Collection<SourceCode> squidSourceFiles) {
+    for (SourceCode squidSourceFile : squidSourceFiles) {
+      SourceFile squidFile = (SourceFile) squidSourceFile;
 
-			InputFile inputFile = fileSystem.inputFile(fileSystem.predicates().is(new java.io.File(squidFile.getKey())));
+      InputFile inputFile = fileSystem.inputFile(fileSystem.predicates().is(new java.io.File(squidFile.getKey())));
 
-			//saveFilesComplexityDistribution(inputFile, squidFile);
-			//saveFunctionsComplexityDistribution(inputFile, squidFile);
-			saveMeasures(inputFile, squidFile);
-			saveIssues(inputFile, squidFile);
-		}
-	}
+      // saveFilesComplexityDistribution(inputFile, squidFile);
+      // saveFunctionsComplexityDistribution(inputFile, squidFile);
+      saveMeasures(inputFile, squidFile);
+      saveIssues(inputFile, squidFile);
+    }
+  }
 
-	private void saveMeasures(InputFile sonarFile, SourceFile squidFile) {
-		context.saveMeasure(sonarFile, CoreMetrics.FILES, squidFile.getDouble(PuppetMetric.FILES));
-		context.saveMeasure(sonarFile, CoreMetrics.LINES, squidFile.getDouble(PuppetMetric.LINES));
-		context.saveMeasure(sonarFile, CoreMetrics.NCLOC, squidFile.getDouble(PuppetMetric.LINES_OF_CODE));
-		context.saveMeasure(sonarFile, CoreMetrics.STATEMENTS, squidFile.getDouble(PuppetMetric.STATEMENTS));
-		context.saveMeasure(sonarFile, CoreMetrics.FUNCTIONS, squidFile.getDouble(PuppetMetric.FUNCTIONS));
-		context.saveMeasure(sonarFile, CoreMetrics.CLASSES, squidFile.getDouble(PuppetMetric.CLASSES));
-		context.saveMeasure(sonarFile, CoreMetrics.COMPLEXITY, squidFile.getDouble(PuppetMetric.COMPLEXITY));
-		context.saveMeasure(sonarFile, CoreMetrics.COMMENT_LINES, squidFile.getDouble(PuppetMetric.COMMENT_LINES));
+  private void saveMeasures(InputFile sonarFile, SourceFile squidFile) {
+    context.saveMeasure(sonarFile, CoreMetrics.FILES, squidFile.getDouble(PuppetMetric.FILES));
+    context.saveMeasure(sonarFile, CoreMetrics.LINES, squidFile.getDouble(PuppetMetric.LINES));
+    context.saveMeasure(sonarFile, CoreMetrics.NCLOC, squidFile.getDouble(PuppetMetric.LINES_OF_CODE));
+    context.saveMeasure(sonarFile, CoreMetrics.STATEMENTS, squidFile.getDouble(PuppetMetric.STATEMENTS));
+    context.saveMeasure(sonarFile, CoreMetrics.FUNCTIONS, squidFile.getDouble(PuppetMetric.FUNCTIONS));
+    context.saveMeasure(sonarFile, CoreMetrics.CLASSES, squidFile.getDouble(PuppetMetric.CLASSES));
+    context.saveMeasure(sonarFile, CoreMetrics.COMPLEXITY, squidFile.getDouble(PuppetMetric.COMPLEXITY));
+    context.saveMeasure(sonarFile, CoreMetrics.COMMENT_LINES, squidFile.getDouble(PuppetMetric.COMMENT_LINES));
 
-		context.saveMeasure(sonarFile ,PuppetLanguageMetrics.PUPPET_RESOURCES, squidFile.getDouble(PuppetMetric.RESOURCES));
-	}
+    context.saveMeasure(sonarFile, PuppetLanguageMetrics.PUPPET_RESOURCES, squidFile.getDouble(PuppetMetric.RESOURCES));
+  }
 
-	private void saveIssues(InputFile sonarFile, SourceFile squidFile) {
-		Collection<CheckMessage> messages = squidFile.getCheckMessages();
-		for (CheckMessage message : messages) {
-			RuleKey ruleKey = checks.ruleKey((SquidAstVisitor<Grammar>) message.getCheck());
-			Issuable issuable = resourcePerspectives.as(Issuable.class, sonarFile);
+  private void saveIssues(InputFile sonarFile, SourceFile squidFile) {
+    Collection<CheckMessage> messages = squidFile.getCheckMessages();
+    for (CheckMessage message : messages) {
+      RuleKey ruleKey = checks.ruleKey((SquidAstVisitor<Grammar>) message.getCheck());
+      Issuable issuable = resourcePerspectives.as(Issuable.class, sonarFile);
 
-			if (issuable != null) {
-				Issue issue = issuable.newIssueBuilder()
-						.ruleKey(ruleKey)
-						.line(message.getLine())
-						.message(message.getText(Locale.ENGLISH))
-						.build();
-				issuable.addIssue(issue);
-			}
-		}
-	}
+      if (issuable != null) {
+        Issue issue = issuable.newIssueBuilder()
+          .ruleKey(ruleKey)
+          .line(message.getLine())
+          .message(message.getText(Locale.ENGLISH))
+          .build();
+        issuable.addIssue(issue);
+      }
+    }
+  }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
-	}
+  @Override
+  public String toString() {
+    return getClass().getSimpleName();
+  }
 }

@@ -36,62 +36,62 @@ import spock.lang.Unroll
 
 class PplintSensorSpec extends Specification {
 
-    private ModuleFileSystem fs
-    private RuleFinder ruleFinder
-    private PplintConfiguration conf
-    private RulesProfile profile
+  private ModuleFileSystem fs
+  private RuleFinder ruleFinder
+  private PplintConfiguration conf
+  private RulesProfile profile
 
-    def setup(){
-        ruleFinder = Mock(RuleFinder)
-        conf = Mock(PplintConfiguration)
-        profile = Mock(RulesProfile)
-        fs = Mock(ModuleFileSystem)
-    }
+  def setup() {
+    ruleFinder = Mock(RuleFinder)
+    conf = Mock(PplintConfiguration)
+    profile = Mock(RulesProfile)
+    fs = Mock(ModuleFileSystem)
+  }
 
-    def "shouldnt thrown when instantiating"() {
-        expect:
-        new PplintSensor(ruleFinder, conf, profile, fs, Mock(ResourcePerspectives))
-    }
+  def "shouldnt thrown when instantiating"() {
+    expect:
+    new PplintSensor(ruleFinder, conf, profile, fs, Mock(ResourcePerspectives))
+  }
 
-    @Unroll
-    def "should execute on "() {
-        // which means: only on puppet projects and only if
-        // there is at least one active pplint rule
+  @Unroll
+  def "should execute on "() {
+    // which means: only on puppet projects and only if
+    // there is at least one active pplint rule
 
-        when:
-        fs.files(_) >> files
-        PplintSensor sensor = new PplintSensor(ruleFinder, conf, langProfile, fs, Mock(ResourcePerspectives))
+    when:
+    fs.files(_) >> files
+    PplintSensor sensor = new PplintSensor(ruleFinder, conf, langProfile, fs, Mock(ResourcePerspectives))
 
-        then:
-        sensor.shouldExecuteOnProject(project) == outcome
+    then:
+    sensor.shouldExecuteOnProject(project) == outcome
 
-        where:
-        files               | project                               | langProfile           | outcome
-        [new File("/tmp")]  | createProjectForLanguage(Puppet.KEY)  | createPplintProfile() | true
-        [new File("/tmp")]  | createProjectForLanguage(Puppet.KEY)  | createEmptyProfile()  | false
-        []                  | createProjectForLanguage('whatever')  | createPplintProfile() | false
-        []                  | createProjectForLanguage('whatever')  | createEmptyProfile()  | false
-    }
+    where:
+    files              | project                              | langProfile           | outcome
+    [new File("/tmp")] | createProjectForLanguage(Puppet.KEY) | createPplintProfile() | true
+    [new File("/tmp")] | createProjectForLanguage(Puppet.KEY) | createEmptyProfile()  | false
+    []                 | createProjectForLanguage('whatever') | createPplintProfile() | false
+    []                 | createProjectForLanguage('whatever') | createEmptyProfile()  | false
+  }
 
-    private Project createProjectForLanguage(String languageKey){
-        Project project = Mock(Project)
-        project.getLanguageKey() >> languageKey
-        return project
-    }
+  private Project createProjectForLanguage(String languageKey) {
+    Project project = Mock(Project)
+    project.getLanguageKey() >> languageKey
+    return project
+  }
 
-    private RulesProfile createEmptyProfile() {
-        RulesProfile profile = Mock(RulesProfile)
-        profile.getActiveRulesByRepository(PplintRuleRepository.REPOSITORY_KEY) >> []
+  private RulesProfile createEmptyProfile() {
+    RulesProfile profile = Mock(RulesProfile)
+    profile.getActiveRulesByRepository(PplintRuleRepository.REPOSITORY_KEY) >> []
 
-        return profile
-    }
+    return profile
+  }
 
-    private RulesProfile createPplintProfile() {
-        def rules = [Mock(ActiveRule)]
+  private RulesProfile createPplintProfile() {
+    def rules = [Mock(ActiveRule)]
 
-        RulesProfile profile = Mock(RulesProfile)
-        profile.getActiveRulesByRepository(PplintRuleRepository.REPOSITORY_KEY) >> rules
+    RulesProfile profile = Mock(RulesProfile)
+    profile.getActiveRulesByRepository(PplintRuleRepository.REPOSITORY_KEY) >> rules
 
-        return profile
-    }
+    return profile
+  }
 }

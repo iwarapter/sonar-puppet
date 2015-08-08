@@ -31,37 +31,37 @@ import spock.lang.Specification
 
 class CommentRegularExpressionCheckSpec extends Specification {
 
-	private final CommentRegularExpressionCheck check = new CommentRegularExpressionCheck();
+  private final CommentRegularExpressionCheck check = new CommentRegularExpressionCheck();
 
-	def "should contain some comments matching WTF"() {
-		given:
-		String message = "Stop annotating lines with WTF! Detail what is wrong instead.";
-		check.regularExpression = "(?i).*WTF.*";
-		check.message = message;
-		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/CommentRegularExpression.pp"), check);
+  def "should contain some comments matching WTF"() {
+    given:
+    String message = "Stop annotating lines with WTF! Detail what is wrong instead.";
+    check.regularExpression = "(?i).*WTF.*";
+    check.message = message;
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/CommentRegularExpression.pp"), check);
 
-		expect:
-		CheckMessagesVerifier.verify(file.getCheckMessages())
-				.next().atLine(1).withMessage(message)
-				.next().atLine(2).withMessage(message)
-				.next().atLine(3).withMessage(message)
-				.next().atLine(5).withMessage(message)
-				.next().atLine(6).withMessage(message)
-				.next().atLine(7).withMessage(message)
-				.next().atLine(9).withMessage(message)
-				.next().atLine(10).withMessage(message)
-				.next().atLine(11).withMessage(message)
-				.noMore();
-	}
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(1).withMessage(message)
+      .next().atLine(2).withMessage(message)
+      .next().atLine(3).withMessage(message)
+      .next().atLine(5).withMessage(message)
+      .next().atLine(6).withMessage(message)
+      .next().atLine(7).withMessage(message)
+      .next().atLine(9).withMessage(message)
+      .next().atLine(10).withMessage(message)
+      .next().atLine(11).withMessage(message)
+      .noMore();
+  }
 
-	def "should not contain any comments matching blabla"() {
-		given:
-		check.regularExpression = "(?i).*blabla.*";
-		check.message = "Stop annotating lines with blabla. Detail what is wrong instead.";
-		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/CommentRegularExpression.pp"), check);
+  def "should not contain any comments matching blabla"() {
+    given:
+    check.regularExpression = "(?i).*blabla.*";
+    check.message = "Stop annotating lines with blabla. Detail what is wrong instead.";
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/CommentRegularExpression.pp"), check);
 
-		expect:
-		CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
-	}
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+  }
 
 }

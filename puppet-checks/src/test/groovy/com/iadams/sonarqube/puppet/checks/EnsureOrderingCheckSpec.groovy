@@ -31,17 +31,17 @@ import spock.lang.Specification
 
 class EnsureOrderingCheckSpec extends Specification {
 
-    private static final String MESSAGE = "Move the \"ensure\" attribute to be declared first.";
+  private static final String MESSAGE = "Move the \"ensure\" attribute to be declared first.";
 
-    def "validate rule"() {
-        given:
-        EnsureOrderingCheck check = new EnsureOrderingCheck();
-        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/EnsureOrdering.pp"), check);
+  def "validate rule"() {
+    given:
+    EnsureOrderingCheck check = new EnsureOrderingCheck();
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/EnsureOrdering.pp"), check);
 
-        expect:
-        CheckMessagesVerifier.verify(file.getCheckMessages())
-                .next().atLine(4).withMessage(MESSAGE)
-                .next().atLine(30).withMessage(MESSAGE)
-                .noMore();
-    }
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(4).withMessage(MESSAGE)
+      .next().atLine(30).withMessage(MESSAGE)
+      .noMore();
+  }
 }

@@ -37,44 +37,44 @@ import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.regexp;
 
 public class PuppetLexer {
 
-    public static final String DOUBLE_QUOTED_LITERAL = "\"([^\"\\\\]*+(\\\\[\\s\\S])?+)*+\"";
+  public static final String DOUBLE_QUOTED_LITERAL = "\"([^\"\\\\]*+(\\\\[\\s\\S])?+)*+\"";
 
-    public static final String SINGLE_QUOTED_LITERAL = "'([^'\\\\]*+(\\\\[\\s\\S])?+)*+'";
+  public static final String SINGLE_QUOTED_LITERAL = "'([^'\\\\]*+(\\\\[\\s\\S])?+)*+'";
 
-    private PuppetLexer() {
-    }
+  private PuppetLexer() {
+  }
 
-    public static final String HASH_LINE_COMMENT = "#[^\\n\\r]*+";
-    public static final String SLASH_LINE_COMMENT = "//[^\\n\\r]*+";
-    public static final String MULTI_LINE_COMMENT = "/\\*[\\s\\S]*?\\*/";
+  public static final String HASH_LINE_COMMENT = "#[^\\n\\r]*+";
+  public static final String SLASH_LINE_COMMENT = "//[^\\n\\r]*+";
+  public static final String MULTI_LINE_COMMENT = "/\\*[\\s\\S]*?\\*/";
 
-    public static final String COMMENT = "(?:" + HASH_LINE_COMMENT + "|" + SLASH_LINE_COMMENT + "|" + MULTI_LINE_COMMENT + ")";
+  public static final String COMMENT = "(?:" + HASH_LINE_COMMENT + "|" + SLASH_LINE_COMMENT + "|" + MULTI_LINE_COMMENT + ")";
 
-    public static Lexer create(PuppetConfiguration conf) {
+  public static Lexer create(PuppetConfiguration conf) {
     return Lexer.builder()
-            .withCharset(conf.getCharset())
-            .withFailIfNoChannelToConsumeOneCharacter(true)
+      .withCharset(conf.getCharset())
+      .withFailIfNoChannelToConsumeOneCharacter(true)
 
-            .withChannel(regexp(PuppetTokenType.HEX_INTEGER, "0(x|X)[0-9a-fA-F]+"))
-            .withChannel(regexp(PuppetTokenType.OCTAL_INTEGER, "0[0-7]+"))
-            .withChannel(regexp(PuppetTokenType.INTEGER, "[1-9][0-9]*"))
-            .withChannel(regexp(PuppetTokenType.FLOAT, "0?\\d+(\\.\\d+)?([eE]-?\\d+)?"))
+      .withChannel(regexp(PuppetTokenType.HEX_INTEGER, "0(x|X)[0-9a-fA-F]+"))
+      .withChannel(regexp(PuppetTokenType.OCTAL_INTEGER, "0[0-7]+"))
+      .withChannel(regexp(PuppetTokenType.INTEGER, "[1-9][0-9]*"))
+      .withChannel(regexp(PuppetTokenType.FLOAT, "0?\\d+(\\.\\d+)?([eE]-?\\d+)?"))
 
-            .withChannel(new NameAndKeywordChannel("((::)?[a-z0-9][-\\w]*)(::[a-z0-9][-\\w]*)*", true, PuppetKeyword.values()))
+      .withChannel(new NameAndKeywordChannel("((::)?[a-z0-9][-\\w]*)(::[a-z0-9][-\\w]*)*", true, PuppetKeyword.values()))
 
-            .withChannel(regexp(PuppetTokenType.REF, "(::)?[A-Z]\\w*(::[A-Z]\\w*)*"))
-            .withChannel(regexp(PuppetTokenType.VARIABLE, "\\$(::)?(\\w+::)*\\w+"))
+      .withChannel(regexp(PuppetTokenType.REF, "(::)?[A-Z]\\w*(::[A-Z]\\w*)*"))
+      .withChannel(regexp(PuppetTokenType.VARIABLE, "\\$(::)?(\\w+::)*\\w+"))
 
-            // String Literals
-            .withChannel(regexp(PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL, SINGLE_QUOTED_LITERAL))
-            .withChannel(regexp(PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL, DOUBLE_QUOTED_LITERAL))
+      // String Literals
+      .withChannel(regexp(PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL, SINGLE_QUOTED_LITERAL))
+      .withChannel(regexp(PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL, DOUBLE_QUOTED_LITERAL))
 
-            //Lets play with matching regex!
-            .withChannel(new PuppetRegexpChannel())
+      // Lets play with matching regex!
+      .withChannel(new PuppetRegexpChannel())
 
-            .withChannel(commentRegexp(COMMENT))
-            .withChannel(new PunctuatorChannel(PuppetPunctuator.values()))
-            .withChannel(new BlackHoleChannel("[ \t\r\n]+"))
-            .build();
-    }
+      .withChannel(commentRegexp(COMMENT))
+      .withChannel(new PunctuatorChannel(PuppetPunctuator.values()))
+      .withChannel(new BlackHoleChannel("[ \t\r\n]+"))
+      .build();
+  }
 }

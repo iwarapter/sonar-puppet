@@ -32,22 +32,22 @@ import java.util.List;
 
 public final class PuppetLanguageMetrics implements Metrics {
 
-	public static final String DOMAIN = "Puppet";
+  public static final String DOMAIN = "Puppet";
 
-	public static final String PUPPET_RESOURCES_KEY = "puppet_resources";
+  public static final String PUPPET_RESOURCES_KEY = "puppet_resources";
 
-	public static final Metric PUPPET_RESOURCES = new Metric.Builder(PuppetLanguageMetrics.PUPPET_RESOURCES_KEY, "Puppet Resources", Metric.ValueType.INT)
-			.setDescription("Puppet Resources")
-			.setDirection(Metric.DIRECTION_NONE)
-			.setQualitative(false)
-			.setDomain(PuppetLanguageMetrics.DOMAIN)
-			.setHidden(false)
-			.create();
+  public static final Metric PUPPET_RESOURCES = new Metric.Builder(PuppetLanguageMetrics.PUPPET_RESOURCES_KEY, "Puppet Resources", Metric.ValueType.INT)
+    .setDescription("Puppet Resources")
+    .setDirection(Metric.DIRECTION_NONE)
+    .setQualitative(false)
+    .setDomain(PuppetLanguageMetrics.DOMAIN)
+    .setHidden(false)
+    .create();
 
-	@Override
-	public List<Metric> getMetrics() {
-		return Arrays.asList(
-				PuppetLanguageMetrics.PUPPET_RESOURCES
-		);
-	}
+  @Override
+  public List<Metric> getMetrics() {
+    return Arrays.asList(
+      PuppetLanguageMetrics.PUPPET_RESOURCES
+      );
+  }
 }

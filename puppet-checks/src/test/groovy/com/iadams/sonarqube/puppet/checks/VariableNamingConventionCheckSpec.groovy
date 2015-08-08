@@ -31,15 +31,15 @@ import spock.lang.Specification
 
 class VariableNamingConventionCheckSpec extends Specification {
 
-	def "should find some variables not complying with the naming convention"() {
-		given:
-		VariableNamingConventionCheck check = new VariableNamingConventionCheck();
-		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/VariableNamingConvention.pp"), check);
+  def "should find some variables not complying with the naming convention"() {
+    given:
+    VariableNamingConventionCheck check = new VariableNamingConventionCheck();
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/VariableNamingConvention.pp"), check);
 
-		expect:
-		CheckMessagesVerifier.verify(file.getCheckMessages())
-				.next().atLine(6).withMessage("Rename variable \"Abc\" to match the regular expression: ^\\\$(::)?([a-z0-9_]+::)*[a-z0-9_]+\$")
-				.next().atLine(8).withMessage("Rename variable \"dEf\" to match the regular expression: ^\\\$(::)?([a-z0-9_]+::)*[a-z0-9_]+\$")
-				.noMore();
-	}
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(6).withMessage("Rename variable \"Abc\" to match the regular expression: ^\\\$(::)?([a-z0-9_]+::)*[a-z0-9_]+\$")
+      .next().atLine(8).withMessage("Rename variable \"dEf\" to match the regular expression: ^\\\$(::)?([a-z0-9_]+::)*[a-z0-9_]+\$")
+      .noMore();
+  }
 }

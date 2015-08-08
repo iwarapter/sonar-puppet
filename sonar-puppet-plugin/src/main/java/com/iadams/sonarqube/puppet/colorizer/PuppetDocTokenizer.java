@@ -28,7 +28,7 @@ import org.sonar.colorizer.InlineDocTokenizer;
 
 public class PuppetDocTokenizer extends InlineDocTokenizer {
 
-    public PuppetDocTokenizer(String tagBefore, String tagAfter) {
-        super("#", tagBefore, tagAfter);
-    }
+  public PuppetDocTokenizer(String tagBefore, String tagAfter) {
+    super("#", tagBefore, tagAfter);
+  }
 }

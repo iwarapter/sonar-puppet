@@ -31,24 +31,24 @@ import spock.lang.Specification
 
 class TabCharacterCheckSpec extends Specification {
 
-    private final TabCharacterCheck check = new TabCharacterCheck();
+  private final TabCharacterCheck check = new TabCharacterCheck();
 
-    def "should contain some tab characters"() {
-        given:
-        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/TabCharacter.pp"), check);
+  def "should contain some tab characters"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/TabCharacter.pp"), check);
 
-        expect:
-        CheckMessagesVerifier.verify(file.getCheckMessages())
-                .next().withMessage("Replace all tab characters in this file by sequences of whitespaces.")
-                .noMore();
-    }
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().withMessage("Replace all tab characters in this file by sequences of whitespaces.")
+      .noMore();
+  }
 
-    def "should not contain any tab characters"() {
-        given:
-        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/NoTabCharacter.pp"), check);
+  def "should not contain any tab characters"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/NoTabCharacter.pp"), check);
 
-        expect:
-        CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
-    }
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+  }
 
 }

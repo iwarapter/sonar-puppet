@@ -31,18 +31,18 @@ import static org.sonar.sslr.tests.Assertions.assertThat
 
 public class IfStatement extends GrammarSpec {
 
-	def setup(){
-		setRootRule(IF_STMT)
-	}
+  def setup() {
+    setRootRule(IF_STMT)
+  }
 
-	def "simple if statement parses correctly"() {
-		expect:
-		assertThat(p).matches('if 1 == 1 {}')
-	}
+  def "simple if statement parses correctly"() {
+    expect:
+    assertThat(p).matches('if 1 == 1 {}')
+  }
 
-	def "if statement with else parses correctly"() {
-		expect:
-		assertThat(p).matches('''if str2bool("$is_virtual") {
+  def "if statement with else parses correctly"() {
+    expect:
+    assertThat(p).matches('''if str2bool("$is_virtual") {
 			  # Our NTP module is not supported on virtual machines:
 			  warning( 'Tried to include class ntp on virtual machine.' )
 			}
@@ -50,48 +50,48 @@ public class IfStatement extends GrammarSpec {
 			  # Normal node, include the class.
 			  include ntp
 			}''')
-	}
+  }
 
-	def "if statement with elseif parses correctly"() {
-		expect:
-		assertThat(p).matches('''if str2bool("$is_virtual") {
+  def "if statement with elseif parses correctly"() {
+    expect:
+    assertThat(p).matches('''if str2bool("$is_virtual") {
 			  # Our NTP module is not supported on virtual machines:
 			  warning( 'Tried to include class ntp on virtual machine.' )
 			}
 			elsif $operatingsystem == 'Darwin' {
 			  warning( 'This NTP module does not yet work on our Mac laptops.' )
 			}''')
-	}
+  }
 
-	def "if statement with variable condition parses correctly"(){
-		expect:
-		assertThat(p).matches('''if $mpm_module {
+  def "if statement with variable condition parses correctly"() {
+    expect:
+    assertThat(p).matches('''if $mpm_module {
 									validate_re($mpm_module, $valid_mpms_re)
 								 }''')
-	}
+  }
 
-	def "compact if statement parses"() {
-		expect:
-		assertThat(p).matches('''if $purge_vhost_dir == undef {
+  def "compact if statement parses"() {
+    expect:
+    assertThat(p).matches('''if $purge_vhost_dir == undef {
 									$purge_vhostd = $purge_confd
 								  } else {
 									$purge_vhostd = $purge_vhost_dir
 								  }''')
-	}
+  }
 
-	def "if elseif else statement"(){
-		expect:
-		assertThat(p).matches('''if $lib {
+  def "if elseif else statement"() {
+    expect:
+    assertThat(p).matches('''if $lib {
 									$_lib = $lib
 								  } elsif has_key($mod_libs, $mod) { # 2.6 compatibility hack
 									$_lib = $mod_libs[$mod]
 								  } else {
 									$_lib = "mod_${mod}.so"
 								  }''')
-	}
+  }
 
-	def "if with condition in parenthesis"(){
-		expect:
-		assertThat(p).matches('if ($::operatingsystem == \'Amazon\') {}')
-	}
+  def "if with condition in parenthesis"() {
+    expect:
+    assertThat(p).matches('if ($::operatingsystem == \'Amazon\') {}')
+  }
 }

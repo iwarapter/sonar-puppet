@@ -31,19 +31,19 @@ import static org.sonar.sslr.tests.Assertions.assertThat
 
 class ParameterStatement extends GrammarSpec {
 
-    def setup() {
-        setRootRule(ARGUMENTS)
-    }
+  def setup() {
+    setRootRule(ARGUMENTS)
+  }
 
-    def "matching"() {
-        expect:
-        assertThat(p).matches('$foo')
-        assertThat(p).matches('$foo = \'bar\'')
-        assertThat(p).matches('$foo = "bar"')
-        assertThat(p).matches('$foo = hiera')
-        assertThat(p).matches('$foo = hiera(\'abc\')')
-        assertThat(p).matches('$foo = hiera(\'abc\', \'default_value\')')
-        assertThat(p).matches('$foo = hiera($abc, $value)')
-    }
+  def "matching"() {
+    expect:
+    assertThat(p).matches('$foo')
+    assertThat(p).matches('$foo = \'bar\'')
+    assertThat(p).matches('$foo = "bar"')
+    assertThat(p).matches('$foo = hiera')
+    assertThat(p).matches('$foo = hiera(\'abc\')')
+    assertThat(p).matches('$foo = hiera(\'abc\', \'default_value\')')
+    assertThat(p).matches('$foo = hiera($abc, $value)')
+  }
 
 }

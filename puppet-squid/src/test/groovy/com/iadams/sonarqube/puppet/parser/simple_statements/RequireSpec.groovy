@@ -32,7 +32,7 @@ import static org.sonar.sslr.tests.Assertions.assertThat
 
 class RequireSpec extends GrammarSpec {
 
-	def setup(){
-		setRootRule(REQUIRE_STMT)
-	}
+  def setup() {
+    setRootRule(REQUIRE_STMT)
+  }
 }
