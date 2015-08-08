@@ -1,4 +1,5 @@
-<p>In the interest of clarity, symbolic links should be declared by using an ensure value of ensure => link and explicitly specifying a value for the target attribute. Using a path to the target as the ensure value is not recommended.</p>
+<p>Whether the file should exist, and if so what kind of file it should be. Possible values are present, absent (also called false), file, directory, and link.</p>
+<p>However, we recommend using link and target explicitly, since this behavior can be harder to read.</p>
 
 <h2>Noncompliant Code Example</h2>
 
@@ -17,5 +18,6 @@ file { '/tmp/foo':
 
 <h2>See</h2>
 <ul>
+    <li><a href="https://docs.puppetlabs.com/references/latest/type.html#file-attribute-ensure">See Puppet Labs Puppet Language File Ensure Reference</a></li>
     <li><a href="https://docs.puppetlabs.com/guides/style_guide.html#symbolic-links">See Puppet Labs Puppet Language Style Guide</a></li>
 </ul>
