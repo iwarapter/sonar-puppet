@@ -43,7 +43,7 @@ class PuppetCommonRulesEngineSpec extends Specification {
         CommonRulesRepository repo = engine.newRepository()
 
         expect:
-        repo.enabledRuleKeys().size() == 4
+        repo.enabledRuleKeys().size() == 2
         repo.enableInsufficientCommentDensityRule(null) != null
     }
 }
