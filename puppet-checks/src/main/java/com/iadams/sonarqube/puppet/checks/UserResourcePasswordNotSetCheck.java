@@ -45,7 +45,8 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @SqaleConstantRemediation("10min")
 public class UserResourcePasswordNotSetCheck extends SquidCheck<Grammar> {
 
-	private static final String MESSAGE = "Do not set passwords in user resources.";
+  private static final String MESSAGE = "Do not set passwords in user resources.";
+
   @Override
   public void init() {
     subscribeTo(PuppetGrammar.RESOURCE);
@@ -54,13 +55,15 @@ public class UserResourcePasswordNotSetCheck extends SquidCheck<Grammar> {
   @Override
   public void visitNode(AstNode node) {
     if ("user".equals(node.getTokenValue())) {
-      for (AstNode paramNode : node.getChildren(PuppetGrammar.PARAM)) {
-        if ("password".equals(paramNode.getTokenValue())) {
-          getContext().createLineViolation(this, MESSAGE, paramNode);
+      if (node.getFirstChild(PuppetGrammar.PARAMS) != null) {
+        for (AstNode paramNode : node.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
+          if ("password".equals(paramNode.getTokenValue())) {
+            getContext().createLineViolation(this, MESSAGE, paramNode);
+          }
         }
       }
       for (AstNode resourceInstNode : node.getChildren(PuppetGrammar.RESOURCE_INST)) {
-        for (AstNode paramNode : resourceInstNode.getChildren(PuppetGrammar.PARAM)) {
+        for (AstNode paramNode : resourceInstNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
           if ("password".equals(paramNode.getTokenValue())) {
             getContext().createLineViolation(this, MESSAGE, paramNode);
           }
