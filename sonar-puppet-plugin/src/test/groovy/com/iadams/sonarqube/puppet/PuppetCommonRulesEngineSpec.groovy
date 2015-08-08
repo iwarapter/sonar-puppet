@@ -42,8 +42,8 @@ class PuppetCommonRulesEngineSpec extends Specification {
     PuppetCommonRulesEngine engine = new PuppetCommonRulesEngine()
     CommonRulesRepository repo = engine.newRepository()
 
-    expect:
-    repo.enabledRuleKeys().size() == 4
-    repo.enableInsufficientCommentDensityRule(null) != null
-  }
+        expect:
+        repo.enabledRuleKeys().size() == 2
+        repo.enableInsufficientCommentDensityRule(null) != null
+    }
 }

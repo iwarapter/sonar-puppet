@@ -36,9 +36,6 @@ public class PuppetCommonRulesEngine extends CommonRulesEngine {
   protected void doEnableRules(CommonRulesRepository repository) {
     repository
       .enableDuplicatedBlocksRule()
-      .enableInsufficientCommentDensityRule(null)
-      .enableInsufficientLineCoverageRule(null)
-      .enableInsufficientBranchCoverageRule(null);
+      .enableInsufficientCommentDensityRule(null);
   }
-
 }
