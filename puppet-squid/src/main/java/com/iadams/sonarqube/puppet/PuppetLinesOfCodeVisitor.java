@@ -35,34 +35,34 @@ import static com.sonar.sslr.api.GenericTokenType.EOF;
 
 public class PuppetLinesOfCodeVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> implements AstAndTokenVisitor {
 
-	private final MetricDef metric;
-	private int lastTokenLine;
+  private final MetricDef metric;
+  private int lastTokenLine;
 
-	public PuppetLinesOfCodeVisitor(MetricDef metric){
-		this.metric = metric;
-	}
+  public PuppetLinesOfCodeVisitor(MetricDef metric) {
+    this.metric = metric;
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void	visitFile(AstNode node){
-		lastTokenLine = -1;
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void visitFile(AstNode node) {
+    lastTokenLine = -1;
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void visitToken(Token token){
-		if (!token.getType().equals(EOF)){
-			String[] tokenLines = token.getValue().split("\n", -1);
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void visitToken(Token token) {
+    if (!token.getType().equals(EOF)) {
+      String[] tokenLines = token.getValue().split("\n", -1);
 
-			int firstLineAlreadyCounted = lastTokenLine == token.getLine() ? 1 : 0;
-			getContext().peekSourceCode().add(metric, (double)tokenLines.length - firstLineAlreadyCounted);
+      int firstLineAlreadyCounted = lastTokenLine == token.getLine() ? 1 : 0;
+      getContext().peekSourceCode().add(metric, (double) tokenLines.length - firstLineAlreadyCounted);
 
-			lastTokenLine = token.getLine() + tokenLines.length - 1;
-		}
+      lastTokenLine = token.getLine() + tokenLines.length - 1;
+    }
 
-	}
+  }
 }

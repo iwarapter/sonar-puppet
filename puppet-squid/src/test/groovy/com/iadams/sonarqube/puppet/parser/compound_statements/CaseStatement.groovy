@@ -31,38 +31,38 @@ import static org.sonar.sslr.tests.Assertions.assertThat
 
 public class CaseStatement extends GrammarSpec {
 
-	def setup(){
-		setRootRule(CASE_STMT)
-	}
+  def setup() {
+    setRootRule(CASE_STMT)
+  }
 
-	def "case statement parses correctly"() {
-		expect:
-		assertThat(p).matches('''case $operatingsystem {
+  def "case statement parses correctly"() {
+    expect:
+    assertThat(p).matches('''case $operatingsystem {
 		  'Solaris':          { include role::solaris } # apply the solaris class
 		}''')
-	}
+  }
 
-	def "case with regex option"() {
-		expect:
-		assertThat(p).matches('''case $operatingsystem {
+  def "case with regex option"() {
+    expect:
+    assertThat(p).matches('''case $operatingsystem {
 		  'Solaris':          { include role::solaris } # apply the solaris class
 		  /^(Debian|Ubuntu)$/:{ include role::debian  } # apply the debian class
 		  default:            { include role::generic } # apply the generic class
 		}''')
-	}
+  }
 
-	def "case with list of options"() {
-		expect:
-		assertThat(p).matches('''case $operatingsystem {
+  def "case with list of options"() {
+    expect:
+    assertThat(p).matches('''case $operatingsystem {
 		  'Solaris':          				{ include role::solaris } # apply the solaris class
 		  true, false, 'RedHat', 'CentOS':  { include role::redhat  } # apply the redhat class
 		  default:            				{ include role::generic } # apply the generic class
 		}''')
-	}
+  }
 
-	def "case statement with default"(){
-		expect:
-		assertThat(p).matches('''case $::osfamily {
+  def "case statement with default"() {
+    expect:
+    assertThat(p).matches('''case $::osfamily {
 								  'debian': {
 									$access_log_file      = 'access.log\'
 								  } 'redhat': {
@@ -72,5 +72,5 @@ public class CaseStatement extends GrammarSpec {
 									fail("Unsupported osfamily ${::osfamily}")
 								  }
 								}''')
-	}
+  }
 }

@@ -27,8 +27,8 @@ package com.iadams.sonarqube.puppet
 import spock.lang.Specification
 
 class PuppetPluginSpec extends Specification {
-	def "GetExtensions"() {
-		expect:
-		new PuppetPlugin().getExtensions().size() == 15
-	}
+  def "GetExtensions"() {
+    expect:
+    new PuppetPlugin().getExtensions().size() == 15
+  }
 }

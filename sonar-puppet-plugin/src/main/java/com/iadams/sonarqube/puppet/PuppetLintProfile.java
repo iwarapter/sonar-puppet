@@ -31,14 +31,14 @@ import org.sonar.api.utils.ValidationMessages;
 
 public class PuppetLintProfile extends ProfileDefinition {
 
-    private final XMLProfileParser xmlProfileParser;
+  private final XMLProfileParser xmlProfileParser;
 
-    public PuppetLintProfile(XMLProfileParser xmlProfileParser) {
-        this.xmlProfileParser = xmlProfileParser;
-    }
+  public PuppetLintProfile(XMLProfileParser xmlProfileParser) {
+    this.xmlProfileParser = xmlProfileParser;
+  }
 
-    @Override
-    public RulesProfile createProfile(ValidationMessages messages) {
-        return xmlProfileParser.parseResource(getClass().getClassLoader(), "com/iadams/sonarqube/puppet/pplint/PuppetLintProfile.xml", messages);
-    }
+  @Override
+  public RulesProfile createProfile(ValidationMessages messages) {
+    return xmlProfileParser.parseResource(getClass().getClassLoader(), "com/iadams/sonarqube/puppet/pplint/PuppetLintProfile.xml", messages);
+  }
 }

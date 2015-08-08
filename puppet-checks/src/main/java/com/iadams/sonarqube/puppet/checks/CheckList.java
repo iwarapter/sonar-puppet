@@ -36,10 +36,12 @@ public final class CheckList {
 
   public static List<Class> getChecks() {
     return ImmutableList.<Class>of(
+      ArrowsAlignmentCheck.class,
       CaseWithoutDefaultCheck.class,
       ClassAndDefineNamingConventionCheck.class,
       CommentConventionCheck.class,
       CommentRegularExpressionCheck.class,
+      DocumentClassesAndDefinesCheck.class,
       DeprecatedNodeInheritanceCheck.class,
       DuplicatedParametersCheck.class,
       EnsureOrderingCheck.class,
@@ -50,12 +52,14 @@ public final class CheckList {
       FixmeTagPresenceCheck.class,
       IfStatementWithoutElseClauseCheck.class,
       ImportStatementUsedCheck.class,
+      InheritsAcrossNamespaceCheck.class,
       LineLengthCheck.class,
       MissingNewLineAtEndOfFileCheck.class,
       NestedClassesOrDefinesCheck.class,
       NosonarTagPresenceCheck.class,
       ParsingErrorCheck.class,
       QuotedBooleanCheck.class,
+      RequiredParametersFirstCheck.class,
       ResourceWithSelectorCheck.class,
       RightToLeftChainingArrowsCheck.class,
       SelectorWithoutDefaultCheck.class,

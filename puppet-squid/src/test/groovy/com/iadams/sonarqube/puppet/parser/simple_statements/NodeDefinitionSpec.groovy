@@ -31,33 +31,33 @@ import static org.sonar.sslr.tests.Assertions.assertThat
 
 class NodeDefinitionSpec extends GrammarSpec {
 
-	def setup(){
-		setRootRule(NODE_DEFINITION)
-	}
+  def setup() {
+    setRootRule(NODE_DEFINITION)
+  }
 
-	def "simple node parses correctly"() {
-		expect:
-		assertThat(p).matches("""node 'server1' {
+  def "simple node parses correctly"() {
+    expect:
+    assertThat(p).matches("""node 'server1' {
 									include common
 								}""")
-	}
+  }
 
-	def "nodes can define inheritance"() {
-		expect:
-		assertThat(p).matches("""node 'server1' inherits 'server2' {
+  def "nodes can define inheritance"() {
+    expect:
+    assertThat(p).matches("""node 'server1' inherits 'server2' {
 									include common
 								}""")
-	}
+  }
 
-	def "multi node definition parses correctly"() {
-		expect:
-		assertThat(p).matches("""node 'server1', 'server2', 'server3' {
+  def "multi node definition parses correctly"() {
+    expect:
+    assertThat(p).matches("""node 'server1', 'server2', 'server3' {
 									include common
 								}""")
 
-		assertThat(p).matches("""node 'www1.example.com', 'www2.example.com', 'www3.example.com' {
+    assertThat(p).matches("""node 'www1.example.com', 'www2.example.com', 'www3.example.com' {
 								  include common
 								  include apache, squid
 								}""")
-	}
+  }
 }

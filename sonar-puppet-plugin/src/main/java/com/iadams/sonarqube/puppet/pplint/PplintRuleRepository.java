@@ -34,24 +34,24 @@ import java.util.List;
 
 public class PplintRuleRepository implements RulesDefinition {
 
-    public static final String REPOSITORY_NAME = "Pplint";
-    public static final String REPOSITORY_KEY = REPOSITORY_NAME;
+  public static final String REPOSITORY_NAME = "Pplint";
+  public static final String REPOSITORY_KEY = REPOSITORY_NAME;
 
-    private static final String RULES_FILE = "/com/iadams/sonarqube/puppet/pplint/rules.xml";
-    private static final String SQALE_FILE = "/com/sonar/sqale/puppet-model.xml";
-    private final RulesDefinitionXmlLoader xmlLoader;
+  private static final String RULES_FILE = "/com/iadams/sonarqube/puppet/pplint/rules.xml";
+  private static final String SQALE_FILE = "/com/sonar/sqale/puppet-model.xml";
+  private final RulesDefinitionXmlLoader xmlLoader;
 
-    public PplintRuleRepository(RulesDefinitionXmlLoader xmlLoader) {
-        this.xmlLoader = xmlLoader;
-    }
+  public PplintRuleRepository(RulesDefinitionXmlLoader xmlLoader) {
+    this.xmlLoader = xmlLoader;
+  }
 
-    @Override
-    public void define(Context context){
-        NewRepository repository = context
-                .createRepository(REPOSITORY_KEY, Puppet.KEY)
-                .setName(REPOSITORY_NAME);
-        xmlLoader.load(repository, getClass().getResourceAsStream(RULES_FILE), Charsets.UTF_8.name());
-        SqaleXmlLoader.load(repository, SQALE_FILE);
-        repository.done();
-    }
+  @Override
+  public void define(Context context) {
+    NewRepository repository = context
+      .createRepository(REPOSITORY_KEY, Puppet.KEY)
+      .setName(REPOSITORY_NAME);
+    xmlLoader.load(repository, getClass().getResourceAsStream(RULES_FILE), Charsets.UTF_8.name());
+    SqaleXmlLoader.load(repository, SQALE_FILE);
+    repository.done();
+  }
 }

@@ -1,0 +1,54 @@
+<p>
+For better code readability, all the arrows (hash rocket: <code>=></code> and plusignment: <code>+></code>) should be aligned in:
+<ul>
+    <li>Resource’s attribute/value list</li>
+    <li>Hash's key/value list</li>
+    <li>Selector's case/value list</li>
+</ul>
+Also, arrows should be placed one space ahead of the longest attribute/key/case of the list.
+</p>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+exec { 'cmd':
+  path => '/usr/bin', cwd => '/tmp',   # Noncompliant: there should be only one attribute/value pair per line
+}
+
+exec { 'cmd':
+  path => '/usr/bin',
+  cwd     => '/tmp',      # Noncompliant, some whitespaces should be removed before the hash rocket
+}
+
+exec { 'cmd':
+  path   => '/usr/bin',   # Noncompliant, the hash rocket should be placed one whitespace ahead of 'path'
+  cwd    => '/tmp',       # Noncompliant, the hash rocket should be placed one whitespace ahead of 'path'
+}
+
+myresource { 'test':
+  ensure => present,
+  myhash => {
+   'key1' => 'value1',
+   'key2'   => 'value2',  # Noncompliant, some whitespaces should be removed before the hash rocket
+  },
+}
+</pre>
+<h2>Compliant Solution</h2>
+<pre>
+exec { 'cmd':
+  path => '/usr/bin',
+  cwd  => '/tmp',
+}
+
+myresource { 'test':
+  ensure => present,
+  myhash => {
+   'key1' => 'value1',
+   'key2' => 'value2',
+  },
+}
+</pre>
+<h2>See</h2>
+<ul>
+    <li><a href="https://docs.puppetlabs.com/guides/style_guide.html#arrow-alignment">See Puppet Labs Puppet Language
+        Style Guide</a></li>
+</ul>

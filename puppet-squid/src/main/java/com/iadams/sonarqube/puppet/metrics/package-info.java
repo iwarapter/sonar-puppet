@@ -27,3 +27,4 @@
 package com.iadams.sonarqube.puppet.metrics;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+

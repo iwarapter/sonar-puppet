@@ -40,55 +40,55 @@ import java.util.Set;
 
 public class FileLinesVisitor extends SquidAstVisitor<Grammar> implements AstAndTokenVisitor {
 
-	private final FileLinesContextFactory fileLinesContextFactory;
-	private final FileSystem fileSystem;
+  private final FileLinesContextFactory fileLinesContextFactory;
+  private final FileSystem fileSystem;
 
-	private final Set<Integer> linesOfCode = Sets.newHashSet();
-	private final Set<Integer> linesOfComments = Sets.newHashSet();
+  private final Set<Integer> linesOfCode = Sets.newHashSet();
+  private final Set<Integer> linesOfComments = Sets.newHashSet();
 
-	public FileLinesVisitor(FileLinesContextFactory fileLinesContextFactory, FileSystem fileSystem) {
-		this.fileLinesContextFactory = fileLinesContextFactory;
-		this.fileSystem = fileSystem;
-	}
+  public FileLinesVisitor(FileLinesContextFactory fileLinesContextFactory, FileSystem fileSystem) {
+    this.fileLinesContextFactory = fileLinesContextFactory;
+    this.fileSystem = fileSystem;
+  }
 
-	@Override
-	public void visitToken(Token token) {
-		if (token.getType().equals(GenericTokenType.EOF)) {
-			return;
-		}
+  @Override
+  public void visitToken(Token token) {
+    if (token.getType().equals(GenericTokenType.EOF)) {
+      return;
+    }
 
-		if (token.getType() != PuppetTokenType.DEDENT && token.getType() != PuppetTokenType.INDENT && token.getType() != PuppetTokenType.NEWLINE) {
+    if (token.getType() != PuppetTokenType.DEDENT && token.getType() != PuppetTokenType.INDENT && token.getType() != PuppetTokenType.NEWLINE) {
       /* Handle all the lines of the token */
-			String[] tokenLines = token.getValue().split("\n", -1);
-			for (int line = token.getLine(); line < token.getLine() + tokenLines.length; line++) {
-				linesOfCode.add(line);
-			}
-		}
+      String[] tokenLines = token.getValue().split("\n", -1);
+      for (int line = token.getLine(); line < token.getLine() + tokenLines.length; line++) {
+        linesOfCode.add(line);
+      }
+    }
 
-		List<Trivia> trivias = token.getTrivia();
-		for (Trivia trivia : trivias) {
-			if (trivia.isComment()) {
-				linesOfComments.add(trivia.getToken().getLine());
-			}
-		}
-	}
+    List<Trivia> trivias = token.getTrivia();
+    for (Trivia trivia : trivias) {
+      if (trivia.isComment()) {
+        linesOfComments.add(trivia.getToken().getLine());
+      }
+    }
+  }
 
-	@Override
-	public void leaveFile(AstNode astNode) {
-		InputFile inputFile = fileSystem.inputFile(fileSystem.predicates().is(getContext().getFile()));
-		if( inputFile == null ){
-			throw new IllegalStateException("InputFile is null, but it should not be.");
-		}
-		FileLinesContext fileLinesContext = fileLinesContextFactory.createFor(inputFile);
+  @Override
+  public void leaveFile(AstNode astNode) {
+    InputFile inputFile = fileSystem.inputFile(fileSystem.predicates().is(getContext().getFile()));
+    if (inputFile == null) {
+      throw new IllegalStateException("InputFile is null, but it should not be.");
+    }
+    FileLinesContext fileLinesContext = fileLinesContextFactory.createFor(inputFile);
 
-		int fileLength = getContext().peekSourceCode().getInt(PuppetMetric.LINES);
-		for (int line = 1; line <= fileLength; line++) {
-			fileLinesContext.setIntValue(CoreMetrics.NCLOC_DATA_KEY, line, linesOfCode.contains(line) ? 1 : 0);
-			fileLinesContext.setIntValue(CoreMetrics.COMMENT_LINES_DATA_KEY, line, linesOfComments.contains(line) ? 1 : 0);
-		}
-		fileLinesContext.save();
+    int fileLength = getContext().peekSourceCode().getInt(PuppetMetric.LINES);
+    for (int line = 1; line <= fileLength; line++) {
+      fileLinesContext.setIntValue(CoreMetrics.NCLOC_DATA_KEY, line, linesOfCode.contains(line) ? 1 : 0);
+      fileLinesContext.setIntValue(CoreMetrics.COMMENT_LINES_DATA_KEY, line, linesOfComments.contains(line) ? 1 : 0);
+    }
+    fileLinesContext.save();
 
-		linesOfCode.clear();
-		linesOfComments.clear();
-	}
+    linesOfCode.clear();
+    linesOfComments.clear();
+  }
 }

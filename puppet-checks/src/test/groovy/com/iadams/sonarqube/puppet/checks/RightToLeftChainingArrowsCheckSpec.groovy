@@ -31,7 +31,8 @@ import spock.lang.Specification
 
 class RightToLeftChainingArrowsCheckSpec extends Specification {
 
-  private static final String MESSAGE = "Rework the code to use left-to-right chaining arrows instead of right-to-left chaining arrows.";
+  private static
+  final String MESSAGE = "Rework the code to use left-to-right chaining arrows instead of right-to-left chaining arrows.";
 
   def "validate check"() {
     given:

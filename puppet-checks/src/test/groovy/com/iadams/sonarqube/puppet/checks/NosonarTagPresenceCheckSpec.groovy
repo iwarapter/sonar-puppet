@@ -31,46 +31,46 @@ import spock.lang.Specification
 
 class NosonarTagPresenceCheckSpec extends Specification {
 
-    private static final String MESSAGE = "Is NOSONAR used to exclude false positive or to hide real quality flaw?";
-    private final NosonarTagPresenceCheck check = new NosonarTagPresenceCheck();
+  private static final String MESSAGE = "Is NOSONAR used to exclude false positive or to hide real quality flaw?";
+  private final NosonarTagPresenceCheck check = new NosonarTagPresenceCheck();
 
-    def "file should contain some NOSONAR tags"() {
-        given:
-        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/NosonarTagPresence.pp"), check);
+  def "file should contain some NOSONAR tags"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/NosonarTagPresence.pp"), check);
 
-        expect:
-        CheckMessagesVerifier.verify(file.getCheckMessages())
-                .next().atLine(1).withMessage(MESSAGE)
-                .next().atLine(2).withMessage(MESSAGE)
-                .next().atLine(4).withMessage(MESSAGE)
-                .next().atLine(5).withMessage(MESSAGE)
-                .next().atLine(6).withMessage(MESSAGE)
-                .next().atLine(7).withMessage(MESSAGE)
-                .next().atLine(9).withMessage(MESSAGE)
-                .next().atLine(12).withMessage(MESSAGE)
-                .next().atLine(13).withMessage(MESSAGE)
-                .next().atLine(14).withMessage(MESSAGE)
-                .next().atLine(16).withMessage(MESSAGE)
-                .next().atLine(17).withMessage(MESSAGE)
-                .next().atLine(18).withMessage(MESSAGE)
-                .next().atLine(19).withMessage(MESSAGE)
-                .next().atLine(20).withMessage(MESSAGE)
-                .next().atLine(23).withMessage(MESSAGE)
-                .next().atLine(24).withMessage(MESSAGE)
-                .next().atLine(25).withMessage(MESSAGE)
-                .next().atLine(27).withMessage(MESSAGE)
-                .next().atLine(28).withMessage(MESSAGE)
-                .next().atLine(29).withMessage(MESSAGE)
-                .next().atLine(30).withMessage(MESSAGE)
-                .next().atLine(31).withMessage(MESSAGE)
-                .noMore();
-    }
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(1).withMessage(MESSAGE)
+      .next().atLine(2).withMessage(MESSAGE)
+      .next().atLine(4).withMessage(MESSAGE)
+      .next().atLine(5).withMessage(MESSAGE)
+      .next().atLine(6).withMessage(MESSAGE)
+      .next().atLine(7).withMessage(MESSAGE)
+      .next().atLine(9).withMessage(MESSAGE)
+      .next().atLine(12).withMessage(MESSAGE)
+      .next().atLine(13).withMessage(MESSAGE)
+      .next().atLine(14).withMessage(MESSAGE)
+      .next().atLine(16).withMessage(MESSAGE)
+      .next().atLine(17).withMessage(MESSAGE)
+      .next().atLine(18).withMessage(MESSAGE)
+      .next().atLine(19).withMessage(MESSAGE)
+      .next().atLine(20).withMessage(MESSAGE)
+      .next().atLine(23).withMessage(MESSAGE)
+      .next().atLine(24).withMessage(MESSAGE)
+      .next().atLine(25).withMessage(MESSAGE)
+      .next().atLine(27).withMessage(MESSAGE)
+      .next().atLine(28).withMessage(MESSAGE)
+      .next().atLine(29).withMessage(MESSAGE)
+      .next().atLine(30).withMessage(MESSAGE)
+      .next().atLine(31).withMessage(MESSAGE)
+      .noMore();
+  }
 
-    def "file should not contain any NOSONAR tags"() {
-        given:
-        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/EnsureOrdering.pp"), check);
+  def "file should not contain any NOSONAR tags"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/EnsureOrdering.pp"), check);
 
-        expect:
-        CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
-    }
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+  }
 }

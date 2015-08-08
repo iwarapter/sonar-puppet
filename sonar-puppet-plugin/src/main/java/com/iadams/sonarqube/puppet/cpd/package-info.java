@@ -27,3 +27,4 @@
 package com.iadams.sonarqube.puppet.cpd;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+

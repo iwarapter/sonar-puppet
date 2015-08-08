@@ -41,26 +41,26 @@ import java.util.Iterator;
 import java.util.regex.Pattern;
 
 @Rule(
-		key = "CommentConvention",
-		name = "All comments should be formatted consistently",
-		priority = Priority.MINOR,
-		tags = {Tags.CONVENTION})
+  key = "CommentConvention",
+  name = "All comments should be formatted consistently",
+  priority = Priority.MINOR,
+  tags = {Tags.CONVENTION})
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("1min")
 public class CommentConventionCheck extends SquidCheck<LexerlessGrammar> implements AstAndTokenVisitor {
 
-	Pattern pattern = Pattern.compile(PuppetLexer.SLASH_LINE_COMMENT + "|" + PuppetLexer.MULTI_LINE_COMMENT);
+  Pattern pattern = Pattern.compile(PuppetLexer.SLASH_LINE_COMMENT + "|" + PuppetLexer.MULTI_LINE_COMMENT);
 
-	@Override
-	public void visitToken(Token token) {
-		Iterator iterator = token.getTrivia().iterator();
-		while (iterator.hasNext()) {
-			Trivia trivia = (Trivia) iterator.next();
-			if (trivia.isComment() && pattern.matcher(trivia.getToken().getOriginalValue()).matches()) {
-				this.getContext().createLineViolation(this, "Use starting comment token '#' instead.", trivia.getToken());
-			}
-		}
-	}
+  @Override
+  public void visitToken(Token token) {
+    Iterator iterator = token.getTrivia().iterator();
+    while (iterator.hasNext()) {
+      Trivia trivia = (Trivia) iterator.next();
+      if (trivia.isComment() && pattern.matcher(trivia.getToken().getOriginalValue()).matches()) {
+        this.getContext().createLineViolation(this, "Use starting comment token '#' instead.", trivia.getToken());
+      }
+    }
+  }
 
 }

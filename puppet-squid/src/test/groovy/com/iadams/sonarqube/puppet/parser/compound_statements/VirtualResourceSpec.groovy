@@ -31,18 +31,18 @@ import static org.sonar.sslr.tests.Assertions.assertThat
 
 public class VirtualResourceSpec extends GrammarSpec {
 
-	def setup(){
-		setRootRule(VIRTUAL_RESOURCE)
-	}
+  def setup() {
+    setRootRule(VIRTUAL_RESOURCE)
+  }
 
-	def "virtual resources pass"() {
-		expect:
-		assertThat(p).matches('''@user {'deploy':
+  def "virtual resources pass"() {
+    expect:
+    assertThat(p).matches('''@user {'deploy':
 								  uid     => 2004,
 								  comment => 'Deployment User',
 								  group   => www-data,
 								  groups  => ["enterprise"],
 								  tag     => [deploy, web],
 								}''')
-	}
+  }
 }

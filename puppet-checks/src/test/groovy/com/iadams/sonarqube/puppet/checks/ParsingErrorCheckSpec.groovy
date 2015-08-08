@@ -31,13 +31,13 @@ import spock.lang.Specification
 
 class ParsingErrorCheckSpec extends Specification {
 
-	def "files that dont parse are marked"(){
-		given:
-		SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/parsingError.pp"), new ParsingErrorCheck());
+  def "files that dont parse are marked"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/parsingError.pp"), new ParsingErrorCheck());
 
-		expect:
-		CheckMessagesVerifier.verify(file.getCheckMessages())
-				.next().atLine(1)
-				.noMore();
-	}
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(1)
+      .noMore();
+  }
 }

@@ -31,19 +31,19 @@ import spock.lang.Specification
 
 class ResourceWithSelectorCheckSpec extends Specification {
 
-    private static final String MESSAGE = "Extract this conditional from the resource declaration.";
+  private static final String MESSAGE = "Extract this conditional from the resource declaration.";
 
-	def "validate check"() {
-        given:
-        final ResourceWithSelectorCheck check = new ResourceWithSelectorCheck();
-        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/resource_with_selector.pp"), check);
+  def "validate check"() {
+    given:
+    final ResourceWithSelectorCheck check = new ResourceWithSelectorCheck();
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/resource_with_selector.pp"), check);
 
-        expect:
-        CheckMessagesVerifier.verify(file.getCheckMessages())
-                .next().atLine(2).withMessage(MESSAGE)
-                .next().atLine(20).withMessage(MESSAGE)
-                .next().atLine(26).withMessage(MESSAGE)
-                .next().atLine(33).withMessage(MESSAGE)
-                .noMore();
-    }
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(2).withMessage(MESSAGE)
+      .next().atLine(20).withMessage(MESSAGE)
+      .next().atLine(26).withMessage(MESSAGE)
+      .next().atLine(33).withMessage(MESSAGE)
+      .noMore();
+  }
 }

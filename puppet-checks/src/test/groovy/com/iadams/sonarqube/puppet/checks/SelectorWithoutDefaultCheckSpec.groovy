@@ -31,16 +31,16 @@ import spock.lang.Specification
 
 class SelectorWithoutDefaultCheckSpec extends Specification {
 
-    private static final String MESSAGE = "Add a default case.";
+  private static final String MESSAGE = "Add a default case.";
 
-    def "validate check"() {
-        given:
-        final SelectorWithoutDefaultCheck check = new SelectorWithoutDefaultCheck();
-        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/selector_without_default.pp"), check);
+  def "validate check"() {
+    given:
+    final SelectorWithoutDefaultCheck check = new SelectorWithoutDefaultCheck();
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/selector_without_default.pp"), check);
 
-        expect:
-        CheckMessagesVerifier.verify(file.getCheckMessages())
-                .next().atLine(6).withMessage(MESSAGE)
-                .noMore();
-    }
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(6).withMessage(MESSAGE)
+      .noMore();
+  }
 }

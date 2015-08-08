@@ -31,23 +31,23 @@ import spock.lang.Specification
 
 class MissingNewLineAtEndOfFileCheckSpec extends Specification {
 
-    def "ends with a new line"() {
-        given:
-        MissingNewLineAtEndOfFileCheck check = new MissingNewLineAtEndOfFileCheck();
+  def "ends with a new line"() {
+    given:
+    MissingNewLineAtEndOfFileCheck check = new MissingNewLineAtEndOfFileCheck();
 
-        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/NewLineEndOfFile.pp"), check);
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/NewLineEndOfFile.pp"), check);
 
-        expect:
-        CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
-    }
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+  }
 
-    def "does not end with a new line"() {
-        given:
-        MissingNewLineAtEndOfFileCheck check = new MissingNewLineAtEndOfFileCheck();
+  def "does not end with a new line"() {
+    given:
+    MissingNewLineAtEndOfFileCheck check = new MissingNewLineAtEndOfFileCheck();
 
-        SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/NoNewLineEndOfFile.pp"), check);
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/NoNewLineEndOfFile.pp"), check);
 
-        expect:
-        CheckMessagesVerifier.verify(file.getCheckMessages()).next().withMessage("Add an empty new line at the end of this file.").noMore();
-    }
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages()).next().withMessage("Add an empty new line at the end of this file.").noMore();
+  }
 }

@@ -29,20 +29,20 @@ import spock.lang.Specification
 
 class PplintConfigurationSpec extends Specification {
 
-    private Settings settings
-    private PplintConfiguration pplintConfiguration
+  private Settings settings
+  private PplintConfiguration pplintConfiguration
 
-    def setup(){
-        settings = new Settings()
-        pplintConfiguration = new PplintConfiguration(settings)
-    }
+  def setup() {
+    settings = new Settings()
+    pplintConfiguration = new PplintConfiguration(settings)
+  }
 
-    def "GetPplintPath"() {
-        given:
-        def path = "test/path"
-        settings.setProperty(PplintConfiguration.PPLINT_KEY, path)
+  def "GetPplintPath"() {
+    given:
+    def path = "test/path"
+    settings.setProperty(PplintConfiguration.PPLINT_KEY, path)
 
-        expect:
-        pplintConfiguration.getPplintPath() == path
-    }
+    expect:
+    pplintConfiguration.getPplintPath() == path
+  }
 }
