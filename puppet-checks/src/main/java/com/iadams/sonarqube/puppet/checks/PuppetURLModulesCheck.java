@@ -1,0 +1,107 @@
+/*
+ * SonarQube Puppet Plugin
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2015 Iain Adams and David RACODON
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package com.iadams.sonarqube.puppet.checks;
+
+import com.iadams.sonarqube.puppet.api.PuppetGrammar;
+import com.sonar.sslr.api.AstNode;
+import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.check.Priority;
+import org.sonar.check.Rule;
+import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
+import org.sonar.squidbridge.checks.SquidCheck;
+import org.sonar.sslr.parser.LexerlessGrammar;
+
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL;
+
+@Rule(
+  key = "PuppetURLModules",
+  name = "\"Puppet:///\" URL path should start with \"modules/\"",
+  priority = Priority.CRITICAL,
+  tags = {Tags.PITFALL})
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.INSTRUCTION_RELIABILITY)
+@SqaleConstantRemediation("10min")
+@ActivatedByDefault
+public class PuppetURLModulesCheck extends SquidCheck<LexerlessGrammar> {
+
+  @Override
+  public void init() {
+    subscribeTo(PuppetGrammar.RESOURCE, PuppetGrammar.RESOURCE_OVERRIDE);
+  }
+
+  @Override
+  public void visitNode(AstNode node) {
+    if (node.is(PuppetGrammar.RESOURCE)) {
+      checkResourceInstance(node);
+      checkResourceDefault(node);
+    } else if (node.is(PuppetGrammar.RESOURCE_OVERRIDE)) {
+      checkResourceOverride(node);
+    }
+  }
+
+  private void checkResourceInstance(AstNode resourceNode) {
+    if ("file".equals(resourceNode.getTokenValue())) {
+      for (AstNode resourceInstNode : resourceNode.getChildren(PuppetGrammar.RESOURCE_INST)) {
+        for (AstNode paramNode : resourceInstNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
+          if ("source".equals(paramNode.getTokenValue())) {
+            checkSourcePath(paramNode.getFirstChild(PuppetGrammar.EXPRESSION));
+          }
+        }
+      }
+    }
+  }
+
+  private void checkResourceDefault(AstNode resourceNode) {
+    if ("File".equals(resourceNode.getTokenValue())) {
+      for (AstNode paramNode : resourceNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
+        if ("source".equals(paramNode.getTokenValue())) {
+          checkSourcePath(paramNode.getFirstChild(PuppetGrammar.EXPRESSION));
+        }
+      }
+    }
+  }
+
+  private void checkResourceOverride(AstNode resourceOverrideNode) {
+    if ("File".equals(resourceOverrideNode.getTokenValue())) {
+      for (AstNode paramNode : resourceOverrideNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
+        if ("source".equals(paramNode.getTokenValue())) {
+          checkSourcePath(paramNode.getFirstChild(PuppetGrammar.EXPRESSION));
+        }
+      }
+    }
+  }
+
+  private void checkSourcePath(AstNode node) {
+    if ((node.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL) || node.getToken().getType().equals(SINGLE_QUOTED_STRING_LITERAL))
+      && node.getTokenValue().substring(1).startsWith("puppet:///")
+      && !node.getTokenValue().substring(1).startsWith("puppet:///modules/")
+      && !node.getTokenValue().substring(1).startsWith("puppet:///$")) {
+      getContext().createLineViolation(this, "Add \"modules/\" to the path.", node);
+    }
+  }
+
+}

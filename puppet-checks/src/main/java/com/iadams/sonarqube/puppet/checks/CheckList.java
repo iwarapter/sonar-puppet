@@ -55,6 +55,7 @@ public final class CheckList {
       NestedClassesOrDefinesCheck.class,
       NosonarTagPresenceCheck.class,
       ParsingErrorCheck.class,
+      PuppetURLModulesCheck.class,
       QuotedBooleanCheck.class,
       ResourceWithSelectorCheck.class,
       RightToLeftChainingArrowsCheck.class,

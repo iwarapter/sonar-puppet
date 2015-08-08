@@ -284,9 +284,11 @@ file { '/etc/apache/apache2.conf':
       <pre>
 file { '/etc/apache/apache2.conf':
   source => 'puppet:///modules/apache2/etc/apache/apache2.conf',
-}</pre>]]>
+}</pre>
+<p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:PuppetURLModules">PuppetURLModules</a> instead.</p>]]>
     </description>
     <priority>CRITICAL</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>unquoted_resource_title</key>

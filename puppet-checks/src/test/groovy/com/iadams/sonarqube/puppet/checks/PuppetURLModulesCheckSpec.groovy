@@ -29,37 +29,26 @@ import org.sonar.squidbridge.api.SourceFile
 import org.sonar.squidbridge.checks.CheckMessagesVerifier
 import spock.lang.Specification
 
-class HashRocketsAlignmentCheckSpec extends Specification {
+class PuppetURLModulesCheckSpec extends Specification {
 
-  private static final String MESSAGE = "Properly align hash rockets (hash rockets are not all placed at the same column).";
-  private static final String MESSAGE_SPACE = "Properly align hash rockets (hash rockets are not placed one space ahead of the longest attribute).";
+  private static final String MESSAGE = "Add \"modules/\" to the path.";
 
   def "validate rule"() {
     given:
-    SourceFile file = PuppetAstScanner.scanSingleFile(
-      new File("src/test/resources/checks/hash_rockets_alignment.pp"),
-      new HashRocketsAlignmentCheck()
-    );
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/puppet_url_modules.pp"),
+      new PuppetURLModulesCheck());
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(8).withMessage(MESSAGE_SPACE)
-      .next().atLine(17).withMessage(MESSAGE)
+      .next().atLine(2).withMessage(MESSAGE)
+      .next().atLine(6).withMessage(MESSAGE)
+      .next().atLine(10).withMessage(MESSAGE)
+      .next().atLine(18).withMessage(MESSAGE)
       .next().atLine(22).withMessage(MESSAGE)
-      .next().atLine(27).withMessage(MESSAGE_SPACE)
-      .next().atLine(40).withMessage(MESSAGE_SPACE)
-      .next().atLine(49).withMessage(MESSAGE)
-      .next().atLine(54).withMessage(MESSAGE)
-      .next().atLine(59).withMessage(MESSAGE_SPACE)
-      .next().atLine(67).withMessage(MESSAGE_SPACE)
-      .next().atLine(76).withMessage(MESSAGE)
-      .next().atLine(81).withMessage(MESSAGE)
-      .next().atLine(86).withMessage(MESSAGE_SPACE)
-      .next().atLine(92).withMessage(MESSAGE)
-      .next().atLine(99).withMessage(MESSAGE_SPACE)
-      .next().atLine(103).withMessage(MESSAGE)
-      .next().atLine(116).withMessage(MESSAGE)
-      .next().atLine(121).withMessage(MESSAGE_SPACE)
+      .next().atLine(26).withMessage(MESSAGE)
+      .next().atLine(34).withMessage(MESSAGE)
+      .next().atLine(38).withMessage(MESSAGE)
+      .next().atLine(42).withMessage(MESSAGE)
       .noMore();
   }
 }
