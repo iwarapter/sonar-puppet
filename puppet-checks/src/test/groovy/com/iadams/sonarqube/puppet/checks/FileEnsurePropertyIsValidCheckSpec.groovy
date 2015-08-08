@@ -31,7 +31,7 @@ import spock.lang.Specification
 
 class FileEnsurePropertyIsValidCheckSpec extends Specification {
 
-  private static final String MESSAGE = "Remove the file reference and use link instead.";
+  private static final String MESSAGE = "Fix the invalid \"ensure\" property.";
 
   def "validate rule"() {
     given:
@@ -42,6 +42,11 @@ class FileEnsurePropertyIsValidCheckSpec extends Specification {
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(7).withMessage(MESSAGE)
       .next().atLine(20).withMessage(MESSAGE)
+      .next().atLine(47).withMessage(MESSAGE)
+      .next().atLine(51).withMessage(MESSAGE)
+      .next().atLine(55).withMessage(MESSAGE)
+      .next().atLine(59).withMessage(MESSAGE)
+      .next().atLine(64).withMessage(MESSAGE)
       .next().atLine(68).withMessage(MESSAGE)
       .next().atLine(76).withMessage(MESSAGE)
       .noMore();

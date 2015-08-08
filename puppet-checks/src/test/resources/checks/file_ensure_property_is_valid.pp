@@ -44,24 +44,24 @@ file { '/etc/current':
 
 
 file { '/etc/example':
-  ensure  => 'directory',
+  ensure  => 'directory',  # Noncompliant
 }
 
 file { '/etc/example':
-  ensure  => 'absent',
+  ensure  => 'absent',  # Noncompliant
 }
 
 file { '/etc/example':
-  ensure  => 'false',
+  ensure  => 'false',  # Noncompliant
 }
 
 file { '/etc/example':
-  ensure  => 'file',
+  ensure  => 'file',  # Noncompliant
 }
 
 file { '/etc/current':
   target  => '/etc/example',
-  ensure  => 'link',
+  ensure  => 'link',  # Noncompliant
 }
 
 File {

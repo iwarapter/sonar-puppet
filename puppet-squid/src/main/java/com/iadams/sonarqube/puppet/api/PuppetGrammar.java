@@ -483,10 +483,9 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 		)).skip();
     }
 
-    /**
+    /*
      * Expressions
      * https://docs.puppetlabs.com/puppet/latest/reference/lang_expressions.html
-     * @param b
      */
     public static void expressions(LexerfulGrammarBuilder b){
 
@@ -495,9 +494,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 HASH_ARRAY_ACCESSES,
                 RIGHT_VALUE,
                 HASH,
-
                 //ARRAY_SECTIONING_STMT,
-                RIGHT_VALUE,
                 RESOURCE_REF));
 
         b.rule(EXPRESSIONS).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION)).skip();
@@ -586,7 +583,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
                 VARIABLE,
                 ARRAY,
                 RESOURCE_REF,
-                UNDEF));
+                UNDEF)).skip();
 
         //<literals> ::= <float> | <integer> | <hex-integer> | <octal-integer> | <quoted-string>
         b.rule(LITERALS).is(b.firstOf(

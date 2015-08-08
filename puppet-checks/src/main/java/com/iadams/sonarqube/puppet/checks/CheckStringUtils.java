@@ -24,8 +24,6 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
-import com.iadams.sonarqube.puppet.api.PuppetTokenType;
-import com.sonar.sslr.api.AstNode;
 import java.util.regex.Pattern;
 
 public class CheckStringUtils {
@@ -52,13 +50,6 @@ public class CheckStringUtils {
 
   public static boolean containsSpecialCharacter(String string) {
     return Pattern.compile(REGEX_CONTAINING_SPECIAL_CHARACTER).matcher(string).matches();
-  }
-
-  public static boolean isNodeStringLiteral(AstNode node){
-    if(node.getToken().getType().equals(PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL) || node.getToken().getType().equals(PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL)){
-      return true;
-    }
-    return false;
   }
 
 }

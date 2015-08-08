@@ -1,20 +1,35 @@
-<p>Whether the file should exist, and if so what kind of file it should be. Possible values are present, absent (also called false), file, directory, and link.</p>
-<p>However, we recommend using link and target explicitly, since this behavior can be harder to read.</p>
+<p>Checks that "ensure" properties of "file" resources are valid. Possible values are unquoted:
+<ul>
+    <li><code>present</code></li>
+    <li><code>absent</code></li>
+    <li><code>false</code></li>
+    <li><code>file</code></li>
+    <li><code>directory</code></li>
+    <li><code>link</code></li>
+</ul>
 
 <h2>Noncompliant Code Example</h2>
-
 <pre>
-file { '/tmp/foo':
-  ensure => '/tmp/bar',
-}</pre>
+file { '/var/log/syslog':
+  ensure => 'present',            # Noncompliant: quotes should be removed
+}
+
+file { '/var/log/syslog':
+  ensure => '/var/log/messages',  # Noncompliant: 'link' value and 'target' attribute should be used instead
+}
+</pre>
 
 <h2>Compliant Solution</h2>
-
 <pre>
-file { '/tmp/foo':
+file { '/var/log/syslog':
+  ensure => present,
+}
+
+file { '/var/log/syslog':
   ensure => link,
-  target => '/tmp/bar',
-}</pre>
+  target => '/var/log/messages',
+}
+</pre>
 
 <h2>See</h2>
 <ul>

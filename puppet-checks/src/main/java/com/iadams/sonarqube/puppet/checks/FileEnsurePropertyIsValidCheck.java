@@ -1,4 +1,4 @@
-/**
+/*
  * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
@@ -25,6 +25,7 @@
 package com.iadams.sonarqube.puppet.checks;
 
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
+import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
@@ -37,15 +38,15 @@ import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "FileEnsurePropertyIsValid",
-  priority = Priority.MINOR,
+  priority = Priority.CRITICAL,
   name = "\"ensure\" property of file resource should be valid",
-  tags = { Tags.CONFUSING, Tags.CONVENTION})
+  tags = {Tags.BUG})
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.INSTRUCTION_RELIABILITY)
 @SqaleConstantRemediation("10min")
 public class FileEnsurePropertyIsValidCheck extends SquidCheck<Grammar> {
 
-  private static final String ACCEPTED_NAMES = "('|\")?(present|absent|false|file|directory|link)('|\")?";
+  private static final String ACCEPTED_NAMES = "present|absent|file|directory|link";
 
   @Override
   public void init() {
@@ -62,18 +63,11 @@ public class FileEnsurePropertyIsValidCheck extends SquidCheck<Grammar> {
     }
   }
 
-  private void checkResourceInstance(AstNode resourceNode){
+  private void checkResourceInstance(AstNode resourceNode) {
     if ("file".equals(resourceNode.getTokenValue())) {
-      for(AstNode instNode : resourceNode.getChildren(PuppetGrammar.RESOURCE_INST)){
-        for(AstNode paramNode : instNode.getChildren(PuppetGrammar.PARAM)){
-          if(paramNode.getTokenValue().equals("ensure")){
-            AstNode expression = paramNode.getFirstChild().getNextSibling().getNextSibling();
-            if(CheckStringUtils.isNodeStringLiteral(expression)){
-              if(!CheckStringUtils.containsOnlyVariable(expression.getTokenValue()) && !expression.getTokenValue().matches(ACCEPTED_NAMES) ) {
-                getContext().createLineViolation(this, "Remove the file reference and use link instead.", expression, expression.getTokenValue());
-              }
-            }
-          }
+      for (AstNode instNode : resourceNode.getChildren(PuppetGrammar.RESOURCE_INST)) {
+        for (AstNode paramNode : instNode.getChildren(PuppetGrammar.PARAM)) {
+          checkEnsureValid(paramNode);
         }
       }
     }
@@ -82,14 +76,7 @@ public class FileEnsurePropertyIsValidCheck extends SquidCheck<Grammar> {
   private void checkResourceDefault(AstNode resourceNode) {
     if ("File".equals(resourceNode.getTokenValue())) {
       for (AstNode paramNode : resourceNode.getChildren(PuppetGrammar.PARAM)) {
-        if(paramNode.getTokenValue().equals("ensure")){
-          AstNode expression = paramNode.getFirstChild().getNextSibling().getNextSibling();
-          if(CheckStringUtils.isNodeStringLiteral(expression)){
-            if(!CheckStringUtils.containsOnlyVariable(expression.getTokenValue()) && !expression.getTokenValue().matches(ACCEPTED_NAMES) ) {
-              getContext().createLineViolation(this, "Remove the file reference and use link instead.", expression, expression.getTokenValue());
-            }
-          }
-        }
+        checkEnsureValid(paramNode);
       }
     }
   }
@@ -97,15 +84,19 @@ public class FileEnsurePropertyIsValidCheck extends SquidCheck<Grammar> {
   private void checkResourceOverride(AstNode resourceOverrideNode) {
     if ("File".equals(resourceOverrideNode.getTokenValue())) {
       for (AstNode paramNode : resourceOverrideNode.getChildren(PuppetGrammar.PARAM)) {
-        if(paramNode.getTokenValue().equals("ensure")){
-          AstNode expression = paramNode.getFirstChild().getNextSibling().getNextSibling();
-          if(CheckStringUtils.isNodeStringLiteral(expression)){
-            if(!CheckStringUtils.containsOnlyVariable(expression.getTokenValue()) && !expression.getTokenValue().matches(ACCEPTED_NAMES) ) {
-              getContext().createLineViolation(this, "Remove the file reference and use link instead.", expression, expression.getTokenValue());
-            }
-          }
-        }
+        checkEnsureValid(paramNode);
       }
     }
   }
+
+  private void checkEnsureValid(AstNode paramNode) {
+    if (paramNode.getTokenValue().equals("ensure")) {
+      AstNode expression = paramNode.getFirstChild(PuppetGrammar.EXPRESSION);
+      if (expression.getFirstChild(PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL, PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL) != null
+        || expression.getFirstChild(PuppetTokenType.NAME) != null && !expression.getFirstChild(PuppetTokenType.NAME).getTokenValue().matches(ACCEPTED_NAMES)) {
+        getContext().createLineViolation(this, "Fix the invalid \"ensure\" property.", paramNode);
+      }
+    }
+  }
+
 }
