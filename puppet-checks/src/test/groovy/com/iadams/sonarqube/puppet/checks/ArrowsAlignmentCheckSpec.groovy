@@ -29,25 +29,40 @@ import org.sonar.squidbridge.api.SourceFile
 import org.sonar.squidbridge.checks.CheckMessagesVerifier
 import spock.lang.Specification
 
-class DuplicatedParametersCheckSpec extends Specification {
+class ArrowsAlignmentCheckSpec extends Specification {
 
-  private final static String MESSAGE = "Remove the duplicated parameter \"owner\".";
+  private static final String MESSAGE = "Properly align arrows (arrows are not all placed at the same column).";
+  private static final String MESSAGE_SPACE = "Properly align arrows (arrows are not all placed one space ahead of the longest attribute).";
 
   def "validate rule"() {
     given:
-    DuplicatedParametersCheck check = new DuplicatedParametersCheck();
-    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/DuplicatedParameters.pp"), check);
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/arrows_alignment.pp"),
+      new ArrowsAlignmentCheck()
+    );
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(5).withMessage(MESSAGE)
-      .next().atLine(18).withMessage(MESSAGE)
-      .next().atLine(21).withMessage(MESSAGE)
-      .next().atLine(27).withMessage(MESSAGE)
-      .next().atLine(36).withMessage(MESSAGE)
-      .next().atLine(48).withMessage(MESSAGE)
-      .next().atLine(53).withMessage(MESSAGE)
-      .next().atLine(58).withMessage(MESSAGE)
+      .next().atLine(8).withMessage(MESSAGE_SPACE)
+      .next().atLine(17).withMessage(MESSAGE)
+      .next().atLine(22).withMessage(MESSAGE)
+      .next().atLine(27).withMessage(MESSAGE_SPACE)
+      .next().atLine(40).withMessage(MESSAGE_SPACE)
+      .next().atLine(49).withMessage(MESSAGE)
+      .next().atLine(54).withMessage(MESSAGE)
+      .next().atLine(59).withMessage(MESSAGE_SPACE)
+      .next().atLine(67).withMessage(MESSAGE_SPACE)
+      .next().atLine(76).withMessage(MESSAGE)
+      .next().atLine(81).withMessage(MESSAGE)
+      .next().atLine(86).withMessage(MESSAGE_SPACE)
+      .next().atLine(92).withMessage(MESSAGE)
+      .next().atLine(99).withMessage(MESSAGE_SPACE)
+      .next().atLine(103).withMessage(MESSAGE)
+      .next().atLine(116).withMessage(MESSAGE)
+      .next().atLine(121).withMessage(MESSAGE_SPACE)
+      .next().atLine(131).withMessage(MESSAGE)
+      .next().atLine(136).withMessage(MESSAGE)
+      .next().atLine(141).withMessage(MESSAGE_SPACE)
       .noMore();
   }
 }

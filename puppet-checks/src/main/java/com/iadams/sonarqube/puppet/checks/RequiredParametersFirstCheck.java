@@ -24,12 +24,10 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
-import com.google.common.collect.Lists;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
+import com.iadams.sonarqube.puppet.api.PuppetPunctuator;
 import com.sonar.sslr.api.AstNode;
-
-import java.util.List;
-
+import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -37,33 +35,31 @@ import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
-  key = "DuplicatedParameters",
-  name = "Duplicated parameters should be removed",
-  priority = Priority.CRITICAL,
-  tags = {Tags.BUG})
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.DATA_RELIABILITY)
-@SqaleConstantRemediation("5min")
+  key = "RequiredParametersFirst",
+  priority = Priority.MAJOR,
+  name = "Class and define required parameters should be listed before optional parameters",
+  tags = Tags.CONVENTION)
 @ActivatedByDefault
-public class DuplicatedParametersCheck extends SquidCheck<LexerlessGrammar> {
-
-  private List<String> keys = Lists.newArrayList();
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.UNDERSTANDABILITY)
+@SqaleConstantRemediation("2min")
+public class RequiredParametersFirstCheck extends SquidCheck<Grammar> {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.PARAMS, PuppetGrammar.ANY_PARAMS);
+    subscribeTo(PuppetGrammar.CLASSDEF, PuppetGrammar.DEFINITION);
   }
 
   @Override
-  public void visitNode(AstNode paramsNode) {
-    keys.clear();
-    for (AstNode paramNode : paramsNode.getChildren(PuppetGrammar.PARAM, PuppetGrammar.ADD_PARAM)) {
-      if (keys.contains(paramNode.getTokenValue())) {
-        getContext().createLineViolation(this, "Remove the duplicated parameter \"{0}\".", paramNode, paramNode.getTokenValue());
-      } else {
-        keys.add(paramNode.getTokenValue());
+  public void visitNode(AstNode node) {
+    boolean foundOptionalParameter = false;
+    for (AstNode argumentNode : node.getChildren(PuppetGrammar.ARGUMENT)) {
+      if (argumentNode.getFirstChild(PuppetPunctuator.EQUALS) != null) {
+        foundOptionalParameter = true;
+      } else if (foundOptionalParameter && argumentNode.getFirstChild(PuppetPunctuator.EQUALS) == null) {
+        getContext().createLineViolation(this, "Move required parameters before optional parameters.", node);
+        break;
       }
     }
   }

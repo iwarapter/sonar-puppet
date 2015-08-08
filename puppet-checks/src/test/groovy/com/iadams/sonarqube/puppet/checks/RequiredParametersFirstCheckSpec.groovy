@@ -29,37 +29,20 @@ import org.sonar.squidbridge.api.SourceFile
 import org.sonar.squidbridge.checks.CheckMessagesVerifier
 import spock.lang.Specification
 
-class HashRocketsAlignmentCheckSpec extends Specification {
+class RequiredParametersFirstCheckSpec extends Specification {
 
-  private static final String MESSAGE = "Properly align hash rockets (hash rockets are not all placed at the same column).";
-  private static final String MESSAGE_SPACE = "Properly align hash rockets (hash rockets are not placed one space ahead of the longest attribute).";
+  private static final String MESSAGE = "Move required parameters before optional parameters.";
 
-  def "validate rule"() {
+  def "validate check"() {
     given:
     SourceFile file = PuppetAstScanner.scanSingleFile(
-      new File("src/test/resources/checks/hash_rockets_alignment.pp"),
-      new HashRocketsAlignmentCheck()
-    );
+      new File("src/test/resources/checks/required_parameters_first.pp"),
+      new RequiredParametersFirstCheck());
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(8).withMessage(MESSAGE_SPACE)
-      .next().atLine(17).withMessage(MESSAGE)
-      .next().atLine(22).withMessage(MESSAGE)
-      .next().atLine(27).withMessage(MESSAGE_SPACE)
-      .next().atLine(40).withMessage(MESSAGE_SPACE)
-      .next().atLine(49).withMessage(MESSAGE)
-      .next().atLine(54).withMessage(MESSAGE)
-      .next().atLine(59).withMessage(MESSAGE_SPACE)
-      .next().atLine(67).withMessage(MESSAGE_SPACE)
-      .next().atLine(76).withMessage(MESSAGE)
-      .next().atLine(81).withMessage(MESSAGE)
-      .next().atLine(86).withMessage(MESSAGE_SPACE)
-      .next().atLine(92).withMessage(MESSAGE)
-      .next().atLine(99).withMessage(MESSAGE_SPACE)
-      .next().atLine(103).withMessage(MESSAGE)
-      .next().atLine(116).withMessage(MESSAGE)
-      .next().atLine(121).withMessage(MESSAGE_SPACE)
+      .next().atLine(1).withMessage(MESSAGE)
+      .next().atLine(13).withMessage(MESSAGE)
       .noMore();
   }
 }
