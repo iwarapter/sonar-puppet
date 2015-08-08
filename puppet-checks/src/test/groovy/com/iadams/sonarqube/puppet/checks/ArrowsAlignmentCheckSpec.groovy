@@ -29,16 +29,16 @@ import org.sonar.squidbridge.api.SourceFile
 import org.sonar.squidbridge.checks.CheckMessagesVerifier
 import spock.lang.Specification
 
-class HashRocketsAlignmentCheckSpec extends Specification {
+class ArrowsAlignmentCheckSpec extends Specification {
 
-  private static final String MESSAGE = "Properly align hash rockets (hash rockets are not all placed at the same column).";
-  private static final String MESSAGE_SPACE = "Properly align hash rockets (hash rockets are not placed one space ahead of the longest attribute).";
+  private static final String MESSAGE = "Properly align arrows (arrows are not all placed at the same column).";
+  private static final String MESSAGE_SPACE = "Properly align arrows (arrows are not all placed one space ahead of the longest attribute).";
 
   def "validate rule"() {
     given:
     SourceFile file = PuppetAstScanner.scanSingleFile(
-      new File("src/test/resources/checks/hash_rockets_alignment.pp"),
-      new HashRocketsAlignmentCheck()
+      new File("src/test/resources/checks/arrows_alignment.pp"),
+      new ArrowsAlignmentCheck()
     );
 
     expect:
@@ -60,6 +60,9 @@ class HashRocketsAlignmentCheckSpec extends Specification {
       .next().atLine(103).withMessage(MESSAGE)
       .next().atLine(116).withMessage(MESSAGE)
       .next().atLine(121).withMessage(MESSAGE_SPACE)
+      .next().atLine(131).withMessage(MESSAGE)
+      .next().atLine(136).withMessage(MESSAGE)
+      .next().atLine(141).withMessage(MESSAGE_SPACE)
       .noMore();
   }
 }

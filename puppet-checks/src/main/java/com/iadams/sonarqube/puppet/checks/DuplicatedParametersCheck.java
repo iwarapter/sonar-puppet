@@ -53,13 +53,13 @@ public class DuplicatedParametersCheck extends SquidCheck<LexerlessGrammar> {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.PARAMS);
+    subscribeTo(PuppetGrammar.PARAMS, PuppetGrammar.ANY_PARAMS);
   }
 
   @Override
   public void visitNode(AstNode paramsNode) {
     keys.clear();
-    for (AstNode paramNode : paramsNode.getChildren(PuppetGrammar.PARAM)) {
+    for (AstNode paramNode : paramsNode.getChildren(PuppetGrammar.PARAM, PuppetGrammar.ADD_PARAM)) {
       if (keys.contains(paramNode.getTokenValue())) {
         getContext().createLineViolation(this, "Remove the duplicated parameter \"{0}\".", paramNode, paramNode.getTokenValue());
       } else {

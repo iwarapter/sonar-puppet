@@ -30,9 +30,11 @@ import org.sonar.sslr.grammar.LexerfulGrammarBuilder;
 import static com.iadams.sonarqube.puppet.api.PuppetKeyword.*;
 import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.*;
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.*;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.NEWLINE;
+import static com.iadams.sonarqube.puppet.api.PuppetTokenType.VARIABLE;
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 
-public enum PuppetGrammar implements GrammarRuleKey {
+public enum PuppetGrammar  implements GrammarRuleKey {
 
     QUOTED_TEXT,
     KEYWORD,
@@ -40,10 +42,13 @@ public enum PuppetGrammar implements GrammarRuleKey {
     PARAMS,
     PARAM,
     PARAM_NAME,
+    ADD_PARAM,
+    ANY_PARAMS,
+    ANY_PARAM,
 
     TYPE,
     END_COMMA,
-	END_SEMIC,
+	  END_SEMIC,
 
     EXPRESSION,
     EXPRESSIONS,
@@ -195,6 +200,14 @@ public enum PuppetGrammar implements GrammarRuleKey {
                 PARAM,
                 b.zeroOrMore(COMMA, PARAM)));
 
+        b.rule(ADD_PARAM).is(NAME, PARROW, EXPRESSION);
+
+        b.rule(ANY_PARAM).is(b.firstOf(PARAM, ADD_PARAM)).skip();
+
+        b.rule(ANY_PARAMS).is(b.optional(
+				ANY_PARAM,
+				b.zeroOrMore(COMMA, ANY_PARAM)));
+
         b.rule(RESOURCE).is(b.firstOf(
 				b.sequence(CLASSNAME, LBRACE, RESOURCE_INSTANCES, END_SEMIC, RBRACE),
 				b.sequence(TYPE, LBRACE, PARAMS, END_COMMA, RBRACE)));
@@ -218,7 +231,7 @@ public enum PuppetGrammar implements GrammarRuleKey {
         b.rule(RESOURCE_OVERRIDE).is(
                 RESOURCE_REF,
                 LBRACE,
-                PARAMS,
+                ANY_PARAMS,
                 END_COMMA,
                 RBRACE);
 
@@ -412,7 +425,7 @@ public enum PuppetGrammar implements GrammarRuleKey {
          * Collections
          */
         b.rule(COLLECTION).is(b.firstOf(
-                b.sequence(TYPE, COLLECTOR, LBRACE, PARAMS, END_COMMA, RBRACE),
+                b.sequence(TYPE, COLLECTOR, LBRACE, ANY_PARAMS, END_COMMA, RBRACE),
                 b.sequence(TYPE, COLLECTOR)
         ));
 

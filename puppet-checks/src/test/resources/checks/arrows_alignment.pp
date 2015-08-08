@@ -6,7 +6,7 @@ $myhash = {
 }
 
 $myhash = {
-  'key1'  => 'value1',
+  'key1'  => 'value1',  # Noncompliant
 }
 
 $myhash = {
@@ -16,16 +16,16 @@ $myhash = {
 
 $myhash = {
   'key1' => 'value1',
-  'key2'   => 'value2',
+  'key2'   => 'value2',  # Noncompliant
 }
 
 $myhash = {
-  'key1'   => 'value1',
+  'key1'   => 'value1',  # Noncompliant
   'key2' => 'value2',
 }
 
 $myhash = {
-  'key1'   => 'value1',
+  'key1'   => 'value1',  # Noncompliant
   'key2'   => 'value2',
 }
 
@@ -37,7 +37,7 @@ abc { 'foo':
 }
 
 abc { 'foo':
-  key1  => 'value1',
+  key1  => 'value1',  # Noncompliant
 }
 
 abc { 'foo':
@@ -47,16 +47,16 @@ abc { 'foo':
 
 abc { 'foo':
   key1 => 'value1',
-  key2  => 'value2',
+  key2  => 'value2',  # Noncompliant
 }
 
 abc { 'foo':
-  key1  => 'value1',
+  key1  => 'value1',  # Noncompliant
   key2 => 'value2',
 }
 
 abc { 'foo':
-  key1  => 'value1',
+  key1  => 'value1',  # Noncompliant
   key2  => 'value2',
 }
 
@@ -65,7 +65,7 @@ $rootgroup = $osfamily ? {
 }
 
 $rootgroup = $osfamily ? {
-  'Solaris'  => 'wheel',
+  'Solaris'  => 'wheel',  # Noncompliant
 }
 
 $rootgroup = $osfamily ? {
@@ -75,16 +75,16 @@ $rootgroup = $osfamily ? {
 
 $rootgroup = $osfamily ? {
   'Solaris'          => 'wheel',
-  /(Darwin|FreeBSD)/  => 'wheel',
+  /(Darwin|FreeBSD)/  => 'wheel',  # Noncompliant
 }
 
 $rootgroup = $osfamily ? {
-  'Solaris'           => 'wheel',
+  'Solaris'           => 'wheel',  # Noncompliant
   /(Darwin|FreeBSD)/ => 'wheel',
 }
 
 $rootgroup = $osfamily ? {
-  'Solaris'           => 'wheel',
+  'Solaris'           => 'wheel',  # Noncompliant
   /(Darwin|FreeBSD)/  => 'wheel',
 }
 
@@ -96,12 +96,12 @@ File {
 }
 
 File {
-  key1  => 'value1',
+  key1  => 'value1',  # Noncompliant
 }
 
 File {
   key1  => 'value1',
-  key2   => 'value2',
+  key2   => 'value2',  # Noncompliant
 }
 
 File <| title == '/root/testFile2' |> {
@@ -113,11 +113,31 @@ File <| title == '/root/testFile2' |> {
 }
 
 File <| title == '/root/testFile2' |> {
-  ensure  => absent,
+  ensure  => absent,  # Noncompliant
   test   => 'abc',
 }
 
 File <| title == '/root/testFile2' |> {
-  ensure  => absent,
+  ensure  => absent,  # Noncompliant
   test    => 'abc',
+}
+
+File['foo'] {
+  key1 => 'value1',
+  key2 +> 'value2',
+}
+
+File['foo'] {
+  key1 => 'value1',
+  key2  +> 'value2',  # Noncompliant
+}
+
+File['foo'] {
+  key1  => 'value1',  # Noncompliant
+  key2 +> 'value2',
+}
+
+File['foo'] {
+  key1  => 'value1',  # Noncompliant
+  key2  +> 'value2',
 }
