@@ -49,27 +49,48 @@ public class UserResourcePasswordNotSetCheck extends SquidCheck<Grammar> {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.RESOURCE);
+    subscribeTo(PuppetGrammar.RESOURCE, PuppetGrammar.RESOURCE_OVERRIDE);
   }
 
   @Override
   public void visitNode(AstNode node) {
-    if ("user".equals(node.getTokenValue())) {
-      if (node.getFirstChild(PuppetGrammar.PARAMS) != null) {
-        for (AstNode paramNode : node.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
-          if ("password".equals(paramNode.getTokenValue())) {
-            getContext().createLineViolation(this, MESSAGE, paramNode);
-          }
-        }
-      }
-      for (AstNode resourceInstNode : node.getChildren(PuppetGrammar.RESOURCE_INST)) {
-        for (AstNode paramNode : resourceInstNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
-          if ("password".equals(paramNode.getTokenValue())) {
-            getContext().createLineViolation(this, MESSAGE, paramNode);
-          }
+    if(node.is(PuppetGrammar.RESOURCE)){
+      checkResourceInstance(node);
+      checkResourceDefault(node);
+    } else if (node.is(PuppetGrammar.RESOURCE_OVERRIDE)) {
+      checkResourceOverride(node);
+    }
+  }
+
+  private void checkResourceInstance(AstNode resourceNode){
+    if("user".equals(resourceNode.getTokenValue())){
+      for (AstNode instNode : resourceNode.getChildren(PuppetGrammar.RESOURCE_INST)) {
+        for (AstNode paramNode : instNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
+          checkPasswordValid(paramNode);
         }
       }
     }
   }
 
+  private void checkResourceDefault(AstNode resourceNode){
+    if ("User".equals(resourceNode.getTokenValue())) {
+      for (AstNode paramNode : resourceNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
+        checkPasswordValid(paramNode);
+      }
+    }
+  }
+
+  private void checkResourceOverride(AstNode resourceOverrideNode){
+    if ("User".equals(resourceOverrideNode.getTokenValue())) {
+      for (AstNode paramNode : resourceOverrideNode.getFirstChild(PuppetGrammar.ANY_PARAMS).getChildren(PuppetGrammar.PARAM)) {
+        checkPasswordValid(paramNode);
+      }
+    }
+  }
+
+  private void checkPasswordValid(AstNode paramNode){
+    if ("password".equals(paramNode.getTokenValue())) {
+      getContext().createLineViolation(this, MESSAGE, paramNode);
+    }
+  }
 }
