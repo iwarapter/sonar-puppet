@@ -33,11 +33,13 @@ class InheritsAcrossNamespaceCheckSpec extends Specification {
 
   def "validate check"() {
     given:
-    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/inherits_across_namespace.pp"), new InheritsAcrossNamespaceCheck());
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/inherits_across_namespace.pp"),
+      new InheritsAcrossNamespaceCheck());
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(5).withMessage("Bang")
+      .next().atLine(5).withMessage("Remove this inheritance from an external module class.")
       .noMore();
   }
 }

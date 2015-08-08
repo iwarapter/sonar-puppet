@@ -395,7 +395,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
       b.rule(CLASSDEF).is(CLASS,
                           CLASSNAME,
                           ARGUMENT_LIST,
-                          CLASS_PARENT,
+                          b.optional(CLASS_PARENT),
                           LBRACE,
                           b.zeroOrMore(STATEMENT),
                           RBRACE);
@@ -404,7 +404,7 @@ public enum PuppetGrammar  implements GrammarRuleKey {
 
       b.rule(CLASSNAME_OR_DEFAULT).is(b.firstOf(CLASSNAME, DEFAULT));
 
-      b.rule(CLASS_PARENT).is(b.optional(INHERITS, CLASSNAME_OR_DEFAULT));
+      b.rule(CLASS_PARENT).is(INHERITS, CLASSNAME_OR_DEFAULT);
 
         b.rule(IF_STMT).is(IF,
                 EXPRESSIONS,

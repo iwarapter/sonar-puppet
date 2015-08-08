@@ -1,4 +1,4 @@
-/**
+/*
  * SonarQube Puppet Plugin
  * The MIT License (MIT)
  *
@@ -38,31 +38,27 @@ import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "InheritsAcrossNamespace",
-  priority = Priority.MINOR,
+  priority = Priority.MAJOR,
   name = "Classes should not inherit across namespaces",
-  tags = {Tags.CONVENTION, Tags.PITFALL})
+  tags = {Tags.PITFALL})
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.ARCHITECTURE_CHANGEABILITY)
-@SqaleConstantRemediation("1h")
+@SqaleConstantRemediation("4h")
 public class InheritsAcrossNamespaceCheck extends SquidCheck<Grammar> {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.CLASSDEF);
+    subscribeTo(PuppetGrammar.CLASS_PARENT);
   }
 
   @Override
   public void visitNode(AstNode node) {
-    if(node.hasDescendant(PuppetGrammar.CLASS_PARENT)){
-      String inherited_module_name = node.getFirstDescendant(PuppetGrammar.CLASS_PARENT).getFirstChild().getNextSibling().getTokenValue();
-      String class_module_name = node.getFirstDescendant(PuppetGrammar.CLASSNAME).getTokenValue();
+    String inheritedModuleName = StringUtils.substringBefore(node.getFirstChild(PuppetGrammar.CLASSNAME_OR_DEFAULT).getTokenValue(), "::");
+    String classModuleName = StringUtils.substringBefore(node.getParent().getFirstChild(PuppetGrammar.CLASSNAME).getTokenValue(), "::");
 
-      inherited_module_name = StringUtils.substringBefore(inherited_module_name, "::");
-      class_module_name = StringUtils.substringBefore(class_module_name, "::");
-
-      if(!inherited_module_name.equals(class_module_name)){
-        getContext().createLineViolation(this, "Bang", node.getTokenLine());
-      }
+    if (!inheritedModuleName.equals(classModuleName)) {
+      getContext().createLineViolation(this, "Remove this inheritance from an external module class.", node.getTokenLine());
     }
   }
+
 }
