@@ -18,3 +18,11 @@ user {
 	'toto':
 		password2 => 'cheese';
 }
+
+User{
+  password => 'poor',   # Noncompliant
+}
+
+User['iain']{
+  password => 'wrong',  # Noncompliant
+}

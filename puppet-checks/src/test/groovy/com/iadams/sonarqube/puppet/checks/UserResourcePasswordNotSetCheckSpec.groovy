@@ -31,6 +31,8 @@ import spock.lang.Specification
 
 class UserResourcePasswordNotSetCheckSpec extends Specification {
 
+  private static final String MESSAGE = "Do not set passwords in user resources.";
+
   def "validate rule"() {
     given:
     UserResourcePasswordNotSetCheck check = new UserResourcePasswordNotSetCheck();
@@ -39,9 +41,11 @@ class UserResourcePasswordNotSetCheckSpec extends Specification {
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(2).withMessage("Do not set passwords in user resources.")
-      .next().atLine(15).withMessage("Do not set passwords in user resources.")
-      .next().atLine(17).withMessage("Do not set passwords in user resources.")
+      .next().atLine(2).withMessage(MESSAGE)
+      .next().atLine(15).withMessage(MESSAGE)
+      .next().atLine(17).withMessage(MESSAGE)
+      .next().atLine(23).withMessage(MESSAGE)
+      .next().atLine(27).withMessage(MESSAGE)
       .noMore();
   }
 }
