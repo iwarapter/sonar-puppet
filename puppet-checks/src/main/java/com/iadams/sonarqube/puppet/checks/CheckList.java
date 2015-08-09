@@ -69,6 +69,7 @@ public final class CheckList {
       TabCharacterCheck.class,
       TodoTagPresenceCheck.class,
       TrailingWhitespaceCheck.class,
+      UnquotedNodeNameCheck.class,
       UnquotedResourceTitleCheck.class,
       UserResourceLiteralNameCheck.class,
       UserResourcePasswordNotSetCheck.class,
