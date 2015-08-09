@@ -29,17 +29,17 @@ import org.sonar.squidbridge.api.SourceFile
 import org.sonar.squidbridge.checks.CheckMessagesVerifier
 import spock.lang.Specification
 
-class FaultyDoubleQuotedStringCheckSpec extends Specification {
+class FaultyQuoteUsageCheckSpec extends Specification {
 
-  private final
-  static String MESSAGE_USE_SINGLE_QUOTES = "Surround the string with single quotes instead of double quotes.";
+  private final static String MESSAGE_USE_SINGLE_QUOTES = "Surround the string with single quotes instead of double quotes.";
   private final static String MESSAGE_REMOVE_QUOTES = "Remove quotes surrounding this variable.";
+  private final static String MESSAGE_USE_DOUBLE_QUOTES = "Surround the string with double quotes instead of single quotes and unescaped single quotes inside this string.";
 
   def "validate check"() {
     given:
     SourceFile file = PuppetAstScanner.scanSingleFile(
-      new File("src/test/resources/checks/faulty_double_quoted_string.pp"),
-      new FaultyDoubleQuotedStringCheck());
+      new File("src/test/resources/checks/faulty_quote_usage.pp"),
+      new FaultyQuoteUsageCheck());
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
@@ -49,6 +49,7 @@ class FaultyDoubleQuotedStringCheckSpec extends Specification {
       .next().atLine(5).withMessage(MESSAGE_REMOVE_QUOTES)
       .next().atLine(6).withMessage(MESSAGE_REMOVE_QUOTES)
       .next().atLine(11).withMessage(MESSAGE_USE_SINGLE_QUOTES)
+      .next().atLine(21).withMessage(MESSAGE_USE_DOUBLE_QUOTES)
       .noMore();
   }
 

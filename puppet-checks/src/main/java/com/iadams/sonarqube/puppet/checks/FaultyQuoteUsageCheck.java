@@ -28,6 +28,9 @@ import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
+
+import java.util.regex.Pattern;
+
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -37,27 +40,43 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
-  key = "FaultyDoubleQuotedString",
+  key = "FaultyQuoteUsage",
   priority = Priority.MINOR,
-  name = "Strings not containing variables or special characters should be single quoted",
+  name = "Single and double quotes should be properly used",
   tags = Tags.CONVENTION)
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.UNDERSTANDABILITY)
-@SqaleConstantRemediation("5min")
-public class FaultyDoubleQuotedStringCheck extends SquidCheck<Grammar> {
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
+@SqaleConstantRemediation("2min")
+public class FaultyQuoteUsageCheck extends SquidCheck<Grammar> {
 
   @Override
   public void init() {
-    subscribeTo(PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL);
+    subscribeTo(PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL, PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL);
   }
 
   @Override
   public void visitNode(AstNode node) {
-    String stringWithoutQuotes = node.getTokenValue().substring(1, node.getTokenValue().length() - 1);
-    if (!CheckStringUtils.containsVariable(stringWithoutQuotes) && !CheckStringUtils.containsSpecialCharacter(stringWithoutQuotes)) {
-      getContext().createLineViolation(this, "Surround the string with single quotes instead of double quotes.", node);
-    } else if (!node.getParent().is(PuppetGrammar.RESOURCE_NAME) && CheckStringUtils.containsOnlyVariable(stringWithoutQuotes)) {
-      getContext().createLineViolation(this, "Remove quotes surrounding this variable.", node);
+    checkDoubleQuotedString(node);
+    checkSingleQuotedString(node);
+  }
+
+  private void checkDoubleQuotedString(AstNode node) {
+    if (node.is(PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL)) {
+      String stringWithoutQuotes = node.getTokenValue().substring(1, node.getTokenValue().length() - 1);
+      if (!CheckStringUtils.containsVariable(stringWithoutQuotes) && !CheckStringUtils.containsSpecialCharacter(stringWithoutQuotes)) {
+        getContext().createLineViolation(this, "Surround the string with single quotes instead of double quotes.", node);
+      } else if (!node.getParent().is(PuppetGrammar.RESOURCE_NAME) && CheckStringUtils.containsOnlyVariable(stringWithoutQuotes)) {
+        getContext().createLineViolation(this, "Remove quotes surrounding this variable.", node);
+      }
+    }
+  }
+
+  private void checkSingleQuotedString(AstNode node) {
+    if (node.is(PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL)) {
+      String stringWithoutQuotes = node.getTokenValue().substring(1, node.getTokenValue().length() - 1);
+      if (Pattern.compile(".*\\\\'.*").matcher(stringWithoutQuotes).matches()) {
+        getContext().createLineViolation(this, "Surround the string with double quotes instead of single quotes and unescaped single quotes inside this string.", node);
+      }
     }
   }
 

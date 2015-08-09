@@ -46,7 +46,7 @@ public final class CheckList {
       DuplicatedHashKeysCheck.class,
       DuplicatedParametersCheck.class,
       EnsureOrderingCheck.class,
-      FaultyDoubleQuotedStringCheck.class,
+      FaultyQuoteUsageCheck.class,
       FileEnsurePropertyIsValidCheck.class,
       FileModeCheck.class,
       FileNameCheck.class,
