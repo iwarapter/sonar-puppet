@@ -1,0 +1,47 @@
+<p>When a class or defined resource is declared, Puppet will use its full name to find the class or defined type in
+    your modules. Every class and defined type should be in its own file in the module’s manifests directory, and each
+    file should have the <code>.pp</code> file extension.</p>
+<p>Names map to file locations as follows:
+<ul>
+    <li>The first segment in a name (excluding the empty “top” namespace) identifies the module. (If this is the only
+        segment, the file name will be <code>init.pp</code>.)
+    </li>
+    <li>The last segment identifies the file name (minus the <code>.pp</code> extension).</li>
+    <li>Any segments between the first and last are subdirectories under the manifests directory.</li>
+</ul>
+</p>
+<p>Thus, every class or defined type name maps directly to a file path within Puppet’s modulepath:</p>
+<table>
+    <tr>
+        <th>name</th>
+        <th>file path</th>
+    </tr>
+    <tr>
+        <td><code>apache</code></td>
+        <td><code>&lt;MODULE DIRECTORY&gt;/apache/manifests/init.pp</code></td>
+    </tr>
+    <tr>
+        <td><code>apache::mod</code></td>
+        <td><code>&lt;MODULE DIRECTORY&gt;/apache/manifests/mod.pp</code></td>
+    </tr>
+    <tr>
+        <td><code>apache::mod::passenger</code></td>
+        <td><code>&lt;MODULE DIRECTORY&gt;/apache/manifests/mod/passenger.pp</code></td>
+    </tr>
+</table>
+<p>
+    Note again that <code>init.pp</code> always contains a class or defined type named after the module, and any other
+    <code>.pp</code> file contains a class or defined type with at least two namespace segments. (That is, <code>apache.pp</code>
+    would contain a class named <code>apache::apache</code>.) This also means you can’t have a class named
+    <code>&lt;MODULE NAME&gt;::init.</code>
+</p>
+
+<h2>See</h2>
+<ul>
+    <li><a href="https://docs.puppetlabs.com/puppet/3.8/reference/modules_fundamentals.html#module-layout">See Puppet
+        Labs Puppet Module Fundamentals Guide</a></li>
+    <li><a href="https://docs.puppetlabs.com/guides/style_guide.html#separate-files">See Puppet Labs Puppet Language
+        Style Guide</a></li>
+    <li><a href="https://docs.puppetlabs.com/puppet/latest/reference/lang_namespaces.html#autoloader-behavior">See
+        Puppet Labs Autoloader Behavior</a></li>
+</ul>

@@ -495,7 +495,6 @@ public enum PuppetGrammar implements GrammarRuleKey {
       HASH_ARRAY_ACCESSES,
       RIGHT_VALUE,
       HASH,
-      // ARRAY_SECTIONING_STMT,
       RESOURCE_REF));
 
     b.rule(EXPRESSIONS).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION)).skip();
