@@ -77,7 +77,7 @@ class PuppetAstScannerSpec extends Specification {
     SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/metrics/resources.pp"));
 
     expect:
-    file.getInt(PuppetMetric.RESOURCES) == 2
+    file.getInt(PuppetMetric.FUNCTIONS) == 2
   }
 
   def "classes"() {
@@ -85,6 +85,15 @@ class PuppetAstScannerSpec extends Specification {
     SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/metrics/classes.pp"));
 
     expect:
-    file.getInt(PuppetMetric.CLASSES) == 1
+    file.getInt(PuppetMetric.CLASSES) == 2
   }
+
+  def "statements"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/metrics/statements.pp"));
+
+    expect:
+    file.getInt(PuppetMetric.STATEMENTS) == 12
+  }
+
 }

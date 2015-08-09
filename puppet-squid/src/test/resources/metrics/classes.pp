@@ -1,1 +1,3 @@
 class ssl { }
+
+define ssl {}
