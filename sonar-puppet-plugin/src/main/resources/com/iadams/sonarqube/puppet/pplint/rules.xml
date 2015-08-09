@@ -809,7 +809,7 @@ node server1 {
       <pre>
 node 'server1' {
 }</pre>
-<p>This rule is deprecated. As this syntax is not valid according to the language specifications, a parsing error is raised in such a case.</p>]]>
+<p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:UnquotedNodeName">UnquotedNodeName</a> instead.</p>]]>
     </description>
     <priority>MAJOR</priority>
     <status>DEPRECATED</status>

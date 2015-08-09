@@ -1,0 +1,30 @@
+<p>Although node names should be one of the following per the <a
+        href="https://docs.puppetlabs.com/puppet/latest/reference/lang_node_definitions.html#naming">Puppet Labs
+    language reference manual</a>:
+<ul>
+    <li>A quoted string
+    <li>The bare word <code>default</code>
+    <li>A regular expression</li>
+</ul>
+unquoted names do not make the catalog compilation fail.</p>
+<p>
+    This rule check that node names are always quoted to comply with the language reference manual.
+</p>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+node server1 {
+}
+</pre>
+
+<h2>Compliant Solution</h2>
+<pre>
+node 'server1' {
+}
+</pre>
+
+<h2>See</h2>
+<ul>
+    <li><a href="https://docs.puppetlabs.com/puppet/latest/reference/lang_node_definitions.html#naming">Puppet Labs
+        language reference manual for node definition</a></li>
+</ul>

@@ -71,6 +71,7 @@ public final class CheckList {
       TodoTagPresenceCheck.class,
       TrailingCommasCheck.class,
       TrailingWhitespaceCheck.class,
+      UnquotedNodeNameCheck.class,
       UnquotedResourceTitleCheck.class,
       UserResourceLiteralNameCheck.class,
       UserResourcePasswordNotSetCheck.class,
