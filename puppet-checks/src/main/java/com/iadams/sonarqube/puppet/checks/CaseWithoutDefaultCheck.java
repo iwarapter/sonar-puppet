@@ -41,8 +41,8 @@ import org.sonar.squidbridge.checks.SquidCheck;
   name = "Case statements should have default cases",
   tags = Tags.PITFALL)
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
-@SqaleConstantRemediation("1h")
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LOGIC_RELIABILITY)
+@SqaleConstantRemediation("15min")
 public class CaseWithoutDefaultCheck extends SquidCheck<Grammar> {
 
   @Override

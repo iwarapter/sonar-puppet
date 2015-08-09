@@ -41,7 +41,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
   name = "\"ensure\" attribute should be the first attribute specified",
   tags = {Tags.CONVENTION, Tags.CONFUSING})
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.UNDERSTANDABILITY)
 @SqaleConstantRemediation("1min")
 public class EnsureOrderingCheck extends SquidCheck<Grammar> {
 

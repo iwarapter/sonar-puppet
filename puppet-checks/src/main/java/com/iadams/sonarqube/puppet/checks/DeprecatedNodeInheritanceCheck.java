@@ -39,12 +39,12 @@ import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "DeprecatedNodeInheritance",
-  priority = Priority.MAJOR,
+  priority = Priority.CRITICAL,
   name = "Deprecated node inheritance should not be used",
   tags = {Tags.OBSOLETE})
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LANGUAGE_RELATED_PORTABILITY)
-@SqaleConstantRemediation("30min")
+@SqaleConstantRemediation("2h")
 public class DeprecatedNodeInheritanceCheck extends SquidCheck<Grammar> {
 
   @Override

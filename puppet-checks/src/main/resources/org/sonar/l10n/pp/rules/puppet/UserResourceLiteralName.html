@@ -3,17 +3,15 @@ User names should not be hard coded.
 </p>
 
 <h2>Noncompliant Code Example</h2>
-
 <pre>
 user { 'tim':
-	ensure => present
+  ensure => present,
 }
 </pre>
 
 <h2>Compliant Solution</h2>
-
 <pre>
-user { $username:
-	ensure => present
+user { "${username}":
+  ensure => present,
 }
 </pre>
