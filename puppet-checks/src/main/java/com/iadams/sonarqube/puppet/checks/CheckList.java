@@ -37,6 +37,7 @@ public final class CheckList {
   public static List<Class> getChecks() {
     return ImmutableList.<Class>of(
       ArrowsAlignmentCheck.class,
+      AutoLoaderLayoutCheck.class,
       CaseWithoutDefaultCheck.class,
       ClassAndDefineNamingConventionCheck.class,
       CommentConventionCheck.class,
@@ -68,6 +69,7 @@ public final class CheckList {
       SingleQuotedStringContainingVariablesCheck.class,
       TabCharacterCheck.class,
       TodoTagPresenceCheck.class,
+      TrailingCommasCheck.class,
       TrailingWhitespaceCheck.class,
       UnquotedResourceTitleCheck.class,
       UserResourceLiteralNameCheck.class,

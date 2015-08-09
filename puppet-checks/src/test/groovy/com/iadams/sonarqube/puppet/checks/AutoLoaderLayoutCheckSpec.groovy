@@ -28,41 +28,41 @@ import com.iadams.sonarqube.puppet.PuppetAstScanner
 import org.sonar.squidbridge.api.SourceFile
 import org.sonar.squidbridge.checks.CheckMessagesVerifier
 import spock.lang.Specification
+import spock.lang.Unroll
 
-class ArrowsAlignmentCheckSpec extends Specification {
+class AutoLoaderLayoutCheckSpec extends Specification {
 
-  private static final String MESSAGE = "Properly align arrows (arrows are not all placed at the same column).";
-  private static final String MESSAGE_SPACE = "Properly align arrows (arrows are not all placed one space ahead of the longest attribute).";
-
-  def "validate rule"() {
+  @Unroll
+  def "files in correct location #puppetFile"() {
     given:
     SourceFile file = PuppetAstScanner.scanSingleFile(
-      new File("src/test/resources/checks/arrows_alignment.pp"),
-      new ArrowsAlignmentCheck()
+      new File(puppetFile),
+      new AutoLoaderLayoutCheck()
     );
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(9).withMessage(MESSAGE_SPACE)
-      .next().atLine(18).withMessage(MESSAGE)
-      .next().atLine(23).withMessage(MESSAGE)
-      .next().atLine(28).withMessage(MESSAGE_SPACE)
-      .next().atLine(40).withMessage(MESSAGE_SPACE)
-      .next().atLine(49).withMessage(MESSAGE)
-      .next().atLine(54).withMessage(MESSAGE)
-      .next().atLine(59).withMessage(MESSAGE_SPACE)
-      .next().atLine(68).withMessage(MESSAGE_SPACE)
-      .next().atLine(77).withMessage(MESSAGE)
-      .next().atLine(82).withMessage(MESSAGE)
-      .next().atLine(87).withMessage(MESSAGE_SPACE)
-      .next().atLine(92).withMessage(MESSAGE)
-      .next().atLine(99).withMessage(MESSAGE_SPACE)
-      .next().atLine(103).withMessage(MESSAGE)
-      .next().atLine(116).withMessage(MESSAGE)
-      .next().atLine(121).withMessage(MESSAGE_SPACE)
-      .next().atLine(131).withMessage(MESSAGE)
-      .next().atLine(136).withMessage(MESSAGE)
-      .next().atLine(141).withMessage(MESSAGE_SPACE)
+      .noMore();
+
+    where:
+    puppetFile << [
+      "src/test/resources/checks/autoloader/foo/manifests/bar.pp",
+      "src/test/resources/checks/autoloader/foo/manifests/init.pp",
+      "src/test/resources/checks/autoloader/foo/manifests/bar/baz.pp",
+      "src/test/resources/checks/autoloader/bar/manifests/init.pp"
+    ]
+  }
+
+  def "file in wrong location"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/autoloader/puppet-foo/manifests/init.pp"),
+      new AutoLoaderLayoutCheck()
+    );
+
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().withMessage('"init.pp" not in autoload module layout')
       .noMore();
   }
 }

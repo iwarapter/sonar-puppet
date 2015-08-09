@@ -29,40 +29,33 @@ import org.sonar.squidbridge.api.SourceFile
 import org.sonar.squidbridge.checks.CheckMessagesVerifier
 import spock.lang.Specification
 
-class ArrowsAlignmentCheckSpec extends Specification {
+class TrailingCommasCheckSpec extends Specification {
 
-  private static final String MESSAGE = "Properly align arrows (arrows are not all placed at the same column).";
-  private static final String MESSAGE_SPACE = "Properly align arrows (arrows are not all placed one space ahead of the longest attribute).";
+  private final static String MESSAGE = "Add the missing trailing comma.";
 
-  def "validate rule"() {
+  def "validate check"() {
     given:
     SourceFile file = PuppetAstScanner.scanSingleFile(
-      new File("src/test/resources/checks/arrows_alignment.pp"),
-      new ArrowsAlignmentCheck()
-    );
+      new File("src/test/resources/checks/trailing_commas.pp"),
+      new TrailingCommasCheck());
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(9).withMessage(MESSAGE_SPACE)
+      .next().atLine(14).withMessage(MESSAGE)
       .next().atLine(18).withMessage(MESSAGE)
-      .next().atLine(23).withMessage(MESSAGE)
-      .next().atLine(28).withMessage(MESSAGE_SPACE)
-      .next().atLine(40).withMessage(MESSAGE_SPACE)
-      .next().atLine(49).withMessage(MESSAGE)
-      .next().atLine(54).withMessage(MESSAGE)
-      .next().atLine(59).withMessage(MESSAGE_SPACE)
-      .next().atLine(68).withMessage(MESSAGE_SPACE)
-      .next().atLine(77).withMessage(MESSAGE)
-      .next().atLine(82).withMessage(MESSAGE)
-      .next().atLine(87).withMessage(MESSAGE_SPACE)
-      .next().atLine(92).withMessage(MESSAGE)
-      .next().atLine(99).withMessage(MESSAGE_SPACE)
-      .next().atLine(103).withMessage(MESSAGE)
-      .next().atLine(116).withMessage(MESSAGE)
-      .next().atLine(121).withMessage(MESSAGE_SPACE)
-      .next().atLine(131).withMessage(MESSAGE)
-      .next().atLine(136).withMessage(MESSAGE)
-      .next().atLine(141).withMessage(MESSAGE_SPACE)
+      .next().atLine(35).withMessage(MESSAGE)
+      .next().atLine(39).withMessage(MESSAGE)
+      .next().atLine(56).withMessage(MESSAGE)
+      .next().atLine(60).withMessage(MESSAGE)
+      .next().atLine(65).withMessage(MESSAGE)
+      .next().atLine(78).withMessage(MESSAGE)
+      .next().atLine(81).withMessage(MESSAGE)
+      .next().atLine(95).withMessage(MESSAGE)
+      .next().atLine(99).withMessage(MESSAGE)
+      .next().atLine(122).withMessage(MESSAGE)
+      .next().atLine(126).withMessage(MESSAGE)
+      .next().atLine(130).withMessage(MESSAGE)
       .noMore();
   }
+
 }

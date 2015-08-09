@@ -53,7 +53,7 @@ public class DuplicatedHashKeysCheck extends SquidCheck<LexerlessGrammar> {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.HASH);
+    subscribeTo(PuppetGrammar.HASH_PAIRS);
   }
 
   @Override
