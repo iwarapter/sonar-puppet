@@ -58,41 +58,58 @@ public class FileModeCheck extends SquidCheck<Grammar> {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.RESOURCE);
+    subscribeTo(PuppetGrammar.RESOURCE, PuppetGrammar.RESOURCE_OVERRIDE);
   }
 
   @Override
   public void visitNode(AstNode node) {
-    if ("file".equals(node.getTokenValue())) {
-      for (AstNode resourceInstNode : node.getChildren(PuppetGrammar.RESOURCE_INST)) {
+    if (node.is(PuppetGrammar.RESOURCE)) {
+      checkResourceInstance(node);
+      checkResourceDefault(node);
+    } else if (node.is(PuppetGrammar.RESOURCE_OVERRIDE)) {
+      checkResourceOverride(node);
+    }
+  }
+
+  private void checkResourceInstance(AstNode resourceNode) {
+    if ("file".equals(resourceNode.getTokenValue())) {
+      for (AstNode resourceInstNode : resourceNode.getChildren(PuppetGrammar.RESOURCE_INST)) {
         for (AstNode paramNode : resourceInstNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
-          if ("mode".equals(paramNode.getTokenValue())) {
-            checkMode(paramNode.getFirstChild(PuppetGrammar.EXPRESSION));
-          }
-        }
-      }
-    } else if ("File".equals(node.getTokenValue())) {
-      if (node.getFirstChild(PuppetGrammar.PARAMS) != null) {
-        for (AstNode paramNode : node.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
-          if ("mode".equals(paramNode.getTokenValue())) {
-            checkMode(paramNode.getFirstChild(PuppetGrammar.EXPRESSION));
-          }
+            checkMode(paramNode);
         }
       }
     }
   }
 
-  private void checkMode(AstNode node) {
-    if (node.getToken().getType().equals(OCTAL_INTEGER) || node.getToken().getType().equals(INTEGER)) {
-      getContext().createLineViolation(this, MESSAGE_OCTAL, node.getTokenLine());
-    } else if (node.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL) && PATTERN.matcher(node.getTokenValue()).matches()) {
-      getContext().createLineViolation(this, MESSAGE_DOUBLE_QUOTES, node.getTokenLine());
-    } else if (node.getToken().getType().equals(SINGLE_QUOTED_STRING_LITERAL) && !PATTERN.matcher(node.getTokenValue()).matches()
-      || node.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL) && !PATTERN.matcher(node.getTokenValue()).matches()
-      && !CheckStringUtils.containsVariable(node.getTokenValue())) {
-      getContext().createLineViolation(this, MESSAGE_INVALID, node.getTokenLine());
+  private void checkResourceDefault(AstNode resourceNode) {
+    if ("File".equals(resourceNode.getTokenValue())) {
+      for (AstNode paramNode : resourceNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
+        checkMode(paramNode);
+      }
     }
+  }
 
+  private void checkResourceOverride(AstNode resourceOverrideNode) {
+    if ("File".equals(resourceOverrideNode.getTokenValue())) {
+      for (AstNode paramNode : resourceOverrideNode.getFirstChild(PuppetGrammar.ANY_PARAMS).getChildren(PuppetGrammar.PARAM, PuppetGrammar.ADD_PARAM)) {
+        checkMode(paramNode);
+      }
+    }
+  }
+
+  private void checkMode(AstNode paramNode) {
+    if ("mode".equals(paramNode.getTokenValue())) {
+      AstNode expressionNode = paramNode.getFirstChild(PuppetGrammar.EXPRESSION);
+      if (expressionNode.getToken().getType().equals(OCTAL_INTEGER) || expressionNode.getToken().getType().equals(INTEGER)) {
+        getContext().createLineViolation(this, MESSAGE_OCTAL, expressionNode.getTokenLine());
+      } else if (expressionNode.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL) && PATTERN.matcher(expressionNode.getTokenValue()).matches()) {
+        getContext().createLineViolation(this, MESSAGE_DOUBLE_QUOTES, expressionNode.getTokenLine());
+      } else if (expressionNode.getToken().getType().equals(SINGLE_QUOTED_STRING_LITERAL) && !PATTERN.matcher(expressionNode.getTokenValue()).matches()
+        || expressionNode.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL) && !PATTERN.matcher(expressionNode.getTokenValue()).matches()
+        && !CheckStringUtils.containsVariable(expressionNode.getTokenValue())) {
+        getContext().createLineViolation(this, MESSAGE_INVALID, expressionNode.getTokenLine());
+      }
+    }
   }
 
 }
