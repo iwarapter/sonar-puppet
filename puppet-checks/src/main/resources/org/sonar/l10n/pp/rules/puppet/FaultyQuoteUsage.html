@@ -9,8 +9,9 @@
 abc { 'foo':
   text1 => "abc",                # Noncompliant, no variables, no special characters => single quotes should be used
   text2 => "Dollar sign is $",   # Noncompliant, no variables, no special characters => single quotes should be used
-  text3 => "$var",               # Noncompliant, variable only => quotes should be removed
-  text4 => "${var}",             # Noncompliant, variable only => quotes should be removed
+  text3 => 'Don\'t do it',       # Noncompliant, double quotes should be used and the single quote should be unescaped
+  text4 => "$var",               # Noncompliant, variable only => quotes should be removed
+  text5 => "${var}",             # Noncompliant, variable only => quotes should be removed
 }
 </pre>
 <h2>Compliant Solution</h2>
@@ -18,10 +19,11 @@ abc { 'foo':
 abc { 'foo':
   text1 => 'var',
   text2 => 'Dollar sign is $',
-  text3 => $var,
+  text3 => "Don't do it",
   text4 => $var,
-  text5 => "My variable is ${var}",
-  text6 => "blabla\n blabla\n",
+  text5 => $var,
+  text6 => "My variable is ${var}",
+  text7 => "blabla\n blabla\n",
 }
 
 resource { "${title}":  # Compliant because it is a resource title

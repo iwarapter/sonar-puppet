@@ -16,3 +16,7 @@ file { "$abc":           # Compliant because it is a resource title
 
 file { "${abc}":         # Compliant because it is a resource title
 }
+
+file { 'foo':
+  text => 'blabla \'blabla\'',  # Noncompliant
+}
