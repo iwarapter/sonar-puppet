@@ -22,28 +22,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet
+package com.iadams.sonarqube.puppet.checks
 
-import org.sonar.squidbridge.commonrules.api.CommonRulesRepository
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
 import spock.lang.Specification
 
-class PuppetCommonRulesEngineSpec extends Specification {
+class FileEnsurePropertyIsValidCheckSpec extends Specification {
 
-  def "should provide expected extensions"() {
+  private static final String MESSAGE = "Fix the invalid \"ensure\" property.";
+
+  def "validate rule"() {
     given:
-    PuppetCommonRulesEngine engine = new PuppetCommonRulesEngine()
+    FileEnsurePropertyIsValidCheck check = new FileEnsurePropertyIsValidCheck();
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/file_ensure_property_is_valid.pp"), check);
 
     expect:
-    !engine.provide().isEmpty()
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(7).withMessage(MESSAGE)
+      .next().atLine(20).withMessage(MESSAGE)
+      .next().atLine(47).withMessage(MESSAGE)
+      .next().atLine(51).withMessage(MESSAGE)
+      .next().atLine(55).withMessage(MESSAGE)
+      .next().atLine(59).withMessage(MESSAGE)
+      .next().atLine(64).withMessage(MESSAGE)
+      .next().atLine(68).withMessage(MESSAGE)
+      .next().atLine(76).withMessage(MESSAGE)
+      .noMore();
   }
-
-  def "enable common rules"() {
-    given:
-    PuppetCommonRulesEngine engine = new PuppetCommonRulesEngine()
-    CommonRulesRepository repo = engine.newRepository()
-
-        expect:
-        repo.enabledRuleKeys().size() == 2
-        repo.enableInsufficientCommentDensityRule(null) != null
-    }
 }

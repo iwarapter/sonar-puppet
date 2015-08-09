@@ -43,9 +43,11 @@ public final class CheckList {
       CommentRegularExpressionCheck.class,
       DocumentClassesAndDefinesCheck.class,
       DeprecatedNodeInheritanceCheck.class,
+      DuplicatedHashKeysCheck.class,
       DuplicatedParametersCheck.class,
       EnsureOrderingCheck.class,
       FaultyDoubleQuotedStringCheck.class,
+      FileEnsurePropertyIsValidCheck.class,
       FileModeCheck.class,
       FileNameCheck.class,
       FixmeTagPresenceCheck.class,
@@ -57,6 +59,7 @@ public final class CheckList {
       NestedClassesOrDefinesCheck.class,
       NosonarTagPresenceCheck.class,
       ParsingErrorCheck.class,
+      PuppetURLModulesCheck.class,
       QuotedBooleanCheck.class,
       RequiredParametersFirstCheck.class,
       ResourceWithSelectorCheck.class,
@@ -73,6 +76,6 @@ public final class CheckList {
       VariableNamingConventionCheck.class,
       VariableNotEnclosedInBracesCheck.class,
       XPathCheck.class
-      );
+    );
   }
 }

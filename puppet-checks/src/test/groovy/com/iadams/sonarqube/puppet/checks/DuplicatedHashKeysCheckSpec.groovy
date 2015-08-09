@@ -22,28 +22,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet
+package com.iadams.sonarqube.puppet.checks
 
-import org.sonar.squidbridge.commonrules.api.CommonRulesRepository
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
 import spock.lang.Specification
 
-class PuppetCommonRulesEngineSpec extends Specification {
+class DuplicatedHashKeysCheckSpec extends Specification {
 
-  def "should provide expected extensions"() {
+  def "validate rule"() {
     given:
-    PuppetCommonRulesEngine engine = new PuppetCommonRulesEngine()
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/duplicated_hash_keys.pp"),
+      new DuplicatedHashKeysCheck());
 
     expect:
-    !engine.provide().isEmpty()
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(16).withMessage("Remove the duplicated key \"key1\".")
+      .next().atLine(28).withMessage("Remove the duplicated key \"'key1'\".")
+      .noMore();
   }
-
-  def "enable common rules"() {
-    given:
-    PuppetCommonRulesEngine engine = new PuppetCommonRulesEngine()
-    CommonRulesRepository repo = engine.newRepository()
-
-        expect:
-        repo.enabledRuleKeys().size() == 2
-        repo.enableInsufficientCommentDensityRule(null) != null
-    }
 }

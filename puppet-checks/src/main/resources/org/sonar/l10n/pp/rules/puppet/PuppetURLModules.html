@@ -1,0 +1,15 @@
+<p>When using <code>puppet:///</code> URLs, you should ensure that the path starts with <code>modules/</code> (as the most commonly used mount point in the Puppet file server).</p>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+file { '/etc/apache/apache2.conf':
+  source => 'puppet:///apache/etc/apache/apache2.conf',
+}
+</pre>
+
+<h2>Compliant Solution</h2>
+<pre>
+file { '/etc/apache/apache2.conf':
+  source => 'puppet:///modules/apache2/etc/apache/apache2.conf',
+}
+</pre>

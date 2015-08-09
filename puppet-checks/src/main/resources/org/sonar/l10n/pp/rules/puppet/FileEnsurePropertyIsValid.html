@@ -1,0 +1,38 @@
+<p>Checks that "ensure" properties of "file" resources are valid. Possible values are unquoted:
+<ul>
+    <li><code>present</code></li>
+    <li><code>absent</code></li>
+    <li><code>false</code></li>
+    <li><code>file</code></li>
+    <li><code>directory</code></li>
+    <li><code>link</code></li>
+</ul>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+file { '/var/log/syslog':
+  ensure => 'present',            # Noncompliant: quotes should be removed
+}
+
+file { '/var/log/syslog':
+  ensure => '/var/log/messages',  # Noncompliant: 'link' value and 'target' attribute should be used instead
+}
+</pre>
+
+<h2>Compliant Solution</h2>
+<pre>
+file { '/var/log/syslog':
+  ensure => present,
+}
+
+file { '/var/log/syslog':
+  ensure => link,
+  target => '/var/log/messages',
+}
+</pre>
+
+<h2>See</h2>
+<ul>
+    <li><a href="https://docs.puppetlabs.com/references/latest/type.html#file-attribute-ensure">See Puppet Labs Puppet Language File Ensure Reference</a></li>
+    <li><a href="https://docs.puppetlabs.com/guides/style_guide.html#symbolic-links">See Puppet Labs Puppet Language Style Guide</a></li>
+</ul>
