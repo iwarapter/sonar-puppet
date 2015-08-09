@@ -1,0 +1,39 @@
+<p>
+    To make it easier to add new attributes, parameters, etc., a trailing comma should be added after each:
+<ul>
+    <li>resource attribute</li>
+    <li>parameter definition</li>
+    <li>hash pair</li>
+    <li>selector case</li>
+</ul>
+</p>
+<pre>
+file { 'foo':
+  ensure => link,
+  target => '/tmp/foo.bar'  # Noncompliant
+}
+
+class my_class (
+  $param1,
+  $param2                   # Noncompliant
+) { ... }
+</pre>
+
+<h2>Compliant Solution</h2>
+<pre>
+file { 'foo':
+  ensure => link,
+  target => '/tmp/foo.bar',
+}
+
+class my_class (
+  $param1,
+  $param2,
+) { ... }
+</pre>
+
+<h2>See</h2>
+<ul>
+    <li><a href="https://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation-and-whitespace">See Puppet Labs
+        Puppet Language Style Guide</a></li>
+</ul>
