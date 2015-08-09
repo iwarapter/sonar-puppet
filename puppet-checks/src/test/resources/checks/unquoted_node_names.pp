@@ -21,3 +21,7 @@ node /^(foo|bar)\.example\.com$/ {
 node /^www\d+$/ {
   include common
 }
+
+node default {
+  include common
+}

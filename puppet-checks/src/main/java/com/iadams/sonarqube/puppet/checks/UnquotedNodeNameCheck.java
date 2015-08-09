@@ -25,7 +25,6 @@
 package com.iadams.sonarqube.puppet.checks;
 
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
-import com.iadams.sonarqube.puppet.api.PuppetKeyword;
 import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
@@ -41,23 +40,22 @@ import org.sonar.squidbridge.checks.SquidCheck;
   key = "UnquotedNodeName",
   priority = Priority.MINOR,
   name = "Unquoted node names should not be used",
-  tags = {Tags.CONVENTION})
+  tags = {Tags.PITFALL})
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
-@SqaleConstantRemediation("5min")
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LANGUAGE_RELATED_PORTABILITY)
+@SqaleConstantRemediation("2min")
 public class UnquotedNodeNameCheck extends SquidCheck<Grammar> {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.NODE_DEFINITION);
+    subscribeTo(PuppetGrammar.HOST_MATCH);
   }
 
   @Override
   public void visitNode(AstNode node) {
-    for(AstNode host : node.getChildren(PuppetGrammar.HOST_MATCH)){
-      if (host.getToken().getType().equals(PuppetTokenType.NAME) && !host.getTokenValue().equals("default")) {
-        getContext().createLineViolation(this, "Quote this node name.", host.getTokenLine());
-      }
+    if (node.getToken().getType().equals(PuppetTokenType.NAME)) {
+      getContext().createLineViolation(this, "Quote this node name.", node);
     }
   }
+
 }
