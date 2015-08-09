@@ -3,7 +3,7 @@
 <pre>
 file { '/tmp/foo':
   owner => 'root',
-  owner => 'foo',
+  owner => 'foo',    # Noncompliant
 }
 </pre>
 <h2>Compliant Solution</h2>

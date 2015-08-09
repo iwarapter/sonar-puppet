@@ -37,7 +37,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "ImportStatementUsed",
-  priority = Priority.MAJOR,
+  priority = Priority.CRITICAL,
   name = "Deprecated \"import\" statement should not be used",
   tags = {Tags.OBSOLETE})
 @ActivatedByDefault

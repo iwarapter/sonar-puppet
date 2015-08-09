@@ -42,8 +42,8 @@ import org.sonar.squidbridge.checks.SquidCheck;
   name = "A trailing comma should be added after each resource attribute, parameter definition, hash pair and selector case",
   tags = Tags.CONVENTION)
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
-@SqaleConstantRemediation("5min")
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LOGIC_CHANGEABILITY)
+@SqaleConstantRemediation("2min")
 public class TrailingCommasCheck extends SquidCheck<Grammar> {
 
   @Override

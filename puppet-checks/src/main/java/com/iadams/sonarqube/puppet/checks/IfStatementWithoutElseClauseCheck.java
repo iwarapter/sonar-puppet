@@ -38,12 +38,12 @@ import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "IfStatementWithoutElseClause",
-  priority = Priority.MINOR,
+  priority = Priority.MAJOR,
   name = "\"if ... elsif\" constructs shall be terminated with an \"else\" clause",
   tags = Tags.PITFALL)
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LOGIC_RELIABILITY)
-@SqaleConstantRemediation("5min")
+@SqaleConstantRemediation("15min")
 public class IfStatementWithoutElseClauseCheck extends SquidCheck<Grammar> {
 
   @Override

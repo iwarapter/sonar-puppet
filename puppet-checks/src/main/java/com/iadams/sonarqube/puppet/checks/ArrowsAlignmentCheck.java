@@ -44,7 +44,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
   tags = Tags.CONVENTION)
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
-@SqaleConstantRemediation("5min")
+@SqaleConstantRemediation("2min")
 public class ArrowsAlignmentCheck extends SquidCheck<Grammar> {
 
   private static final String MESSAGE = "Properly align arrows (arrows are not all placed at the same column).";

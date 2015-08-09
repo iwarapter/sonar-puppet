@@ -41,7 +41,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
   name = "Selector statements should have default cases",
   tags = Tags.PITFALL)
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LOGIC_RELIABILITY)
 @SqaleConstantRemediation("1h")
 public class SelectorWithoutDefaultCheck extends SquidCheck<Grammar> {
 
