@@ -53,7 +53,7 @@ class AutoLoaderLayoutCheckSpec extends Specification {
     ]
   }
 
-  def "file in wrong location"(){
+  def "file in wrong location"() {
     given:
     SourceFile file = PuppetAstScanner.scanSingleFile(
       new File("src/test/resources/checks/autoloader/puppet-foo/manifests/init.pp"),

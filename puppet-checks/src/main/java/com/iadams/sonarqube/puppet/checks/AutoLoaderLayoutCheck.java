@@ -28,8 +28,9 @@ import com.google.common.base.Joiner;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
+
 import java.util.Arrays;
-import javax.annotation.Nullable;
+
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -37,15 +38,14 @@ import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "AutoLoaderLayout",
-  priority = Priority.MINOR,
+  priority = Priority.CRITICAL,
   name = "Manifest files should be in autoloader layout",
-  tags = Tags.CONVENTION)
+  tags = Tags.PITFALL)
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.ARCHITECTURE_RELIABILITY)
 @SqaleConstantRemediation("1h")
 public class AutoLoaderLayoutCheck extends SquidCheck<Grammar> {
 
@@ -57,26 +57,21 @@ public class AutoLoaderLayoutCheck extends SquidCheck<Grammar> {
   @Override
   public void visitNode(AstNode astNode) {
     String name = astNode.getFirstChild(PuppetGrammar.CLASSNAME).getTokenValue();
+    String[] splitName = name.split("::");
+    String module = splitName[0];
 
-    String[] split_title = name.split("::");
-    String mod = split_title[0];
-
-    String path;
-    if (split_title.length > 1) {
-      StringBuilder sb = new StringBuilder();
-      sb.append('/').append(mod).append("/manifests/");
-      sb.append(Joiner.on('/').join(
-        Arrays.copyOfRange(split_title, 1 , split_title.length)));
-      sb.append(".pp");
-      path = sb.toString();
+    StringBuilder path = new StringBuilder();
+    if (splitName.length > 1) {
+      path.append('/').append(module).append("/manifests/")
+        .append(Joiner.on('/').join(
+          Arrays.copyOfRange(splitName, 1, splitName.length)))
+        .append(".pp");
     }
     else {
-      StringBuilder sb = new StringBuilder();
-      sb.append('/').append(name).append("/manifests/init.pp");
-      path = sb.toString();
+      path.append('/').append(name).append("/manifests/init.pp");
     }
 
-    if (!getContext().getFile().getAbsolutePath().endsWith(path)) {
+    if (!getContext().getFile().getAbsolutePath().endsWith(path.toString())) {
       getContext().createFileViolation(this, "\"{0}\" not in autoload module layout", getContext().getFile().getName());
     }
   }
