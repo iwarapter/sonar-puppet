@@ -526,9 +526,11 @@ case $::operatingsystem {
     <description>
       <![CDATA[<p>All classes and resource type definitions must be in separate files in the manifests directory of their module. This is functionally identical to declaring all classes and defines in init.pp, but highlights the structure of the module and makes everything more legible.</p>
 
-      <p>Additionally, the files should be named appropriately for the class or defined type they contain. class foo should be in foo/manifests/init.pp, class foo::bar should be in foo/manifests/bar.pp and so on. You can read more about the filesystem layout for modules in the <a href="http://docs.puppetlabs.com/puppet/2.7/reference/modules_fundamentals.html#module-layout">module fundamentals documentation</a>.</p>]]>
+      <p>Additionally, the files should be named appropriately for the class or defined type they contain. class foo should be in foo/manifests/init.pp, class foo::bar should be in foo/manifests/bar.pp and so on. You can read more about the filesystem layout for modules in the <a href="http://docs.puppetlabs.com/puppet/2.7/reference/modules_fundamentals.html#module-layout">module fundamentals documentation</a>.</p>
+      <p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:AutoLoaderLayout">AutoLoaderLayout</a> instead.</p>]]>
     </description>
     <priority>MINOR</priority>
+    <status>DEPRECATED</status>
   </rule>
   <rule>
     <key>right_to_left_relationship</key>
