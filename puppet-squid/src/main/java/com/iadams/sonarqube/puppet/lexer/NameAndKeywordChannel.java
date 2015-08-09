@@ -51,7 +51,7 @@ public class NameAndKeywordChannel extends Channel<Lexer> {
   private final boolean caseSensitive;
   private final Token.Builder tokenBuilder = Token.builder();
 
-  /**
+  /*
    * @throws java.util.regex.PatternSyntaxException if the expression's syntax is invalid
    */
   public NameAndKeywordChannel(String regexp, boolean caseSensitive, TokenType[]... keywordSets) {

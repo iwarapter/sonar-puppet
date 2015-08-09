@@ -261,10 +261,8 @@ public enum PuppetGrammar implements GrammarRuleKey {
 
   }
 
-  /**
+  /*
    * Simple Statements
-   *
-   * @param b
    */
   public static void simpleStatements(LexerfulGrammarBuilder b) {
     b.rule(SIMPLE_STMT).is(b.firstOf(
@@ -372,10 +370,8 @@ public enum PuppetGrammar implements GrammarRuleKey {
     b.rule(IMPORT_STMT).is(IMPORT, QUOTED_TEXT, b.zeroOrMore(COMMA, QUOTED_TEXT));
   }
 
-  /**
+  /*
    * Compound Statements
-   *
-   * @param b
    */
   public static void compoundStatements(LexerfulGrammarBuilder b) {
     b.rule(COMPOUND_STMT).is(b.firstOf(
