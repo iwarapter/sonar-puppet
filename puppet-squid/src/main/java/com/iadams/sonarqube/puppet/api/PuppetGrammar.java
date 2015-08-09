@@ -32,6 +32,9 @@ import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.*;
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.*;
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 
+/*
+ * See grammar definition by Puppet Labs: https://github.com/puppetlabs/puppet/blob/3.x/lib/puppet/parser/grammar.ra
+ */
 public enum PuppetGrammar implements GrammarRuleKey {
 
   QUOTED_TEXT,
