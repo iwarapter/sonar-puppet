@@ -93,6 +93,12 @@ public class PuppetAstScanner {
       .subscribeTo(PuppetGrammar.RESOURCE)
       .build());
 
+    // TODO: To be discussed with the mapping of FUNCTIONS
+    builder.withSquidAstVisitor(CounterVisitor.<Grammar>builder()
+      .setMetricDef(PuppetMetric.RESOURCES)
+      .subscribeTo(PuppetGrammar.RESOURCE)
+      .build());
+
     builder.withSquidAstVisitor(CounterVisitor.<Grammar>builder()
       .setMetricDef(PuppetMetric.STATEMENTS)
       .subscribeTo(PuppetGrammar.STATEMENT)
