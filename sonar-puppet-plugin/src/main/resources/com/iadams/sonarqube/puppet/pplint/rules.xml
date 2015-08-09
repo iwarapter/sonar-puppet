@@ -130,15 +130,12 @@ file { '/tmp/foo':
 
       <pre>
 /* my awesome comment that describes
-* exactly what I'm trying to do */
-      </pre>
+* exactly what I'm trying to do */</pre>
 
       <h2>Compliant Solution</h2>
-
       <pre>
 # my awesome comment that describes
-# exactly what I'm trying to do
-      </pre>
+# exactly what I'm trying to do</pre>
       <p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:CommentConvention">CommentConvention</a> instead.</p>
       ]]>
     </description>
@@ -153,16 +150,10 @@ file { '/tmp/foo':
       <![CDATA[<p>All strings that do not contain variables or escape characters like \n or \t should be enclosed in single quotes.</p>
 
       <h2>Noncompliant Code Example</h2>
-
-      <pre>
-$foo = "bar"
-      </pre>
+      <pre>$foo = "bar"</pre>
 
       <h2>Compliant Solution</h2>
-
-      <pre>
-$foo = 'bar'
-      </pre>
+      <pre>$foo = 'bar'</pre>
       <p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:FaultyQuoteUsage">FaultyQuoteUsage</a> instead.</p>]]>
     </description>
     <priority>MINOR</priority>
@@ -176,16 +167,10 @@ $foo = 'bar'
       <![CDATA[<p>All variables should be enclosed in in braces ({}) when being interpolated in a string.</p>
 
       <h2>Noncompliant Code Example</h2>
-
-      <pre>
-$foo = "bar $baz"
-      </pre>
+      <pre>$foo = "bar $baz"</pre>
 
       <h2>Compliant Solution</h2>
-
-      <pre>
-$foo = "bar ${baz}"
-      </pre>
+      <pre>$foo = "bar ${baz}"</pre>
       <p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:VariableNotEnclosedInBraces">VariableNotEnclosedInBraces</a> instead.</p>]]>
     </description>
     <priority>MINOR</priority>
@@ -224,16 +209,10 @@ file { '/tmp/foo':
       <![CDATA[<p>Single quoted strings do not get interpolated, so you should not attempt to embed variables in one. This is not a style issue, rather a common mistake.</p>
 
       <h2>Noncompliant Code Example</h2>
-
-      <pre>
-$foo = 'bar ${baz}'
-      </pre>
+      <pre>$foo = 'bar ${baz}'</pre>
 
       <h2>Compliant Solution</h2>
-
-      <pre>
-$foo = "bar ${baz}"
-      </pre>
+      <pre>$foo = "bar ${baz}"</pre>
       <p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:SingleQuotedStringContainingVariables">SingleQuotedStringContainingVariables</a> instead.]]>
     </description>
     <priority>CRITICAL</priority>
@@ -657,7 +636,7 @@ $foo_bar</pre>
     <name><![CDATA[Parameter Order]]></name>
     <configKey>parameter_order</configKey>
     <description>
-      <![CDATA[<p>When defining variables you should only use letters, numbers and underscores. You should specifically not make use of dashes.</p>
+      <![CDATA[<p>In parameterized class and defined resource type declarations, parameters that are required should be listed before optional parameters (i.e. parameters with defaults)</p>
 
       <h2>Noncompliant Code Example</h2>
 
@@ -764,7 +743,7 @@ class foo::bar_baz</pre>
     <name><![CDATA[Documentation]]></name>
     <configKey>documentation</configKey>
     <description>
-      <![CDATA[<p>ll Puppet classes and defines should be documented via comments directly above the start of the code.</p>
+      <![CDATA[<p>Puppet classes and defines should be documented via comments directly above the start of the code.</p>
 
       <h2>Noncompliant Code Example</h2>
 
