@@ -60,4 +60,16 @@ class NodeDefinitionSpec extends GrammarSpec {
 								  include apache, squid
 								}""")
   }
+
+  def "unquoted node names parse"(){
+    expect:
+    assertThat(p).matches("node foo {}")
+  }
+
+  def "node with regex"(){
+    expect:
+    assertThat(p).matches("""node /www\\d+/ {
+                              include common
+                            }""")
+  }
 }

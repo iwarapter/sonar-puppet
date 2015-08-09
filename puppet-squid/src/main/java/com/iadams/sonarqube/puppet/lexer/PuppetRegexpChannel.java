@@ -52,7 +52,7 @@ public class PuppetRegexpChannel extends Channel<Lexer> {
   public boolean consume(CodeReader code, Lexer output) {
     if (code.peek() == '/') {
       Token lastToken = getLastToken(output);
-      if (lastToken == null || guessNextIsRegexp(lastToken.getValue())) {
+      if (lastToken == null || lastToken.getType().equals(PuppetKeyword.NODE) || guessNextIsRegexp(lastToken.getValue())) {
         return delegate.consume(code, output);
       }
     }

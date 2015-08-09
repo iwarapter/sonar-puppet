@@ -263,6 +263,17 @@ class PuppetLexerSpec extends Specification {
     containsToken(':', COLON)
   }
 
+  def "node with regex lex correctly"(){
+    given:
+    lexer.lex("node /^www\\d+\$/ {}")
+
+    expect:
+    containsToken('node', NODE)
+    containsToken('/^www\\d+$/', REGULAR_EXPRESSION_LITERAL)
+    containsToken('{', LBRACE)
+    containsToken('}', RBRACE)
+  }
+
   @Unroll
   def "matches regular expressions"() {
     expect:
@@ -272,7 +283,8 @@ class PuppetLexerSpec extends Specification {
     statement << ["/^www\\d+\$/",
                   "/^(foo|bar)\\.example\\.com\$/",
                   "/^(Debian|Ubuntu)\$/",
-                  "/^dev-[^\\s]*\$/"]
+                  "/^dev-[^\\s]*\$/",
+                  "/^(foo|bar)\\.example\\.com\$/"]
   }
 
   private static void assertRegexp(String regexp) {

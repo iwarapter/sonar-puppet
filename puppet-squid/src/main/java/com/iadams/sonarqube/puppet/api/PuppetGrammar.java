@@ -270,13 +270,13 @@ public enum PuppetGrammar implements GrammarRuleKey {
    */
   public static void simpleStatements(LexerfulGrammarBuilder b) {
     b.rule(SIMPLE_STMT).is(b.firstOf(
+      NODE_DEFINITION,
       RELATIONSHIP,
       RESOURCE,
       UNLESS_STMT,
       IMPORT_STMT,
       RESOURCE_OVERRIDE,
-      DEFINITION,
-      NODE_DEFINITION));
+      DEFINITION));
 
     b.rule(DEFINITION).is(DEFINE,
       CLASSNAME,
@@ -363,10 +363,11 @@ public enum PuppetGrammar implements GrammarRuleKey {
       ).skip();
 
     b.rule(HOST_MATCH).is(b.firstOf(
+      REGULAR_EXPRESSION_LITERAL,
+      NAME,
       SINGLE_QUOTED_STRING_LITERAL,
       DOUBLE_QUOTED_STRING_LITERAL,
-      DEFAULT,
-      REGULAR_EXPRESSION_LITERAL
+      DEFAULT
       ));
 
     b.rule(UNLESS_STMT).is(UNLESS, EXPRESSION, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
