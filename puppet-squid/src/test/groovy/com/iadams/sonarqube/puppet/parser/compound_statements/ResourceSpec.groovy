@@ -129,6 +129,26 @@ public class ResourceSpec extends GrammarSpec {
 
   }
 
+  def "Should properly parse resource names of every allowed type"() {
+    expect:
+    assertThat(p).matches('file { $::abc[2]: }')
+    assertThat(p).matches('file { $::abc[2][3]: }')
+//    assertThat(p).matches("""file { \$rootgroup = \$osfamily ? {
+//                                      'Solaris' => 'wheel',
+//                                      default   => 'root',
+//                                  }:
+//                             }""")
+    assertThat(p).matches('file { [1, 2]: }')
+    assertThat(p).matches("file { ['1', '2']: }")
+    assertThat(p).matches('file { default: }')
+    assertThat(p).matches('file { name: }')
+    assertThat(p).matches("file { 'abc': }")
+    assertThat(p).matches('file { "abc": }')
+    assertThat(p).matches('file { $abc: }')
+    assertThat(p).matches('file { "${abc}": }')
+    assertThat(p).matches('file { String: }')
+  }
+
   @Unroll
   def "resource names parse"() {
     given:

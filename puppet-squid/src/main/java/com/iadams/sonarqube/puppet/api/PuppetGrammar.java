@@ -221,12 +221,12 @@ public enum PuppetGrammar implements GrammarRuleKey {
 
     b.rule(RESOURCE_NAME).is(b.firstOf(
       SELECTOR,
+      HASH_ARRAY_ACCESSES,
       ARRAY,
       DEFAULT,
       NAME,
       QUOTED_TEXT,
       VARIABLE,
-      HASH_ARRAY_ACCESSES,
       TYPE));
 
     b.rule(RESOURCE_OVERRIDE).is(
