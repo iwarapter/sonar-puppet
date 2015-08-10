@@ -73,4 +73,19 @@ public class CaseStatement extends GrammarSpec {
 								  }
 								}''')
   }
+
+  def "case values accept appropriate values"(){
+    expect:
+    assertThat(p).matches('''case $osver[0] {
+                               default: { }
+                              }''')
+    assertThat(p).matches('''case $::lsbmajdistrelease {
+                               5, 6: {
+                                  $os_rel = $::lsbmajdistrelease
+                               }
+                               default: {
+                                 $os_rel = 6
+                               }
+                            }''')
+  }
 }

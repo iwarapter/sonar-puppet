@@ -76,10 +76,8 @@ public enum PuppetGrammar implements GrammarRuleKey {
   SHIFT_OPER,
 
   RIGHT_VALUE,
-  LITERALS,
   FUNCVALUES,
   FUNCRVALUE,
-  NAMESPACE_SEP,
 
   NUMBER,
 
@@ -139,7 +137,7 @@ public enum PuppetGrammar implements GrammarRuleKey {
   ELSEIF_STMT,
   CASE_STMT,
   CASE_MATCHER,
-  CASES,
+  CASE_VALUES,
 
   SELECTOR,
   SVALUES,
@@ -196,8 +194,8 @@ public enum PuppetGrammar implements GrammarRuleKey {
       EXPRESSION);
 
     b.rule(PARAMS).is(b.optional(
-      PARAM,
-      b.zeroOrMore(COMMA, PARAM)),
+        PARAM,
+        b.zeroOrMore(COMMA, PARAM)),
       b.optional(COMMA));
 
     b.rule(ADD_PARAM).is(NAME, PARROW, EXPRESSION);
@@ -409,12 +407,11 @@ public enum PuppetGrammar implements GrammarRuleKey {
 
     b.rule(ELSEIF_STMT).is(ELSIF, EXPRESSIONS, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
 
-    b.rule(CASE_STMT).is(CASE, b.firstOf(VARIABLE, EXPRESSION), LBRACE,
-      b.zeroOrMore(CASE_MATCHER),
+    b.rule(CASE_STMT).is(CASE, EXPRESSION, LBRACE,
+      b.oneOrMore(CASE_MATCHER),
       RBRACE);
-    b.rule(CASE_MATCHER).is(CASES, COLON, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
-    b.rule(CASES).is(b.firstOf(TRUE, FALSE, NAME, DEFAULT, QUOTED_TEXT, VARIABLE, FUNCTION_STMT, REGULAR_EXPRESSION_LITERAL),
-      b.zeroOrMore(COMMA, b.firstOf(TRUE, FALSE, NAME, DEFAULT, QUOTED_TEXT, VARIABLE, FUNCTION_STMT, REGULAR_EXPRESSION_LITERAL)));
+    b.rule(CASE_MATCHER).is(CASE_VALUES, COLON, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
+    b.rule(CASE_VALUES).is(SELECTLHAND, b.zeroOrMore(COMMA, SELECTLHAND));
 
     b.rule(EXPORTED_RESOURCE).is(AT, AT, RESOURCE);
 
@@ -517,7 +514,8 @@ public enum PuppetGrammar implements GrammarRuleKey {
       SELECTOR,
       REGULAR_EXPRESSION_LITERAL,
       RESOURCE_REF,
-      LITERALS,
+      QUOTED_TEXT,
+      NUMBER,
       VARIABLE,
       FUNCTION_STMT,
       TRUE,
@@ -525,7 +523,8 @@ public enum PuppetGrammar implements GrammarRuleKey {
       UNDEF,
       ARRAY,
       HASH,
-      NAME)).skip();
+      NAME,
+      TYPE)).skip();
 
     // <arithop> ::= "+" | "-" | "/" | "*" | "<<" | ">>"
     b.rule(ARITH_OP).is(b.firstOf(
@@ -577,19 +576,6 @@ public enum PuppetGrammar implements GrammarRuleKey {
       ARRAY,
       RESOURCE_REF,
       UNDEF)).skip();
-
-    // <literals> ::= <float> | <integer> | <hex-integer> | <octal-integer> | <quoted-string>
-    b.rule(LITERALS).is(b.firstOf(
-      FLOAT,
-      INTEGER,
-      HEX_INTEGER,
-      OCTAL_INTEGER,
-      DOUBLE_QUOTED_STRING_LITERAL,
-      SINGLE_QUOTED_STRING_LITERAL)).skipIfOneChild();
-
-    // <regex> ::= '/regex/'
-
-    b.rule(NAMESPACE_SEP).is(COLON, COLON);
 
     // https://github.com/puppetlabs/puppet-specifications/blob/master/language/lexical_structure.md#numbers
     b.rule(NUMBER).is(b.firstOf(

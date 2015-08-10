@@ -75,6 +75,8 @@ class ExpressionSpec extends GrammarSpec {
     assertThat(p).matches('''$_directory_version = {
 									require => 'all granted',
 								 }''')
+    assertThat(p).matches('$director_node = wms3::director_node')
+    assertThat(p).matches('$a = String')
   }
 
   def "unary (not) expressions parse"() {
@@ -179,5 +181,6 @@ class ExpressionSpec extends GrammarSpec {
     assertThat(p).matches('1 < 2')
     assertThat(p).matches('2 >= 1')
     assertThat(p).matches('1 <= 1')
+    assertThat(p).matches('$ensure == present')
   }
 }
