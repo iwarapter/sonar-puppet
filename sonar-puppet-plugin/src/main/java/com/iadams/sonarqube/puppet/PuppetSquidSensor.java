@@ -35,11 +35,13 @@ import org.sonar.api.batch.SensorContext;
 import org.sonar.api.batch.fs.FilePredicates;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
+import org.sonar.api.batch.fs.internal.DefaultInputFile;
 import org.sonar.api.batch.rule.CheckFactory;
 import org.sonar.api.batch.rule.Checks;
 import org.sonar.api.component.ResourcePerspectives;
 import org.sonar.api.issue.Issuable;
 import org.sonar.api.issue.Issue;
+import org.sonar.api.issue.NoSonarFilter;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.FileLinesContextFactory;
 import org.sonar.api.measures.Measure;
@@ -66,14 +68,16 @@ public class PuppetSquidSensor implements Sensor {
   private AstScanner<Grammar> scanner;
   private FileSystem fileSystem;
   private ResourcePerspectives resourcePerspectives;
+  private final NoSonarFilter noSonarFilter;
 
-  public PuppetSquidSensor(FileLinesContextFactory fileLinesContextFactory, FileSystem fileSystem, ResourcePerspectives perspectives, CheckFactory checkFactory) {
+  public PuppetSquidSensor(FileLinesContextFactory fileLinesContextFactory, FileSystem fileSystem, ResourcePerspectives perspectives, CheckFactory checkFactory, NoSonarFilter noSonarFilter) {
     this.checks = checkFactory
       .<SquidAstVisitor<Grammar>>create(CheckList.REPOSITORY_KEY)
       .addAnnotatedChecks(CheckList.getChecks());
     this.fileLinesContextFactory = fileLinesContextFactory;
     this.fileSystem = fileSystem;
     this.resourcePerspectives = perspectives;
+    this.noSonarFilter = noSonarFilter;
   }
 
   @Override
@@ -103,13 +107,13 @@ public class PuppetSquidSensor implements Sensor {
   private void save(Collection<SourceCode> squidSourceFiles) {
     for (SourceCode squidSourceFile : squidSourceFiles) {
       SourceFile squidFile = (SourceFile) squidSourceFile;
+      InputFile sonarFile = fileSystem.inputFile(fileSystem.predicates().hasAbsolutePath(squidFile.getKey()));
 
-      InputFile inputFile = fileSystem.inputFile(fileSystem.predicates().is(new java.io.File(squidFile.getKey())));
-
-      // saveFilesComplexityDistribution(inputFile, squidFile);
-      // saveFunctionsComplexityDistribution(inputFile, squidFile);
-      saveMeasures(inputFile, squidFile);
-      saveIssues(inputFile, squidFile);
+      if (sonarFile != null) {
+        noSonarFilter.addComponent(((DefaultInputFile) sonarFile).key(), squidFile.getNoSonarTagLines());
+      }
+      saveMeasures(sonarFile, squidFile);
+      saveIssues(sonarFile, squidFile);
     }
   }
 
