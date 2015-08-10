@@ -524,8 +524,8 @@ public enum PuppetGrammar implements GrammarRuleKey {
       FALSE,
       UNDEF,
       ARRAY,
-      HASH
-      )).skip();
+      HASH,
+      NAME)).skip();
 
     // <arithop> ::= "+" | "-" | "/" | "*" | "<<" | ">>"
     b.rule(ARITH_OP).is(b.firstOf(
