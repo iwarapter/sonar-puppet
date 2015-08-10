@@ -133,11 +133,11 @@ public class ResourceSpec extends GrammarSpec {
     expect:
     assertThat(p).matches('file { $::abc[2]: }')
     assertThat(p).matches('file { $::abc[2][3]: }')
-//    assertThat(p).matches("""file { \$rootgroup = \$osfamily ? {
-//                                      'Solaris' => 'wheel',
-//                                      default   => 'root',
-//                                  }:
-//                             }""")
+    assertThat(p).matches('''file { $osfamily ? {
+                                      'Solaris' => 'wheel',
+                                      default   => 'root',
+                                  }:
+                             }''')
     assertThat(p).matches('file { [1, 2]: }')
     assertThat(p).matches("file { ['1', '2']: }")
     assertThat(p).matches('file { default: }')
