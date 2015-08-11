@@ -1,5 +1,5 @@
 <p>
-  Selector statements should have default cases. Additionally, the default case should fail the catalog compilation when the resulting behavior cannot be predicted on the majority of platforms the module will be used on. If you want the default case to be “do nothing,” include it as an explicit <code>default: {}</code> with a comment for clarity’s sake.
+  Each selector statements should have a default case. Additionally, the default case should fail the catalog compilation when the resulting behavior cannot be predicted on the majority of platforms the module will be used on. If you want the default case to be “do nothing,” include it as an explicit <code>default: {}</code> with a comment for clarity’s sake.
 </p>
 
 <h2>Noncompliant Code Example</h2>
@@ -16,9 +16,17 @@ $rootgroup = $osfamily ? {
 <pre>
 $rootgroup = $osfamily ? {
   'Solaris' => 'wheel',
-  default   => 'root',
+  'Debian'  => 'root',
+  default   => fail "This module is not supported for ${osfamily}"
+}
+
+$rootgroup = $osfamily ? {
+  'Solaris' => 'wheel',
+  'Debian'  => 'root',
+  default   => {}  # Do nothing because...
 }
 </pre>
+
 <h2>See</h2>
 <ul>
   <li><a href="http://docs.puppetlabs.com/guides/style_guide.html#defaults-for-case-statements-and-selectors">See Puppet Labs Puppet Language Style Guide</a></li>
