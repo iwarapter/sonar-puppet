@@ -23,7 +23,9 @@ $rootgroup = $osfamily ? {
 $rootgroup = $osfamily ? {
   'Solaris' => 'wheel',
   'Debian'  => 'root',
-  default   => {}  # Do nothing because...
+  default   => {
+    # Do nothing because...
+  }
 }
 </pre>
 
