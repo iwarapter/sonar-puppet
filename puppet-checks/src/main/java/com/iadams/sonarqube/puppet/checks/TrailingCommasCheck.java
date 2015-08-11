@@ -58,12 +58,16 @@ public class TrailingCommasCheck extends SquidCheck<Grammar> {
 
   @Override
   public void visitNode(AstNode node) {
-    if (node.is(PuppetGrammar.PARAMS) && node.getChildren(PuppetGrammar.PARAM).size() != node.getChildren(PuppetPunctuator.COMMA).size()
-      || node.is(PuppetGrammar.ANY_PARAMS) && node.getChildren(PuppetGrammar.PARAM, PuppetGrammar.ADD_PARAM).size() != node.getChildren(PuppetPunctuator.COMMA).size()
-      || node.is(PuppetGrammar.HASH_PAIRS) && node.getChildren(PuppetGrammar.HASH_PAIR).size() != node.getChildren(PuppetPunctuator.COMMA).size()
-      || node.is(PuppetGrammar.SINTVALUES) && node.getChildren(PuppetGrammar.SELECTVAL).size() != node.getChildren(PuppetPunctuator.COMMA).size()
-      || node.is(PuppetGrammar.ARGUMENTS) && node.getChildren(PuppetGrammar.ARGUMENT).size() != node.getChildren(PuppetPunctuator.COMMA).size()) {
-      getContext().createLineViolation(this, "Add the missing trailing comma.", node);
+    checkTrailingCommas(node, PuppetGrammar.PARAMS, PuppetGrammar.PARAM);
+    checkTrailingCommas(node, PuppetGrammar.ANY_PARAMS, PuppetGrammar.PARAM, PuppetGrammar.ADD_PARAM);
+    checkTrailingCommas(node, PuppetGrammar.HASH_PAIRS, PuppetGrammar.HASH_PAIR);
+    checkTrailingCommas(node, PuppetGrammar.SINTVALUES, PuppetGrammar.SELECTVAL);
+    checkTrailingCommas(node, PuppetGrammar.ARGUMENTS, PuppetGrammar.ARGUMENT);
+  }
+
+  private void checkTrailingCommas(AstNode node, PuppetGrammar parentType, PuppetGrammar... childType) {
+    if (node.is(parentType) && node.getChildren(childType).size() != node.getChildren(PuppetPunctuator.COMMA).size()) {
+      getContext().createLineViolation(this, "Add the missing trailing comma.", node.getChildren(childType).get(node.getChildren(childType).size() - 1));
     }
   }
 
