@@ -40,7 +40,7 @@ import static com.iadams.sonarqube.puppet.api.PuppetTokenType.REGULAR_EXPRESSION
 
 public class PuppetRegexpChannel extends Channel<Lexer> {
 
-  public static final String REGULAR_EXPRESSION = "\\/(?![*\\/]).*\\/";
+  public static final String REGULAR_EXPRESSION = "/([^/]|(?<=\\\\)/)*/";
 
   private final Channel<Lexer> delegate;
 
