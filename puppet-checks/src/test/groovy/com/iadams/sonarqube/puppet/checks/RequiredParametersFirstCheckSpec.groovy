@@ -43,6 +43,8 @@ class RequiredParametersFirstCheckSpec extends Specification {
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(1).withMessage(MESSAGE)
       .next().atLine(13).withMessage(MESSAGE)
+      .next().atLine(22).withMessage(MESSAGE)
+      .next().atLine(34).withMessage(MESSAGE)
       .noMore();
   }
 }
