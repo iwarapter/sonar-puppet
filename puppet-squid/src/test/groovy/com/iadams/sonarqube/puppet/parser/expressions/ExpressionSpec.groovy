@@ -30,6 +30,7 @@ import spock.lang.Unroll
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.ADDITIVE_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.ASSIGNMENT_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.BOOL_EXPRESSION
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.COMPARISON
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.EXPRESSIONS
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.MATCH_EXPRESSION
@@ -74,6 +75,8 @@ class ExpressionSpec extends GrammarSpec {
     assertThat(p).matches('''$_directory_version = {
 									require => 'all granted',
 								 }''')
+    assertThat(p).matches('$director_node = wms3::director_node')
+    assertThat(p).matches('$a = String')
   }
 
   def "unary (not) expressions parse"() {
@@ -165,5 +168,19 @@ class ExpressionSpec extends GrammarSpec {
 
     expect:
     assertThat(p).matches('($scriptalias or $scriptaliases != []) or ($redirect_source and $redirect_dest)')
+  }
+
+  def "comparisons parse correctly"(){
+    given:
+    setRootRule(COMPARISON)
+
+    expect:
+    assertThat(p).matches('haproxy_clustername == undef')
+    assertThat(p).matches('haproxy_clustername != undef')
+    assertThat(p).matches('2 > 1')
+    assertThat(p).matches('1 < 2')
+    assertThat(p).matches('2 >= 1')
+    assertThat(p).matches('1 <= 1')
+    assertThat(p).matches('$ensure == present')
   }
 }

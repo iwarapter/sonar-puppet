@@ -94,4 +94,9 @@ public class IfStatement extends GrammarSpec {
     expect:
     assertThat(p).matches('if ($::operatingsystem == \'Amazon\') {}')
   }
+
+  def "if without parenthesis"(){
+    expect:
+    assertThat(p).matches('if $ensure == present {}')
+  }
 }
