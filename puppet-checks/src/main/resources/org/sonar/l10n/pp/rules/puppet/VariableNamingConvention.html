@@ -1,9 +1,9 @@
-<p>Shared coding conventions allow teams to collaborate efficiently. This rule checks that all variables match the following regular expression: <nobr><code>^\$(::)?([a-z0-9_]+::)*[a-z0-9_]+$</code></nobr></p>
+<p>Shared coding conventions allow teams to collaborate efficiently. This rule checks that all variables match the following regular expression: <nobr><code>^(::)?([a-z][a-z0-9_]*::)*[a-z][a-z0-9_]*$</code></nobr></p>
 <h2>Noncompliant Code Example</h2>
 <pre>
-file { $my-file:
+file { $my-file:    # Noncompliant
   ensure => file,
-  mode   => $Mode,
+  mode   => $Mode,  # Noncompliant
 }
 </pre>
 <h2>Compliant Solution</h2>

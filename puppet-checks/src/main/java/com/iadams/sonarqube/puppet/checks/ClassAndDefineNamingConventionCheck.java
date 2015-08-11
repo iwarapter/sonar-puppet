@@ -45,7 +45,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @ActivatedByDefault
 public class ClassAndDefineNamingConventionCheck extends SquidCheck<LexerlessGrammar> {
 
-  private static final String FORMAT = "^(::)?([a-z0-9_]+::)*[a-z0-9_]+$";
+  private static final String FORMAT = "^(::)?([a-z][a-z0-9_]*::)*[a-z][a-z0-9_]*$";
 
   @Override
   public void init() {
@@ -57,7 +57,7 @@ public class ClassAndDefineNamingConventionCheck extends SquidCheck<LexerlessGra
     if (!node.getFirstChild(PuppetGrammar.CLASSNAME).getTokenValue().matches(FORMAT)) {
       String nodeType = node.is(PuppetGrammar.DEFINITION) ? "define" : "class";
       getContext().createLineViolation(this,
-        "Rename " + nodeType + " \"{0}\" to match the regular expression: ^(::)?([a-z0-9_]+::)*[a-z0-9_]+$",
+        "Rename " + nodeType + " \"{0}\" to match the regular expression: " + FORMAT,
         node.getFirstChild(PuppetGrammar.CLASSNAME),
         node.getFirstChild(PuppetGrammar.CLASSNAME).getTokenValue());
     }

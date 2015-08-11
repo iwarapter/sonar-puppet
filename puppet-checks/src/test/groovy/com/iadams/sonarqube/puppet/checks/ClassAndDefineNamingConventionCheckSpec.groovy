@@ -31,6 +31,8 @@ import spock.lang.Specification
 
 class ClassAndDefineNamingConventionCheckSpec extends Specification {
 
+  private static final String FORMAT = "^(::)?([a-z][a-z0-9_]*::)*[a-z][a-z0-9_]*\$";
+
   def "validate check"() {
     given:
     SourceFile file = PuppetAstScanner.scanSingleFile(
@@ -40,9 +42,9 @@ class ClassAndDefineNamingConventionCheckSpec extends Specification {
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(1).withMessage("Rename class \"my-class\" to match the regular expression: ^(::)?([a-z0-9_]+::)*[a-z0-9_]+\$")
-      .next().atLine(2).withMessage("Rename define \"my-define\" to match the regular expression: ^(::)?([a-z0-9_]+::)*[a-z0-9_]+\$")
-      .next().atLine(3).withMessage("Rename define \"myDefine\" to match the regular expression: ^(::)?([a-z0-9_]+::)*[a-z0-9_]+\$")
+      .next().atLine(1).withMessage("Rename class \"my-class\" to match the regular expression: " + FORMAT)
+      .next().atLine(2).withMessage("Rename define \"my-define\" to match the regular expression: " + FORMAT)
+      .next().atLine(3).withMessage("Rename define \"myDefine\" to match the regular expression: " + FORMAT)
       .noMore();
   }
 

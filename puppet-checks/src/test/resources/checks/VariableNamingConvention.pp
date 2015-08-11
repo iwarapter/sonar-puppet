@@ -3,9 +3,9 @@ file { $abc:
   mode   => $def,
 }
 
-file { $Abc:
+file { $Abc:       # Noncompliant
   ensure => file,
-  mode   => $dEf,
+  mode   => $dEf,  # Noncompliant
 }
 
 file { $abc:
@@ -22,3 +22,14 @@ file { $abc:
   ensure => file,
   mode   => $::module::var,
 }
+
+file { $abc:
+  ensure => file,
+  mode   => $::module::_var,
+}
+
+file { $abc:
+  ensure => file,
+  mode   => $::_module::var,  # Noncompliant
+}
+

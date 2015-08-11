@@ -24,20 +24,18 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.sonar.sslr.api.AstNode;
+
+import javax.annotation.Nullable;
+
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.check.RuleProperty;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.sslr.parser.LexerlessGrammar;
-
-import javax.annotation.Nullable;
-import java.util.regex.Pattern;
 
 @Rule(
   key = "S1578",
@@ -49,29 +47,13 @@ import java.util.regex.Pattern;
 @ActivatedByDefault
 public class FileNameCheck extends SquidCheck<LexerlessGrammar> {
 
-  public static final String DEFAULT = "[a-z][a-z0-9_]+\\.pp";
-  private Pattern pattern = null;
-
-  @RuleProperty(
-    key = "format",
-    defaultValue = DEFAULT)
-  private String format = DEFAULT;
-
-  @Override
-  public void init() {
-    pattern = Pattern.compile(format);
-  }
+  public static final String FORMAT = "^[a-z][a-z0-9_]*\\.pp$";
 
   @Override
   public void visitFile(@Nullable AstNode astNode) {
-    if (!pattern.matcher(getContext().getFile().getName()).matches()) {
-      getContext().createFileViolation(this, "Rename this file to match this regular expression: \"{0}\"", format);
+    if (!getContext().getFile().getName().matches(FORMAT)) {
+      getContext().createFileViolation(this, "Rename this file to match the regular expression: " + FORMAT);
     }
-  }
-
-  @VisibleForTesting
-  public void setFormat(String format) {
-    this.format = format;
   }
 
 }
