@@ -30,6 +30,11 @@ import com.iadams.sonarqube.puppet.checks.CheckList;
 import com.iadams.sonarqube.puppet.metrics.FileLinesVisitor;
 import com.iadams.sonarqube.puppet.metrics.PuppetLanguageMetrics;
 import com.sonar.sslr.api.Grammar;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+
 import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.batch.fs.FilePredicates;
@@ -44,8 +49,6 @@ import org.sonar.api.issue.Issue;
 import org.sonar.api.issue.NoSonarFilter;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.FileLinesContextFactory;
-import org.sonar.api.measures.Measure;
-import org.sonar.api.measures.PersistenceMode;
 import org.sonar.api.resources.Project;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.squidbridge.AstScanner;
@@ -54,10 +57,6 @@ import org.sonar.squidbridge.api.CheckMessage;
 import org.sonar.squidbridge.api.SourceCode;
 import org.sonar.squidbridge.api.SourceFile;
 import org.sonar.squidbridge.indexer.QueryByType;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
 
 public class PuppetSquidSensor implements Sensor {
 
