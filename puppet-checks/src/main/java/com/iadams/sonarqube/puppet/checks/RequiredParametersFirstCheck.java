@@ -53,13 +53,15 @@ public class RequiredParametersFirstCheck extends SquidCheck<Grammar> {
 
   @Override
   public void visitNode(AstNode node) {
-    boolean foundOptionalParameter = false;
-    for (AstNode argumentNode : node.getFirstChild(PuppetGrammar.ARGUMENTS).getChildren(PuppetGrammar.ARGUMENT)) {
-      if (argumentNode.getFirstChild(PuppetPunctuator.EQUALS) != null) {
-        foundOptionalParameter = true;
-      } else if (foundOptionalParameter && argumentNode.getFirstChild(PuppetPunctuator.EQUALS) == null) {
-        getContext().createLineViolation(this, "Move required parameters before optional parameters.", node);
-        break;
+    if (node.getFirstChild(PuppetGrammar.ARGUMENTS) != null) {
+      boolean foundOptionalParameter = false;
+      for (AstNode argumentNode : node.getFirstChild(PuppetGrammar.ARGUMENTS).getChildren(PuppetGrammar.ARGUMENT)) {
+        if (argumentNode.getFirstChild(PuppetPunctuator.EQUALS) != null) {
+          foundOptionalParameter = true;
+        } else if (foundOptionalParameter && argumentNode.getFirstChild(PuppetPunctuator.EQUALS) == null) {
+          getContext().createLineViolation(this, "Move required parameters before optional parameters.", node);
+          break;
+        }
       }
     }
   }

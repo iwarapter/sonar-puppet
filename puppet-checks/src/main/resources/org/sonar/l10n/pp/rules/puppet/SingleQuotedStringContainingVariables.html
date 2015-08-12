@@ -11,7 +11,16 @@ warning "Variable ${my_var} is undefined"
 </pre>
 
 <h2>Notes</h2>
-If the string is to be interpolated by another tool (and not by Puppet), to avoid confusion and make it explicit, prefer:
+<li>If the string is to be displayed in a message, to avoid confusion and make it explicit, prefer:
+<pre>
+fail "\$var is undefined"
+</pre>
+to
+<pre>
+fail '$var is undefined'
+</pre>
+</li>
+<li>If the string is to be interpolated by another tool (and not by Puppet), to avoid confusion and make it explicit, prefer:
 <pre>
 $to_be_interpolated_by_another_tool = "\${git_branch}"
 </pre>
@@ -19,4 +28,6 @@ to
 <pre>
 $to_be_interpolated_by_another_tool = '${git_branch}'
 </pre>
-A comment in this case might also make sense to clarify the intent.
+</li>
+A comment in those cases might also make sense to clarify the intent.
+</ul>

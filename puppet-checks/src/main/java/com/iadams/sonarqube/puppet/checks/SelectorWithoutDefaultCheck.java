@@ -60,7 +60,7 @@ public class SelectorWithoutDefaultCheck extends SquidCheck<Grammar> {
       }
     }
     if (!hasDefault) {
-      getContext().createLineViolation(this, "Add a default case.", node.getFirstAncestor(PuppetGrammar.SELECTOR));
+      getContext().createLineViolation(this, "Add a default case to this selector.", node.getFirstAncestor(PuppetGrammar.SELECTOR));
     }
   }
 

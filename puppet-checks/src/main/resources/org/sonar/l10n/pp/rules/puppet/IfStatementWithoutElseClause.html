@@ -25,4 +25,14 @@ elsif $operatingsystem == 'Windows' {
 else {
   # Do nothing because...
 }
+
+if $is_virtual {
+  do_something
+}
+elsif $operatingsystem == 'Windows' {
+  do_something_else
+}
+else {
+  fail 'This case is not supported...'
+}
 </pre>

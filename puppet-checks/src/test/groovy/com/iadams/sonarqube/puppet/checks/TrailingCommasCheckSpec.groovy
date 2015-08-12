@@ -42,19 +42,19 @@ class TrailingCommasCheckSpec extends Specification {
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(14).withMessage(MESSAGE)
-      .next().atLine(18).withMessage(MESSAGE)
+      .next().atLine(19).withMessage(MESSAGE)
       .next().atLine(35).withMessage(MESSAGE)
-      .next().atLine(39).withMessage(MESSAGE)
+      .next().atLine(40).withMessage(MESSAGE)
       .next().atLine(56).withMessage(MESSAGE)
-      .next().atLine(60).withMessage(MESSAGE)
-      .next().atLine(65).withMessage(MESSAGE)
+      .next().atLine(61).withMessage(MESSAGE)
+      .next().atLine(66).withMessage(MESSAGE)
       .next().atLine(78).withMessage(MESSAGE)
-      .next().atLine(81).withMessage(MESSAGE)
+      .next().atLine(82).withMessage(MESSAGE)
       .next().atLine(95).withMessage(MESSAGE)
-      .next().atLine(99).withMessage(MESSAGE)
+      .next().atLine(100).withMessage(MESSAGE)
       .next().atLine(122).withMessage(MESSAGE)
       .next().atLine(126).withMessage(MESSAGE)
-      .next().atLine(130).withMessage(MESSAGE)
+      .next().atLine(131).withMessage(MESSAGE)
       .noMore();
   }
 
