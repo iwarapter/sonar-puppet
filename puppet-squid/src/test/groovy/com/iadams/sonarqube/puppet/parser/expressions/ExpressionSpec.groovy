@@ -28,7 +28,6 @@ import com.iadams.sonarqube.puppet.parser.GrammarSpec
 import spock.lang.Unroll
 
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.ADDITIVE_EXPRESSION
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.ASSIGNMENT_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.BOOL_EXPRESSION
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.COMPARISON
 import static com.iadams.sonarqube.puppet.api.PuppetGrammar.EXPRESSION
@@ -53,30 +52,8 @@ class ExpressionSpec extends GrammarSpec {
     input << ['true == true',
               '5 < 9',
               '($operatingsystem != \'Solaris\')',
-              '$var = 10',
-              //'$kernel in [\'linux\', \'solaris\']',
+              '$kernel in [\'linux\', \'solaris\']',
               '!str2bool($is_virtual)']
-  }
-
-  def "Assignment parse correctly"() {
-    given:
-    setRootRule(ASSIGNMENT_EXPRESSION)
-
-    expect:
-    assertThat(p).matches('$var = 10')
-    assertThat(p).matches('$var = undef')
-    assertThat(p).matches('$var = "double quoted string"')
-    assertThat(p).matches('$purge_mod_dir = $purge_configs and !$mod_enable_dir')
-    assertThat(p).matches('''$valid_mpms_re = $apache_version ? {
-									'2.4'   => '(event|itk|peruser|prefork|worker)',
-									default => '(event|itk|prefork|worker)\'
-								  }''')
-    assertThat(p).matches('$notifies = Class[\'Apache::Service\']')
-    assertThat(p).matches('''$_directory_version = {
-									require => 'all granted',
-								 }''')
-    assertThat(p).matches('$director_node = wms3::director_node')
-    assertThat(p).matches('$a = String')
   }
 
   def "unary (not) expressions parse"() {

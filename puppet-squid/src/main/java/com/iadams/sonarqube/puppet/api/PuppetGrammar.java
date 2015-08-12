@@ -66,7 +66,7 @@ public enum PuppetGrammar implements GrammarRuleKey {
   COMPARISON,
 
   ARITH_OP,
-  ASSIGNMENT_EXPRESSION,
+  ASSIGNMENT,
   BOOL_OPERATOR,
   COMP_OPERATOR,
   A_OPER,
@@ -263,14 +263,22 @@ public enum PuppetGrammar implements GrammarRuleKey {
    * Simple Statements
    */
   public static void simpleStatements(LexerfulGrammarBuilder b) {
+
     b.rule(SIMPLE_STMT).is(b.firstOf(
       NODE_DEFINITION,
       RELATIONSHIP,
+      ASSIGNMENT,
       RESOURCE,
       UNLESS_STMT,
       IMPORT_STMT,
       RESOURCE_OVERRIDE,
       DEFINITION));
+
+    b.rule(ASSIGNMENT).is(
+      b.firstOf(HASH_ARRAY_ACCESS, VARIABLE),
+      EQUALS,
+      EXPRESSION);
+
 
     b.rule(DEFINITION).is(DEFINE,
       CLASSNAME,
@@ -482,11 +490,9 @@ public enum PuppetGrammar implements GrammarRuleKey {
   public static void expressions(LexerfulGrammarBuilder b) {
 
     b.rule(EXPRESSION).is(b.firstOf(
-      ASSIGNMENT_EXPRESSION,
-      HASH_ARRAY_ACCESSES,
+      BOOL_EXPRESSION,
       RIGHT_VALUE,
-      HASH,
-      RESOURCE_REF));
+      HASH));
 
     b.rule(EXPRESSIONS).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION)).skip();
 
@@ -503,11 +509,10 @@ public enum PuppetGrammar implements GrammarRuleKey {
     b.rule(SHIFT_EXPRESSION).is(ADDITIVE_EXPRESSION, b.zeroOrMore(SHIFT_OPER, ADDITIVE_EXPRESSION)).skipIfOneChild();
     b.rule(COMPARISON).is(SHIFT_EXPRESSION, b.zeroOrMore(COMP_OPERATOR, SHIFT_EXPRESSION)).skipIfOneChild();
     b.rule(BOOL_EXPRESSION).is(COMPARISON, b.zeroOrMore(BOOL_OPERATOR, COMPARISON)).skipIfOneChild();
-    b.rule(ASSIGNMENT_EXPRESSION).is(BOOL_EXPRESSION, b.zeroOrMore(EQUALS, BOOL_EXPRESSION)).skipIfOneChild();
 
     b.rule(ATOM).is(b.firstOf(
       HASH_ARRAY_ACCESSES,
-      b.sequence(LPAREN, ASSIGNMENT_EXPRESSION, RPAREN),
+      b.sequence(LPAREN, BOOL_EXPRESSION, RPAREN),
       SELECTOR,
       REGULAR_EXPRESSION_LITERAL,
       RESOURCE_REF,
