@@ -25,6 +25,7 @@
 package com.iadams.sonarqube.puppet
 
 import com.iadams.sonarqube.puppet.checks.CheckList
+import com.iadams.sonarqube.puppet.checks.NosonarTagPresenceCheck
 import org.sonar.api.batch.SensorContext
 import org.sonar.api.batch.fs.InputFile
 import org.sonar.api.batch.fs.internal.DefaultFileSystem
@@ -34,6 +35,7 @@ import org.sonar.api.batch.rule.CheckFactory
 import org.sonar.api.batch.rule.internal.ActiveRulesBuilder
 import org.sonar.api.component.ResourcePerspectives
 import org.sonar.api.issue.Issuable
+import org.sonar.api.issue.NoSonarFilter
 import org.sonar.api.measures.CoreMetrics
 import org.sonar.api.measures.FileLinesContext
 import org.sonar.api.measures.FileLinesContextFactory
@@ -50,6 +52,7 @@ class PuppetSquidSensorSpec extends Specification {
   def setup() {
     FileLinesContextFactory fileLinesContextFactory = Mock()
     FileLinesContext fileLinesContext = Mock()
+    NoSonarFilter noSonarFilter = Mock()
 
     fileLinesContextFactory.createFor(_ as InputFile) >> fileLinesContext
     ActiveRules activeRules = (new ActiveRulesBuilder())
@@ -59,7 +62,7 @@ class PuppetSquidSensorSpec extends Specification {
       .build();
     CheckFactory checkFactory = new CheckFactory(activeRules)
     perspectives = Mock()
-    sensor = new PuppetSquidSensor(fileLinesContextFactory, fs, perspectives, checkFactory)
+    sensor = new PuppetSquidSensor(fileLinesContextFactory, fs, perspectives, checkFactory, noSonarFilter)
   }
 
   def "should execute on puppet project"() {
