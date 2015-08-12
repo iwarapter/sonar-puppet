@@ -11,10 +11,10 @@ file { 'foo':
 file { "abc":            # Noncompliant
 }
 
-file { "$abc":           # Compliant because it is a resource title
+file { "$abc":           # Noncompliant
 }
 
-file { "${abc}":         # Compliant because it is a resource title
+file { "${abc}":         # Noncompliant
 }
 
 file { 'foo':

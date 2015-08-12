@@ -43,7 +43,6 @@ class UnquotedResourceTitleCheckSpec extends Specification {
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(1).withMessage(MESSAGE)
-      .next().atLine(4).withMessage(MESSAGE)
       .next().atLine(7).withMessage(MESSAGE_ARRAY)
       .noMore();
   }
