@@ -272,7 +272,8 @@ public enum PuppetGrammar implements GrammarRuleKey {
       UNLESS_STMT,
       IMPORT_STMT,
       RESOURCE_OVERRIDE,
-      DEFINITION));
+      DEFINITION,
+      FUNCTION_STMT));
 
     b.rule(ASSIGNMENT).is(
       b.firstOf(HASH_ARRAY_ACCESS, VARIABLE),
@@ -491,7 +492,7 @@ public enum PuppetGrammar implements GrammarRuleKey {
 
     b.rule(EXPRESSION).is(b.firstOf(
       BOOL_EXPRESSION,
-      RIGHT_VALUE,
+      //RIGHT_VALUE,
       HASH));
 
     b.rule(EXPRESSIONS).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION)).skip();
@@ -511,22 +512,9 @@ public enum PuppetGrammar implements GrammarRuleKey {
     b.rule(BOOL_EXPRESSION).is(COMPARISON, b.zeroOrMore(BOOL_OPERATOR, COMPARISON)).skipIfOneChild();
 
     b.rule(ATOM).is(b.firstOf(
-      HASH_ARRAY_ACCESSES,
       b.sequence(LPAREN, BOOL_EXPRESSION, RPAREN),
-      SELECTOR,
-      REGULAR_EXPRESSION_LITERAL,
-      RESOURCE_REF,
-      QUOTED_TEXT,
-      NUMBER,
-      VARIABLE,
-      FUNCTION_STMT,
-      TRUE,
-      FALSE,
-      UNDEF,
-      ARRAY,
-      HASH,
-      NAME,
-      TYPE)).skip();
+      RIGHT_VALUE,
+      REGULAR_EXPRESSION_LITERAL)).skip();
 
     // <arithop> ::= "+" | "-" | "/" | "*" | "<<" | ">>"
     b.rule(ARITH_OP).is(b.firstOf(
@@ -577,6 +565,7 @@ public enum PuppetGrammar implements GrammarRuleKey {
       VARIABLE,
       ARRAY,
       RESOURCE_REF,
+      TYPE,
       UNDEF)).skip();
 
     // https://github.com/puppetlabs/puppet-specifications/blob/master/language/lexical_structure.md#numbers

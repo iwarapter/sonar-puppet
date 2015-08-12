@@ -99,4 +99,9 @@ public class IfStatement extends GrammarSpec {
     expect:
     assertThat(p).matches('if $ensure == present {}')
   }
+
+  def "if with assignment does NOT parse"() {
+    expect:
+    assertThat(p).notMatches('if 1 = 1 {}')
+  }
 }
