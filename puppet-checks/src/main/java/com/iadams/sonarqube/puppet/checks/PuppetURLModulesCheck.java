@@ -37,7 +37,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "PuppetURLModules",
-  name = "\"Puppet:///\" URL path should start with \"modules/\"",
+  name = "\"puppet:///\" URL path should start with \"modules/\"",
   priority = Priority.CRITICAL,
   tags = {Tags.PITFALL})
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.INSTRUCTION_RELIABILITY)
