@@ -24,7 +24,7 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
-import com.iadams.sonarqube.puppet.api.PuppetGrammar;
+import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
@@ -35,12 +35,9 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL;
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL;
-
 @Rule(
   key = "PuppetURLModules",
-  name = "\"Puppet:///\" URL path should start with \"modules/\"",
+  name = "\"puppet:///\" URL path should start with \"modules/\"",
   priority = Priority.CRITICAL,
   tags = {Tags.PITFALL})
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.INSTRUCTION_RELIABILITY)
@@ -50,54 +47,12 @@ public class PuppetURLModulesCheck extends SquidCheck<LexerlessGrammar> {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.RESOURCE, PuppetGrammar.RESOURCE_OVERRIDE);
+    subscribeTo(PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL, PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL);
   }
 
   @Override
   public void visitNode(AstNode node) {
-    if (node.is(PuppetGrammar.RESOURCE)) {
-      checkResourceInstance(node);
-      checkResourceDefault(node);
-    } else if (node.is(PuppetGrammar.RESOURCE_OVERRIDE)) {
-      checkResourceOverride(node);
-    }
-  }
-
-  private void checkResourceInstance(AstNode resourceNode) {
-    if ("file".equals(resourceNode.getTokenValue())) {
-      for (AstNode resourceInstNode : resourceNode.getChildren(PuppetGrammar.RESOURCE_INST)) {
-        for (AstNode paramNode : resourceInstNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
-          if ("source".equals(paramNode.getTokenValue())) {
-            checkSourcePath(paramNode.getFirstChild(PuppetGrammar.EXPRESSION));
-          }
-        }
-      }
-    }
-  }
-
-  private void checkResourceDefault(AstNode resourceNode) {
-    if ("File".equals(resourceNode.getTokenValue())) {
-      for (AstNode paramNode : resourceNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
-        if ("source".equals(paramNode.getTokenValue())) {
-          checkSourcePath(paramNode.getFirstChild(PuppetGrammar.EXPRESSION));
-        }
-      }
-    }
-  }
-
-  private void checkResourceOverride(AstNode resourceOverrideNode) {
-    if ("File".equals(resourceOverrideNode.getTokenValue())) {
-      for (AstNode paramNode : resourceOverrideNode.getFirstChild(PuppetGrammar.ANY_PARAMS).getChildren(PuppetGrammar.PARAM, PuppetGrammar.ADD_PARAM)) {
-        if ("source".equals(paramNode.getTokenValue())) {
-          checkSourcePath(paramNode.getFirstChild(PuppetGrammar.EXPRESSION));
-        }
-      }
-    }
-  }
-
-  private void checkSourcePath(AstNode node) {
-    if ((node.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL) || node.getToken().getType().equals(SINGLE_QUOTED_STRING_LITERAL))
-      && node.getTokenValue().substring(1).startsWith("puppet:///")
+    if (node.getTokenValue().substring(1).startsWith("puppet:///")
       && !node.getTokenValue().substring(1).startsWith("puppet:///modules/")
       && !node.getTokenValue().substring(1).startsWith("puppet:///$")) {
       getContext().createLineViolation(this, "Add \"modules/\" to the path.", node);

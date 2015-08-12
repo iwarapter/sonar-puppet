@@ -47,7 +47,7 @@ File['/etc/apache/apache2.conf'] {
 }
 
 file { '/etc/apache/apache2.conf':
-	abc => 'puppet:///apache2/etc/apache/apache2.conf',
+	abc => 'puppet:///apache2/etc/apache/apache2.conf',    # Noncompliant
 }
 
 file { '/etc/apache/apache2.conf':
@@ -73,4 +73,11 @@ File['/etc/apache/apache2.conf'] {
 
 file { '/etc/apache/apache2.conf':
 	source => "puppet:///${var}",
+}
+
+$source = "puppet:///apache2/etc/apache/apache2.conf"  # Noncompliant
+$source = "puppet:///${var}/etc/apache/apache2.conf"
+
+file { '/etc/apache/apache2.conf':
+	source => $source,
 }

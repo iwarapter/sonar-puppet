@@ -49,6 +49,8 @@ class PuppetURLModulesCheckSpec extends Specification {
       .next().atLine(34).withMessage(MESSAGE)
       .next().atLine(38).withMessage(MESSAGE)
       .next().atLine(42).withMessage(MESSAGE)
+      .next().atLine(50).withMessage(MESSAGE)
+      .next().atLine(78).withMessage(MESSAGE)
       .noMore();
   }
 }
