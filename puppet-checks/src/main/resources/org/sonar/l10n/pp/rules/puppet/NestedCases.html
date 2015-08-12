@@ -1,0 +1,26 @@
+<p>
+    Nested case statements are difficult to understand because you can easily confuse the case matchers of an inner case statement as
+    belonging to an outer statement. Therefore nested case statements should be avoided.
+</p>
+
+<h2>Non compliant Code Example</h2>
+<pre>
+case $var1 {
+'abc': {
+  include pup
+}
+'def', 'ghi': {
+  case $var2 {
+'jkl': {           # Bad indentation makes this ever harder to understand
+  include pup
+}
+'mno': {
+  include pup2
+}
+}
+}
+default: {
+  include pup3
+}
+}
+</pre>

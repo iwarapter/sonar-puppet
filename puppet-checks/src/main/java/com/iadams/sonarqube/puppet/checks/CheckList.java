@@ -58,6 +58,7 @@ public final class CheckList {
       LineLengthCheck.class,
       MissingNewLineAtEndOfFileCheck.class,
       NestedClassesOrDefinesCheck.class,
+      NestedCasesCheck.class,
       NosonarTagPresenceCheck.class,
       ParsingErrorCheck.class,
       PuppetURLModulesCheck.class,
@@ -78,6 +79,6 @@ public final class CheckList {
       VariableNamingConventionCheck.class,
       VariableNotEnclosedInBracesCheck.class,
       XPathCheck.class
-    );
+      );
   }
 }
