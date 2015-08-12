@@ -69,10 +69,11 @@ public class PuppetLexer {
       .withChannel(regexp(PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL, SINGLE_QUOTED_LITERAL))
       .withChannel(regexp(PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL, DOUBLE_QUOTED_LITERAL))
 
-      // Lets play with matching regex!
+      .withChannel(commentRegexp(COMMENT))
+
+        // Lets play with matching regex!
       .withChannel(new PuppetRegexpChannel())
 
-      .withChannel(commentRegexp(COMMENT))
       .withChannel(new PunctuatorChannel(PuppetPunctuator.values()))
       .withChannel(new BlackHoleChannel("[ \t\r\n]+"))
       .build();

@@ -284,7 +284,18 @@ class PuppetLexerSpec extends Specification {
                   "/^(foo|bar)\\.example\\.com\$/",
                   "/^(Debian|Ubuntu)\$/",
                   "/^dev-[^\\s]*\$/",
-                  "/^(foo|bar)\\.example\\.com\$/"]
+                  "/^(foo|bar)\\.example\\.com\$/",
+                  "/\\//"]
+  }
+
+  def "strings with regex lex correctly"(){
+    given:
+    lexer.lex('/(?i-mx:ubuntu|debian)/  => "apa/che2"')
+
+    expect:
+    containsToken('/(?i-mx:ubuntu|debian)/', REGULAR_EXPRESSION_LITERAL)
+    containsToken('=>', FARROW)
+    containsToken('"apa/che2"', DOUBLE_QUOTED_STRING_LITERAL)
   }
 
   private static void assertRegexp(String regexp) {
