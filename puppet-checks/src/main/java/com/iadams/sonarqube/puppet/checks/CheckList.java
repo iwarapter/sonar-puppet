@@ -63,6 +63,7 @@ public final class CheckList {
       PuppetURLModulesCheck.class,
       QuotedBooleanCheck.class,
       RequiredParametersFirstCheck.class,
+      ResourceDefaultNamingConventionCheck.class,
       ResourceWithSelectorCheck.class,
       RightToLeftChainingArrowsCheck.class,
       SelectorWithoutDefaultCheck.class,
@@ -78,6 +79,6 @@ public final class CheckList {
       VariableNamingConventionCheck.class,
       VariableNotEnclosedInBracesCheck.class,
       XPathCheck.class
-    );
+      );
   }
 }
