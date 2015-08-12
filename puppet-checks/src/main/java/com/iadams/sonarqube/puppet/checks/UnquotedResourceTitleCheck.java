@@ -53,12 +53,12 @@ public class UnquotedResourceTitleCheck extends SquidCheck<Grammar> {
 
   @Override
   public void visitNode(AstNode node) {
-    if (node.getFirstChild(PuppetTokenType.NAME) != null || node.getFirstChild(PuppetTokenType.VARIABLE) != null) {
+    if (node.getFirstChild(PuppetTokenType.NAME) != null) {
       getContext().createLineViolation(this, "Quote this resource title.", node);
     } else if (node.getFirstChild(PuppetGrammar.ARRAY) != null) {
       boolean hasUnquotedTitle = false;
       for (AstNode expressionNode : node.getFirstChild(PuppetGrammar.ARRAY).getChildren(PuppetGrammar.EXPRESSION)) {
-        if (expressionNode.getFirstChild(PuppetTokenType.NAME) != null || expressionNode.getFirstChild(PuppetTokenType.VARIABLE) != null) {
+        if (expressionNode.getFirstChild(PuppetTokenType.NAME) != null) {
           hasUnquotedTitle = true;
           break;
         }
