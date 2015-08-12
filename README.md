@@ -38,6 +38,14 @@ Property     | Scope       | Example | Description
 ------------ | ----------- | ------- | -----------
 sonar.puppet.pplint | System-wide | /usr/local/bin/puppet-lint | Path to the puppet-lint executable to use in puppet lint analysis. Set to empty to use the default one (default is puppet-lint).
 
+Metrics
+-------
+
+The Puppet terms do not always match with the standard [SonarQube metrics]. Here's the list of slight differences:
+- Classes = Number of classes + Number of defines
+- Functions = Number of resources (including default resource and resource override)
+
+
 Extending Coding Rules using XPath
 ----------------------------------
 
@@ -52,3 +60,4 @@ To navigate the AST, download the [SSLR Puppet Toolkit].
 [documentation]:http://docs.sonarqube.org/display/SONAR/Extending+Coding+Rules
 [SSLR Puppet Toolkit]:https://bintray.com/iwarapter/sonar-plugins/sonar-puppet/_latestVersion#files
 [Puppet 3.8]:https://docs.puppetlabs.com/puppet/3.8/reference/index.html
+[SonarQube metrics]:http://docs.sonarqube.org/display/SONAR/Metric+definitions
