@@ -42,8 +42,6 @@ public class PuppetCommentAnalyser extends CommentAnalyser {
   public String getContents(String comment) {
     if (comment.startsWith("#")) {
       return comment.substring(1);
-    } else if (comment.startsWith("//")) {
-      return comment.substring(2);
     } else if (comment.startsWith("/*")) {
       if (comment.endsWith("*/")) {
         return comment.substring(2, (int) comment.length() - 2);

@@ -22,52 +22,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet
+package com.iadams.sonarqube.puppet.checks
 
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
 import spock.lang.Specification
-import spock.lang.Unroll
 
-class PuppetCommentAnalyserSpec extends Specification {
+class CommentedOutCodeCheckSpec extends Specification {
 
-  PuppetCommentAnalyser analyser
+  private static final String MESSAGE = "Remove this commented out code.";
 
-  def setup() {
-    analyser = new PuppetCommentAnalyser()
-  }
+  def "validate rule"() {
+    given:
+    CommentedOutCodeCheck check = new CommentedOutCodeCheck();
 
-  @Unroll
-  def "check line with #testFor is blank #output"() {
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/commented_out_code.pp"), check);
+
     expect:
-    analyser.isBlank(input) == output
-
-    where:
-    input   | output | testFor
-    '    '  | true   | 'spaces'
-    '\t'    | true   | 'tabs'
-    'words' | false  | 'letters'
-    '12345' | false  | 'numbers'
-    '12wor' | false  | 'letters and numbers'
-  }
-
-  //https://docs.puppetlabs.com/puppet/latest/reference/lang_comments.html
-
-  @Unroll
-  def "get comments"() {
-    expect:
-    analyser.getContents(input) == output
-
-    where:
-    input                      | output
-    '# comment'                | ' comment'
-    '/* comment */'            | ' comment '
-    '/* comment1\ncomment2 */' | ' comment1\ncomment2 '
-  }
-
-  def "unknown comment type"() {
-    when:
-    analyser.getContents('')
-
-    then:
-    thrown(IllegalArgumentException)
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(5).withMessage(MESSAGE)
+      .next().atLine(8).withMessage(MESSAGE)
+      .next().atLine(11).withMessage(MESSAGE)
+      .next().atLine(27).withMessage(MESSAGE)
+      .noMore();
   }
 }

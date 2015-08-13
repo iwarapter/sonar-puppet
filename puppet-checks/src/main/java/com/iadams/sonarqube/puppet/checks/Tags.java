@@ -32,6 +32,7 @@ public class Tags {
   public static final String SECURITY = "security";
   public static final String PITFALL = "pitfall";
   public static final String CONFUSING = "confusing";
+  public static final String UNUSED = "unused";
 
   private Tags() {
     // This class only defines constants
