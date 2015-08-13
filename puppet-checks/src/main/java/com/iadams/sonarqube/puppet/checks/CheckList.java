@@ -41,6 +41,7 @@ public final class CheckList {
       CaseWithoutDefaultCheck.class,
       ClassAndDefineNamingConventionCheck.class,
       CommentConventionCheck.class,
+      CommentedOutCodeCheck.class,
       CommentRegularExpressionCheck.class,
       DocumentClassesAndDefinesCheck.class,
       DeprecatedNodeInheritanceCheck.class,
