@@ -287,6 +287,20 @@ class PuppetLexerSpec extends Specification {
     containsToken('}', RBRACE)
   }
 
+  def "two assignment statements"(){
+    given:
+    lexer.lex('$var1 = some::thing\n$var2 = some::thing')
+
+    expect:
+    containsToken('$var1', VARIABLE)
+    containsToken('=', EQUALS)
+    containsToken('some::thing', NAME)
+    containsToken('$var2', VARIABLE)
+    containsToken('=', EQUALS)
+    containsToken('some::thing', NAME)
+
+  }
+
   @Unroll
   def "matches regular expressions"() {
     expect:
