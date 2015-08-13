@@ -1,0 +1,25 @@
+<p>Resource default statement syntax is resource type, capitalized. If the resource type has a namespace separator
+    (<code>::</code>) in its name, every segment must be capitalized. E.g., <code>Concat::Fragment</code>.</p>
+<p>Rule <a href="coding_rules#rule_key=puppet:ClassAndDefineNamingConvention">ClassAndDefineNamingConvention</a>
+    enforcing the following naming convention:
+<nobr><code>^([a-z][a-z0-9_]*::)*[a-z][a-z0-9_]*$</code>
+</nobr>, resource default statements should comply with the following naming convention:
+<nobr><code>^([A-Z][a-z0-9_]*::)*[A-Z][a-z0-9_]*$</code>
+</nobr>. If not, the catalog compilation does not fail and the resource default statement is useless because it does not match any resource type.</p>
+<h2>Noncompliant Code Example</h2>
+<pre>
+Foo:bar {
+  ensure => present,
+}
+</pre>
+<h2>Compliant Solution</h2>
+<pre>
+Foo:Bar {
+  ensure => present,
+}
+</pre>
+<h2>See</h2>
+<ul>
+    <li><a href="https://docs.puppetlabs.com/puppet/latest/reference/lang_defaults.html#syntax">Resource default
+        statement syntax</a></li>
+</ul>

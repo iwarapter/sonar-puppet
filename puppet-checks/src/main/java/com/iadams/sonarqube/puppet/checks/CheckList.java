@@ -64,6 +64,7 @@ public final class CheckList {
       PuppetURLModulesCheck.class,
       QuotedBooleanCheck.class,
       RequiredParametersFirstCheck.class,
+      ResourceDefaultNamingConventionCheck.class,
       ResourceWithSelectorCheck.class,
       RightToLeftChainingArrowsCheck.class,
       SelectorWithoutDefaultCheck.class,

@@ -29,22 +29,21 @@ import org.sonar.squidbridge.api.SourceFile
 import org.sonar.squidbridge.checks.CheckMessagesVerifier
 import spock.lang.Specification
 
-class ClassAndDefineNamingConventionCheckSpec extends Specification {
+class ResourceDefaultNamingConventionCheckSpec extends Specification {
 
-  private static final String FORMAT = "^([a-z][a-z0-9_]*::)*[a-z][a-z0-9_]*\$";
+  private static final String FORMAT = "^([A-Z][a-z0-9_]*::)*[A-Z][a-z0-9_]*\$";
 
   def "validate check"() {
     given:
     SourceFile file = PuppetAstScanner.scanSingleFile(
-      new File("src/test/resources/checks/class_and_define_naming_convention.pp"),
-      new ClassAndDefineNamingConventionCheck()
+      new File("src/test/resources/checks/resource_default_naming_convention.pp"),
+      new ResourceDefaultNamingConventionCheck()
     );
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(1).withMessage("Rename class \"my-class\" to match the regular expression: " + FORMAT)
-      .next().atLine(2).withMessage("Rename define \"my-define\" to match the regular expression: " + FORMAT)
-      .next().atLine(3).withMessage("Rename define \"myDefine\" to match the regular expression: " + FORMAT)
+      .next().atLine(2).withMessage("Rename resource default \"MyResource\" to match the regular expression: " + FORMAT)
+      .next().atLine(4).withMessage("Rename resource default \"Modulename::DeFine\" to match the regular expression: " + FORMAT)
       .noMore();
   }
 

@@ -36,30 +36,29 @@ import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
-  key = "ClassAndDefineNamingConvention",
-  name = "Classes and defines should follow a naming convention",
+  key = "ResourceDefaultNamingConvention",
+  name = "Resource default statements should follow a naming convention",
   priority = Priority.CRITICAL,
-  tags = {Tags.CONVENTION, Tags.PITFALL})
+  tags = {Tags.PITFALL})
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.INSTRUCTION_RELIABILITY)
-@SqaleConstantRemediation("30min")
+@SqaleConstantRemediation("20min")
 @ActivatedByDefault
-public class ClassAndDefineNamingConventionCheck extends SquidCheck<LexerlessGrammar> {
+public class ResourceDefaultNamingConventionCheck extends SquidCheck<LexerlessGrammar> {
 
-  private static final String FORMAT = "^([a-z][a-z0-9_]*::)*[a-z][a-z0-9_]*$";
+  private static final String FORMAT = "^([A-Z][a-z0-9_]*::)*[A-Z][a-z0-9_]*$";
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.DEFINITION, PuppetGrammar.CLASSDEF);
+    subscribeTo(PuppetGrammar.RESOURCE);
   }
 
   @Override
   public void leaveNode(AstNode node) {
-    if (!node.getFirstChild(PuppetGrammar.CLASSNAME).getTokenValue().matches(FORMAT)) {
-      String nodeType = node.is(PuppetGrammar.DEFINITION) ? "define" : "class";
+    if (node.getFirstChild(PuppetGrammar.RESOURCE_INST) == null && !node.getTokenValue().matches(FORMAT)) {
       getContext().createLineViolation(this,
-        "Rename " + nodeType + " \"{0}\" to match the regular expression: " + FORMAT,
-        node.getFirstChild(PuppetGrammar.CLASSNAME),
-        node.getFirstChild(PuppetGrammar.CLASSNAME).getTokenValue());
+        "Rename resource default \"{0}\" to match the regular expression: " + FORMAT,
+        node,
+        node.getTokenValue());
     }
   }
 

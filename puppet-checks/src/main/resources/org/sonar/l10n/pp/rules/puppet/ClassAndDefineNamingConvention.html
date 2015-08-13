@@ -1,4 +1,5 @@
-<p>Shared coding conventions allow teams to collaborate efficiently. This rule checks that all classes and defines match the following regular expression: <nobr><code>^(::)?([a-z][a-z0-9_]*::)*[a-z][a-z0-9_]*$</code></nobr></p>
+<p>This rule checks that all classes and defines match the following regular expression:
+<nobr><code>^([a-z][a-z0-9_]*::)*[a-z][a-z0-9_]*$</code></nobr>In shorts, it prevents using uppercase letters.</p>
 <h2>Noncompliant Code Example</h2>
 <pre>
 class my-class {}    # Noncompliant
