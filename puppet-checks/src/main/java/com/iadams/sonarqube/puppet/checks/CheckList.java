@@ -56,6 +56,7 @@ public final class CheckList {
       ImportStatementUsedCheck.class,
       InheritsAcrossNamespaceCheck.class,
       LineLengthCheck.class,
+      LiteralBooleanInComparisonCheck.class,
       MissingNewLineAtEndOfFileCheck.class,
       NestedClassesOrDefinesCheck.class,
       NestedCasesCheck.class,
