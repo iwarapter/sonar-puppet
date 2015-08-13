@@ -59,7 +59,6 @@ class PuppetCommentAnalyserSpec extends Specification {
     where:
     input                      | output
     '# comment'                | ' comment'
-    '// comment'               | ' comment'
     '/* comment */'            | ' comment '
     '/* comment1\ncomment2 */' | ' comment1\ncomment2 '
   }

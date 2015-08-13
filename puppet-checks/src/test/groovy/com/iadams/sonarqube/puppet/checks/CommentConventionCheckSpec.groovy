@@ -42,9 +42,7 @@ class CommentConventionCheckSpec extends Specification {
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(1).withMessage(MESSAGE)
-      .next().atLine(2).withMessage(MESSAGE)
       .next().atLine(4).withMessage(MESSAGE)
-      .next().atLine(5).withMessage(MESSAGE)
       .noMore();
   }
 }
