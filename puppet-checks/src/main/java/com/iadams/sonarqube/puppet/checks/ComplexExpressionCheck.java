@@ -24,16 +24,18 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
+
+import java.text.MessageFormat;
+
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
-import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+import org.sonar.squidbridge.annotations.SqaleLinearWithOffsetRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "ComplexExpression",
@@ -42,8 +44,8 @@ import org.sonar.squidbridge.checks.SquidCheck;
   tags = {Tags.CONFUSING})
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.UNDERSTANDABILITY)
-@SqaleConstantRemediation("15min")
-public class ComplexExpressionCheck extends SquidCheck<Grammar> {
+@SqaleLinearWithOffsetRemediation(coeff = "2min", offset = "5min", effortToFixDescription = "number of boolean operators beyond the limit")
+public class ComplexExpressionCheck extends PuppetCheckVisitor {
 
   private static final int COMPLEXITY_THRESHOLD = 3;
 
@@ -55,10 +57,14 @@ public class ComplexExpressionCheck extends SquidCheck<Grammar> {
   @Override
   public void visitNode(AstNode node) {
     if (node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size() > COMPLEXITY_THRESHOLD) {
-      getContext().createLineViolation(this,
-        "Reduce the number of boolean operators ({0}) used in this expression (maximum allowed " + COMPLEXITY_THRESHOLD + ").",
-        node.getFirstDescendant(PuppetGrammar.BOOL_OPERATOR),
-        node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size());
+      addIssue(node.getFirstDescendant(PuppetGrammar.BOOL_OPERATOR),
+        this,
+        MessageFormat.format(
+          "Reduce the number of boolean operators. This condition contains {0,number,integer} boolean operators, {1,number,integer} more than the {2,number,integer} maximum.",
+          node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size(),
+          node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size() - COMPLEXITY_THRESHOLD,
+          COMPLEXITY_THRESHOLD),
+        (double) node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size() - COMPLEXITY_THRESHOLD);
     }
   }
 

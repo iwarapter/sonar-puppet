@@ -39,11 +39,11 @@ class ComplexExpressionCheckSpec extends Specification {
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(2).withMessage("Reduce the number of boolean operators (4) used in this expression (maximum allowed 3).")
-      .next().atLine(5).withMessage("Reduce the number of boolean operators (4) used in this expression (maximum allowed 3).")
-      .next().atLine(8).withMessage("Reduce the number of boolean operators (4) used in this expression (maximum allowed 3).")
-      .next().atLine(10).withMessage("Reduce the number of boolean operators (4) used in this expression (maximum allowed 3).")
-      .next().atLine(12).withMessage("Reduce the number of boolean operators (5) used in this expression (maximum allowed 3).")
+      .next().atLine(2).withMessage("Reduce the number of boolean operators. This condition contains 4 boolean operators, 1 more than the 3 maximum.")
+      .next().atLine(5).withMessage("Reduce the number of boolean operators. This condition contains 4 boolean operators, 1 more than the 3 maximum.")
+      .next().atLine(8).withMessage("Reduce the number of boolean operators. This condition contains 4 boolean operators, 1 more than the 3 maximum.")
+      .next().atLine(10).withMessage("Reduce the number of boolean operators. This condition contains 4 boolean operators, 1 more than the 3 maximum.")
+      .next().atLine(12).withMessage("Reduce the number of boolean operators. This condition contains 5 boolean operators, 2 more than the 3 maximum.")
       .noMore();
   }
 }
