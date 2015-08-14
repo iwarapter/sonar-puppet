@@ -24,6 +24,7 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetPunctuator;
 import com.sonar.sslr.api.AstNode;
 import org.sonar.api.server.rule.RulesDefinition;
@@ -32,8 +33,6 @@ import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "RightToLeftChainingArrows",
@@ -43,7 +42,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.UNDERSTANDABILITY)
 @SqaleConstantRemediation("10min")
-public class RightToLeftChainingArrowsCheck extends SquidCheck<LexerlessGrammar> {
+public class RightToLeftChainingArrowsCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
@@ -52,7 +51,7 @@ public class RightToLeftChainingArrowsCheck extends SquidCheck<LexerlessGrammar>
 
   @Override
   public void visitNode(AstNode node) {
-    getContext().createLineViolation(this, "Rework the code to use left-to-right chaining arrows instead of right-to-left chaining arrows.", node.getTokenLine());
+    addIssue(node, this, "Rework the code to use left-to-right chaining arrows instead of right-to-left chaining arrows.");
   }
 
 }

@@ -26,11 +26,12 @@ package com.iadams.sonarqube.puppet.checks;
 
 import com.google.common.io.Files;
 import com.iadams.sonarqube.puppet.CharsetAwareVisitor;
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.text.MessageFormat;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -42,7 +43,6 @@ import org.sonar.check.RuleProperty;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "LineLength",
@@ -52,7 +52,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("1min")
-public class LineLengthCheck extends SquidCheck<Grammar> implements CharsetAwareVisitor {
+public class LineLengthCheck extends PuppetCheckVisitor implements CharsetAwareVisitor {
 
   private static final int DEFAULT_MAXIMUM_LINE_LENGTH = 140;
   private Charset charset;
@@ -78,13 +78,14 @@ public class LineLengthCheck extends SquidCheck<Grammar> implements CharsetAware
     for (int i = 0; i < lines.size(); i++) {
       String line = lines.get(i);
       if (line.length() > maximumLineLength) {
-        getContext().createLineViolation(this,
-          "The line contains {0,number,integer} characters which is greater than {1,number,integer} authorized.",
+        addIssue(
           i + 1,
-          line.length(),
-          maximumLineLength);
+          this,
+          MessageFormat.format(
+            "The line contains {0,number,integer} characters which is greater than {1,number,integer} authorized.",
+            line.length(),
+            maximumLineLength));
       }
     }
   }
-
 }

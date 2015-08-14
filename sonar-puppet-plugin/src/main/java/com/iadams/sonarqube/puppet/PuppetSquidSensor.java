@@ -69,7 +69,8 @@ public class PuppetSquidSensor implements Sensor {
   private ResourcePerspectives resourcePerspectives;
   private final NoSonarFilter noSonarFilter;
 
-  public PuppetSquidSensor(FileLinesContextFactory fileLinesContextFactory, FileSystem fileSystem, ResourcePerspectives perspectives, CheckFactory checkFactory, NoSonarFilter noSonarFilter) {
+  public PuppetSquidSensor(FileLinesContextFactory fileLinesContextFactory, FileSystem fileSystem, ResourcePerspectives perspectives, CheckFactory checkFactory,
+    NoSonarFilter noSonarFilter) {
     this.checks = checkFactory
       .<SquidAstVisitor<Grammar>>create(CheckList.REPOSITORY_KEY)
       .addAnnotatedChecks(CheckList.getChecks());
@@ -140,6 +141,7 @@ public class PuppetSquidSensor implements Sensor {
           .ruleKey(ruleKey)
           .line(message.getLine())
           .message(message.getText(Locale.ENGLISH))
+          .effortToFix(message.getCost())
           .build();
         issuable.addIssue(issue);
       }

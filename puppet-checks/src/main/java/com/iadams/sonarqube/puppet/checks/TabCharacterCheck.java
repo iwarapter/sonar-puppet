@@ -26,7 +26,13 @@ package com.iadams.sonarqube.puppet.checks;
 
 import com.google.common.io.Files;
 import com.iadams.sonarqube.puppet.CharsetAwareVisitor;
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.sonar.sslr.api.AstNode;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.List;
+
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.api.utils.SonarException;
 import org.sonar.check.Priority;
@@ -34,12 +40,6 @@ import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.List;
 
 @Rule(
   key = "TabCharacter",
@@ -49,7 +49,7 @@ import java.util.List;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("2min")
-public class TabCharacterCheck extends SquidCheck<LexerlessGrammar> implements CharsetAwareVisitor {
+public class TabCharacterCheck extends PuppetCheckVisitor implements CharsetAwareVisitor {
 
   private Charset charset;
 
@@ -68,7 +68,7 @@ public class TabCharacterCheck extends SquidCheck<LexerlessGrammar> implements C
     }
     for (String line : lines) {
       if (line.contains("\t")) {
-        getContext().createFileViolation(this, "Replace all tab characters in this file by sequences of whitespaces.");
+        addIssueOnFile(this, "Replace all tab characters in this file by sequences of whitespaces.");
         break;
       }
     }

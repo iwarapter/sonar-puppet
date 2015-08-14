@@ -24,16 +24,15 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "VariableNotEnclosedInBraces",
@@ -43,7 +42,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("2min")
-public class VariableNotEnclosedInBracesCheck extends SquidCheck<Grammar> {
+public class VariableNotEnclosedInBracesCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
@@ -54,7 +53,7 @@ public class VariableNotEnclosedInBracesCheck extends SquidCheck<Grammar> {
   public void visitNode(AstNode node) {
     String stringWithoutQuotes = node.getTokenValue().substring(1, node.getTokenValue().length() - 1);
     if (CheckStringUtils.containsNotEnclosedVariable(stringWithoutQuotes)) {
-      getContext().createLineViolation(this, "Enclose variables in braces.", node);
+      addIssue(node, this, "Enclose variables in braces.");
     }
   }
 
