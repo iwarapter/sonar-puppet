@@ -31,7 +31,7 @@ import spock.lang.Specification
 
 class ComplexExpressionCheckSpec extends Specification {
 
-  def "validate check"() {
+  def "validate check with default parameter"() {
     given:
     SourceFile file = PuppetAstScanner.scanSingleFile(
       new File("src/test/resources/checks/complex_expression.pp"),
@@ -39,11 +39,24 @@ class ComplexExpressionCheckSpec extends Specification {
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(2).withMessage("Reduce the number of boolean operators. This condition contains 4 boolean operators, 1 more than the 3 maximum.")
-      .next().atLine(5).withMessage("Reduce the number of boolean operators. This condition contains 4 boolean operators, 1 more than the 3 maximum.")
-      .next().atLine(8).withMessage("Reduce the number of boolean operators. This condition contains 4 boolean operators, 1 more than the 3 maximum.")
-      .next().atLine(10).withMessage("Reduce the number of boolean operators. This condition contains 4 boolean operators, 1 more than the 3 maximum.")
-      .next().atLine(12).withMessage("Reduce the number of boolean operators. This condition contains 5 boolean operators, 2 more than the 3 maximum.")
+      .next().atLine(2).withCost(1).withMessage("Reduce the number of boolean operators. This condition contains 4 boolean operators, 1 more than the 3 maximum.")
+      .next().atLine(5).withCost(1).withMessage("Reduce the number of boolean operators. This condition contains 4 boolean operators, 1 more than the 3 maximum.")
+      .next().atLine(8).withCost(1).withMessage("Reduce the number of boolean operators. This condition contains 4 boolean operators, 1 more than the 3 maximum.")
+      .next().atLine(10).withCost(1).withMessage("Reduce the number of boolean operators. This condition contains 4 boolean operators, 1 more than the 3 maximum.")
+      .next().atLine(12).withCost(2).withMessage("Reduce the number of boolean operators. This condition contains 5 boolean operators, 2 more than the 3 maximum.")
       .noMore();
   }
+
+  def "validate check wit custom parameter"() {
+    given:
+    ComplexExpressionCheck check = new ComplexExpressionCheck();
+    check.setMaxNumberOfBooleanOperators(4);
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/complex_expression.pp"), check);
+
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(12).withCost(1).withMessage("Reduce the number of boolean operators. This condition contains 5 boolean operators, 1 more than the 4 maximum.")
+      .noMore();
+  }
+
 }

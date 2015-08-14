@@ -24,6 +24,7 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
@@ -33,6 +34,7 @@ import java.text.MessageFormat;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
+import org.sonar.check.RuleProperty;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleLinearWithOffsetRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
@@ -47,7 +49,12 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 @SqaleLinearWithOffsetRemediation(coeff = "2min", offset = "5min", effortToFixDescription = "number of boolean operators beyond the limit")
 public class ComplexExpressionCheck extends PuppetCheckVisitor {
 
-  private static final int COMPLEXITY_THRESHOLD = 3;
+  private static final int MAX_NUMBER_OF_BOOLEAN_OPERATORS = 3;
+
+  @RuleProperty(
+    key = "maxNumberOfBooleanOperators",
+    defaultValue = "" + MAX_NUMBER_OF_BOOLEAN_OPERATORS)
+  private int maxNumberOfBooleanOperators = MAX_NUMBER_OF_BOOLEAN_OPERATORS;
 
   @Override
   public void init() {
@@ -56,16 +63,21 @@ public class ComplexExpressionCheck extends PuppetCheckVisitor {
 
   @Override
   public void visitNode(AstNode node) {
-    if (node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size() > COMPLEXITY_THRESHOLD) {
+    if (node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size() > maxNumberOfBooleanOperators) {
       addIssue(node.getFirstDescendant(PuppetGrammar.BOOL_OPERATOR),
         this,
         MessageFormat.format(
           "Reduce the number of boolean operators. This condition contains {0,number,integer} boolean operators, {1,number,integer} more than the {2,number,integer} maximum.",
           node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size(),
-          node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size() - COMPLEXITY_THRESHOLD,
-          COMPLEXITY_THRESHOLD),
-        (double) node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size() - COMPLEXITY_THRESHOLD);
+          node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size() - maxNumberOfBooleanOperators,
+          maxNumberOfBooleanOperators),
+        (double) node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size() - maxNumberOfBooleanOperators);
     }
+  }
+
+  @VisibleForTesting
+  public void setMaxNumberOfBooleanOperators(int maxNumberOfBooleanOperators) {
+    this.maxNumberOfBooleanOperators = maxNumberOfBooleanOperators;
   }
 
 }
