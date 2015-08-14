@@ -44,6 +44,7 @@ Metrics
 The Puppet terms do not always match with the standard [SonarQube metrics]. Here's the list of slight differences:
 - Classes = Number of classes + Number of defines
 - Functions = Number of resources (including default resource and resource override)
+- Complexity is increased by one for each: class, define, resource instance, resource default statement, resource override, if, elsif, unless, selector match, case match, and, or.
 
 
 Extending Coding Rules using XPath
