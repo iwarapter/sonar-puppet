@@ -24,21 +24,21 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.lexer.PuppetLexer;
 import com.sonar.sslr.api.AstAndTokenVisitor;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
+
+import java.util.Iterator;
+import java.util.regex.Pattern;
+
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
-
-import java.util.Iterator;
-import java.util.regex.Pattern;
 
 @Rule(
   key = "CommentConvention",
@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("1min")
-public class CommentConventionCheck extends SquidCheck<LexerlessGrammar> implements AstAndTokenVisitor {
+public class CommentConventionCheck extends PuppetCheckVisitor implements AstAndTokenVisitor {
 
   Pattern pattern = Pattern.compile(PuppetLexer.SLASH_LINE_COMMENT + "|" + PuppetLexer.MULTI_LINE_COMMENT);
 
@@ -58,7 +58,7 @@ public class CommentConventionCheck extends SquidCheck<LexerlessGrammar> impleme
     while (iterator.hasNext()) {
       Trivia trivia = (Trivia) iterator.next();
       if (trivia.isComment() && pattern.matcher(trivia.getToken().getOriginalValue()).matches()) {
-        this.getContext().createLineViolation(this, "Use starting comment token '#' instead.", trivia.getToken());
+        addIssue(trivia.getToken().getLine(), this, "Use starting comment token '#' instead.");
       }
     }
   }

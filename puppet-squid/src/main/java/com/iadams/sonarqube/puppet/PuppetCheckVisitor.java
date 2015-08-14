@@ -48,12 +48,12 @@ public class PuppetCheckVisitor extends SquidAstVisitor<Grammar> {
     addIssue(node.getTokenLine(), check, message, cost);
   }
 
-  public void addIssueOnFile(CodeVisitor check, String message) {
-    addIssue(-1, check, message, null);
+  public void addIssue(int line, CodeVisitor check, String message) {
+    addIssue(line, check, message, null);
   }
 
-  public void addIssueOnFile(CodeVisitor check, String message, Double cost) {
-    addIssue(-1, check, message, cost);
+  public void addIssueOnFile(CodeVisitor check, String message) {
+    addIssue(-1, check, message, null);
   }
 
   public void addIssue(@Nullable Integer line, CodeVisitor check, String message, @Nullable Double cost) {

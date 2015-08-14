@@ -24,17 +24,16 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.iadams.sonarqube.puppet.api.PuppetPunctuator;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "RequiredParametersFirst",
@@ -44,7 +43,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.UNDERSTANDABILITY)
 @SqaleConstantRemediation("2min")
-public class RequiredParametersFirstCheck extends SquidCheck<Grammar> {
+public class RequiredParametersFirstCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
@@ -59,7 +58,7 @@ public class RequiredParametersFirstCheck extends SquidCheck<Grammar> {
         if (argumentNode.getFirstChild(PuppetPunctuator.EQUALS) != null) {
           foundOptionalParameter = true;
         } else if (foundOptionalParameter && argumentNode.getFirstChild(PuppetPunctuator.EQUALS) == null) {
-          getContext().createLineViolation(this, "Move required parameters before optional parameters.", node);
+          addIssue(node, this, "Move required parameters before optional parameters.");
           break;
         }
       }

@@ -24,18 +24,17 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.iadams.sonarqube.puppet.api.PuppetPunctuator;
 import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "ArrowsAlignment",
@@ -45,7 +44,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("2min")
-public class ArrowsAlignmentCheck extends SquidCheck<Grammar> {
+public class ArrowsAlignmentCheck extends PuppetCheckVisitor {
 
   private static final String MESSAGE = "Properly align arrows (arrows are not all placed at the same column).";
   private static final String MESSAGE_SPACE = "Properly align arrows (arrows are not all placed one space ahead of the longest attribute).";
@@ -74,7 +73,7 @@ public class ArrowsAlignmentCheck extends SquidCheck<Grammar> {
       if (arrowColumn == -1) {
         arrowColumn = nodeContainingArrow.getFirstChild(PuppetPunctuator.FARROW).getToken().getColumn();
       } else if (nodeContainingArrow.getFirstChild(PuppetPunctuator.FARROW).getToken().getColumn() != arrowColumn) {
-        getContext().createLineViolation(this, MESSAGE, node);
+        addIssue(node, this, MESSAGE);
         return;
       }
     }
@@ -94,7 +93,7 @@ public class ArrowsAlignmentCheck extends SquidCheck<Grammar> {
       }
     }
     if (upperColumn != arrowColumn - 1) {
-      getContext().createLineViolation(this, MESSAGE_SPACE, node);
+      addIssue(node, this, MESSAGE_SPACE);
     }
   }
 
@@ -104,7 +103,7 @@ public class ArrowsAlignmentCheck extends SquidCheck<Grammar> {
       if (arrowColumn == -1) {
         arrowColumn = paramNode.getFirstChild(PuppetPunctuator.FARROW).getToken().getColumn();
       } else if (paramNode.getFirstChild(PuppetPunctuator.FARROW).getToken().getColumn() != arrowColumn) {
-        getContext().createLineViolation(this, MESSAGE, node);
+        addIssue(node, this, MESSAGE);
         return;
       }
     }
@@ -112,7 +111,7 @@ public class ArrowsAlignmentCheck extends SquidCheck<Grammar> {
       if (arrowColumn == -1) {
         arrowColumn = anyParamNode.getFirstChild(PuppetPunctuator.PARROW).getToken().getColumn();
       } else if (anyParamNode.getFirstChild(PuppetPunctuator.PARROW).getToken().getColumn() != arrowColumn) {
-        getContext().createLineViolation(this, MESSAGE, node);
+        addIssue(node, this, MESSAGE);
         return;
       }
     }
@@ -133,7 +132,7 @@ public class ArrowsAlignmentCheck extends SquidCheck<Grammar> {
         }
       }
       if (upperColumn + 1 != arrowColumn) {
-        getContext().createLineViolation(this, MESSAGE_SPACE, node);
+        addIssue(node, this, MESSAGE_SPACE);
       }
     }
   }

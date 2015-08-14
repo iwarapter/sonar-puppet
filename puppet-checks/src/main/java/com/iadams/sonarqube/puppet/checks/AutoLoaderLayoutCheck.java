@@ -25,9 +25,9 @@
 package com.iadams.sonarqube.puppet.checks;
 
 import com.google.common.base.Joiner;
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 
 import java.util.Arrays;
 
@@ -37,7 +37,6 @@ import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "AutoLoaderLayout",
@@ -47,7 +46,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.ARCHITECTURE_RELIABILITY)
 @SqaleConstantRemediation("1h")
-public class AutoLoaderLayoutCheck extends SquidCheck<Grammar> {
+public class AutoLoaderLayoutCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
@@ -72,7 +71,7 @@ public class AutoLoaderLayoutCheck extends SquidCheck<Grammar> {
     }
 
     if (!getContext().getFile().getAbsolutePath().endsWith(path.toString())) {
-      getContext().createFileViolation(this, "\"{0}\" not in autoload module layout", getContext().getFile().getName());
+      addIssueOnFile(this, "\"" + getContext().getFile().getName() + "\" not in autoload module layout");
     }
   }
 }

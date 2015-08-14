@@ -24,6 +24,7 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
 import org.sonar.api.server.rule.RulesDefinition;
@@ -32,8 +33,6 @@ import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "SingleQuotedStringContainingVariables",
@@ -43,7 +42,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.INSTRUCTION_RELIABILITY)
 @SqaleConstantRemediation("5min")
 @ActivatedByDefault
-public class SingleQuotedStringContainingVariablesCheck extends SquidCheck<LexerlessGrammar> {
+public class SingleQuotedStringContainingVariablesCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
@@ -51,9 +50,9 @@ public class SingleQuotedStringContainingVariablesCheck extends SquidCheck<Lexer
   }
 
   @Override
-  public void visitNode(AstNode astNode) {
-    if (CheckStringUtils.containsVariable(astNode.getTokenValue())) {
-      getContext().createLineViolation(this, "Use double quotes instead of single quotes for the string to be interpolated.", astNode, astNode.getTokenLine());
+  public void visitNode(AstNode node) {
+    if (CheckStringUtils.containsVariable(node.getTokenValue())) {
+      addIssue(node, this, "Use double quotes instead of single quotes for the string to be interpolated.");
     }
   }
 

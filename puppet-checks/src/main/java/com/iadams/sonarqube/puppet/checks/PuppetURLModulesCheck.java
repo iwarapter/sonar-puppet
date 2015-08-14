@@ -24,6 +24,7 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
 import org.sonar.api.server.rule.RulesDefinition;
@@ -32,8 +33,6 @@ import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "PuppetURLModules",
@@ -43,7 +42,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.INSTRUCTION_RELIABILITY)
 @SqaleConstantRemediation("10min")
 @ActivatedByDefault
-public class PuppetURLModulesCheck extends SquidCheck<LexerlessGrammar> {
+public class PuppetURLModulesCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
@@ -55,7 +54,7 @@ public class PuppetURLModulesCheck extends SquidCheck<LexerlessGrammar> {
     if (node.getTokenValue().substring(1).startsWith("puppet:///")
       && !node.getTokenValue().substring(1).startsWith("puppet:///modules/")
       && !node.getTokenValue().substring(1).startsWith("puppet:///$")) {
-      getContext().createLineViolation(this, "Add \"modules/\" to the path.", node);
+      addIssue(node, this, "Add \"modules/\" to the path.");
     }
   }
 

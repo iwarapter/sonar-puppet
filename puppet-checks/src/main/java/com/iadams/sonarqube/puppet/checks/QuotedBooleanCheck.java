@@ -24,15 +24,14 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL;
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL;
@@ -45,7 +44,7 @@ import static com.iadams.sonarqube.puppet.api.PuppetTokenType.SINGLE_QUOTED_STRI
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
 @SqaleConstantRemediation("10min")
-public class QuotedBooleanCheck extends SquidCheck<Grammar> {
+public class QuotedBooleanCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
@@ -54,13 +53,12 @@ public class QuotedBooleanCheck extends SquidCheck<Grammar> {
 
   @Override
   public void visitNode(AstNode node) {
-    String literal = node.getTokenValue();
-    switch (literal) {
+    switch (node.getTokenValue()) {
       case "'false'":
       case "'true'":
       case "\"false\"":
       case "\"true\"":
-        getContext().createLineViolation(this, "Remove quotes.", node);
+        addIssue(node, this, "Remove quotes.");
         break;
       default:
         break;

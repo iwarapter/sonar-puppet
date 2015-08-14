@@ -25,6 +25,7 @@
 package com.iadams.sonarqube.puppet.checks;
 
 import com.google.common.collect.Lists;
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
 
@@ -36,8 +37,6 @@ import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "DuplicatedHashKeys",
@@ -47,7 +46,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.DATA_RELIABILITY)
 @SqaleConstantRemediation("5min")
 @ActivatedByDefault
-public class DuplicatedHashKeysCheck extends SquidCheck<LexerlessGrammar> {
+public class DuplicatedHashKeysCheck extends PuppetCheckVisitor {
 
   private List<String> keys = Lists.newArrayList();
 
@@ -61,14 +60,13 @@ public class DuplicatedHashKeysCheck extends SquidCheck<LexerlessGrammar> {
     keys.clear();
     for (AstNode hashPairNode : paramsNode.getChildren(PuppetGrammar.HASH_PAIR)) {
       if (keys.contains(hashPairNode.getFirstChild(PuppetGrammar.KEY).getTokenValue())) {
-        getContext().createLineViolation(this,
-          "Remove the duplicated key \"{0}\".",
+        addIssue(
           hashPairNode.getFirstChild(PuppetGrammar.KEY),
-          hashPairNode.getFirstChild(PuppetGrammar.KEY).getTokenValue());
+          this,
+          "Remove the duplicated key \"" + hashPairNode.getFirstChild(PuppetGrammar.KEY).getTokenValue() + "\".");
       } else {
         keys.add(hashPairNode.getFirstChild(PuppetGrammar.KEY).getTokenValue());
       }
     }
   }
-
 }

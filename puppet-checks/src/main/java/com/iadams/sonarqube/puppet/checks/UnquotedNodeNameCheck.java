@@ -24,17 +24,16 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "UnquotedNodeName",
@@ -44,7 +43,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LANGUAGE_RELATED_PORTABILITY)
 @SqaleConstantRemediation("2min")
-public class UnquotedNodeNameCheck extends SquidCheck<Grammar> {
+public class UnquotedNodeNameCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
@@ -54,7 +53,7 @@ public class UnquotedNodeNameCheck extends SquidCheck<Grammar> {
   @Override
   public void visitNode(AstNode node) {
     if (node.getToken().getType().equals(PuppetTokenType.NAME)) {
-      getContext().createLineViolation(this, "Quote this node name.", node);
+      addIssue(node, this, "Quote this node name.");
     }
   }
 

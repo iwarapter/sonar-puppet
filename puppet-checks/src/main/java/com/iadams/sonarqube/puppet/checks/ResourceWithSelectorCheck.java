@@ -24,16 +24,15 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "ResourceWithSelector",
@@ -43,7 +42,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("10min")
-public class ResourceWithSelectorCheck extends SquidCheck<Grammar> {
+public class ResourceWithSelectorCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
@@ -53,7 +52,7 @@ public class ResourceWithSelectorCheck extends SquidCheck<Grammar> {
   @Override
   public void visitNode(AstNode node) {
     for (AstNode selector : node.getDescendants(PuppetGrammar.SELECTOR)) {
-      getContext().createLineViolation(this, "Extract this conditional from the resource declaration.", selector);
+      addIssue(selector, this, "Extract this conditional from the resource declaration.");
     }
   }
 

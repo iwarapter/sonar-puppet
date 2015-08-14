@@ -24,16 +24,15 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL;
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL;
@@ -46,7 +45,7 @@ import static com.iadams.sonarqube.puppet.api.PuppetTokenType.SINGLE_QUOTED_STRI
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.SECURITY_FEATURES)
 @SqaleConstantRemediation("10min")
-public class UserResourceLiteralNameCheck extends SquidCheck<Grammar> {
+public class UserResourceLiteralNameCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
@@ -59,7 +58,7 @@ public class UserResourceLiteralNameCheck extends SquidCheck<Grammar> {
       for (AstNode resourceInstanceNode : node.getChildren(PuppetGrammar.RESOURCE_INST)) {
         AstNode resourceNameNode = resourceInstanceNode.getFirstChild(PuppetGrammar.RESOURCE_NAME);
         if (resourceNameNode.getFirstChild().is(SINGLE_QUOTED_STRING_LITERAL, DOUBLE_QUOTED_STRING_LITERAL)) {
-          getContext().createLineViolation(this, "Remove this hardcoded user name.", resourceNameNode.getTokenLine());
+          addIssue(resourceNameNode, this, "Remove this hardcoded user name.");
         }
       }
     }
