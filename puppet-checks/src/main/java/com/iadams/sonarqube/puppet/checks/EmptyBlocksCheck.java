@@ -24,16 +24,15 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.iadams.sonarqube.puppet.api.PuppetPunctuator;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "EmptyBlocks",
@@ -42,7 +41,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
   tags = {Tags.PITFALL})
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LOGIC_RELIABILITY)
 @SqaleConstantRemediation("5min")
-public class EmptyBlocksCheck extends SquidCheck<Grammar> {
+public class EmptyBlocksCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
@@ -71,11 +70,11 @@ public class EmptyBlocksCheck extends SquidCheck<Grammar> {
     if (node.is(PuppetGrammar.CLASSDEF, PuppetGrammar.DEFINITION)) {
       if (node.getFirstChild(PuppetGrammar.ARGUMENTS) == null
         && node.getFirstChild(PuppetGrammar.CLASSNAME).getNextAstNode().is(PuppetPunctuator.LPAREN)) {
-        getContext().createLineViolation(this, "Remove this empty argument list.", node);
+        addIssue(node, this, "Remove this empty argument list.");
       }
       if (node.getFirstChild(PuppetGrammar.STATEMENT) == null) {
         String nodeType = node.is(PuppetGrammar.CLASSDEF) ? "class" : "define";
-        getContext().createLineViolation(this, "Remove this empty " + nodeType + ".", node);
+        addIssue(node, this, "Remove this empty " + nodeType + ".");
       }
     }
   }
@@ -84,26 +83,26 @@ public class EmptyBlocksCheck extends SquidCheck<Grammar> {
     if (node.is(PuppetGrammar.RESOURCE)
       && node.getFirstChild(PuppetGrammar.RESOURCE_INST) == null
       && node.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM).isEmpty()) {
-      getContext().createLineViolation(this, "Remove this empty resource default statement.", node);
+      addIssue(node, this, "Remove this empty resource default statement.");
     } else if (node.is(PuppetGrammar.RESOURCE_OVERRIDE)
       && node.getFirstChild(PuppetGrammar.ANY_PARAMS).getChildren(PuppetGrammar.PARAM, PuppetGrammar.ADD_PARAM).isEmpty()) {
-      getContext().createLineViolation(this, "Remove this empty resource override.", node);
+      addIssue(node, this, "Remove this empty resource override.");
     }
   }
 
   private void checkConditionalStatements(AstNode node) {
     if (node.getFirstChild(PuppetGrammar.STATEMENT) == null) {
       if (node.is(PuppetGrammar.IF_STMT)) {
-        getContext().createLineViolation(this, "Remove this empty \"if\" statement.", node);
+        addIssue(node, this, "Remove this empty \"if\" statement.");
       } else if (node.is(PuppetGrammar.UNLESS_STMT)) {
-        getContext().createLineViolation(this, "Remove this empty \"unless\" statement.", node);
+        addIssue(node, this, "Remove this empty \"unless\" statement.");
       } else if (!hasTrivia(node)) {
         if (node.is(PuppetGrammar.CASE_MATCHER)) {
-          getContext().createLineViolation(this, "Remove this empty \"case\" matcher or add a comment to explain why it is empty.", node);
+          addIssue(node, this, "Remove this empty \"case\" matcher or add a comment to explain why it is empty.");
         } else if (node.is(PuppetGrammar.ELSEIF_STMT)) {
-          getContext().createLineViolation(this, "Remove this empty \"elsif\" statement or add a comment to explain why it is empty.", node);
+          addIssue(node, this, "Remove this empty \"elsif\" statement or add a comment to explain why it is empty.");
         } else if (node.is(PuppetGrammar.ELSE_STMT)) {
-          getContext().createLineViolation(this, "Remove this empty \"else\" statement or add a comment to explain why it is empty.", node);
+          addIssue(node, this, "Remove this empty \"else\" statement or add a comment to explain why it is empty.");
         }
       }
     }
