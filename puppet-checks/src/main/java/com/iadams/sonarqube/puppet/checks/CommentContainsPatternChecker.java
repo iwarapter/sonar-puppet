@@ -24,17 +24,17 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
 import org.apache.commons.lang.StringUtils;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 public class CommentContainsPatternChecker {
-  private final SquidCheck<?> check;
+  private final PuppetCheckVisitor check;
   private final String pattern;
   private final String message;
 
-  public CommentContainsPatternChecker(SquidCheck<?> check, String pattern, String message) {
+  public CommentContainsPatternChecker(PuppetCheckVisitor check, String pattern, String message) {
     this.check = check;
     this.pattern = pattern;
     this.message = message;
@@ -48,7 +48,7 @@ public class CommentContainsPatternChecker {
 
         for (int i = 0; i < lines.length; i++) {
           if (StringUtils.containsIgnoreCase(lines[i], pattern) && !isLetterAround(lines[i], pattern)) {
-            check.getContext().createLineViolation(check, message, trivia.getToken().getLine() + i);
+            check.addIssue(trivia.getToken().getLine() + i, check, message);
           }
         }
       }

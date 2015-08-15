@@ -24,9 +24,9 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 import org.apache.commons.lang.StringUtils;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
@@ -34,7 +34,6 @@ import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "InheritsAcrossNamespace",
@@ -44,7 +43,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.ARCHITECTURE_CHANGEABILITY)
 @SqaleConstantRemediation("4h")
-public class InheritsAcrossNamespaceCheck extends SquidCheck<Grammar> {
+public class InheritsAcrossNamespaceCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
@@ -57,7 +56,7 @@ public class InheritsAcrossNamespaceCheck extends SquidCheck<Grammar> {
     String classModuleName = StringUtils.substringBefore(node.getParent().getFirstChild(PuppetGrammar.CLASSNAME).getTokenValue(), "::");
 
     if (!inheritedModuleName.equals(classModuleName)) {
-      getContext().createLineViolation(this, "Remove this inheritance from an external module class.", node.getTokenLine());
+      addIssue(node, this, "Remove this inheritance from an external module class.");
     }
   }
 

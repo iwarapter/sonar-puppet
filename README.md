@@ -8,14 +8,15 @@ SonarQube Puppet Plugin
 
 Description
 -----------
-This plugin enables analysis of [Puppet] projects. It comes with rules provided by [Puppet lint]. This is currently written to support the grammar for [Puppet 3.8], support for the future parser is not currently available.
+This plugin enables analysis of [Puppet] code. It comes with more than 40 rules spanning from style checks (i.e. All arrows in attribute/value list should be aligned) to detection of potential bugs (i.e. Duplicated parameters should be removed).
+This is currently written to support the grammar for [Puppet 3.8], support for the future parser is not currently available.
 
 Requirements
 ------------
 - SonarQube Server must be up and running. If it's not the case, see [Setup and Upgrade].
 - [SonarQube Runner] is installed and can be called from the command line.
 - Puppet Plugin is installed on SonarQube Server. See [Installing a Plugin] for more details.
-- (Optional) [Puppet lint] has to be installed, if you want to activate Puppet lint rules.
+- (Optional) [Puppet lint] has to be installed, if you want to activate Puppet lint rules. Note that almost all Puppet lint rules have now been rewritten. Their replacements are a lot more robust: fewer false negatives and false positives.
 
 Getting Started
 ---------------
@@ -44,6 +45,7 @@ Metrics
 The Puppet terms do not always match with the standard [SonarQube metrics]. Here's the list of slight differences:
 - Classes = Number of classes + Number of defines
 - Functions = Number of resources (including default resource and resource override)
+- Complexity is increased by one for each: class, define, resource instance, resource default statement, resource override, if, elsif, unless, selector match, case match, and, or.
 
 
 Extending Coding Rules using XPath

@@ -17,6 +17,12 @@ User {
 	require => Package['httpd'],
 }
 
+User['abc'] {
+	ensure  => present,
+	gid     => $group,
+	require => Package['httpd'],
+}
+
 file {
 '/etc/passwd':
 	ensure => file,
@@ -31,3 +37,28 @@ file {
   mode   => '0600',
 	;
 }
+
+if $a {}
+
+if $a {}
+elsif $b {}
+else {}
+
+if $a or $a and $a {}
+
+unless $a {}
+
+case $a {
+	'aa': {}
+	/d+/: {}
+  default: {}
+}
+
+$a = $b ? {
+  'aa'    => 'abc',
+  /d/     => 'abc',
+  default => 'abc',
+}
+
+class abc {}
+define abc {}

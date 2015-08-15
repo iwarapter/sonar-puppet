@@ -22,35 +22,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.checks;
+package com.iadams.sonarqube.puppet.checks
 
-import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
-import com.sonar.sslr.api.AstAndTokenVisitor;
-import com.sonar.sslr.api.Token;
-import org.sonar.api.server.rule.RulesDefinition;
-import org.sonar.check.Priority;
-import org.sonar.check.Rule;
-import org.sonar.squidbridge.annotations.ActivatedByDefault;
-import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
+import spock.lang.Specification
 
-@Rule(
-  key = "S1134",
-  name = "\"FIXME\" tags should be handled",
-  priority = Priority.INFO)
-@ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.UNDERSTANDABILITY)
-@SqaleConstantRemediation("20min")
-public class FixmeTagPresenceCheck extends PuppetCheckVisitor implements AstAndTokenVisitor {
+class LiteralBooleanInComparisonCheckSpec extends Specification {
 
-  private static final String PATTERN = "FIXME";
-  private static final String MESSAGE = "Take the required action to fix the issue indicated by this comment.";
+  private static final String MESSAGE_FALSE = "Remove this useless literal boolean \"false\".";
+  private static final String MESSAGE_TRUE = "Remove this useless literal boolean \"true\".";
 
-  private final CommentContainsPatternChecker checker = new CommentContainsPatternChecker(this, PATTERN, MESSAGE);
+  def "validate rule"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/literal_boolean_in_comparison.pp"),
+      new LiteralBooleanInComparisonCheck());
 
-  @Override
-  public void visitToken(Token token) {
-    checker.visitToken(token);
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(2).withMessage(MESSAGE_FALSE)
+      .next().atLine(3).withMessage(MESSAGE_TRUE)
+      .next().atLine(8).withMessage(MESSAGE_TRUE)
+      .next().atLine(9).withMessage(MESSAGE_FALSE)
+      .next().atLine(12).withMessage(MESSAGE_TRUE)
+      .next().atLine(13).withMessage(MESSAGE_FALSE)
+      .next().atLine(15).withMessage(MESSAGE_TRUE)
+      .noMore();
   }
-
 }

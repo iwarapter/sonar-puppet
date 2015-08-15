@@ -27,6 +27,8 @@ package com.iadams.sonarqube.puppet;
 import com.google.common.base.Charsets;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.iadams.sonarqube.puppet.api.PuppetMetric;
+import com.iadams.sonarqube.puppet.metrics.ComplexityVisitor;
+import com.iadams.sonarqube.puppet.metrics.FunctionVisitor;
 import com.iadams.sonarqube.puppet.parser.PuppetParser;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
@@ -78,6 +80,9 @@ public class PuppetAstScanner {
 
     builder.withSquidAstVisitor(new LinesVisitor<Grammar>(PuppetMetric.LINES));
     builder.withSquidAstVisitor(new PuppetLinesOfCodeVisitor<Grammar>(PuppetMetric.LINES_OF_CODE));
+    builder.withSquidAstVisitor(new FunctionVisitor());
+    builder.withSquidAstVisitor(new ComplexityVisitor());
+
     builder.withSquidAstVisitor(CommentsVisitor.<Grammar>builder().withCommentMetric(PuppetMetric.COMMENT_LINES)
       .withNoSonar(true)
       .withIgnoreHeaderComment(conf.getIgnoreHeaderComments())
@@ -86,11 +91,6 @@ public class PuppetAstScanner {
     builder.withSquidAstVisitor(CounterVisitor.<Grammar>builder()
       .setMetricDef(PuppetMetric.CLASSES)
       .subscribeTo(PuppetGrammar.CLASSDEF, PuppetGrammar.DEFINITION)
-      .build());
-
-    builder.withSquidAstVisitor(CounterVisitor.<Grammar>builder()
-      .setMetricDef(PuppetMetric.FUNCTIONS)
-      .subscribeTo(PuppetGrammar.RESOURCE)
       .build());
 
     // TODO: To be discussed with the mapping of FUNCTIONS

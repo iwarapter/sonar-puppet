@@ -24,17 +24,16 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.iadams.sonarqube.puppet.api.PuppetKeyword;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "IfStatementWithoutElseClause",
@@ -44,7 +43,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LOGIC_RELIABILITY)
 @SqaleConstantRemediation("15min")
-public class IfStatementWithoutElseClauseCheck extends SquidCheck<Grammar> {
+public class IfStatementWithoutElseClauseCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
@@ -54,7 +53,7 @@ public class IfStatementWithoutElseClauseCheck extends SquidCheck<Grammar> {
   @Override
   public void visitNode(AstNode node) {
     if (node.getChildren(PuppetGrammar.ELSEIF_STMT).size() > 0 && node.getFirstChild(PuppetGrammar.ELSE_STMT) == null) {
-      getContext().createLineViolation(this, "End this if...elsif construct by an else clause.", node);
+      addIssue(node, this, "End this if...elsif construct by an else clause.");
     }
   }
 

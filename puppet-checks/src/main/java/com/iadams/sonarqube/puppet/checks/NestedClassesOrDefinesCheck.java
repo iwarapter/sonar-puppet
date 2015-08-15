@@ -24,16 +24,15 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "NestedClassesOrDefines",
@@ -43,7 +42,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
 @SqaleConstantRemediation("1h")
-public class NestedClassesOrDefinesCheck extends SquidCheck<Grammar> {
+public class NestedClassesOrDefinesCheck extends PuppetCheckVisitor {
 
   private String message;
 
@@ -62,7 +61,7 @@ public class NestedClassesOrDefinesCheck extends SquidCheck<Grammar> {
         + (node.is(PuppetGrammar.CLASSDEF) ? "class " : "define ")
         + "\"" + node.getFirstChild(PuppetGrammar.CLASSNAME).getTokenValue() + "\""
         + ".";
-      getContext().createLineViolation(this, message, nestedNode);
+      addIssue(nestedNode, this, message);
     }
   }
 

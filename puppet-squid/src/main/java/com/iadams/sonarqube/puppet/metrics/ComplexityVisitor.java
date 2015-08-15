@@ -22,23 +22,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet;
+package com.iadams.sonarqube.puppet.metrics;
 
-import org.sonar.api.profiles.ProfileDefinition;
-import org.sonar.api.profiles.RulesProfile;
-import org.sonar.api.profiles.XMLProfileParser;
-import org.sonar.api.utils.ValidationMessages;
+import com.iadams.sonarqube.puppet.api.PuppetGrammar;
+import com.iadams.sonarqube.puppet.api.PuppetMetric;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Grammar;
+import org.sonar.squidbridge.SquidAstVisitor;
 
-public class PuppetLintProfile extends ProfileDefinition {
+public class ComplexityVisitor extends SquidAstVisitor<Grammar> {
 
-  private final XMLProfileParser xmlProfileParser;
+  @Override
+  public void init() {
+    subscribeTo(
+      PuppetGrammar.CLASSDEF,
+      PuppetGrammar.DEFINITION,
 
-  public PuppetLintProfile(XMLProfileParser xmlProfileParser) {
-    this.xmlProfileParser = xmlProfileParser;
+      PuppetGrammar.RESOURCE,
+      PuppetGrammar.RESOURCE_OVERRIDE,
+      PuppetGrammar.RESOURCE_INST,
+
+      PuppetGrammar.IF_STMT,
+      PuppetGrammar.ELSEIF_STMT,
+      PuppetGrammar.UNLESS_STMT,
+      PuppetGrammar.SELECTVAL,
+      PuppetGrammar.CASE_MATCHER,
+      PuppetGrammar.BOOL_OPERATOR);
   }
 
   @Override
-  public RulesProfile createProfile(ValidationMessages messages) {
-    return xmlProfileParser.parseResource(getClass().getClassLoader(), "com/iadams/sonarqube/puppet/pplint/PuppetLintProfile.xml", messages);
+  public void visitNode(AstNode node) {
+    if (node.is(PuppetGrammar.RESOURCE) && node.getFirstChild(PuppetGrammar.RESOURCE_INST) != null) {
+      return;
+    }
+    getContext().peekSourceCode().add(PuppetMetric.COMPLEXITY, 1);
   }
+
 }

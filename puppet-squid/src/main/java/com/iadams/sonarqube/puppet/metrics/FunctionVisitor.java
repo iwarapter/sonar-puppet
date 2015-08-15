@@ -22,35 +22,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.checks;
+package com.iadams.sonarqube.puppet.metrics;
 
-import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
-import com.sonar.sslr.api.AstAndTokenVisitor;
-import com.sonar.sslr.api.Token;
-import org.sonar.api.server.rule.RulesDefinition;
-import org.sonar.check.Priority;
-import org.sonar.check.Rule;
-import org.sonar.squidbridge.annotations.ActivatedByDefault;
-import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
+import com.iadams.sonarqube.puppet.api.PuppetGrammar;
+import com.iadams.sonarqube.puppet.api.PuppetMetric;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Grammar;
+import org.sonar.squidbridge.SquidAstVisitor;
 
-@Rule(
-  key = "S1134",
-  name = "\"FIXME\" tags should be handled",
-  priority = Priority.INFO)
-@ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.UNDERSTANDABILITY)
-@SqaleConstantRemediation("20min")
-public class FixmeTagPresenceCheck extends PuppetCheckVisitor implements AstAndTokenVisitor {
-
-  private static final String PATTERN = "FIXME";
-  private static final String MESSAGE = "Take the required action to fix the issue indicated by this comment.";
-
-  private final CommentContainsPatternChecker checker = new CommentContainsPatternChecker(this, PATTERN, MESSAGE);
+public class FunctionVisitor extends SquidAstVisitor<Grammar> {
 
   @Override
-  public void visitToken(Token token) {
-    checker.visitToken(token);
+  public void init() {
+    subscribeTo(
+      PuppetGrammar.RESOURCE,
+      PuppetGrammar.RESOURCE_INST);
+  }
+
+  @Override
+  public void visitNode(AstNode node) {
+    if (node.is(PuppetGrammar.RESOURCE) && node.getFirstChild(PuppetGrammar.RESOURCE_INST) != null) {
+      return;
+    }
+    getContext().peekSourceCode().add(PuppetMetric.FUNCTIONS, 1);
   }
 
 }

@@ -24,9 +24,9 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 
 import java.util.regex.Pattern;
 
@@ -36,7 +36,6 @@ import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.*;
 
@@ -48,7 +47,7 @@ import static com.iadams.sonarqube.puppet.api.PuppetTokenType.*;
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
 @SqaleConstantRemediation("10min")
 @ActivatedByDefault
-public class FileModeCheck extends SquidCheck<Grammar> {
+public class FileModeCheck extends PuppetCheckVisitor {
 
   private static final String REGEX = "['|\"]?([0-7]{4}|([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*)['|\"]?";
   private static final Pattern PATTERN = Pattern.compile(REGEX);
@@ -75,7 +74,7 @@ public class FileModeCheck extends SquidCheck<Grammar> {
     if ("file".equals(resourceNode.getTokenValue())) {
       for (AstNode resourceInstNode : resourceNode.getChildren(PuppetGrammar.RESOURCE_INST)) {
         for (AstNode paramNode : resourceInstNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
-            checkMode(paramNode);
+          checkMode(paramNode);
         }
       }
     }
@@ -101,13 +100,13 @@ public class FileModeCheck extends SquidCheck<Grammar> {
     if ("mode".equals(paramNode.getTokenValue())) {
       AstNode expressionNode = paramNode.getFirstChild(PuppetGrammar.EXPRESSION);
       if (expressionNode.getToken().getType().equals(OCTAL_INTEGER) || expressionNode.getToken().getType().equals(INTEGER)) {
-        getContext().createLineViolation(this, MESSAGE_OCTAL, expressionNode.getTokenLine());
+        addIssue(expressionNode, this, MESSAGE_OCTAL);
       } else if (expressionNode.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL) && PATTERN.matcher(expressionNode.getTokenValue()).matches()) {
-        getContext().createLineViolation(this, MESSAGE_DOUBLE_QUOTES, expressionNode.getTokenLine());
+        addIssue(expressionNode, this, MESSAGE_DOUBLE_QUOTES);
       } else if (expressionNode.getToken().getType().equals(SINGLE_QUOTED_STRING_LITERAL) && !PATTERN.matcher(expressionNode.getTokenValue()).matches()
         || expressionNode.getToken().getType().equals(DOUBLE_QUOTED_STRING_LITERAL) && !PATTERN.matcher(expressionNode.getTokenValue()).matches()
         && !CheckStringUtils.containsVariable(expressionNode.getTokenValue())) {
-        getContext().createLineViolation(this, MESSAGE_INVALID, expressionNode.getTokenLine());
+        addIssue(expressionNode, this, MESSAGE_INVALID);
       }
     }
   }

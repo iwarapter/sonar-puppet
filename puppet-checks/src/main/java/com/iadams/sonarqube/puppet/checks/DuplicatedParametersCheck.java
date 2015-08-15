@@ -25,6 +25,7 @@
 package com.iadams.sonarqube.puppet.checks;
 
 import com.google.common.collect.Lists;
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
 
@@ -36,8 +37,6 @@ import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "DuplicatedParameters",
@@ -47,7 +46,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.DATA_RELIABILITY)
 @SqaleConstantRemediation("5min")
 @ActivatedByDefault
-public class DuplicatedParametersCheck extends SquidCheck<LexerlessGrammar> {
+public class DuplicatedParametersCheck extends PuppetCheckVisitor {
 
   private List<String> keys = Lists.newArrayList();
 
@@ -61,7 +60,7 @@ public class DuplicatedParametersCheck extends SquidCheck<LexerlessGrammar> {
     keys.clear();
     for (AstNode paramNode : paramsNode.getChildren(PuppetGrammar.PARAM, PuppetGrammar.ADD_PARAM)) {
       if (keys.contains(paramNode.getTokenValue())) {
-        getContext().createLineViolation(this, "Remove the duplicated parameter \"{0}\".", paramNode, paramNode.getTokenValue());
+        addIssue(paramNode, this, "Remove the duplicated parameter \"" + paramNode.getTokenValue() + "\".");
       } else {
         keys.add(paramNode.getTokenValue());
       }

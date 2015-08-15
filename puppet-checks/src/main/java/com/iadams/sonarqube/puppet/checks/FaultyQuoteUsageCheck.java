@@ -24,9 +24,9 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 
 import java.util.regex.Pattern;
 
@@ -36,7 +36,6 @@ import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "FaultyQuoteUsage",
@@ -46,7 +45,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("2min")
-public class FaultyQuoteUsageCheck extends SquidCheck<Grammar> {
+public class FaultyQuoteUsageCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
@@ -63,9 +62,9 @@ public class FaultyQuoteUsageCheck extends SquidCheck<Grammar> {
     if (node.is(PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL)) {
       String stringWithoutQuotes = node.getTokenValue().substring(1, node.getTokenValue().length() - 1);
       if (!CheckStringUtils.containsVariable(stringWithoutQuotes) && !CheckStringUtils.containsSpecialCharacter(stringWithoutQuotes)) {
-        getContext().createLineViolation(this, "Surround the string with single quotes instead of double quotes.", node);
+        addIssue(node, this, "Surround the string with single quotes instead of double quotes.");
       } else if (CheckStringUtils.containsOnlyVariable(stringWithoutQuotes)) {
-        getContext().createLineViolation(this, "Remove quotes surrounding this variable.", node);
+        addIssue(node, this, "Remove quotes surrounding this variable.");
       }
     }
   }
@@ -74,7 +73,7 @@ public class FaultyQuoteUsageCheck extends SquidCheck<Grammar> {
     if (node.is(PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL)) {
       String stringWithoutQuotes = node.getTokenValue().substring(1, node.getTokenValue().length() - 1);
       if (Pattern.compile(".*\\\\'.*").matcher(stringWithoutQuotes).matches()) {
-        getContext().createLineViolation(this, "Surround the string with double quotes instead of single quotes and unescaped single quotes inside this string.", node);
+        addIssue(node, this, "Surround the string with double quotes instead of single quotes and unescaped single quotes inside this string.");
       }
     }
   }

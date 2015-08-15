@@ -24,33 +24,40 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
-import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
-import com.sonar.sslr.api.AstAndTokenVisitor;
-import com.sonar.sslr.api.Token;
+import com.iadams.sonarqube.puppet.api.PuppetGrammar;
+import com.iadams.sonarqube.puppet.api.PuppetKeyword;
+import com.sonar.sslr.api.AstNode;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
+import org.sonar.squidbridge.checks.SquidCheck;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
-  key = "S1134",
-  name = "\"FIXME\" tags should be handled",
-  priority = Priority.INFO)
+  key = "LiteralBooleanInComparison",
+  name = "Literal boolean values should not be used in comparison expressions",
+  priority = Priority.MINOR,
+  tags = {Tags.CONVENTION})
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
+@SqaleConstantRemediation("2min")
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.UNDERSTANDABILITY)
-@SqaleConstantRemediation("20min")
-public class FixmeTagPresenceCheck extends PuppetCheckVisitor implements AstAndTokenVisitor {
-
-  private static final String PATTERN = "FIXME";
-  private static final String MESSAGE = "Take the required action to fix the issue indicated by this comment.";
-
-  private final CommentContainsPatternChecker checker = new CommentContainsPatternChecker(this, PATTERN, MESSAGE);
+public class LiteralBooleanInComparisonCheck extends SquidCheck<LexerlessGrammar> {
 
   @Override
-  public void visitToken(Token token) {
-    checker.visitToken(token);
+  public void init() {
+    subscribeTo(PuppetGrammar.COMPARISON);
+  }
+
+  @Override
+  public void leaveNode(AstNode node) {
+    if (node.getFirstChild(PuppetKeyword.TRUE, PuppetKeyword.FALSE) != null) {
+      getContext().createLineViolation(this, "Remove this useless literal boolean \"{0}\".",
+        node.getFirstChild(PuppetKeyword.TRUE, PuppetKeyword.FALSE),
+        node.getFirstChild(PuppetKeyword.TRUE, PuppetKeyword.FALSE).getTokenValue());
+    }
   }
 
 }
