@@ -24,6 +24,7 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
 import org.sonar.api.server.rule.RulesDefinition;
@@ -32,8 +33,6 @@ import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "ResourceDefaultNamingConvention",
@@ -43,7 +42,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.INSTRUCTION_RELIABILITY)
 @SqaleConstantRemediation("20min")
 @ActivatedByDefault
-public class ResourceDefaultNamingConventionCheck extends SquidCheck<LexerlessGrammar> {
+public class ResourceDefaultNamingConventionCheck extends PuppetCheckVisitor {
 
   private static final String FORMAT = "^([A-Z][a-z0-9_]*::)*[A-Z][a-z0-9_]*$";
 
@@ -55,10 +54,7 @@ public class ResourceDefaultNamingConventionCheck extends SquidCheck<LexerlessGr
   @Override
   public void leaveNode(AstNode node) {
     if (node.getFirstChild(PuppetGrammar.RESOURCE_INST) == null && !node.getTokenValue().matches(FORMAT)) {
-      getContext().createLineViolation(this,
-        "Rename resource default \"{0}\" to match the regular expression: " + FORMAT,
-        node,
-        node.getTokenValue());
+      addIssue(node, this, "Rename resource default \"" + node.getTokenValue() + "\" to match the regular expression: " + FORMAT);
     }
   }
 

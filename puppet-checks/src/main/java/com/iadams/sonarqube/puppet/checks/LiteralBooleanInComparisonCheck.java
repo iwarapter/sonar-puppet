@@ -24,6 +24,7 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.iadams.sonarqube.puppet.api.PuppetKeyword;
 import com.sonar.sslr.api.AstNode;
@@ -33,8 +34,6 @@ import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "LiteralBooleanInComparison",
@@ -44,7 +43,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("2min")
 @ActivatedByDefault
-public class LiteralBooleanInComparisonCheck extends SquidCheck<LexerlessGrammar> {
+public class LiteralBooleanInComparisonCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
@@ -54,9 +53,9 @@ public class LiteralBooleanInComparisonCheck extends SquidCheck<LexerlessGrammar
   @Override
   public void leaveNode(AstNode node) {
     if (node.getFirstChild(PuppetKeyword.TRUE, PuppetKeyword.FALSE) != null) {
-      getContext().createLineViolation(this, "Remove this useless literal boolean \"{0}\".",
-        node.getFirstChild(PuppetKeyword.TRUE, PuppetKeyword.FALSE),
-        node.getFirstChild(PuppetKeyword.TRUE, PuppetKeyword.FALSE).getTokenValue());
+      addIssue(node.getFirstChild(
+        PuppetKeyword.TRUE, PuppetKeyword.FALSE),
+        this, "Remove this useless literal boolean \"" + node.getFirstChild(PuppetKeyword.TRUE, PuppetKeyword.FALSE).getTokenValue() + "\".");
     }
   }
 
