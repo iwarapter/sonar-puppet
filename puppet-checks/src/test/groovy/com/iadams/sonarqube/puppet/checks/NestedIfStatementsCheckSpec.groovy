@@ -80,4 +80,17 @@ class NestedIfStatementsCheckSpec extends Specification {
       .next().atLine(7).withMessage("Refactor this code to not nest more than 3 \"if\" or \"elsif\" statements.")
       .noMore();
   }
+
+  def "testing for if/elsif in else statements"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/nested_elseif_statements_ex3.pp"),
+      new NestedIfStatementsCheck());
+
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(9).withMessage("Refactor this code to not nest more than 3 \"if\" or \"elsif\" statements.")
+      .next().atLine(24).withMessage("Refactor this code to not nest more than 3 \"if\" or \"elsif\" statements.")
+      .noMore();
+  }
 }

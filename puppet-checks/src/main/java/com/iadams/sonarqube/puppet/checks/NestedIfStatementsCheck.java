@@ -24,6 +24,7 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
@@ -38,13 +39,13 @@ import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "NestedIfStatements",
-  name = "\"if\" and \"elsif\" statements should not be nested too deeply",
+  name = "Control flow statements \"if\" and \"elsif\" statements should not be nested too deeply",
   priority = Priority.MAJOR,
   tags = Tags.BRAIN_OVERLOAD)
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LOGIC_CHANGEABILITY)
 @SqaleConstantRemediation("10min")
 @ActivatedByDefault
-public class NestedIfStatementsCheck extends SquidCheck<Grammar> {
+public class NestedIfStatementsCheck extends PuppetCheckVisitor {
 
   private static final int DEFAULT_MAX = 3;
 
@@ -70,8 +71,8 @@ public class NestedIfStatementsCheck extends SquidCheck<Grammar> {
   public void visitNode(AstNode node) {
     depth++;
     if (depth == maximumNestingLevel + 1) {
-      String message = "Refactor this code to not nest more than {0} \"if\" or \"elsif\" statements.";
-      getContext().createLineViolation(this, message, node, maximumNestingLevel);
+      String message = "Refactor this code to not nest more than %d \"if\" or \"elsif\" statements.";
+      addIssue(node, this, String.format(message, maximumNestingLevel));
     }
   }
 
