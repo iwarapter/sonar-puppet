@@ -22,23 +22,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet;
+package com.iadams.sonarqube.puppet.checks
 
-import org.sonar.api.profiles.ProfileDefinition;
-import org.sonar.api.profiles.RulesProfile;
-import org.sonar.api.profiles.XMLProfileParser;
-import org.sonar.api.utils.ValidationMessages;
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
+import spock.lang.Specification
 
-public class PuppetLintProfile extends ProfileDefinition {
+class LiteralBooleanInComparisonCheckSpec extends Specification {
 
-  private final XMLProfileParser xmlProfileParser;
+  private static final String MESSAGE_FALSE = "Remove this useless literal boolean \"false\".";
+  private static final String MESSAGE_TRUE = "Remove this useless literal boolean \"true\".";
 
-  public PuppetLintProfile(XMLProfileParser xmlProfileParser) {
-    this.xmlProfileParser = xmlProfileParser;
-  }
+  def "validate rule"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/literal_boolean_in_comparison.pp"),
+      new LiteralBooleanInComparisonCheck());
 
-  @Override
-  public RulesProfile createProfile(ValidationMessages messages) {
-    return xmlProfileParser.parseResource(getClass().getClassLoader(), "com/iadams/sonarqube/puppet/pplint/PuppetLintProfile.xml", messages);
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(2).withMessage(MESSAGE_FALSE)
+      .next().atLine(3).withMessage(MESSAGE_TRUE)
+      .next().atLine(8).withMessage(MESSAGE_TRUE)
+      .next().atLine(9).withMessage(MESSAGE_FALSE)
+      .next().atLine(12).withMessage(MESSAGE_TRUE)
+      .next().atLine(13).withMessage(MESSAGE_FALSE)
+      .next().atLine(15).withMessage(MESSAGE_TRUE)
+      .noMore();
   }
 }

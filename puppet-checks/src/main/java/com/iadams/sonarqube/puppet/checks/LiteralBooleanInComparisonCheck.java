@@ -24,7 +24,6 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
-import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.iadams.sonarqube.puppet.api.PuppetKeyword;
 import com.sonar.sslr.api.AstNode;
@@ -34,26 +33,30 @@ import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
+import org.sonar.squidbridge.checks.SquidCheck;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
-  key = "IfStatementWithoutElseClause",
-  priority = Priority.MAJOR,
-  name = "\"if ... elsif\" constructs shall be terminated with an \"else\" clause",
-  tags = Tags.PITFALL)
+  key = "LiteralBooleanInComparison",
+  name = "Literal boolean values should not be used in comparison expressions",
+  priority = Priority.MINOR,
+  tags = {Tags.CONVENTION})
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
+@SqaleConstantRemediation("2min")
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LOGIC_RELIABILITY)
-@SqaleConstantRemediation("15min")
-public class IfStatementWithoutElseClauseCheck extends PuppetCheckVisitor {
+public class LiteralBooleanInComparisonCheck extends SquidCheck<LexerlessGrammar> {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.IF_STMT);
+    subscribeTo(PuppetGrammar.COMPARISON);
   }
 
   @Override
-  public void visitNode(AstNode node) {
-    if (node.getChildren(PuppetGrammar.ELSEIF_STMT).size() > 0 && node.getFirstChild(PuppetGrammar.ELSE_STMT) == null) {
-      addIssue(node, this, "End this if...elsif construct by an else clause.");
+  public void leaveNode(AstNode node) {
+    if (node.getFirstChild(PuppetKeyword.TRUE, PuppetKeyword.FALSE) != null) {
+      getContext().createLineViolation(this, "Remove this useless literal boolean \"{0}\".",
+        node.getFirstChild(PuppetKeyword.TRUE, PuppetKeyword.FALSE),
+        node.getFirstChild(PuppetKeyword.TRUE, PuppetKeyword.FALSE).getTokenValue());
     }
   }
 
