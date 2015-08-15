@@ -22,23 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet;
+package com.iadams.sonarqube.puppet.checks
 
-import org.sonar.api.profiles.ProfileDefinition;
-import org.sonar.api.profiles.RulesProfile;
-import org.sonar.api.profiles.XMLProfileParser;
-import org.sonar.api.utils.ValidationMessages;
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
+import spock.lang.Specification
 
-public class PuppetLintProfile extends ProfileDefinition {
+class TooComplexClassesAndDefinesCheckSpec extends Specification {
 
-  private final XMLProfileParser xmlProfileParser;
+  def "validate check"() {
+    given:
+    TooComplexClassesAndDefinesCheck check = new TooComplexClassesAndDefinesCheck();
+    check.setMax(10);
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/too_complex_classes_and_defines.pp"),
+      check);
 
-  public PuppetLintProfile(XMLProfileParser xmlProfileParser) {
-    this.xmlProfileParser = xmlProfileParser;
-  }
-
-  @Override
-  public RulesProfile createProfile(ValidationMessages messages) {
-    return xmlProfileParser.parseResource(getClass().getClassLoader(), "com/iadams/sonarqube/puppet/pplint/PuppetLintProfile.xml", messages);
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(1).withCost(1).withMessage("The complexity of this class is 11 which is greater than 10 authorized. Split this class.")
+      .next().atLine(23).withCost(2).withMessage("The complexity of this define is 12 which is greater than 10 authorized. Split this define.")
+      .noMore();
   }
 }

@@ -66,7 +66,7 @@ public enum PuppetGrammar implements GrammarRuleKey {
   COMPARISON,
 
   ARITH_OP,
-  ASSIGNMENT_EXPRESSION,
+  ASSIGNMENT,
   BOOL_OPERATOR,
   COMP_OPERATOR,
   A_OPER,
@@ -135,6 +135,7 @@ public enum PuppetGrammar implements GrammarRuleKey {
   CLASS_PARENT,
   IF_STMT,
   ELSEIF_STMT,
+  ELSE_STMT,
   CASE_STMT,
   CASE_MATCHER,
   CASE_VALUES,
@@ -194,8 +195,8 @@ public enum PuppetGrammar implements GrammarRuleKey {
       EXPRESSION);
 
     b.rule(PARAMS).is(b.optional(
-        PARAM,
-        b.zeroOrMore(COMMA, PARAM)),
+      PARAM,
+      b.zeroOrMore(COMMA, PARAM)),
       b.optional(COMMA));
 
     b.rule(ADD_PARAM).is(NAME, PARROW, EXPRESSION);
@@ -263,14 +264,22 @@ public enum PuppetGrammar implements GrammarRuleKey {
    * Simple Statements
    */
   public static void simpleStatements(LexerfulGrammarBuilder b) {
+
     b.rule(SIMPLE_STMT).is(b.firstOf(
       NODE_DEFINITION,
       RELATIONSHIP,
+      ASSIGNMENT,
       RESOURCE,
       UNLESS_STMT,
       IMPORT_STMT,
       RESOURCE_OVERRIDE,
-      DEFINITION));
+      DEFINITION,
+      FUNCTION_STMT));
+
+    b.rule(ASSIGNMENT).is(
+      b.firstOf(HASH_ARRAY_ACCESS, VARIABLE),
+      EQUALS,
+      EXPRESSION);
 
     b.rule(DEFINITION).is(DEFINE,
       CLASSNAME,
@@ -400,9 +409,11 @@ public enum PuppetGrammar implements GrammarRuleKey {
       b.zeroOrMore(STATEMENT),
       RBRACE,
       b.zeroOrMore(ELSEIF_STMT),
-      b.optional(ELSE, LBRACE, b.zeroOrMore(STATEMENT), RBRACE));
+      b.optional(ELSE_STMT));
 
     b.rule(ELSEIF_STMT).is(ELSIF, EXPRESSIONS, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
+
+    b.rule(ELSE_STMT).is(ELSE, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
 
     b.rule(CASE_STMT).is(CASE, EXPRESSION, LBRACE,
       b.oneOrMore(CASE_MATCHER),
@@ -482,11 +493,9 @@ public enum PuppetGrammar implements GrammarRuleKey {
   public static void expressions(LexerfulGrammarBuilder b) {
 
     b.rule(EXPRESSION).is(b.firstOf(
-      ASSIGNMENT_EXPRESSION,
-      HASH_ARRAY_ACCESSES,
-      RIGHT_VALUE,
-      HASH,
-      RESOURCE_REF));
+      BOOL_EXPRESSION,
+      // RIGHT_VALUE,
+      HASH));
 
     b.rule(EXPRESSIONS).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION)).skip();
 
@@ -503,25 +512,11 @@ public enum PuppetGrammar implements GrammarRuleKey {
     b.rule(SHIFT_EXPRESSION).is(ADDITIVE_EXPRESSION, b.zeroOrMore(SHIFT_OPER, ADDITIVE_EXPRESSION)).skipIfOneChild();
     b.rule(COMPARISON).is(SHIFT_EXPRESSION, b.zeroOrMore(COMP_OPERATOR, SHIFT_EXPRESSION)).skipIfOneChild();
     b.rule(BOOL_EXPRESSION).is(COMPARISON, b.zeroOrMore(BOOL_OPERATOR, COMPARISON)).skipIfOneChild();
-    b.rule(ASSIGNMENT_EXPRESSION).is(BOOL_EXPRESSION, b.zeroOrMore(EQUALS, BOOL_EXPRESSION)).skipIfOneChild();
 
     b.rule(ATOM).is(b.firstOf(
-      HASH_ARRAY_ACCESSES,
-      b.sequence(LPAREN, ASSIGNMENT_EXPRESSION, RPAREN),
-      SELECTOR,
-      REGULAR_EXPRESSION_LITERAL,
-      RESOURCE_REF,
-      QUOTED_TEXT,
-      NUMBER,
-      VARIABLE,
-      FUNCTION_STMT,
-      TRUE,
-      FALSE,
-      UNDEF,
-      ARRAY,
-      HASH,
-      NAME,
-      TYPE)).skip();
+      b.sequence(LPAREN, BOOL_EXPRESSION, RPAREN),
+      RIGHT_VALUE,
+      REGULAR_EXPRESSION_LITERAL)).skip();
 
     // <arithop> ::= "+" | "-" | "/" | "*" | "<<" | ">>"
     b.rule(ARITH_OP).is(b.firstOf(
@@ -572,6 +567,7 @@ public enum PuppetGrammar implements GrammarRuleKey {
       VARIABLE,
       ARRAY,
       RESOURCE_REF,
+      TYPE,
       UNDEF)).skip();
 
     // https://github.com/puppetlabs/puppet-specifications/blob/master/language/lexical_structure.md#numbers

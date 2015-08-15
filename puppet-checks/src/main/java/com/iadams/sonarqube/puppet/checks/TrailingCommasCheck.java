@@ -24,17 +24,16 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.iadams.sonarqube.puppet.api.PuppetPunctuator;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "TrailingCommas",
@@ -44,7 +43,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LOGIC_CHANGEABILITY)
 @SqaleConstantRemediation("2min")
-public class TrailingCommasCheck extends SquidCheck<Grammar> {
+public class TrailingCommasCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
@@ -67,7 +66,7 @@ public class TrailingCommasCheck extends SquidCheck<Grammar> {
 
   private void checkTrailingCommas(AstNode node, PuppetGrammar parentType, PuppetGrammar... childType) {
     if (node.is(parentType) && node.getChildren(childType).size() != node.getChildren(PuppetPunctuator.COMMA).size()) {
-      getContext().createLineViolation(this, "Add the missing trailing comma.", node.getChildren(childType).get(node.getChildren(childType).size() - 1));
+      addIssue(node.getChildren(childType).get(node.getChildren(childType).size() - 1), this, "Add the missing trailing comma.");
     }
   }
 

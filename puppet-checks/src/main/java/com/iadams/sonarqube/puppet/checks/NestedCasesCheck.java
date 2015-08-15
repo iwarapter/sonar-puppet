@@ -24,16 +24,15 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "NestedCases",
@@ -43,7 +42,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.UNDERSTANDABILITY)
 @SqaleConstantRemediation("10min")
 @ActivatedByDefault
-public class NestedCasesCheck extends SquidCheck<Grammar> {
+public class NestedCasesCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
@@ -53,7 +52,7 @@ public class NestedCasesCheck extends SquidCheck<Grammar> {
   @Override
   public void visitNode(AstNode node) {
     if (node.getFirstAncestor(PuppetGrammar.CASE_STMT) != null) {
-      getContext().createLineViolation(this, "Extract this nested case statement.", node);
+      addIssue(node, this, "Extract this nested case statement.");
     }
   }
 

@@ -24,6 +24,7 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
 import org.sonar.api.server.rule.RulesDefinition;
@@ -32,8 +33,6 @@ import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "VariableNamingConvention",
@@ -43,7 +42,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("5min")
 @ActivatedByDefault
-public class VariableNamingConventionCheck extends SquidCheck<LexerlessGrammar> {
+public class VariableNamingConventionCheck extends PuppetCheckVisitor {
 
   private static final String FORMAT = "^\\$(::)?([a-z][a-z0-9_]*::)*[a-z_][a-z0-9_]*$";
 
@@ -55,8 +54,7 @@ public class VariableNamingConventionCheck extends SquidCheck<LexerlessGrammar> 
   @Override
   public void leaveNode(AstNode node) {
     if (!node.getTokenValue().matches(FORMAT)) {
-      getContext().createLineViolation(this, "Rename variable \"{0}\" to match the regular expression: ^(::)?([a-z][a-z0-9_]*::)*[a-z_][a-z0-9_]*$", node,
-        node.getTokenValue().substring(1));
+      addIssue(node, this, "Rename variable \"" + node.getTokenValue().substring(1) + "\" to match the regular expression: ^(::)?([a-z][a-z0-9_]*::)*[a-z_][a-z0-9_]*$");
     }
   }
 

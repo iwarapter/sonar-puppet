@@ -32,7 +32,6 @@ import org.sonar.squidbridge.AstScanner
 import org.sonar.squidbridge.api.SourceFile
 import org.sonar.squidbridge.api.SourceProject
 import org.sonar.squidbridge.indexer.QueryByType
-import spock.lang.Ignore
 import spock.lang.Specification
 
 class PuppetAstScannerSpec extends Specification {
@@ -77,7 +76,7 @@ class PuppetAstScannerSpec extends Specification {
     SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/metrics/resources.pp"));
 
     expect:
-    file.getInt(PuppetMetric.FUNCTIONS) == 2
+    file.getInt(PuppetMetric.FUNCTIONS) == 5
   }
 
   def "classes"() {
@@ -94,6 +93,14 @@ class PuppetAstScannerSpec extends Specification {
 
     expect:
     file.getInt(PuppetMetric.STATEMENTS) == 12
+  }
+
+  def "complexity"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/metrics/complexity.pp"));
+
+    expect:
+    file.getInt(PuppetMetric.COMPLEXITY) == 19
   }
 
 }

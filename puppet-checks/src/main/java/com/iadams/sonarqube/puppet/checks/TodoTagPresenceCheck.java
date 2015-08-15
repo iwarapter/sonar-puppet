@@ -24,6 +24,7 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.sonar.sslr.api.AstAndTokenVisitor;
 import com.sonar.sslr.api.Token;
 import org.sonar.api.server.rule.RulesDefinition;
@@ -32,8 +33,6 @@ import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "S1135",
@@ -42,7 +41,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.UNDERSTANDABILITY)
 @SqaleConstantRemediation("20min")
-public class TodoTagPresenceCheck extends SquidCheck<LexerlessGrammar> implements AstAndTokenVisitor {
+public class TodoTagPresenceCheck extends PuppetCheckVisitor implements AstAndTokenVisitor {
 
   private static final String PATTERN = "TODO";
   private static final String MESSAGE = "Complete the task associated to this TODO comment.";

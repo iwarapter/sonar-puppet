@@ -1,0 +1,20 @@
+<p>
+    The complexity of an expression is defined by the number of <code>or</code> and <code>and</code> conditions it
+    contains. A single expression's complexity should not become too high to keep the code readable. Try to extract some
+    sub-conditions to make the overall condition more understandable.
+</p>
+<p>
+    This rule checks that the number of conditions is not greater than 3.
+</p>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+if $var1 > 2 and $var2 > 3 or ($var3 > $var4 and $var1 < $var3) or $var5 > 4 { ... }  # Noncompliant: 4 'and' and 'or' conditions
+</pre>
+
+<h2>Compliant Solution</h2>
+<pre>
+$is_position_valid = $var3 > $var4 and $var1 < $var3
+if $var1 > 2 and $var2 > 3 or $is_position_valid or $var5 > 4 { ... }
+</pre>
+

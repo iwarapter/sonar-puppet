@@ -25,7 +25,12 @@
 package com.iadams.sonarqube.puppet.checks;
 
 import com.google.common.io.Closeables;
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.sonar.sslr.api.AstNode;
+
+import java.io.IOException;
+import java.io.RandomAccessFile;
+
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.api.utils.SonarException;
 import org.sonar.check.Priority;
@@ -33,11 +38,6 @@ import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
-
-import java.io.IOException;
-import java.io.RandomAccessFile;
 
 @Rule(
   key = "EmptyLineEndOfFile",
@@ -47,7 +47,7 @@ import java.io.RandomAccessFile;
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("1min")
 @ActivatedByDefault
-public class MissingNewLineAtEndOfFileCheck extends SquidCheck<LexerlessGrammar> {
+public class MissingNewLineAtEndOfFileCheck extends PuppetCheckVisitor {
 
   @Override
   public void visitFile(AstNode astNode) {
@@ -55,7 +55,7 @@ public class MissingNewLineAtEndOfFileCheck extends SquidCheck<LexerlessGrammar>
     try {
       randomAccessFile = new RandomAccessFile(getContext().getFile(), "r");
       if (!endsWithNewline(randomAccessFile)) {
-        getContext().createFileViolation(this, "Add an empty new line at the end of this file.");
+        addIssueOnFile(this, "Add an empty new line at the end of this file.");
       }
     } catch (IOException e) {
       throw new SonarException(e);

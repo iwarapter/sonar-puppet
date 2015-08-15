@@ -57,8 +57,8 @@ public class PuppetLexer {
 
       .withChannel(regexp(PuppetTokenType.HEX_INTEGER, "0(x|X)[0-9a-fA-F]+"))
       .withChannel(regexp(PuppetTokenType.OCTAL_INTEGER, "0[0-7]+"))
-      .withChannel(regexp(PuppetTokenType.INTEGER, "[1-9][0-9]*"))
-      .withChannel(regexp(PuppetTokenType.FLOAT, "0?\\d+(\\.\\d+)?([eE]-?\\d+)?"))
+      .withChannel(regexp(PuppetTokenType.FLOAT, "-?(?=\\d+[.eE])(?=\\.?\\d)\\d*\\.?\\d*(?:[eE][+-]?\\d+)?"))
+      .withChannel(regexp(PuppetTokenType.INTEGER, "[0-9][0-9]*"))
 
       .withChannel(new NameAndKeywordChannel("((::)?[a-z0-9][-\\w]*)(::[a-z0-9][-\\w]*)*", true, PuppetKeyword.values()))
 

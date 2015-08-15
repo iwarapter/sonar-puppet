@@ -24,16 +24,15 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "ResourcePasswordSet",
@@ -43,7 +42,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.SECURITY_FEATURES)
 @SqaleConstantRemediation("10min")
-public class UserResourcePasswordNotSetCheck extends SquidCheck<Grammar> {
+public class UserResourcePasswordNotSetCheck extends PuppetCheckVisitor {
 
   private static final String MESSAGE = "Do not set passwords in user resources.";
 
@@ -54,7 +53,7 @@ public class UserResourcePasswordNotSetCheck extends SquidCheck<Grammar> {
 
   @Override
   public void visitNode(AstNode node) {
-    if(node.is(PuppetGrammar.RESOURCE)){
+    if (node.is(PuppetGrammar.RESOURCE)) {
       checkResourceInstance(node);
       checkResourceDefault(node);
     } else if (node.is(PuppetGrammar.RESOURCE_OVERRIDE)) {
@@ -62,8 +61,8 @@ public class UserResourcePasswordNotSetCheck extends SquidCheck<Grammar> {
     }
   }
 
-  private void checkResourceInstance(AstNode resourceNode){
-    if("user".equals(resourceNode.getTokenValue())){
+  private void checkResourceInstance(AstNode resourceNode) {
+    if ("user".equals(resourceNode.getTokenValue())) {
       for (AstNode instNode : resourceNode.getChildren(PuppetGrammar.RESOURCE_INST)) {
         for (AstNode paramNode : instNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
           checkPasswordValid(paramNode);
@@ -72,7 +71,7 @@ public class UserResourcePasswordNotSetCheck extends SquidCheck<Grammar> {
     }
   }
 
-  private void checkResourceDefault(AstNode resourceNode){
+  private void checkResourceDefault(AstNode resourceNode) {
     if ("User".equals(resourceNode.getTokenValue())) {
       for (AstNode paramNode : resourceNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
         checkPasswordValid(paramNode);
@@ -80,7 +79,7 @@ public class UserResourcePasswordNotSetCheck extends SquidCheck<Grammar> {
     }
   }
 
-  private void checkResourceOverride(AstNode resourceOverrideNode){
+  private void checkResourceOverride(AstNode resourceOverrideNode) {
     if ("User".equals(resourceOverrideNode.getTokenValue())) {
       for (AstNode paramNode : resourceOverrideNode.getFirstChild(PuppetGrammar.ANY_PARAMS).getChildren(PuppetGrammar.PARAM)) {
         checkPasswordValid(paramNode);
@@ -88,9 +87,9 @@ public class UserResourcePasswordNotSetCheck extends SquidCheck<Grammar> {
     }
   }
 
-  private void checkPasswordValid(AstNode paramNode){
+  private void checkPasswordValid(AstNode paramNode) {
     if ("password".equals(paramNode.getTokenValue())) {
-      getContext().createLineViolation(this, MESSAGE, paramNode);
+      addIssue(paramNode, this, MESSAGE);
     }
   }
 }

@@ -27,16 +27,18 @@ package com.iadams.sonarqube.puppet;
 import com.google.common.base.Charsets;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.iadams.sonarqube.puppet.api.PuppetMetric;
+import com.iadams.sonarqube.puppet.metrics.ComplexityVisitor;
+import com.iadams.sonarqube.puppet.metrics.FunctionVisitor;
 import com.iadams.sonarqube.puppet.parser.PuppetParser;
+import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
 
 import java.io.File;
 import java.util.Collection;
 
-import org.sonar.squidbridge.AstScanner;
-import org.sonar.squidbridge.SquidAstVisitor;
-import org.sonar.squidbridge.SquidAstVisitorContextImpl;
+import org.sonar.squidbridge.*;
+import org.sonar.squidbridge.api.SourceClass;
 import org.sonar.squidbridge.api.SourceCode;
 import org.sonar.squidbridge.api.SourceFile;
 import org.sonar.squidbridge.api.SourceProject;
@@ -78,19 +80,22 @@ public class PuppetAstScanner {
 
     builder.withSquidAstVisitor(new LinesVisitor<Grammar>(PuppetMetric.LINES));
     builder.withSquidAstVisitor(new PuppetLinesOfCodeVisitor<Grammar>(PuppetMetric.LINES_OF_CODE));
+    builder.withSquidAstVisitor(new FunctionVisitor());
+    builder.withSquidAstVisitor(new ComplexityVisitor());
+
     builder.withSquidAstVisitor(CommentsVisitor.<Grammar>builder().withCommentMetric(PuppetMetric.COMMENT_LINES)
       .withNoSonar(true)
       .withIgnoreHeaderComment(conf.getIgnoreHeaderComments())
       .build());
 
+    builder.withSquidAstVisitor(new SourceCodeBuilderVisitor<Grammar>(
+      new ClassSourceCodeBuilderCallback(),
+      PuppetGrammar.CLASSDEF,
+      PuppetGrammar.DEFINITION));
+
     builder.withSquidAstVisitor(CounterVisitor.<Grammar>builder()
       .setMetricDef(PuppetMetric.CLASSES)
       .subscribeTo(PuppetGrammar.CLASSDEF, PuppetGrammar.DEFINITION)
-      .build());
-
-    builder.withSquidAstVisitor(CounterVisitor.<Grammar>builder()
-      .setMetricDef(PuppetMetric.FUNCTIONS)
-      .subscribeTo(PuppetGrammar.RESOURCE)
       .build());
 
     // TODO: To be discussed with the mapping of FUNCTIONS
@@ -112,6 +117,18 @@ public class PuppetAstScanner {
     }
 
     return builder.build();
+  }
+
+  public static class ClassSourceCodeBuilderCallback implements SourceCodeBuilderCallback {
+    private int seq = 0;
+
+    @Override
+    public SourceCode createSourceCode(SourceCode parentSourceCode, AstNode astNode) {
+      seq++;
+      SourceClass cls = new SourceClass("class:" + seq);
+      cls.setStartAtLine(astNode.getTokenLine());
+      return cls;
+    }
   }
 
 }

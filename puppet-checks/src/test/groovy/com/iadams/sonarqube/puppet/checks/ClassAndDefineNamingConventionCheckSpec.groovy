@@ -31,7 +31,7 @@ import spock.lang.Specification
 
 class ClassAndDefineNamingConventionCheckSpec extends Specification {
 
-  private static final String FORMAT = "^(::)?([a-z][a-z0-9_]*::)*[a-z][a-z0-9_]*\$";
+  private static final String FORMAT = "^([a-z][a-z0-9_]*::)*[a-z][a-z0-9_]*\$";
 
   def "validate check"() {
     given:
