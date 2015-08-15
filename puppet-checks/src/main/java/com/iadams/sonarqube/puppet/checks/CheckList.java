@@ -47,6 +47,7 @@ public final class CheckList {
       DeprecatedNodeInheritanceCheck.class,
       DuplicatedHashKeysCheck.class,
       DuplicatedParametersCheck.class,
+      EmptyBlocksCheck.class,
       EnsureOrderingCheck.class,
       FaultyQuoteUsageCheck.class,
       FileEnsurePropertyIsValidCheck.class,
