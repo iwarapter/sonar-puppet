@@ -39,7 +39,7 @@ class NestedIfStatementsCheckSpec extends Specification {
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(7).withMessage("Refactor this code to not nest more than 3 \"if\" statements.")
+      .next().atLine(7).withMessage("Refactor this code to not nest more than 3 \"if\" or \"elsif\" statements.")
       .noMore();
   }
 
@@ -53,7 +53,31 @@ class NestedIfStatementsCheckSpec extends Specification {
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(5).withMessage("Refactor this code to not nest more than 2 \"if\" statements.")
+      .next().atLine(5).withMessage("Refactor this code to not nest more than 2 \"if\" or \"elsif\" statements.")
+      .noMore();
+  }
+
+  def "example with nested else if"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/nested_elseif_statements_ex1.pp"),
+      new NestedIfStatementsCheck());
+
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(6).withMessage("Refactor this code to not nest more than 3 \"if\" or \"elsif\" statements.")
+      .noMore();
+  }
+
+  def "another example with nested elsif"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/nested_elseif_statements_ex2.pp"),
+      new NestedIfStatementsCheck());
+
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(7).withMessage("Refactor this code to not nest more than 3 \"if\" or \"elsif\" statements.")
       .noMore();
   }
 }
