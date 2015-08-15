@@ -26,37 +26,37 @@ package com.iadams.sonarqube.puppet;
 
 import com.google.common.base.Preconditions;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 
 import java.lang.annotation.Annotation;
 import javax.annotation.Nullable;
 
 import org.sonar.api.utils.AnnotationUtils;
-import org.sonar.squidbridge.SquidAstVisitor;
 import org.sonar.squidbridge.annotations.SqaleLinearRemediation;
 import org.sonar.squidbridge.annotations.SqaleLinearWithOffsetRemediation;
 import org.sonar.squidbridge.api.CheckMessage;
-import org.sonar.squidbridge.api.CodeVisitor;
+import org.sonar.squidbridge.api.CodeCheck;
+import org.sonar.squidbridge.api.SourceFile;
+import org.sonar.squidbridge.checks.SquidCheck;
 
-public class PuppetCheckVisitor extends SquidAstVisitor<Grammar> {
+public class PuppetCheckVisitor extends SquidCheck {
 
-  public void addIssue(AstNode node, CodeVisitor check, String message) {
+  public void addIssue(AstNode node, CodeCheck check, String message) {
     addIssue(node.getTokenLine(), check, message, null);
   }
 
-  public void addIssue(AstNode node, CodeVisitor check, String message, Double cost) {
+  public void addIssue(AstNode node, CodeCheck check, String message, Double cost) {
     addIssue(node.getTokenLine(), check, message, cost);
   }
 
-  public void addIssue(int line, CodeVisitor check, String message) {
+  public void addIssue(int line, CodeCheck check, String message) {
     addIssue(line, check, message, null);
   }
 
-  public void addIssueOnFile(CodeVisitor check, String message) {
+  public void addIssueOnFile(CodeCheck check, String message) {
     addIssue(-1, check, message, null);
   }
 
-  public void addIssue(@Nullable Integer line, CodeVisitor check, String message, @Nullable Double cost) {
+  public void addIssue(@Nullable Integer line, CodeCheck check, String message, @Nullable Double cost) {
     Preconditions.checkNotNull(check);
     Preconditions.checkNotNull(message);
     CheckMessage checkMessage = new CheckMessage(check, message);
@@ -72,7 +72,15 @@ public class PuppetCheckVisitor extends SquidAstVisitor<Grammar> {
     } else {
       checkMessage.setCost(cost);
     }
-    getContext().peekSourceCode().log(checkMessage);
+
+    if (getContext().peekSourceCode() instanceof SourceFile) {
+      getContext().peekSourceCode().log(checkMessage);
+    } else if (getContext().peekSourceCode().getParent(SourceFile.class) != null) {
+      getContext().peekSourceCode().getParent(SourceFile.class).log(checkMessage);
+    } else {
+      throw new IllegalStateException("Unable to log a check message on source code '"
+        + (getContext().peekSourceCode() == null ? "[NULL]" : getContext().peekSourceCode().getKey()) + "'");
+    }
   }
 
 }

@@ -52,9 +52,10 @@ public class ComplexExpressionCheck extends PuppetCheckVisitor {
   private static final int MAX_NUMBER_OF_BOOLEAN_OPERATORS = 3;
 
   @RuleProperty(
-    key = "maxNumberOfBooleanOperators",
-    defaultValue = "" + MAX_NUMBER_OF_BOOLEAN_OPERATORS)
-  private int maxNumberOfBooleanOperators = MAX_NUMBER_OF_BOOLEAN_OPERATORS;
+    key = "max",
+    defaultValue = "" + MAX_NUMBER_OF_BOOLEAN_OPERATORS,
+    description = "Maximum number of boolean operators")
+  private int max = MAX_NUMBER_OF_BOOLEAN_OPERATORS;
 
   @Override
   public void init() {
@@ -63,21 +64,21 @@ public class ComplexExpressionCheck extends PuppetCheckVisitor {
 
   @Override
   public void visitNode(AstNode node) {
-    if (node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size() > maxNumberOfBooleanOperators) {
+    if (node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size() > max) {
       addIssue(node.getFirstDescendant(PuppetGrammar.BOOL_OPERATOR),
         this,
         MessageFormat.format(
           "Reduce the number of boolean operators. This condition contains {0,number,integer} boolean operators, {1,number,integer} more than the {2,number,integer} maximum.",
           node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size(),
-          node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size() - maxNumberOfBooleanOperators,
-          maxNumberOfBooleanOperators),
-        (double) node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size() - maxNumberOfBooleanOperators);
+          node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size() - max,
+                max),
+        (double) node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size() - max);
     }
   }
 
   @VisibleForTesting
-  public void setMaxNumberOfBooleanOperators(int maxNumberOfBooleanOperators) {
-    this.maxNumberOfBooleanOperators = maxNumberOfBooleanOperators;
+  public void setMax(int max) {
+    this.max = max;
   }
 
 }

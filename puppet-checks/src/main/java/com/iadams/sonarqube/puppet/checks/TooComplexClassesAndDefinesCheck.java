@@ -25,10 +25,10 @@
 package com.iadams.sonarqube.puppet.checks;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.iadams.sonarqube.puppet.api.PuppetMetric;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -37,9 +37,7 @@ import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleLinearWithOffsetRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.api.SourceClass;
-import org.sonar.squidbridge.api.SourceFile;
 import org.sonar.squidbridge.checks.ChecksHelper;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "TooComplexClassesAndDefines",
@@ -49,7 +47,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.ARCHITECTURE_CHANGEABILITY)
 @SqaleLinearWithOffsetRemediation(coeff = "5min", offset = "30min", effortToFixDescription = "per complexity point above the threshold")
-public class TooComplexClassesAndDefinesCheck extends SquidCheck<Grammar> {
+public class TooComplexClassesAndDefinesCheck extends PuppetCheckVisitor {
 
   public static final int DEFAULT_MAX_COMPLEXITY = 50;
 
@@ -61,19 +59,19 @@ public class TooComplexClassesAndDefinesCheck extends SquidCheck<Grammar> {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.DEFINITION, PuppetGrammar.CLASSDEF);
+    subscribeTo(PuppetGrammar.CLASSDEF, PuppetGrammar.DEFINITION);
   }
 
   @Override
   public void leaveNode(AstNode node) {
-    SourceFile sourceClass = (SourceFile) getContext().peekSourceCode();
+    SourceClass sourceClass = (SourceClass) getContext().peekSourceCode();
     int complexity = ChecksHelper.getRecursiveMeasureInt(sourceClass, PuppetMetric.COMPLEXITY);
 
     if (complexity > max) {
       String nodeType = node.is(PuppetGrammar.CLASSDEF) ? "class" : "define";
-      getContext().createLineViolation(this,
-        "The complexity of this " + nodeType + " is {0} which is greater than {1} authorized. Split this " + nodeType + ".",
-        node, complexity, max);
+      addIssue(node, this,
+        "The complexity of this " + nodeType + " is " + complexity + " which is greater than " + max + " authorized. Split this " + nodeType + ".",
+        (double) complexity - max);
     }
   }
 

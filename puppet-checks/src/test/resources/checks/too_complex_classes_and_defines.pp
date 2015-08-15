@@ -16,38 +16,8 @@ class abc {
     'def': {}
     default: {}
   }
-  case $c {
-    'abc': {}
-    'def': {}
-    default: {}
-  }
-  case $c {
-    'abc': {}
-    'def': {}
-    default: {}
-  }
-  case $c {
-    'abc': {}
-    'def': {}
-    default: {}
-  }
-  case $c {
-    'abc': {}
-    'def': {}
-    default: {}
-  }  case $c {
-  'abc': {}
-  'def': {}
-  default: {}
-}
-  case $c {
-    'abc': {}
-    'def': {}
-    default: {}
-  }
 
-
-  if $d or $z {}
+  if $d or $z or $r {}
 }
 
 define abc {
@@ -69,7 +39,7 @@ define abc {
     default: {}
   }
 
-  if $d or $z or $r {}
+  if $d or $z or $r or $t {}
 }
 
 define abc {}

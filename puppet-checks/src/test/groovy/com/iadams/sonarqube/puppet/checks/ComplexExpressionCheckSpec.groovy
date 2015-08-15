@@ -50,7 +50,7 @@ class ComplexExpressionCheckSpec extends Specification {
   def "validate check wit custom parameter"() {
     given:
     ComplexExpressionCheck check = new ComplexExpressionCheck();
-    check.setMaxNumberOfBooleanOperators(4);
+    check.setMax(4);
     SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/complex_expression.pp"), check);
 
     expect:

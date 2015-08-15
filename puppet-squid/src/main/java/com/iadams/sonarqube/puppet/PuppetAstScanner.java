@@ -30,15 +30,15 @@ import com.iadams.sonarqube.puppet.api.PuppetMetric;
 import com.iadams.sonarqube.puppet.metrics.ComplexityVisitor;
 import com.iadams.sonarqube.puppet.metrics.FunctionVisitor;
 import com.iadams.sonarqube.puppet.parser.PuppetParser;
+import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
 
 import java.io.File;
 import java.util.Collection;
 
-import org.sonar.squidbridge.AstScanner;
-import org.sonar.squidbridge.SquidAstVisitor;
-import org.sonar.squidbridge.SquidAstVisitorContextImpl;
+import org.sonar.squidbridge.*;
+import org.sonar.squidbridge.api.SourceClass;
 import org.sonar.squidbridge.api.SourceCode;
 import org.sonar.squidbridge.api.SourceFile;
 import org.sonar.squidbridge.api.SourceProject;
@@ -88,6 +88,11 @@ public class PuppetAstScanner {
       .withIgnoreHeaderComment(conf.getIgnoreHeaderComments())
       .build());
 
+    builder.withSquidAstVisitor(new SourceCodeBuilderVisitor<Grammar>(
+      new ClassSourceCodeBuilderCallback(),
+      PuppetGrammar.CLASSDEF,
+      PuppetGrammar.DEFINITION));
+
     builder.withSquidAstVisitor(CounterVisitor.<Grammar>builder()
       .setMetricDef(PuppetMetric.CLASSES)
       .subscribeTo(PuppetGrammar.CLASSDEF, PuppetGrammar.DEFINITION)
@@ -112,6 +117,18 @@ public class PuppetAstScanner {
     }
 
     return builder.build();
+  }
+
+  public static class ClassSourceCodeBuilderCallback implements SourceCodeBuilderCallback {
+    private int seq = 0;
+
+    @Override
+    public SourceCode createSourceCode(SourceCode parentSourceCode, AstNode astNode) {
+      seq++;
+      SourceClass cls = new SourceClass("class:" + seq);
+      cls.setStartAtLine(astNode.getTokenLine());
+      return cls;
+    }
   }
 
 }
