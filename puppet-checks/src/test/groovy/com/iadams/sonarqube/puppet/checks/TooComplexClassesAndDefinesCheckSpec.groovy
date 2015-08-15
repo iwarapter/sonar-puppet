@@ -29,34 +29,20 @@ import org.sonar.squidbridge.api.SourceFile
 import org.sonar.squidbridge.checks.CheckMessagesVerifier
 import spock.lang.Specification
 
-class ComplexExpressionCheckSpec extends Specification {
+class TooComplexClassesAndDefinesCheckSpec extends Specification {
 
-  def "validate check with default parameter"() {
+  def "validate check"() {
     given:
+    TooComplexClassesAndDefinesCheck check = new TooComplexClassesAndDefinesCheck();
+    check.setMax(10);
     SourceFile file = PuppetAstScanner.scanSingleFile(
-      new File("src/test/resources/checks/complex_expression.pp"),
-      new ComplexExpressionCheck());
+      new File("src/test/resources/checks/too_complex_classes_and_defines.pp"),
+      check);
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(2).withCost(1).withMessage("Reduce the number of boolean operators. This condition contains 4 boolean operators, 1 more than the 3 maximum.")
-      .next().atLine(5).withCost(1).withMessage("Reduce the number of boolean operators. This condition contains 4 boolean operators, 1 more than the 3 maximum.")
-      .next().atLine(8).withCost(1).withMessage("Reduce the number of boolean operators. This condition contains 4 boolean operators, 1 more than the 3 maximum.")
-      .next().atLine(10).withCost(1).withMessage("Reduce the number of boolean operators. This condition contains 4 boolean operators, 1 more than the 3 maximum.")
-      .next().atLine(12).withCost(2).withMessage("Reduce the number of boolean operators. This condition contains 5 boolean operators, 2 more than the 3 maximum.")
+      .next().atLine(1).withCost(1).withMessage("The complexity of this class is 11 which is greater than 10 authorized. Split this class.")
+      .next().atLine(23).withCost(2).withMessage("The complexity of this define is 12 which is greater than 10 authorized. Split this define.")
       .noMore();
   }
-
-  def "validate check wit custom parameter"() {
-    given:
-    ComplexExpressionCheck check = new ComplexExpressionCheck();
-    check.setMax(4);
-    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/complex_expression.pp"), check);
-
-    expect:
-    CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(12).withCost(1).withMessage("Reduce the number of boolean operators. This condition contains 5 boolean operators, 1 more than the 4 maximum.")
-      .noMore();
-  }
-
 }

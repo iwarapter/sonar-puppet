@@ -74,6 +74,7 @@ public final class CheckList {
       SingleQuotedStringContainingVariablesCheck.class,
       TabCharacterCheck.class,
       TodoTagPresenceCheck.class,
+      TooComplexClassesAndDefinesCheck.class,
       TrailingCommasCheck.class,
       TrailingWhitespaceCheck.class,
       UnquotedNodeNameCheck.class,

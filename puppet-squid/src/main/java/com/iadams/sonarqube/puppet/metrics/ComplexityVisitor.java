@@ -35,9 +35,6 @@ public class ComplexityVisitor extends SquidAstVisitor<Grammar> {
   @Override
   public void init() {
     subscribeTo(
-      PuppetGrammar.CLASSDEF,
-      PuppetGrammar.DEFINITION,
-
       PuppetGrammar.RESOURCE,
       PuppetGrammar.RESOURCE_OVERRIDE,
       PuppetGrammar.RESOURCE_INST,

@@ -100,7 +100,7 @@ class PuppetAstScannerSpec extends Specification {
     SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/metrics/complexity.pp"));
 
     expect:
-    file.getInt(PuppetMetric.COMPLEXITY) == 21
+    file.getInt(PuppetMetric.COMPLEXITY) == 19
   }
 
 }

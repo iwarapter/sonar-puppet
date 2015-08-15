@@ -27,10 +27,8 @@ package com.iadams.sonarqube.puppet.checks;
 import com.google.common.annotations.VisibleForTesting;
 import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
+import com.iadams.sonarqube.puppet.api.PuppetMetric;
 import com.sonar.sslr.api.AstNode;
-
-import java.text.MessageFormat;
-
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -38,41 +36,42 @@ import org.sonar.check.RuleProperty;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleLinearWithOffsetRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
+import org.sonar.squidbridge.api.SourceClass;
+import org.sonar.squidbridge.checks.ChecksHelper;
 
 @Rule(
-  key = "ComplexExpression",
+  key = "TooComplexClassesAndDefines",
   priority = Priority.MAJOR,
-  name = "Expressions should not be too complex",
-  tags = {Tags.CONFUSING})
+  name = "Classes and defines should not be too complex",
+  tags = Tags.BRAIN_OVERLOAD)
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.UNDERSTANDABILITY)
-@SqaleLinearWithOffsetRemediation(coeff = "2min", offset = "5min", effortToFixDescription = "number of boolean operators beyond the limit")
-public class ComplexExpressionCheck extends PuppetCheckVisitor {
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.ARCHITECTURE_CHANGEABILITY)
+@SqaleLinearWithOffsetRemediation(coeff = "5min", offset = "30min", effortToFixDescription = "per complexity point above the threshold")
+public class TooComplexClassesAndDefinesCheck extends PuppetCheckVisitor {
 
-  private static final int MAX_NUMBER_OF_BOOLEAN_OPERATORS = 3;
+  public static final int DEFAULT_MAX_COMPLEXITY = 50;
 
   @RuleProperty(
     key = "max",
-    defaultValue = "" + MAX_NUMBER_OF_BOOLEAN_OPERATORS,
-    description = "Maximum number of boolean operators")
-  private int max = MAX_NUMBER_OF_BOOLEAN_OPERATORS;
+    defaultValue = "" + DEFAULT_MAX_COMPLEXITY,
+    description = "Maximum points of complexity")
+  private int max = DEFAULT_MAX_COMPLEXITY;
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.EXPRESSION);
+    subscribeTo(PuppetGrammar.CLASSDEF, PuppetGrammar.DEFINITION);
   }
 
   @Override
-  public void visitNode(AstNode node) {
-    if (node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size() > max) {
-      addIssue(node.getFirstDescendant(PuppetGrammar.BOOL_OPERATOR),
-        this,
-        MessageFormat.format(
-          "Reduce the number of boolean operators. This condition contains {0,number,integer} boolean operators, {1,number,integer} more than the {2,number,integer} maximum.",
-          node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size(),
-          node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size() - max,
-                max),
-        (double) node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size() - max);
+  public void leaveNode(AstNode node) {
+    SourceClass sourceClass = (SourceClass) getContext().peekSourceCode();
+    int complexity = ChecksHelper.getRecursiveMeasureInt(sourceClass, PuppetMetric.COMPLEXITY);
+
+    if (complexity > max) {
+      String nodeType = node.is(PuppetGrammar.CLASSDEF) ? "class" : "define";
+      addIssue(node, this,
+        "The complexity of this " + nodeType + " is " + complexity + " which is greater than " + max + " authorized. Split this " + nodeType + ".",
+        (double) complexity - max);
     }
   }
 
