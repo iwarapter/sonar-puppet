@@ -62,6 +62,7 @@ public final class CheckList {
       MissingNewLineAtEndOfFileCheck.class,
       NestedClassesOrDefinesCheck.class,
       NestedCasesCheck.class,
+      NestedIfStatementsCheck.class,
       NosonarTagPresenceCheck.class,
       ParsingErrorCheck.class,
       PuppetURLModulesCheck.class,
