@@ -24,17 +24,16 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "UnquotedResourceTitle",
@@ -44,7 +43,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("2min")
-public class UnquotedResourceTitleCheck extends SquidCheck<Grammar> {
+public class UnquotedResourceTitleCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
@@ -54,7 +53,7 @@ public class UnquotedResourceTitleCheck extends SquidCheck<Grammar> {
   @Override
   public void visitNode(AstNode node) {
     if (node.getFirstChild(PuppetTokenType.NAME) != null) {
-      getContext().createLineViolation(this, "Quote this resource title.", node);
+      addIssue(node, this, "Quote this resource title.");
     } else if (node.getFirstChild(PuppetGrammar.ARRAY) != null) {
       boolean hasUnquotedTitle = false;
       for (AstNode expressionNode : node.getFirstChild(PuppetGrammar.ARRAY).getChildren(PuppetGrammar.EXPRESSION)) {
@@ -64,7 +63,7 @@ public class UnquotedResourceTitleCheck extends SquidCheck<Grammar> {
         }
       }
       if (hasUnquotedTitle) {
-        getContext().createLineViolation(this, "Quote each resource title of this array.", node);
+        addIssue(node, this, "Quote each resource title of this array.");
       }
     }
   }

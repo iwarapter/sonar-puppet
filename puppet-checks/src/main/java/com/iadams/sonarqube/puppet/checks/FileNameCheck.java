@@ -24,6 +24,7 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.sonar.sslr.api.AstNode;
 
 import javax.annotation.Nullable;
@@ -34,8 +35,6 @@ import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "S1578",
@@ -45,14 +44,14 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("10min")
 @ActivatedByDefault
-public class FileNameCheck extends SquidCheck<LexerlessGrammar> {
+public class FileNameCheck extends PuppetCheckVisitor {
 
   public static final String FORMAT = "^[a-z][a-z0-9_]*\\.pp$";
 
   @Override
   public void visitFile(@Nullable AstNode astNode) {
     if (!getContext().getFile().getName().matches(FORMAT)) {
-      getContext().createFileViolation(this, "Rename this file to match the regular expression: " + FORMAT);
+      addIssueOnFile(this, "Rename this file to match the regular expression: " + FORMAT);
     }
   }
 

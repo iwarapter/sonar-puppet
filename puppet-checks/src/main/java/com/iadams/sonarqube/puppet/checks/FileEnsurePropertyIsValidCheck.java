@@ -24,17 +24,16 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "FileEnsurePropertyIsValid",
@@ -44,7 +43,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.INSTRUCTION_RELIABILITY)
 @SqaleConstantRemediation("10min")
-public class FileEnsurePropertyIsValidCheck extends SquidCheck<Grammar> {
+public class FileEnsurePropertyIsValidCheck extends PuppetCheckVisitor {
 
   private static final String ACCEPTED_NAMES = "present|absent|file|directory|link";
 
@@ -94,7 +93,7 @@ public class FileEnsurePropertyIsValidCheck extends SquidCheck<Grammar> {
       AstNode expression = paramNode.getFirstChild(PuppetGrammar.EXPRESSION);
       if (expression.getFirstChild(PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL, PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL) != null
         || expression.getFirstChild(PuppetTokenType.NAME) != null && !expression.getFirstChild(PuppetTokenType.NAME).getTokenValue().matches(ACCEPTED_NAMES)) {
-        getContext().createLineViolation(this, "Fix the invalid \"ensure\" property.", paramNode);
+        addIssue(paramNode, this, "Fix the invalid \"ensure\" property.");
       }
     }
   }

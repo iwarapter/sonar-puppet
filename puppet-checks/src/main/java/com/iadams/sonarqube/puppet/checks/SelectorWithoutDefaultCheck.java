@@ -24,16 +24,15 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "SelectorWithoutDefault",
@@ -43,7 +42,7 @@ import org.sonar.squidbridge.checks.SquidCheck;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LOGIC_RELIABILITY)
 @SqaleConstantRemediation("1h")
-public class SelectorWithoutDefaultCheck extends SquidCheck<Grammar> {
+public class SelectorWithoutDefaultCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
@@ -60,7 +59,7 @@ public class SelectorWithoutDefaultCheck extends SquidCheck<Grammar> {
       }
     }
     if (!hasDefault) {
-      getContext().createLineViolation(this, "Add a default case to this selector.", node.getFirstAncestor(PuppetGrammar.SELECTOR));
+      addIssue(node.getFirstAncestor(PuppetGrammar.SELECTOR), this, "Add a default case to this selector.");
     }
   }
 

@@ -24,6 +24,7 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.sonar.sslr.api.AstAndTokenVisitor;
 import com.sonar.sslr.api.Token;
 import org.sonar.api.server.rule.RulesDefinition;
@@ -31,8 +32,6 @@ import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "Nosonar",
@@ -40,7 +39,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
   priority = Priority.INFO)
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.INSTRUCTION_RELIABILITY)
 @SqaleConstantRemediation("1min")
-public class NosonarTagPresenceCheck extends SquidCheck<LexerlessGrammar> implements AstAndTokenVisitor {
+public class NosonarTagPresenceCheck extends PuppetCheckVisitor implements AstAndTokenVisitor {
 
   private static final String PATTERN = "NOSONAR";
   private static final String MESSAGE = "Is NOSONAR used to exclude false positive or to hide real quality flaw?";
