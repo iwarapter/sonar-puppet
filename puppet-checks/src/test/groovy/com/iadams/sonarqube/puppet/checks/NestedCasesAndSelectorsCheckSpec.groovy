@@ -29,21 +29,23 @@ import org.sonar.squidbridge.api.SourceFile
 import org.sonar.squidbridge.checks.CheckMessagesVerifier
 import spock.lang.Specification
 
-class NestedCasesCheckSpec extends Specification {
+class NestedCasesAndSelectorsCheckSpec extends Specification {
 
-  private static final String MESSAGE = "Extract this nested case statement.";
+  private static final String MESSAGE = "Extract this nested case/selector statement.";
 
   def "validate check"() {
     given:
     SourceFile file = PuppetAstScanner.scanSingleFile(
       new File("src/test/resources/checks/nested_cases.pp"),
-      new NestedCasesCheck());
+      new NestedCasesAndSelectorsCheck());
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(18).withMessage(MESSAGE)
       .next().atLine(37).withMessage(MESSAGE)
       .next().atLine(39).withMessage(MESSAGE)
+      .next().atLine(59).withMessage(MESSAGE)
+      .next().atLine(68).withMessage(MESSAGE)
       .noMore();
   }
 }
