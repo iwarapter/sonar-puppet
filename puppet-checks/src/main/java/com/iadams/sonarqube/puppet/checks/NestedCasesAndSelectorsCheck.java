@@ -35,25 +35,24 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
 @Rule(
-  key = "NestedCases",
-  name = "Case statements should not be nested",
+  key = "NestedCasesAndSelectors",
+  name = "Case and selector statements should not be nested",
   priority = Priority.MAJOR,
   tags = {Tags.CONFUSING})
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.UNDERSTANDABILITY)
 @SqaleConstantRemediation("10min")
 @ActivatedByDefault
-public class NestedCasesCheck extends PuppetCheckVisitor {
+public class NestedCasesAndSelectorsCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.CASE_STMT);
+    subscribeTo(PuppetGrammar.CASE_STMT, PuppetGrammar.SELECTOR);
   }
 
   @Override
   public void visitNode(AstNode node) {
-    if (node.getFirstAncestor(PuppetGrammar.CASE_STMT) != null) {
-      addIssue(node, this, "Extract this nested case statement.");
+    if (node.getFirstAncestor(PuppetGrammar.CASE_STMT, PuppetGrammar.SELECTOR) != null) {
+      addIssue(node, this, "Extract this nested case/selector statement.");
     }
   }
-
 }

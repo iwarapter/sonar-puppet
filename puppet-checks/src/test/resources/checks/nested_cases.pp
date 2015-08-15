@@ -54,3 +54,29 @@ case $var1 {
     include pup3
   }
 }
+
+$answer = $source ? {
+  undef   => $content ? {           # Noncompliant
+    undef   => template($template),
+    default => $content,
+    },
+  default => undef,
+}
+
+case $operatingsystem {
+  'Solaris':          {
+    $state = $hostname ? {          # Noncompliant
+      host1   => 'present',
+      host2   => 'present',
+      default => 'absent',
+    }
+  }
+
+  'RedHat', 'CentOS': {
+    # do stuff
+  }
+
+  default:            {
+    # apply the default
+  }
+}

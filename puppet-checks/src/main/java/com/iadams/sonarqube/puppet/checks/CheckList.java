@@ -61,7 +61,7 @@ public final class CheckList {
       LiteralBooleanInComparisonCheck.class,
       MissingNewLineAtEndOfFileCheck.class,
       NestedClassesOrDefinesCheck.class,
-      NestedCasesCheck.class,
+      NestedCasesAndSelectorsCheck.class,
       NestedIfStatementsCheck.class,
       NosonarTagPresenceCheck.class,
       ParsingErrorCheck.class,
