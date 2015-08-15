@@ -135,6 +135,7 @@ public enum PuppetGrammar implements GrammarRuleKey {
   CLASS_PARENT,
   IF_STMT,
   ELSEIF_STMT,
+  ELSE_STMT,
   CASE_STMT,
   CASE_MATCHER,
   CASE_VALUES,
@@ -194,8 +195,8 @@ public enum PuppetGrammar implements GrammarRuleKey {
       EXPRESSION);
 
     b.rule(PARAMS).is(b.optional(
-        PARAM,
-        b.zeroOrMore(COMMA, PARAM)),
+      PARAM,
+      b.zeroOrMore(COMMA, PARAM)),
       b.optional(COMMA));
 
     b.rule(ADD_PARAM).is(NAME, PARROW, EXPRESSION);
@@ -279,7 +280,6 @@ public enum PuppetGrammar implements GrammarRuleKey {
       b.firstOf(HASH_ARRAY_ACCESS, VARIABLE),
       EQUALS,
       EXPRESSION);
-
 
     b.rule(DEFINITION).is(DEFINE,
       CLASSNAME,
@@ -409,9 +409,11 @@ public enum PuppetGrammar implements GrammarRuleKey {
       b.zeroOrMore(STATEMENT),
       RBRACE,
       b.zeroOrMore(ELSEIF_STMT),
-      b.optional(ELSE, LBRACE, b.zeroOrMore(STATEMENT), RBRACE));
+      b.optional(ELSE_STMT));
 
     b.rule(ELSEIF_STMT).is(ELSIF, EXPRESSIONS, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
+
+    b.rule(ELSE_STMT).is(ELSE, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
 
     b.rule(CASE_STMT).is(CASE, EXPRESSION, LBRACE,
       b.oneOrMore(CASE_MATCHER),
@@ -492,7 +494,7 @@ public enum PuppetGrammar implements GrammarRuleKey {
 
     b.rule(EXPRESSION).is(b.firstOf(
       BOOL_EXPRESSION,
-      //RIGHT_VALUE,
+      // RIGHT_VALUE,
       HASH));
 
     b.rule(EXPRESSIONS).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION)).skip();
