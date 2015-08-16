@@ -1,12 +1,12 @@
 file { foo:    # Noncompliant
 }
 
-file { $foo:
+file { $foo:   # Noncompliant
 }
 
 file { [
   abc,       # Noncompliant
-  $var,
+  $var,      # Noncompliant
 ]:
   ensure => directory,
 }
@@ -14,9 +14,12 @@ file { [
 file { 'foo':
 }
 
+file { "${foo}":
+}
+
 file { [
   'abc',
-  $var,
+  "${var}",
 ]:
   ensure => directory,
 }
