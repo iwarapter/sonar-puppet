@@ -61,13 +61,13 @@ public class AutoLoaderLayoutCheck extends PuppetCheckVisitor {
 
     StringBuilder path = new StringBuilder();
     if (splitName.length > 1) {
-      path.append('/').append(module).append("/manifests/")
+      path.append(module).append("/manifests/")
         .append(Joiner.on('/').join(
           Arrays.copyOfRange(splitName, 1, splitName.length)))
         .append(".pp");
     }
     else {
-      path.append('/').append(name).append("/manifests/init.pp");
+      path.append(name).append("/manifests/init.pp");
     }
 
     if (!getContext().getFile().getAbsolutePath().endsWith(path.toString())) {

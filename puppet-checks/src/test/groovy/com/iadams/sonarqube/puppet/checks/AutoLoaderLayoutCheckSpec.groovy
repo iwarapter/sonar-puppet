@@ -49,7 +49,9 @@ class AutoLoaderLayoutCheckSpec extends Specification {
       "src/test/resources/checks/autoloader/foo/manifests/bar.pp",
       "src/test/resources/checks/autoloader/foo/manifests/init.pp",
       "src/test/resources/checks/autoloader/foo/manifests/bar/baz.pp",
-      "src/test/resources/checks/autoloader/bar/manifests/init.pp"
+      "src/test/resources/checks/autoloader/bar/manifests/init.pp",
+      "src/test/resources/checks/autoloader/puppetlabs-apache/manifests/init.pp",
+      "src/test/resources/checks/autoloader/puppetlabs-apache/manifests/mod/proxy.pp"
     ]
   }
 

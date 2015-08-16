@@ -1,1 +1,1 @@
-class foo { }
+class bar { }
