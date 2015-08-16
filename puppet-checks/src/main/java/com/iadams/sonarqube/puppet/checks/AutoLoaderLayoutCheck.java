@@ -29,6 +29,7 @@ import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
 
+import java.io.File;
 import java.util.Arrays;
 
 import org.sonar.api.server.rule.RulesDefinition;
@@ -59,18 +60,19 @@ public class AutoLoaderLayoutCheck extends PuppetCheckVisitor {
     String[] splitName = name.split("::");
     String module = splitName[0];
 
+    String delimiter = File.separator;
     StringBuilder path = new StringBuilder();
     if (splitName.length > 1) {
-      path.append('/').append(module).append("/manifests/")
-        .append(Joiner.on('/').join(
+      path.append(delimiter).append(module).append(delimiter).append("manifests").append(delimiter)
+        .append(Joiner.on(delimiter).join(
           Arrays.copyOfRange(splitName, 1, splitName.length)))
         .append(".pp");
     }
     else {
-      path.append('/').append(name).append("/manifests/init.pp");
+      path.append(delimiter).append(name).append(delimiter).append("manifests").append(delimiter).append("init.pp");
     }
 
-    if(!hasFullModulePath(getContext().getFile().getAbsolutePath())){
+    if(!hasFullModulePath(getContext().getFile().getAbsolutePath(), delimiter)){
       path.replace(0,1,"");
     }
 
@@ -79,9 +81,9 @@ public class AutoLoaderLayoutCheck extends PuppetCheckVisitor {
     }
   }
 
-  private boolean hasFullModulePath(String path){
-    String pathAfterModule = path.substring(path.lastIndexOf("modules/")+8);
+  private boolean hasFullModulePath(String path, String delimiter){
+    String pathAfterModule = path.substring(path.lastIndexOf("modules")+8);
 
-    return pathAfterModule.substring(pathAfterModule.indexOf('/')).startsWith("/manifests/");
+    return pathAfterModule.substring(pathAfterModule.indexOf(delimiter)+1).startsWith("manifests");
   }
 }
