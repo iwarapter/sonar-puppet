@@ -49,7 +49,12 @@ class AutoLoaderLayoutCheckSpec extends Specification {
       "src/test/resources/checks/autoloader/foo/manifests/bar.pp",
       "src/test/resources/checks/autoloader/foo/manifests/init.pp",
       "src/test/resources/checks/autoloader/foo/manifests/bar/baz.pp",
-      "src/test/resources/checks/autoloader/bar/manifests/init.pp"
+      "src/test/resources/checks/autoloader/bar/manifests/init.pp",
+      "src/test/resources/checks/autoloader/puppetlabs-apache/manifests/init.pp",
+      "src/test/resources/checks/autoloader/puppetlabs-apache/manifests/mod/proxy.pp",
+      "src/test/resources/checks/autoloader/modules/foo/manifests/init.pp",
+      "src/test/resources/checks/autoloader/modules/foo/manifests/bar.pp",
+      "src/test/resources/checks/autoloader/modules/foo/manifests/bar/baz.pp",
     ]
   }
 
@@ -57,6 +62,19 @@ class AutoLoaderLayoutCheckSpec extends Specification {
     given:
     SourceFile file = PuppetAstScanner.scanSingleFile(
       new File("src/test/resources/checks/autoloader/puppet-foo/manifests/init.pp"),
+      new AutoLoaderLayoutCheck()
+    );
+
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().withMessage('"init.pp" not in autoload module layout')
+      .noMore();
+  }
+
+  def "files in the wrong location in a full analysis with all modules"(){
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/autoloader/modules/puppetlabs-apache/manifests/init.pp"),
       new AutoLoaderLayoutCheck()
     );
 

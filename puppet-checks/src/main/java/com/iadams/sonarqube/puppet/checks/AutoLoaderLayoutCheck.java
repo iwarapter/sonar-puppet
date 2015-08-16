@@ -70,8 +70,18 @@ public class AutoLoaderLayoutCheck extends PuppetCheckVisitor {
       path.append('/').append(name).append("/manifests/init.pp");
     }
 
+    if(!hasFullModulePath(getContext().getFile().getAbsolutePath())){
+      path.replace(0,1,"");
+    }
+
     if (!getContext().getFile().getAbsolutePath().endsWith(path.toString())) {
       addIssueOnFile(this, "\"" + getContext().getFile().getName() + "\" not in autoload module layout");
     }
+  }
+
+  private boolean hasFullModulePath(String path){
+    String pathAfterModule = path.substring(path.lastIndexOf("modules/")+8);
+
+    return pathAfterModule.substring(pathAfterModule.indexOf('/')).startsWith("/manifests/");
   }
 }
