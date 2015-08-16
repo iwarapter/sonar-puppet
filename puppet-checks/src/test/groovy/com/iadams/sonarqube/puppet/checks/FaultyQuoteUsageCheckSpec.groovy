@@ -49,8 +49,6 @@ class FaultyQuoteUsageCheckSpec extends Specification {
       .next().atLine(5).withMessage(MESSAGE_REMOVE_QUOTES)
       .next().atLine(6).withMessage(MESSAGE_REMOVE_QUOTES)
       .next().atLine(11).withMessage(MESSAGE_USE_SINGLE_QUOTES)
-      .next().atLine(14).withMessage(MESSAGE_REMOVE_QUOTES)
-      .next().atLine(17).withMessage(MESSAGE_REMOVE_QUOTES)
       .next().atLine(21).withMessage(MESSAGE_USE_DOUBLE_QUOTES)
       .noMore();
   }
