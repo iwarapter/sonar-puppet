@@ -1,46 +1,81 @@
-SonarQube Puppet Plugin
-=======================
+#SonarQube Puppet Plugin
  [![Build Status](https://travis-ci.org/iwarapter/sonar-puppet.svg?branch=master)](https://travis-ci.org/iwarapter/sonar-puppet)
  [ ![Download](https://api.bintray.com/packages/iwarapter/sonar-plugins/sonar-puppet/images/download.svg) ](https://bintray.com/iwarapter/sonar-plugins/sonar-puppet/_latestVersion)
  
  [![Stories in Ready](https://badge.waffle.io/iwarapter/sonar-puppet.svg?label=ready&title=Ready)](http://waffle.io/iwarapter/sonar-puppet)
  [![Stories in Ready](https://badge.waffle.io/iwarapter/sonar-puppet.svg?label=In Progress&title=In Progress)](http://waffle.io/iwarapter/sonar-puppet)
 
-Description
------------
+##Description
+
 This plugin enables analysis of [Puppet] code. It comes with more than 40 rules spanning from style checks (i.e. All arrows in attribute/value list should be aligned) to detection of potential bugs (i.e. Duplicated parameters should be removed).
 This is currently written to support the grammar for [Puppet 3.8], support for the future parser is not currently available.
 
-Requirements
-------------
+##Requirements
 - SonarQube Server must be up and running. If it's not the case, see [Setup and Upgrade].
 - [SonarQube Runner] is installed and can be called from the command line.
 - Puppet Plugin is installed on SonarQube Server. See [Installing a Plugin] for more details.
 - (Optional) [Puppet lint] has to be installed, if you want to activate Puppet lint rules. Note that almost all Puppet lint rules have now been rewritten. Their replacements are a lot more robust: fewer false negatives and false positives.
 
-Getting Started
----------------
-To run an analysis of your Puppet project, we recommend to use SonarQube Runner.
+##Getting Started
+To run an analysis of your Puppet project, we recommend to use [SonarQube Runner].
+There are two strategies:
+ 1. Analyze each of your modules separately
+ 2. Analyze all your modules at once
+ 
+###Analyze each of your modules separately
+It means that one SonarQube project is created for each Puppet module.
+Let's take the Puppet Labs Apache module at https://github.com/puppetlabs/puppetlabs-apache as an example.
 
-Create your own sonar-project.properties file at the root of your project and then run the command "sonar-runner".
-
-Here is an example for the puppetlabs-apache module:
+- Clone this project (let's say in the `/home/user/puppet` directory)
+- Add a `sonar-project.properties` file to the `/home/user/puppet` directory with the following content:
 ```
 sonar.projectKey=puppetlabs-apache
-sonar.projectName=puppetlabs-apache
-sonar.sources=manifests
+sonar.projectName=Puppet Labs Apache Module
+sonar.sources=puppetlabs-apache
 sonar.projectVersion=1.4.1
 ```
+- Run `sonar-runner` from `/home/user/puppet`
 
-Advanced Configuration
-----------------------
+###Analyze all your modules at once
+It means that one single SonarQube project is created for all the Puppet modules.
+
+- Retrieve the source code of your modules with your favorite tool (such as r10k), let's say in `/home/user/puppet`. The tree structure should be the following:
+```
+/home/user/puppet
+   |--modules
+      |--mymodule1
+         |--manifests
+            |--init.pp
+            |--...
+      |--mymodule2
+         |--manifests
+            |--init.pp
+            |--...
+```
+- Add a `sonar-project.properties` file to the `/home/user/puppet` directory with the following content:
+```
+sonar.projectKey=my-puppet-code-base
+sonar.projectName=My Puppet Code Base
+sonar.sources=modules
+sonar.projectVersion=1.0
+```    
+- Run `sonar-runner` from `/home/user/puppet`
+
+
+###Which strategy to choose?
+The first strategy easily allows you to automate a SonarQube analysis of a module each time a developer pushes some code to the VCS. By providing a quick feedback to developers, you can ensure that quality flaws are quickly fixed.
+
+The second strategy provides a quality overview of your entire Puppet Code Base and how it evolves overtime. Moreover, analyzing your whole code base at once allows you to benefit from more advanced cross-module checks (such as the [autoloader layout rule]).
+
+We recommend you to apply both strategies to get all the benefits.
+
+##Advanced Configuration
 
 Property     | Scope       | Example | Description
 ------------ | ----------- | ------- | -----------
 sonar.puppet.pplint | System-wide | /usr/local/bin/puppet-lint | Path to the puppet-lint executable to use in puppet lint analysis. Set to empty to use the default one (default is puppet-lint).
 
-Metrics
--------
+##Metrics
 
 The Puppet terms do not always match with the standard [SonarQube metrics]. Here's the list of slight differences:
 - Classes = Number of classes + Number of defines
@@ -48,8 +83,7 @@ The Puppet terms do not always match with the standard [SonarQube metrics]. Here
 - Complexity is increased by one for each: class, define, resource instance, resource default statement, resource override, if, elsif, unless, selector match, case match, and, or.
 
 
-Extending Coding Rules using XPath
-----------------------------------
+##Extending Coding Rules using XPath
 
 New coding rules can be added using XPath. See the related [documentation].
 To navigate the AST, download the [SSLR Puppet Toolkit].
@@ -62,4 +96,5 @@ To navigate the AST, download the [SSLR Puppet Toolkit].
 [documentation]:http://docs.sonarqube.org/display/SONAR/Extending+Coding+Rules
 [SSLR Puppet Toolkit]:https://bintray.com/iwarapter/sonar-plugins/sonar-puppet/_latestVersion#files
 [Puppet 3.8]:https://docs.puppetlabs.com/puppet/3.8/reference/index.html
-[SonarQube metrics]:http://docs.sonarqube.org/display/SONAR/Metric+definitions
+[SonarQube metrics]:http://docs.sonarqube.org/display/SONAR/Metric+
+[autoloader layout rule]:https://github.com/iwarapter/sonar-puppet/blob/master/puppet-checks/src/main/resources/org/sonar/l10n/pp/rules/puppet/AutoLoaderLayout.html
