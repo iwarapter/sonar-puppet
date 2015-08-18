@@ -27,6 +27,7 @@ package com.iadams.sonarqube.puppet;
 import com.google.common.collect.Lists;
 import com.iadams.sonarqube.puppet.api.PuppetMetric;
 import com.iadams.sonarqube.puppet.checks.CheckList;
+import com.iadams.sonarqube.puppet.checks.ProjectChecks;
 import com.iadams.sonarqube.puppet.metrics.FileLinesVisitor;
 import com.iadams.sonarqube.puppet.metrics.PuppetLanguageMetrics;
 import com.sonar.sslr.api.Grammar;
@@ -49,6 +50,7 @@ import org.sonar.api.issue.Issue;
 import org.sonar.api.issue.NoSonarFilter;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.FileLinesContextFactory;
+import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.resources.Project;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.squidbridge.AstScanner;
@@ -68,9 +70,11 @@ public class PuppetSquidSensor implements Sensor {
   private FileSystem fileSystem;
   private ResourcePerspectives resourcePerspectives;
   private final NoSonarFilter noSonarFilter;
+  private final RulesProfile rulesProfile;
+  private Project project;
 
   public PuppetSquidSensor(FileLinesContextFactory fileLinesContextFactory, FileSystem fileSystem, ResourcePerspectives perspectives, CheckFactory checkFactory,
-    NoSonarFilter noSonarFilter) {
+    NoSonarFilter noSonarFilter, RulesProfile rulesProfile) {
     this.checks = checkFactory
       .<SquidAstVisitor<Grammar>>create(CheckList.REPOSITORY_KEY)
       .addAnnotatedChecks(CheckList.getChecks());
@@ -78,6 +82,7 @@ public class PuppetSquidSensor implements Sensor {
     this.fileSystem = fileSystem;
     this.resourcePerspectives = perspectives;
     this.noSonarFilter = noSonarFilter;
+    this.rulesProfile = rulesProfile;
   }
 
   @Override
@@ -88,6 +93,7 @@ public class PuppetSquidSensor implements Sensor {
 
   @Override
   public void analyse(Project project, SensorContext context) {
+    this.project = project;
     this.context = context;
 
     List<SquidAstVisitor<Grammar>> visitors = Lists.newArrayList(checks.all());
@@ -115,6 +121,8 @@ public class PuppetSquidSensor implements Sensor {
       saveMeasures(sonarFile, squidFile);
       saveIssues(sonarFile, squidFile);
     }
+    ProjectChecks projectChecks = new ProjectChecks(project, fileSystem, rulesProfile, checks, resourcePerspectives);
+    projectChecks.reportProjectIssues();
   }
 
   private void saveMeasures(InputFile sonarFile, SourceFile squidFile) {

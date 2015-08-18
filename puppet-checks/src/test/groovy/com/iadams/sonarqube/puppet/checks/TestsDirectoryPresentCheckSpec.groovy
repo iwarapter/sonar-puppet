@@ -22,23 +22,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet
+package com.iadams.sonarqube.puppet.checks
 
-import com.iadams.sonarqube.functional.FunctionalSpecBase
+import spock.lang.Specification
 
-class ParsingErrorSpec extends FunctionalSpecBase {
+class TestsDirectoryPresentCheckSpec extends Specification {
 
-  def "run sonar-runner un-parsable file"() {
-    when:
-    copyResources("parsing_error.pp", "parsing_error.pp")
-    deleteProject()
-    runSonarRunner()
+  def "fake"() {
+    given:
 
-    then:
-    analysisFinishedSuccessfully()
-    analysisLogContainsErrorsOrWarnings()
-    analysisLogContains(".* ERROR - Unable to parse file: .*/parsing_error.pp")
-    theFollowingProjectMetricsHaveTheFollowingValue([violations: 1, lines: 2])
-    theFollowingFileMetricsHaveTheFollowingValue('parsing_error.pp', [violations: 1])
+    expect:
+    1 == 1
   }
 }

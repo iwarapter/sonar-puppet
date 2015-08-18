@@ -22,23 +22,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet
+package com.iadams.sonarqube.puppet.checks;
 
-import com.iadams.sonarqube.functional.FunctionalSpecBase
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
+import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.check.Priority;
+import org.sonar.check.Rule;
+import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
-class ParsingErrorSpec extends FunctionalSpecBase {
+@Rule(
+  key = TestsDirectoryPresentCheck.RULE_KEY,
+  name = "Deprecated \"tests\" directories should be replaced by \"examples\" directories.",
+  priority = Priority.MAJOR,
+  tags = Tags.OBSOLETE)
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LANGUAGE_RELATED_PORTABILITY)
+@SqaleConstantRemediation("15min")
+@ActivatedByDefault
+public class TestsDirectoryPresentCheck extends PuppetCheckVisitor {
 
-  def "run sonar-runner un-parsable file"() {
-    when:
-    copyResources("parsing_error.pp", "parsing_error.pp")
-    deleteProject()
-    runSonarRunner()
+  public static final String RULE_KEY = "TestsDirectoryPresent";
 
-    then:
-    analysisFinishedSuccessfully()
-    analysisLogContainsErrorsOrWarnings()
-    analysisLogContains(".* ERROR - Unable to parse file: .*/parsing_error.pp")
-    theFollowingProjectMetricsHaveTheFollowingValue([violations: 1, lines: 2])
-    theFollowingFileMetricsHaveTheFollowingValue('parsing_error.pp', [violations: 1])
-  }
 }
