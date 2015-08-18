@@ -40,6 +40,7 @@ public final class CheckList {
       AutoLoaderLayoutCheck.class,
       CaseWithoutDefaultCheck.class,
       ClassAndDefineNamingConventionCheck.class,
+      CollapsibleIfStatementsCheck.class,
       CommentConventionCheck.class,
       CommentRegularExpressionCheck.class,
       ComplexExpressionCheck.class,
