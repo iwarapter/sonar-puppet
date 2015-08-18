@@ -79,7 +79,7 @@ public class ProjectChecks {
           }
           if (!metadataJsonFileFound) {
             String path = Directory.fromIOFile(parentFile, project).getPath() != null ? Directory.fromIOFile(parentFile, project).getPath() : parentFile.getName();
-            addIssue(MetadataJsonFilePresentCheck.RULE_KEY, "Add a \"metatada.json\" file to the \"" + path + "\" Puppet module.");
+            addIssue(MetadataJsonFilePresentCheck.RULE_KEY, "Add a \"metadata.json\" file to the \"" + path + "\" Puppet module.");
           }
         } else {
           checkMetadataJsonFilePresent(file);
