@@ -26,19 +26,47 @@ package com.iadams.sonarqube.puppet
 
 import com.iadams.sonarqube.functional.FunctionalSpecBase
 
-class ParsingErrorSpec extends FunctionalSpecBase {
+class ProjectChecksSpec extends FunctionalSpecBase {
 
-  def "run sonar-runner un-parsable file"() {
+  def "check for tests directory in module"() {
     when:
-    copyResources("parsing_error.pp", "parsing_error.pp")
     deleteProject()
+    createPuppetModule('sonarqube')
+    createPuppetModuleTestsDir('sonarqube')
+    createPuppetModuleManfiest('sonarqube')
+
     runSonarRunner()
 
     then:
     analysisFinishedSuccessfully()
-    analysisLogContainsErrorsOrWarnings()
-    analysisLogContains(".* ERROR - Unable to parse file: .*/parsing_error.pp")
     theFollowingProjectMetricsHaveTheFollowingValue([violations: 1, lines: 2])
-    theFollowingFileMetricsHaveTheFollowingValue('parsing_error.pp', [violations: 1])
+  }
+
+  def "check module without manifest"() {
+    when:
+    deleteProject()
+    createPuppetModule('sonarqube')
+
+    runSonarRunner()
+
+    then:
+    analysisFinishedSuccessfully()
+    theFollowingProjectMetricsHaveTheFollowingValue([violations: 1, lines: 2])
+  }
+
+  private void createPuppetModule(String moduleName, String baseDir = "$projectDir/modules"){
+    String modulePath = directory(moduleName, new File(baseDir))
+    directory('manifests', new File(modulePath))
+    String specPath = directory('spec', new File(modulePath))
+    directory('classes', new File(specPath))
+    file("manifests/init.pp", new File(modulePath)) << "class $moduleName { }\n"
+  }
+
+  private void createPuppetModuleTestsDir(String moduleName, String baseDir = "$projectDir/modules"){
+    directory("$moduleName/tests", new File(baseDir))
+  }
+
+  private void createPuppetModuleManfiest(String moduleName, String baseDir = "$projectDir/modules"){
+    file("$moduleName/metadata.json", new File(baseDir))
   }
 }

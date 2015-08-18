@@ -39,5 +39,7 @@ class PplintFunctionalSpec extends FunctionalSpecBase {
     analysisFinishedSuccessfully()
     analysisLogDoesNotContainErrorsOrWarnings()
     theFollowingProjectMetricsHaveTheFollowingValue([violations: 8, lines: 9])
+
+    resetDefaultProfile('pp')
   }
 }
