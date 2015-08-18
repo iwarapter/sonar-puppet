@@ -43,11 +43,12 @@ class CheckListSpec extends Specification {
   @Unroll
   def "Check #check.getSimpleName() has test"() {
     expect:
-    String testName = '/' + check.getName().replace('.', '/') + "Spec.class";
+    String testName = '/' + check.getName().replace('.', '/') + "Spec.class"
     assert getClass().getResource(testName)
 
     where:
-    check << CheckList.getChecks();
+    //The two excluded checks are project level checks and have no code.
+    check << CheckList.getChecks() - [MetadataJsonFilePresentCheck.class, TestsDirectoryPresentCheck.class]
   }
 
   @Unroll
