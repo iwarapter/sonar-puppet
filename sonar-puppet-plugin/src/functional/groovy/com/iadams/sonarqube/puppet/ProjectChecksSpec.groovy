@@ -33,7 +33,7 @@ class ProjectChecksSpec extends FunctionalSpecBase {
     deleteProject()
     createPuppetModule('sonarqube')
     createPuppetModuleTestsDir('sonarqube')
-    createPuppetModuleManfiest('sonarqube')
+    createPuppetModuleManifest('sonarqube')
 
     runSonarRunner()
 
@@ -66,7 +66,7 @@ class ProjectChecksSpec extends FunctionalSpecBase {
     directory("$moduleName/tests", new File(baseDir))
   }
 
-  private void createPuppetModuleManfiest(String moduleName, String baseDir = "$projectDir/modules"){
+  private void createPuppetModuleManifest(String moduleName, String baseDir = "$projectDir/modules"){
     file("$moduleName/metadata.json", new File(baseDir))
   }
 }
