@@ -25,10 +25,10 @@
 package com.iadams.sonarqube.puppet
 
 import com.iadams.sonarqube.puppet.checks.CheckList
-import com.iadams.sonarqube.puppet.checks.NosonarTagPresenceCheck
 import org.sonar.api.batch.SensorContext
 import org.sonar.api.batch.fs.InputFile
 import org.sonar.api.batch.fs.internal.DefaultFileSystem
+import org.sonar.api.batch.fs.internal.DefaultInputDir
 import org.sonar.api.batch.fs.internal.DefaultInputFile
 import org.sonar.api.batch.rule.ActiveRules
 import org.sonar.api.batch.rule.CheckFactory
@@ -39,6 +39,7 @@ import org.sonar.api.issue.NoSonarFilter
 import org.sonar.api.measures.CoreMetrics
 import org.sonar.api.measures.FileLinesContext
 import org.sonar.api.measures.FileLinesContextFactory
+import org.sonar.api.profiles.RulesProfile
 import org.sonar.api.resources.Project
 import org.sonar.api.rule.RuleKey
 import spock.lang.Specification
@@ -53,6 +54,7 @@ class PuppetSquidSensorSpec extends Specification {
     FileLinesContextFactory fileLinesContextFactory = Mock()
     FileLinesContext fileLinesContext = Mock()
     NoSonarFilter noSonarFilter = Mock()
+    RulesProfile rulesProfile = Mock()
 
     fileLinesContextFactory.createFor(_ as InputFile) >> fileLinesContext
     ActiveRules activeRules = (new ActiveRulesBuilder())
@@ -62,7 +64,7 @@ class PuppetSquidSensorSpec extends Specification {
       .build();
     CheckFactory checkFactory = new CheckFactory(activeRules)
     perspectives = Mock()
-    sensor = new PuppetSquidSensor(fileLinesContextFactory, fs, perspectives, checkFactory, noSonarFilter)
+    sensor = new PuppetSquidSensor(fileLinesContextFactory, fs, perspectives, checkFactory, noSonarFilter, rulesProfile)
   }
 
   def "should execute on puppet project"() {
@@ -85,6 +87,7 @@ class PuppetSquidSensorSpec extends Specification {
     String relativePath = "src/test/resources/com/iadams/sonarqube/puppet/code_chunks.pp"
     DefaultInputFile inputFile = new DefaultInputFile(relativePath).setLanguage(Puppet.KEY)
     inputFile.setAbsolutePath((new File(relativePath)).getAbsolutePath())
+
     fs.add(inputFile)
 
     Issuable issuable = Mock()
