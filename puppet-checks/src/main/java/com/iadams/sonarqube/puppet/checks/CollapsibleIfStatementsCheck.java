@@ -27,55 +27,53 @@ package com.iadams.sonarqube.puppet.checks;
 import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
+import java.util.List;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.check.RuleProperty;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
+import org.sonar.sslr.ast.AstSelect;
 
 @Rule(
-  key = "NestedIfStatements",
-  name = "Control flow statements \"if\" and \"elsif\" statements should not be nested too deeply",
+  key = "S1066",
   priority = Priority.MAJOR,
-  tags = Tags.BRAIN_OVERLOAD)
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LOGIC_CHANGEABILITY)
-@SqaleConstantRemediation("10min")
+  name = "Collapsible \"if\" statements should be merged",
+  tags = {Tags.CONFUSING})
 @ActivatedByDefault
-public class NestedIfStatementsCheck extends PuppetCheckVisitor {
-
-  private static final int DEFAULT_MAX = 3;
-
-  @RuleProperty(
-    key = "maximumNestingLevel",
-    defaultValue = "" + DEFAULT_MAX)
-  public int maximumNestingLevel = DEFAULT_MAX;
-
-  private int depth;
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
+@SqaleConstantRemediation("5min")
+public class CollapsibleIfStatementsCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
-    subscribeTo(
-      PuppetGrammar.IF_STMT, PuppetGrammar.ELSIF_STMT);
-  }
-
-  @Override
-  public void visitFile(AstNode astNode) {
-    depth = 0;
+    subscribeTo(PuppetGrammar.IF_STMT, PuppetGrammar.ELSIF_STMT);
   }
 
   @Override
   public void visitNode(AstNode node) {
-    depth++;
-    if (depth == maximumNestingLevel + 1) {
-      String message = "Refactor this code to not nest more than %d \"if\" or \"elsif\" statements.";
-      addIssue(node, this, String.format(message, maximumNestingLevel));
+    AstNode singleIfChild = singleIfChild(node);
+    if(singleIfChild != null && !hasElseOrElsif(singleIfChild)){
+      addIssue(singleIfChild, this, "Merge this \"if\" statement with the enclosing one.");
     }
   }
 
-  @Override
-  public void leaveNode(AstNode astNode) {
-    depth--;
+  private boolean hasElseOrElsif(AstNode ifNode){
+    return ifNode.hasDirectChildren(PuppetGrammar.ELSIF_STMT, PuppetGrammar.ELSE_STMT);
+  }
+
+  private AstNode singleIfChild(AstNode statement){
+    List<AstNode> statements = statement.getChildren(PuppetGrammar.STATEMENT);
+
+    if(statements.size() == 1){
+      AstSelect nestedIf = statements.get(0).select()
+        .children(PuppetGrammar.COMPOUND_STMT)
+        .children(PuppetGrammar.IF_STMT);
+      if(nestedIf.size() == 1){
+        return nestedIf.get(0);
+      }
+    }
+    return null;
   }
 }

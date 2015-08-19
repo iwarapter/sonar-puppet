@@ -26,7 +26,6 @@ package com.iadams.sonarqube.puppet.checks;
 
 import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
-import com.iadams.sonarqube.puppet.api.PuppetKeyword;
 import com.sonar.sslr.api.AstNode;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
@@ -52,7 +51,7 @@ public class IfStatementWithoutElseClauseCheck extends PuppetCheckVisitor {
 
   @Override
   public void visitNode(AstNode node) {
-    if (node.getChildren(PuppetGrammar.ELSEIF_STMT).size() > 0 && node.getFirstChild(PuppetGrammar.ELSE_STMT) == null) {
+    if (node.getChildren(PuppetGrammar.ELSIF_STMT).size() > 0 && node.getFirstChild(PuppetGrammar.ELSE_STMT) == null) {
       addIssue(node, this, "End this if...elsif construct by an else clause.");
     }
   }

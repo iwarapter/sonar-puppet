@@ -22,37 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.metrics;
+package com.iadams.sonarqube.puppet.checks
 
-import com.iadams.sonarqube.puppet.api.PuppetGrammar;
-import com.iadams.sonarqube.puppet.api.PuppetMetric;
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
-import org.sonar.squidbridge.SquidAstVisitor;
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
+import spock.lang.Specification
 
-public class ComplexityVisitor extends SquidAstVisitor<Grammar> {
+class CollapsibleIfStatementsCheckSpec extends Specification {
 
-  @Override
-  public void init() {
-    subscribeTo(
-      PuppetGrammar.RESOURCE,
-      PuppetGrammar.RESOURCE_OVERRIDE,
-      PuppetGrammar.RESOURCE_INST,
+  private static final String MESSAGE = "Merge this \"if\" statement with the enclosing one.";
 
-      PuppetGrammar.IF_STMT,
-      PuppetGrammar.ELSIF_STMT,
-      PuppetGrammar.UNLESS_STMT,
-      PuppetGrammar.SELECTVAL,
-      PuppetGrammar.CASE_MATCHER,
-      PuppetGrammar.BOOL_OPERATOR);
+  def "validate rule"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/collapsible_if_statements.pp"),
+      new CollapsibleIfStatementsCheck());
+
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(20).withMessage(MESSAGE)
+      .next().atLine(29).withMessage(MESSAGE)
+      .next().atLine(47).withMessage(MESSAGE)
+      .next().atLine(48).withMessage(MESSAGE)
+      .next().atLine(55).withMessage(MESSAGE)
+      .noMore();
   }
-
-  @Override
-  public void visitNode(AstNode node) {
-    if (node.is(PuppetGrammar.RESOURCE) && node.getFirstChild(PuppetGrammar.RESOURCE_INST) != null) {
-      return;
-    }
-    getContext().peekSourceCode().add(PuppetMetric.COMPLEXITY, 1);
-  }
-
 }

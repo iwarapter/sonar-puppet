@@ -134,7 +134,7 @@ public enum PuppetGrammar implements GrammarRuleKey {
   CLASSNAME_OR_DEFAULT,
   CLASS_PARENT,
   IF_STMT,
-  ELSEIF_STMT,
+  ELSIF_STMT,
   ELSE_STMT,
   CASE_STMT,
   CASE_MATCHER,
@@ -408,10 +408,10 @@ public enum PuppetGrammar implements GrammarRuleKey {
       LBRACE,
       b.zeroOrMore(STATEMENT),
       RBRACE,
-      b.zeroOrMore(ELSEIF_STMT),
+      b.zeroOrMore(ELSIF_STMT),
       b.optional(ELSE_STMT));
 
-    b.rule(ELSEIF_STMT).is(ELSIF, EXPRESSIONS, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
+    b.rule(ELSIF_STMT).is(ELSIF, EXPRESSIONS, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
 
     b.rule(ELSE_STMT).is(ELSE, LBRACE, b.zeroOrMore(STATEMENT), RBRACE);
 
