@@ -31,6 +31,8 @@ import spock.lang.Specification
 
 class CollapsibleIfStatementsCheckSpec extends Specification {
 
+  private static final String MESSAGE = "Merge this \"if\" statement with the enclosing one.";
+
   def "validate rule"() {
     given:
     SourceFile file = PuppetAstScanner.scanSingleFile(
@@ -39,11 +41,11 @@ class CollapsibleIfStatementsCheckSpec extends Specification {
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(20).withMessage("Merge this if statement with the enclosing one.")
-      .next().atLine(29).withMessage("Merge this if statement with the enclosing one.")
-      .next().atLine(47).withMessage("Merge this if statement with the enclosing one.")
-      .next().atLine(48).withMessage("Merge this if statement with the enclosing one.")
-      .next().atLine(55).withMessage("Merge this if statement with the enclosing one.")
+      .next().atLine(20).withMessage(MESSAGE)
+      .next().atLine(29).withMessage(MESSAGE)
+      .next().atLine(47).withMessage(MESSAGE)
+      .next().atLine(48).withMessage(MESSAGE)
+      .next().atLine(55).withMessage(MESSAGE)
       .noMore();
   }
 }

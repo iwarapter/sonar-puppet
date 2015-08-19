@@ -40,7 +40,7 @@ public class ComplexityVisitor extends SquidAstVisitor<Grammar> {
       PuppetGrammar.RESOURCE_INST,
 
       PuppetGrammar.IF_STMT,
-      PuppetGrammar.ELSEIF_STMT,
+      PuppetGrammar.ELSIF_STMT,
       PuppetGrammar.UNLESS_STMT,
       PuppetGrammar.SELECTVAL,
       PuppetGrammar.CASE_MATCHER,

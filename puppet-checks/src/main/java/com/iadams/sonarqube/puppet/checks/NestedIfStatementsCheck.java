@@ -27,7 +27,6 @@ package com.iadams.sonarqube.puppet.checks;
 import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -35,7 +34,6 @@ import org.sonar.check.RuleProperty;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
 
 @Rule(
   key = "NestedIfStatements",
@@ -59,7 +57,7 @@ public class NestedIfStatementsCheck extends PuppetCheckVisitor {
   @Override
   public void init() {
     subscribeTo(
-      PuppetGrammar.IF_STMT, PuppetGrammar.ELSEIF_STMT);
+      PuppetGrammar.IF_STMT, PuppetGrammar.ELSIF_STMT);
   }
 
   @Override

@@ -26,7 +26,6 @@ package com.iadams.sonarqube.puppet.checks;
 
 import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
-import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
 import java.util.List;
 import org.sonar.api.server.rule.RulesDefinition;
@@ -49,19 +48,19 @@ public class CollapsibleIfStatementsCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.IF_STMT, PuppetGrammar.ELSEIF_STMT);
+    subscribeTo(PuppetGrammar.IF_STMT, PuppetGrammar.ELSIF_STMT);
   }
 
   @Override
   public void visitNode(AstNode node) {
     AstNode singleIfChild = singleIfChild(node);
     if(singleIfChild != null && !hasElseOrElsif(singleIfChild)){
-      addIssue(singleIfChild, this, "Merge this if statement with the enclosing one.");
+      addIssue(singleIfChild, this, "Merge this \"if\" statement with the enclosing one.");
     }
   }
 
   private boolean hasElseOrElsif(AstNode ifNode){
-    return ifNode.hasDirectChildren(PuppetGrammar.ELSEIF_STMT) || ifNode.hasDirectChildren(PuppetGrammar.ELSE_STMT);
+    return ifNode.hasDirectChildren(PuppetGrammar.ELSIF_STMT, PuppetGrammar.ELSE_STMT);
   }
 
   private AstNode singleIfChild(AstNode statement){

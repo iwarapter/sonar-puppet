@@ -54,7 +54,7 @@ public class EmptyBlocksCheck extends PuppetCheckVisitor {
 
       PuppetGrammar.CASE_MATCHER,
       PuppetGrammar.IF_STMT,
-      PuppetGrammar.ELSEIF_STMT,
+      PuppetGrammar.ELSIF_STMT,
       PuppetGrammar.ELSE_STMT,
       PuppetGrammar.UNLESS_STMT);
   }
@@ -99,7 +99,7 @@ public class EmptyBlocksCheck extends PuppetCheckVisitor {
       } else if (!hasTrivia(node)) {
         if (node.is(PuppetGrammar.CASE_MATCHER)) {
           addIssue(node, this, "Remove this empty \"case\" matcher or add a comment to explain why it is empty.");
-        } else if (node.is(PuppetGrammar.ELSEIF_STMT)) {
+        } else if (node.is(PuppetGrammar.ELSIF_STMT)) {
           addIssue(node, this, "Remove this empty \"elsif\" statement or add a comment to explain why it is empty.");
         } else if (node.is(PuppetGrammar.ELSE_STMT)) {
           addIssue(node, this, "Remove this empty \"else\" statement or add a comment to explain why it is empty.");
