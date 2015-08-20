@@ -31,7 +31,7 @@ import spock.lang.Specification
 
 class UnquotedNodeNameCheckSpec extends Specification {
 
-  private static final String MESSAGE = "Quote this node name.";
+  private static final String MESSAGE = "Quote this node name: ";
 
   def "validate check"() {
     given:
@@ -41,10 +41,11 @@ class UnquotedNodeNameCheckSpec extends Specification {
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(1).withMessage(MESSAGE)
-      .next().atLine(12).withMessage(MESSAGE)
-      .next().atLine(12).withMessage(MESSAGE)
-      .next().atLine(12).withMessage(MESSAGE)
+      .next().atLine(1).withMessage(MESSAGE + "server1")
+      .next().atLine(12).withMessage(MESSAGE + "example4")
+      .next().atLine(12).withMessage(MESSAGE + "example5")
+      .next().atLine(12).withMessage(MESSAGE + "example6")
+      .next().atLine(29).withMessage(MESSAGE + "example")
       .noMore();
   }
 }

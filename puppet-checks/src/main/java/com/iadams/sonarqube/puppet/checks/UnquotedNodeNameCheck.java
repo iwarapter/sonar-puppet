@@ -53,7 +53,7 @@ public class UnquotedNodeNameCheck extends PuppetCheckVisitor {
   @Override
   public void visitNode(AstNode node) {
     if (node.getToken().getType().equals(PuppetTokenType.NAME)) {
-      addIssue(node, this, "Quote this node name.");
+      addIssue(node, this, "Quote this node name: " + node.getTokenValue());
     }
   }
 
