@@ -2,6 +2,10 @@
 build/*
 sonar-puppet-plugin/build/*
 puppet-squid/build/*
+puppet-checks/build/*
+sslr-puppet-toolkit/build/*
 .gradle/*
 .DS_Store
 *.iml
+log.txt
+*~
