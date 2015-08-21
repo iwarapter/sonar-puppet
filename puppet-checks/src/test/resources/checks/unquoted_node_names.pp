@@ -25,3 +25,7 @@ node /^www\d+$/ {
 node default {
   include common
 }
+
+node 'www1.example.com' inherits example {
+  include common
+}
