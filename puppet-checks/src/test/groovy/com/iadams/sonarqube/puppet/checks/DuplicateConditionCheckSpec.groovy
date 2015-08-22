@@ -29,13 +29,13 @@ import org.sonar.squidbridge.api.SourceFile
 import org.sonar.squidbridge.checks.CheckMessagesVerifier
 import spock.lang.Specification
 
-class SameIfConditionCheckSpec extends Specification {
+class DuplicateConditionCheckSpec extends Specification {
 
   def "validate check"() {
     given:
     SourceFile file = PuppetAstScanner.scanSingleFile(
       new File("src/test/resources/checks/same_conditions.pp"),
-      new SameIfConditionCheck());
+      new DuplicateConditionCheck());
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
@@ -47,6 +47,10 @@ class SameIfConditionCheckSpec extends Specification {
       .next().atLine(81).withMessage("This branch duplicates the one on line 78.")
       .next().atLine(93).withMessage("This branch duplicates the one on line 89.")
       .next().atLine(103).withMessage("This branch duplicates the one on line 99.")
+      .next().atLine(112).withMessage("This branch duplicates the one on line 109.")
+      .next().atLine(115).withMessage("This branch duplicates the one on line 109.")
+      .next().atLine(127).withMessage("This branch duplicates the one on line 124.")
+      .next().atLine(130).withMessage("This branch duplicates the one on line 124.")
       .noMore();
   }
 }

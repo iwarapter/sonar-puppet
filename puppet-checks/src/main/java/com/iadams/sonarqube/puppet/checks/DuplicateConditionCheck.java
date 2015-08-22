@@ -42,18 +42,18 @@ import org.sonar.sslr.ast.AstSelect;
 @Rule(
   key = "S1862",
   priority = Priority.CRITICAL,
-  name = "Conditions in related \"if/elsif/else if\" statements should not have the same condition",
+  name = "Related \"if/else if\" statements and \"cases\" in a \"case\" should not have the same condition",
   tags = {Tags.BUG, Tags.UNUSED, Tags.PITFALL})
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LOGIC_RELIABILITY)
 @SqaleConstantRemediation("10min")
-public class SameIfConditionCheck extends PuppetCheckVisitor {
+public class DuplicateConditionCheck extends PuppetCheckVisitor {
 
   private List<AstNode> ignoreList;
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.IF_STMT);
+    subscribeTo(PuppetGrammar.IF_STMT, PuppetGrammar.CASE_STMT);
   }
 
   @Override
@@ -63,11 +63,20 @@ public class SameIfConditionCheck extends PuppetCheckVisitor {
 
   @Override
   public void visitNode(AstNode node) {
-    if (ignoreList.contains(node)) {
-      return;
+    if (node.is(PuppetGrammar.IF_STMT)) {
+      if (ignoreList.contains(node)) {
+        return;
+      }
+      List<AstNode> conditions = getConditionsToCompare(node);
+      findSameConditions(conditions);
+    } else {
+      List<AstNode> conditions = new ArrayList<>();
+      for(AstNode matcher : node.getChildren(PuppetGrammar.CASE_MATCHER)){
+        conditions.addAll(matcher.getFirstChild(PuppetGrammar.CASE_VALUES).getChildren(PuppetGrammar.SELECTLHAND));
+      }
+
+      findSameConditions(conditions);
     }
-    List<AstNode> conditions = getConditionsToCompare(node);
-    findSameConditions(conditions);
   }
 
   private List<AstNode> getConditionsToCompare(AstNode ifStmt) {
