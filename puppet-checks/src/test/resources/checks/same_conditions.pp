@@ -67,3 +67,40 @@ elsif $param == 3{
     # stuff
   }
 }
+
+if $param == 1 and $var == 2 {
+}
+elsif $param == 1 and $var == 2 { # Noncompliant
+}
+
+$bool_var = true
+
+if $bool_var {
+
+}
+elsif $bool_var {
+
+}
+
+if $param == 1 {
+
+}
+else {
+  if $bool_var {
+
+  }
+  else {
+    if $bool_var {
+
+    }
+  }
+}
+
+if $regex_var =~ /words/ {
+
+}
+else {
+  if $regex_var =~ /words/ {
+
+  }
+}

@@ -27,6 +27,7 @@ package com.iadams.sonarqube.puppet.checks;
 import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -42,12 +43,11 @@ import org.sonar.sslr.ast.AstSelect;
   key = "S1862",
   priority = Priority.CRITICAL,
   name = "Conditions in related \"if/elsif/else if\" statements should not have the same condition",
-  tags =  {Tags.BUG, Tags.UNUSED, Tags.PITFALL}
-)
+  tags = {Tags.BUG, Tags.UNUSED, Tags.PITFALL})
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LOGIC_RELIABILITY)
 @SqaleConstantRemediation("10min")
-public class SameConditionCheck extends PuppetCheckVisitor {
+public class SameIfConditionCheck extends PuppetCheckVisitor {
 
   private List<AstNode> ignoreList;
 
@@ -70,23 +70,24 @@ public class SameConditionCheck extends PuppetCheckVisitor {
     findSameConditions(conditions);
   }
 
-  private List<AstNode> getConditionsToCompare(AstNode ifStmt){
-    List<AstNode> conditions = ifStmt.getFirstChild(PuppetGrammar.EXPRESSION).getChildren(PuppetGrammar.COMPARISON);
+  private List<AstNode> getConditionsToCompare(AstNode ifStmt) {
+    List<AstNode> conditions = new ArrayList<>();
+    conditions.add(ifStmt.getFirstChild(PuppetGrammar.EXPRESSION).getFirstChild());
 
-    for(AstNode elsifNode : ifStmt.getChildren(PuppetGrammar.ELSIF_STMT)){
+    for (AstNode elsifNode : ifStmt.getChildren(PuppetGrammar.ELSIF_STMT)) {
       conditions.addAll(getConditionsToCompare(elsifNode));
     }
 
     AstNode elseNode = ifStmt.getFirstChild(PuppetGrammar.ELSE_STMT);
 
-    if(conditions.size() == 1 && elseNode != null){
+    if (conditions.size() == 1 && elseNode != null) {
       List<AstNode> statments = elseNode.getChildren(PuppetGrammar.STATEMENT);
       lookForElseIfs(conditions, statments);
     }
     return conditions;
   }
 
-  private void lookForElseIfs(List<AstNode> conditions, List<AstNode> statements){
+  private void lookForElseIfs(List<AstNode> conditions, List<AstNode> statements) {
     AstNode singleIfChild = singleIfChild(statements);
     if (singleIfChild != null) {
       ignoreList.add(singleIfChild);
@@ -122,8 +123,8 @@ public class SameConditionCheck extends PuppetCheckVisitor {
     }
   }
 
-  public static boolean equalNodes(AstNode node1, AstNode node2){
-    if (!node1.getType().equals(node2.getType()) || node1.getNumberOfChildren() != node2.getNumberOfChildren()){
+  public static boolean equalNodes(AstNode node1, AstNode node2) {
+    if (!node1.getType().equals(node2.getType()) || node1.getNumberOfChildren() != node2.getNumberOfChildren()) {
       return false;
     }
 
@@ -133,8 +134,8 @@ public class SameConditionCheck extends PuppetCheckVisitor {
 
     List<AstNode> children1 = node1.getChildren();
     List<AstNode> children2 = node2.getChildren();
-    for (int i = 0; i < children1.size(); i++){
-      if (!equalNodes(children1.get(i), children2.get(i))){
+    for (int i = 0; i < children1.size(); i++) {
+      if (!equalNodes(children1.get(i), children2.get(i))) {
         return false;
       }
     }
