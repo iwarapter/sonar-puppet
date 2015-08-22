@@ -1,0 +1,40 @@
+<p>
+For readability reasons, all <code>if</code> statements should be formatted the same way:
+<ul>
+  <li>Opening curly brace on the same line as the condition</li>
+  <li>Closing curly brace on a new line following the last statement of the <code>if</code> / <code>elsif</code> / <code>else</code> block</li>
+  <li><code>elsif</code> and <code>else</code> keywords on the same line as the previous closing curly brace</li>
+</ul>
+</p>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+if $is_virtual
+{                  # Noncompliant: The brace should be moved to the previous line
+  ...
+}
+
+if $is_virtual {
+  ...
+}
+elsif $is_linux {  # Noncompliant: 'elsif' should be moved to the previous line
+  ...
+}
+else {             # Noncompliant: 'else' should be moved to the previous line
+  ...
+}
+
+if $is_virtual {
+  ... }            # Noncompliant: The brace should be moved to the next line
+</pre>
+
+<h2>Compliant Solution</h2>
+<pre>
+if $is_virtual {
+  ...
+} elsif $is_linux {
+  ...
+} else {
+  ...
+}
+</pre>
