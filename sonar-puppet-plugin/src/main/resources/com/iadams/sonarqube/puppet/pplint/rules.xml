@@ -800,8 +800,10 @@ node 'server1' {
     <name><![CDATA[Ingnored Puppet Lint Rules]]></name>
     <configKey>IgnoredPuppetLintRule</configKey>
     <description>
-      <![CDATA[<p>This rule tracks all the instances of puppet <a href="http://puppet-lint.com/controlcomments/">control comments</a>.</p>]]>
+      <![CDATA[<p>This rule tracks all the instances of puppet <a href="http://puppet-lint.com/controlcomments/">control comments</a>.</p>
+      <p>This rule is deprecated, use <a href="coding_rules#rule_key=puppet:LintIgnore">LintIgnore</a> instead.</p>]]>
     </description>
     <priority>INFO</priority>
+    <status>DEPRECATED</status>
   </rule>
 </rules>
