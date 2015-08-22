@@ -45,6 +45,8 @@ class BooleanInversionCheckSpec extends Specification {
       .next().atLine(4).withMessage("Use the opposite operator (\"==\") instead.")
       .next().atLine(5).withMessage("Use the opposite operator (\">\") instead.")
       .next().atLine(6).withMessage("Use the opposite operator (\"<\") instead.")
+      .next().atLine(13).withMessage("Invert all the operators of this boolean expression instead.")
+      .next().atLine(14).withMessage("Invert all the operators of this boolean expression instead.")
       .noMore();
   }
 }

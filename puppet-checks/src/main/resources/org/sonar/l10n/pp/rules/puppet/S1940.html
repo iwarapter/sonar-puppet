@@ -5,12 +5,14 @@
 
 <h2>Noncompliant Code Example</h2>
 <pre>
-if ( !(a == 2)) { ...}  # Noncompliant
-$b = !(i < 10)  # Noncompliant
+if !(a == 2) { ... }         # Noncompliant
+$b = !(i < 10)               # Noncompliant
+$c = !($a == 1 and $b == 2)  # Noncompliant
 </pre>
 
 <h2>Compliant Solution</h2>
 <pre>
-if (a != 2) { ...}
+if a != 2 { ... }
 $b = (i >= 10)
+$c = $a != 1 or $b != 2
 </pre>

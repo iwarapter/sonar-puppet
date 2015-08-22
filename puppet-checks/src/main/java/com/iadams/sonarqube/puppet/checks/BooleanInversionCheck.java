@@ -29,7 +29,9 @@ import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.iadams.sonarqube.puppet.api.PuppetPunctuator;
 import com.sonar.sslr.api.AstNode;
+
 import java.util.Map;
+
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -61,13 +63,14 @@ public class BooleanInversionCheck extends PuppetCheckVisitor {
 
   @Override
   public void visitNode(AstNode node) {
-    if(node.getFirstChild().getType() == PuppetPunctuator.NOT){
-      AstNode expression = node.getFirstChild(PuppetGrammar.COMPARISON);
-      if(expression != null){
+    if (node.getFirstChild().getType() == PuppetPunctuator.NOT) {
+      if (node.getFirstChild(PuppetGrammar.COMPARISON) != null) {
+        AstNode expression = node.getFirstChild(PuppetGrammar.COMPARISON);
         String val = expression.getFirstChild(PuppetGrammar.COMP_OPERATOR).getTokenValue();
         addIssue(expression, this, "Use the opposite operator (\"" + OPERATORS.get(val) + "\") instead.");
+      } else if (node.getFirstChild(PuppetGrammar.BOOL_EXPRESSION) != null) {
+        addIssue(node.getFirstChild(PuppetGrammar.BOOL_EXPRESSION), this, "Invert all the operators of this boolean expression instead.");
       }
     }
   }
-
 }
