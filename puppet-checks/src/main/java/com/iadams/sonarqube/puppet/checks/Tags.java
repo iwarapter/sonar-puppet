@@ -27,11 +27,12 @@ package com.iadams.sonarqube.puppet.checks;
 public class Tags {
   public static final String BRAIN_OVERLOAD = "brain-overload";
   public static final String BUG = "bug";
+  public static final String CONFUSING = "confusing";
   public static final String CONVENTION = "convention";
+  public static final String FUTURE_PARSE = "future-parser";
   public static final String OBSOLETE = "obsolete";
   public static final String SECURITY = "security";
   public static final String PITFALL = "pitfall";
-  public static final String CONFUSING = "confusing";
 
   private Tags() {
     // This class only defines constants
