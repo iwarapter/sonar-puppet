@@ -22,20 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.checks;
+package com.iadams.sonarqube.puppet.checks
 
-public class Tags {
-  public static final String BRAIN_OVERLOAD = "brain-overload";
-  public static final String BUG = "bug";
-  public static final String CONFUSING = "confusing";
-  public static final String CONVENTION = "convention";
-  public static final String FUTURE_PARSER = "future-parser";
-  public static final String OBSOLETE = "obsolete";
-  public static final String SECURITY = "security";
-  public static final String PITFALL = "pitfall";
-  public static final String UNUSED = "unused";
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
+import spock.lang.Specification
 
-  private Tags() {
-    // This class only defines constants
+class SameConditionCheckSpec extends Specification {
+
+  def "validate check"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/same_conditions.pp"),
+      new SameConditionCheck());
+
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(9).withMessage("This branch duplicates the one on line 3.")
+      .next().atLine(21).withMessage("This branch duplicates the one on line 17.")
+      .next().atLine(34).withMessage("This branch duplicates the one on line 27.")
+      .next().atLine(49).withMessage("This branch duplicates the one on line 46.")
+      .noMore();
   }
 }
