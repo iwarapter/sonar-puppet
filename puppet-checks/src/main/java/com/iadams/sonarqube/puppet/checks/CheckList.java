@@ -46,6 +46,7 @@ public final class CheckList {
       ComplexExpressionCheck.class,
       DocumentClassesAndDefinesCheck.class,
       DeprecatedNodeInheritanceCheck.class,
+      DeprecatedOperatorsCheck.class,
       DuplicatedHashKeysCheck.class,
       DuplicatedParametersCheck.class,
       EmptyBlocksCheck.class,

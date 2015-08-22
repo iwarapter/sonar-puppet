@@ -67,6 +67,7 @@ public enum PuppetGrammar implements GrammarRuleKey {
 
   ARITH_OP,
   ASSIGNMENT,
+  APPENDS_ARRAY,
   BOOL_OPERATOR,
   COMP_OPERATOR,
   A_OPER,
@@ -269,6 +270,7 @@ public enum PuppetGrammar implements GrammarRuleKey {
       NODE_DEFINITION,
       RELATIONSHIP,
       ASSIGNMENT,
+      APPENDS_ARRAY,
       RESOURCE,
       UNLESS_STMT,
       IMPORT_STMT,
@@ -280,6 +282,11 @@ public enum PuppetGrammar implements GrammarRuleKey {
       b.firstOf(HASH_ARRAY_ACCESS, VARIABLE),
       EQUALS,
       EXPRESSION);
+
+    b.rule(APPENDS_ARRAY).is(
+      VARIABLE,
+      APPENDS,
+      ARRAY);
 
     b.rule(DEFINITION).is(DEFINE,
       CLASSNAME,
