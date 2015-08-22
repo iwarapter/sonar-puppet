@@ -50,6 +50,7 @@ public final class CheckList {
       DuplicatedParametersCheck.class,
       EmptyBlocksCheck.class,
       EnsureOrderingCheck.class,
+      ExcessSpacesWhenAccessingHashesArraysCheck.class,
       FaultyQuoteUsageCheck.class,
       FileEnsurePropertyIsValidCheck.class,
       FileModeCheck.class,

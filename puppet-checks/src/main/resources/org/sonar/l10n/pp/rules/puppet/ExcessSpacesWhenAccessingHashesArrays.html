@@ -1,0 +1,20 @@
+<p>
+    Since Puppet 4, the space between a variable and a left bracket is significant. Indeed, Puppet outputs different results if there is a space:
+    <ul>
+    <li><code>$var [3]</code> outputs first the value of <code>$var</code>, then a literal array with the single value 3 in it.</li>
+    <li><code>$var[3]</code> outputs index 3 of the array referenced by $var.</li>
+    </ul>
+    As 99% of the time, you mean the second bullet point, remove the whitespaces to be compliant with Puppet 4 new syntax.
+</p>
+<h2>Noncompliant Code Example</h2>
+<pre>
+$var [3]
+</pre>
+<h2>Compliant Solution</h2>
+<pre>
+$var[3]
+</pre>
+<h2>See</h2>
+<ul>
+    <li><a href="https://docs.puppetlabs.com/puppet/latest/reference/experiments_future.html#check-for-excess-spaces-when-accessing-hashes-and-arrays">Updating 3.x Manifests for Puppet 4.x</a></li>
+</ul>
