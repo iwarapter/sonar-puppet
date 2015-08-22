@@ -43,7 +43,7 @@ import static com.iadams.sonarqube.puppet.api.PuppetTokenType.*;
   key = "FileModes",
   name = "File mode should be represented by a valid 4-digit octal value (rather than 3) or symbolically",
   priority = Priority.MAJOR,
-  tags = {Tags.BUG})
+  tags = {Tags.BUG, Tags.FUTURE_PARSER})
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
 @SqaleConstantRemediation("10min")
 @ActivatedByDefault
