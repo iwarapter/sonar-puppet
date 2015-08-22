@@ -1,5 +1,7 @@
 <p>
-Boolean values (<code>true</code> and <code>false</code>) behave differently when quoted (<code>'true'</code> and <code>'false'</code>), which can lead to a fair bit of confusion. As a general rule, you should never quote booleans. This is not a style issue, rather a common mistake.
+Boolean values (<code>true</code> and <code>false</code>) behave differently when quoted (<code>'true'</code> and <code>'false'</code>), which can lead to a fair bit of confusion.
+Quoting booleans becomes even more error prone with Puppet 4 as comparing booleans with quoted string always returns <code>false</code>.
+Thus, you should never quote booleans.
 </p>
 
 <h2>Noncompliant Code Example</h2>
@@ -8,6 +10,8 @@ Boolean values (<code>true</code> and <code>false</code>) behave differently whe
 file { '/tmp/foo':
   purge => 'true',
 }
+
+if $is_virtual == 'false' { ... }
 </pre>
 
 <h2>Compliant Solution</h2>
@@ -16,4 +20,11 @@ file { '/tmp/foo':
 file { '/tmp/foo':
   purge => true,
 }
+
+if $is_virtual == false { ... }
 </pre>
+
+<h2>See</h2>
+<ul>
+  <li><a href="https://docs.puppetlabs.com/puppet/latest/reference/experiments_future.html#boolean-facts-are-always-real-booleans">Updating 3.x Manifests for Puppet 4.x</a></li>
+</ul>
