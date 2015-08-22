@@ -66,6 +66,7 @@ public final class CheckList {
       NestedCasesAndSelectorsCheck.class,
       NestedIfStatementsCheck.class,
       NosonarTagPresenceCheck.class,
+      OneIncludePerLineCheck.class,
       ParsingErrorCheck.class,
       PuppetURLModulesCheck.class,
       QuotedBooleanCheck.class,
