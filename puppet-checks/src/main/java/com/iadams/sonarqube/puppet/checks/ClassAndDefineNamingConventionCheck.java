@@ -38,8 +38,8 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
   key = "ClassAndDefineNamingConvention",
   name = "Classes and defines should follow a naming convention",
   priority = Priority.CRITICAL,
-  tags = {Tags.CONVENTION, Tags.PITFALL})
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.INSTRUCTION_RELIABILITY)
+  tags = {Tags.CONVENTION, Tags.FUTURE_PARSER})
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LANGUAGE_RELATED_PORTABILITY)
 @SqaleConstantRemediation("30min")
 @ActivatedByDefault
 public class ClassAndDefineNamingConventionCheck extends PuppetCheckVisitor {

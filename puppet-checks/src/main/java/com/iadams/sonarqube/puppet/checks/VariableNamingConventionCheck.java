@@ -37,9 +37,9 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 @Rule(
   key = "VariableNamingConvention",
   name = "Variables should follow a naming convention",
-  priority = Priority.MINOR,
-  tags = {Tags.CONVENTION})
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
+  priority = Priority.MAJOR,
+  tags = {Tags.CONVENTION, Tags.FUTURE_PARSER})
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LANGUAGE_RELATED_PORTABILITY)
 @SqaleConstantRemediation("5min")
 @ActivatedByDefault
 public class VariableNamingConventionCheck extends PuppetCheckVisitor {
