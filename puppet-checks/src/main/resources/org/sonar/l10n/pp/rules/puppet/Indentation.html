@@ -1,0 +1,17 @@
+<p>Proper indentation is a simple and effective way to improve the code's readability. Consistent indentation among the developers on a team also reduces the differences that are committed to source control systems, making code reviews easier.</p>
+<p>This rule checks that the code is properly indented with two whitespaces.</p>
+<h2>Noncompliant Code Example</h2>
+<pre>
+file { '/tmp/foo':
+ ensure => present,
+   owner => 'foo',
+}
+</pre>
+<h2>Compliant Solution</h2>
+<pre>
+file { '/tmp/foo':
+  ensure => present,
+  owner => 'foo',
+}
+</pre>
+

@@ -27,17 +27,17 @@ file { '/etc/passwd':
 }
 
 file {
-	'/etc/rc.d':
-		ensure => directory,
-		mode   => '755';  # Noncompliant
+  '/etc/rc.d':
+    ensure => directory,
+    mode   => '755';  # Noncompliant
 
-	'/etc/rc.d/init.d':
-		ensure => directory,
-		mode   => '0755';
+  '/etc/rc.d/init.d':
+    ensure => directory,
+    mode   => '0755';
 
-	'/etc/rc.d/rc0.d':
-		ensure => directory,
-		mode   => '0755';
+  '/etc/rc.d/rc0.d':
+    ensure => directory,
+    mode   => '0755';
 }
 
 File {
@@ -45,73 +45,73 @@ File {
 }
 
 File {
-	mode => '0755',
+  mode => '0755',
 }
 
 file { 'foo':
-	mode => 755,  # Noncompliant
+  mode => 755,  # Noncompliant
 }
 
 file { 'foo':
-	mode => 0755,  # Noncompliant
+  mode => 0755,  # Noncompliant
 }
 
 File {
-	mode => 755,  # Noncompliant
+  mode => 755,  # Noncompliant
 }
 
 File {
-	mode => 0755,  # Noncompliant
+  mode => 0755,  # Noncompliant
 }
 
 file { 'foo':
-	mode => "0755",  # Noncompliant
+  mode => "0755",  # Noncompliant
 }
 
 file { 'foo':
-	mode => "abc",  # Noncompliant
+  mode => "abc",  # Noncompliant
 }
 
 File {
-	mode => "0755",  # Noncompliant
+  mode => "0755",  # Noncompliant
 }
 
 File {
-	mode => "abc",  # Noncompliant
+  mode => "abc",  # Noncompliant
 }
 
 file { 'foo':
-	mode => "u=${var}",
+  mode => "u=${var}",
 }
 
 File {
-	mode => "u=${var}",
+  mode => "u=${var}",
 }
 
 File['/tmp/foo'] {
-	mode => '755',  # Noncompliant
+  mode => '755',  # Noncompliant
 }
 
 File['/tmp/foo'] {
-	mode => '0755',
+  mode => '0755',
 }
 
 File['/tmp/foo'] {
-	mode => 755,  # Noncompliant
+  mode => 755,  # Noncompliant
 }
 
 File['/tmp/foo'] {
-	mode => 0755,  # Noncompliant
+  mode => 0755,  # Noncompliant
 }
 
 File['/tmp/foo'] {
-	mode => "0755",  # Noncompliant
+  mode => "0755",  # Noncompliant
 }
 
 File['/tmp/foo'] {
-	mode => "abc",  # Noncompliant
+  mode => "abc",  # Noncompliant
 }
 
 File['/tmp/foo'] {
-	mode => "u=${var}",
+  mode => "u=${var}",
 }

@@ -57,6 +57,7 @@ public final class CheckList {
       FixmeTagPresenceCheck.class,
       IfStatementWithoutElseClauseCheck.class,
       ImportStatementUsedCheck.class,
+      IndentationCheck.class,
       InheritsAcrossNamespaceCheck.class,
       LineLengthCheck.class,
       LiteralBooleanInComparisonCheck.class,
