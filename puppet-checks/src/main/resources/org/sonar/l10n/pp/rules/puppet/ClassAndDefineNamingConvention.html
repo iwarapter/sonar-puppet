@@ -1,5 +1,8 @@
 <p>This rule checks that all classes and defines match the following regular expression:
-<nobr><code>^([a-z][a-z0-9_]*::)*[a-z][a-z0-9_]*$</code></nobr>In shorts, it prevents using uppercase letters.</p>
+<nobr><code>^([a-z][a-z0-9_]*::)*[a-z][a-z0-9_]*$</code></nobr>. In shorts, it prevents using uppercase letters.</p>
+<p>
+    This naming convention is compliant with the more strict Puppet 4 naming convention.
+</p>
 <h2>Noncompliant Code Example</h2>
 <pre>
 class my-class {}    # Noncompliant
@@ -10,3 +13,8 @@ define myDefine {}   # Noncompliant
 class my_class {}
 define my_define {}
 </pre>
+
+<h2>See</h2>
+<ul>
+  <li><a href="https://docs.puppetlabs.com/puppet/latest/reference/experiments_future.html#check-names-of-variables-classes-functions-defined-types-etc">Updating 3.x Manifests for Puppet 4.x</a></li>
+</ul>
