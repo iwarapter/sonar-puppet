@@ -39,7 +39,7 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
   key = "DeprecatedNodeInheritance",
   priority = Priority.CRITICAL,
   name = "Deprecated node inheritance should not be used",
-  tags = {Tags.OBSOLETE})
+  tags = {Tags.OBSOLETE, Tags.FUTURE_PARSER})
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LANGUAGE_RELATED_PORTABILITY)
 @SqaleConstantRemediation("2h")
