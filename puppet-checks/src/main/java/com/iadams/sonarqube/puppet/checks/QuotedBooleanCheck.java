@@ -38,9 +38,9 @@ import static com.iadams.sonarqube.puppet.api.PuppetTokenType.SINGLE_QUOTED_STRI
 
 @Rule(
   key = "QuotedBoolean",
-  priority = Priority.MAJOR,
+  priority = Priority.CRITICAL,
   name = "Booleans should not be quoted",
-  tags = Tags.CONFUSING)
+  tags = {Tags.PITFALL, Tags.FUTURE_PARSER})
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.FAULT_TOLERANCE)
 @SqaleConstantRemediation("10min")
