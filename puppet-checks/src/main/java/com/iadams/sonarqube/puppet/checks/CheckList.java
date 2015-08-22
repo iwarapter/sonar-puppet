@@ -79,6 +79,7 @@ public final class CheckList {
       ResourceDefaultNamingConventionCheck.class,
       ResourceWithSelectorCheck.class,
       RightToLeftChainingArrowsCheck.class,
+      SameCaseConditionCheck.class,
       SameIfConditionCheck.class,
       SelectorWithoutDefaultCheck.class,
       SingleQuotedStringContainingVariablesCheck.class,

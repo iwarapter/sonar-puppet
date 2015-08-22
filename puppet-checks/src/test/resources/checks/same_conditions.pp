@@ -104,3 +104,33 @@ else {
 
   }
 }
+
+case $param {
+  5, 6: {
+  #stuff
+  }
+  5: { # Noncompliant
+  #stuff
+  }
+  6: { # Noncompliant
+  #stuff
+  }
+  default: {
+  #stuff
+  }
+}
+
+case $param {
+  /^(Debian|Ubuntu)$/: {
+  #stuff
+  }
+  /^(Debian|Ubuntu)$/: { # Noncompliant
+  #stuff
+  }
+  /^(Debian|Ubuntu)$/: { # Noncompliant
+  #stuff
+  }
+  default: {
+  #stuff
+  }
+}
