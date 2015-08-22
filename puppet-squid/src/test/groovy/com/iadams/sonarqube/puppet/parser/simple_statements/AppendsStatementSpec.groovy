@@ -26,23 +26,24 @@ package com.iadams.sonarqube.puppet.parser.simple_statements
 
 import com.iadams.sonarqube.puppet.parser.GrammarSpec
 
-import static com.iadams.sonarqube.puppet.api.PuppetGrammar.APPENDS_ARRAY
+import static com.iadams.sonarqube.puppet.api.PuppetGrammar.APPENDS_STMT
 import static org.sonar.sslr.tests.Assertions.assertThat
 
-class AppendsArraySpec extends GrammarSpec {
+class AppendsStatementSpec extends GrammarSpec {
 
   def "Array appends matches"() {
     given:
-    setRootRule(APPENDS_ARRAY)
+    setRootRule(APPENDS_STMT)
 
     expect:
     assertThat(p).matches("\$var += ['abc']")
     assertThat(p).matches("\$var += ['abc', 'def']")
+    assertThat(p).matches("\$var += 1")
   }
 
   def "Array appends does not match"() {
     given:
-    setRootRule(APPENDS_ARRAY)
+    setRootRule(APPENDS_STMT)
 
     expect:
     assertThat(p).notMatches("\$var = ['abc']")
