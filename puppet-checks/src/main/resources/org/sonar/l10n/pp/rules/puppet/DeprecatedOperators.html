@@ -1,0 +1,18 @@
+<p>
+    The array appends operator (<code>+=</code>) is no longer supported since version 4.
+</p>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+$a += ['b', 'd']
+</pre>
+
+<h2>What to Use Instead</h2>
+You can for example use the stdlib <a href="https://forge.puppetlabs.com/puppetlabs/stdlib#union">union</a> function
+that returns a union of two arrays, without duplicates. For example,
+<code>union(['a','b','c'],['b','c','d'])</code> returns <code>['a','b','c','d']</code>.
+
+<h2>See</h2>
+<ul>
+  <li><a href="https://docs.puppetlabs.com/puppet/latest/reference/experiments_future.html#and--">Updating 3.x Manifests for Puppet 4.x</a></li>
+</ul>
