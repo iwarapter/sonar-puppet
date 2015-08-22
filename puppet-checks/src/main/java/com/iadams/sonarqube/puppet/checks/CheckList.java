@@ -38,6 +38,7 @@ public final class CheckList {
     return ImmutableList.<Class>of(
       ArrowsAlignmentCheck.class,
       AutoLoaderLayoutCheck.class,
+      BooleanInversionCheck.class,
       CaseWithoutDefaultCheck.class,
       ClassAndDefineNamingConventionCheck.class,
       CollapsibleIfStatementsCheck.class,
