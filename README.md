@@ -16,6 +16,9 @@ This is currently written to support the grammar for [Puppet 3.8], support for t
 - Puppet Plugin is installed on SonarQube Server. See [Installing a Plugin] for more details.
 - (Optional) [Puppet lint] has to be installed, if you want to activate Puppet lint rules. Note that almost all Puppet lint rules have now been rewritten. Their replacements are a lot more robust: fewer false negatives and false positives.
 
+##Getting Started in Less Than Two Minutes
+To get started in less than two minutes, you can download the package at https://github.com/racodond/package-test-sonarqube-puppet and follow the instructions in the README file.
+
 ##Getting Started
 To run an analysis of your Puppet project, we recommend to use [SonarQube Runner].
 There are two strategies:
