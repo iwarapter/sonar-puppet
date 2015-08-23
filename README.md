@@ -1,6 +1,5 @@
 #SonarQube Puppet Plugin
  [![Build Status](https://travis-ci.org/iwarapter/sonar-puppet.svg?branch=master)](https://travis-ci.org/iwarapter/sonar-puppet)
- [ ![Download] ](https://github.com/iwarapter/sonar-puppet/releases/download/1.0/sonar-puppet-plugin-1.0.jar)
 
 ##Description
 
