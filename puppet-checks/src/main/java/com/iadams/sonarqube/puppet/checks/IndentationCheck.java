@@ -52,6 +52,7 @@ public class IndentationCheck extends PuppetCheckVisitor {
   private static final int DEFAULT_INDENTATION_LEVEL = 2;
 
   private static final List<PuppetGrammar> BLOCK_TYPES = ImmutableList.of(
+    PuppetGrammar.FILE_INPUT,
     PuppetGrammar.CLASSDEF,
     PuppetGrammar.DEFINITION,
     PuppetGrammar.NODE_DEFINITION,
@@ -66,7 +67,8 @@ public class IndentationCheck extends PuppetCheckVisitor {
     PuppetGrammar.RESOURCE_INST,
     PuppetGrammar.PARAMS,
     PuppetGrammar.ANY_PARAMS,
-    PuppetGrammar.HASH_PAIRS
+    PuppetGrammar.HASH_PAIRS,
+    PuppetGrammar.ARRAY
     );
 
   private int expectedLevel;
@@ -85,7 +87,7 @@ public class IndentationCheck extends PuppetCheckVisitor {
 
   @Override
   public void visitNode(AstNode node) {
-    if (node.is(PuppetGrammar.ELSIF_STMT, PuppetGrammar.ELSE_STMT, PuppetGrammar.RESOURCE_INST)) {
+    if (node.is(PuppetGrammar.ELSIF_STMT, PuppetGrammar.ELSE_STMT, PuppetGrammar.RESOURCE_INST, PuppetGrammar.FILE_INPUT)) {
       // Do not increase the indentation level (already increased by the IF_STMT)
     } else if (node.is(PuppetGrammar.RESOURCE)) {
       if (node.getChildren(PuppetGrammar.RESOURCE_INST).size() > 1) {
@@ -95,8 +97,9 @@ public class IndentationCheck extends PuppetCheckVisitor {
       expectedLevel += DEFAULT_INDENTATION_LEVEL;
     }
 
-    if (node.is(PuppetGrammar.CLASSDEF, PuppetGrammar.DEFINITION, PuppetGrammar.NODE_DEFINITION)) {
-      checkedLines.add(node.getTokenLine());
+    if (node.is(PuppetGrammar.FILE_INPUT)) {
+      checkIndentation(node.getChildren(PuppetGrammar.STATEMENT));
+    } else if (node.is(PuppetGrammar.CLASSDEF, PuppetGrammar.DEFINITION, PuppetGrammar.NODE_DEFINITION)) {
       if (node.getFirstChild(PuppetGrammar.ARGUMENTS) != null) {
         checkIndentation(node.getFirstChild(PuppetGrammar.ARGUMENTS).getChildren(PuppetGrammar.ARGUMENT));
       }
@@ -113,11 +116,13 @@ public class IndentationCheck extends PuppetCheckVisitor {
       checkIndentation(node.getChildren(PuppetGrammar.STATEMENT));
     } else if (node.is(PuppetGrammar.HASH_PAIRS)) {
       checkIndentation(node.getChildren(PuppetGrammar.HASH_PAIR));
+    } else if (node.is(PuppetGrammar.ARRAY)) {
+      checkIndentation(node.getChildren(PuppetGrammar.EXPRESSION));
     }
   }
 
   public void leaveNode(AstNode node) {
-    if (node.is(PuppetGrammar.ELSIF_STMT, PuppetGrammar.ELSE_STMT, PuppetGrammar.RESOURCE_INST)) {
+    if (node.is(PuppetGrammar.ELSIF_STMT, PuppetGrammar.ELSE_STMT, PuppetGrammar.RESOURCE_INST, PuppetGrammar.FILE_INPUT)) {
       // Do not decrease the indentation level (already decreased by the IF_STMT)
     } else if (node.is(PuppetGrammar.RESOURCE)) {
       if (node.getChildren(PuppetGrammar.RESOURCE_INST).size() > 1) {

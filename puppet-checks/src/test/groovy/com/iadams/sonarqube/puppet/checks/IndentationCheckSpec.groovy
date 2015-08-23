@@ -72,6 +72,15 @@ class IndentationCheckSpec extends Specification {
       .next().atLine(109).withMessage("Make this line start at column 3.")
       .next().atLine(114).withMessage("Make this line start at column 3.")
       .next().atLine(117).withMessage("Make this line start at column 5.")
+      .next().atLine(125).withMessage("Make this line start at column 5.")
+      .next().atLine(126).withMessage("Make this line start at column 5.")
+      .next().atLine(132).withMessage("Make this line start at column 7.")
+      .next().atLine(133).withMessage("Make this line start at column 7.")
+      .next().atLine(136).withMessage("Make this line start at column 5.")
+      .next().atLine(137).withMessage("Make this line start at column 5.")
+      .next().atLine(141).withMessage("Make this line start at column 1.")
+      .next().atLine(142).withMessage("Make this line start at column 1.")
+      .next().atLine(143).withMessage("Make this line start at column 1.")
       .noMore();
   }
 

@@ -118,6 +118,31 @@ $a = {
   },
 }
 
+class abc {
+  $a = ['a', 'b', 'c']
+  $a = [
+    'a',
+   'b',   # Noncompliant
+     'c', # Noncompliant
+  ]
+
+  $a = [
+    {
+      'a' => 'a',
+       'a' => 'a',  # Noncompliant
+     'a' => 'a',    # Noncompliant
+    },
+    'b',
+     'c',   # Noncompliant
+   'd',     # Noncompliant
+  ]
+}
+
+  class abc {}     # Noncompliant
+  $a = 'r'         # Noncompliant
+  $a = ['a', 'b']  # Noncompliant
+
+
 class abc (
   $a = 'abc',
   $b,
@@ -238,3 +263,29 @@ $a = {
     default => undef,
   },
 }
+
+
+class abc {
+  $a = ['a', 'b', 'c']
+  $a = [
+    'a',
+    'b',
+    'c',
+  ]
+
+  $a = [
+    {
+      'a' => 'a',
+      'a' => 'a',
+      'a' => 'a',
+    },
+    'b',
+    'c',
+    'd',
+  ]
+}
+
+class abc {}
+$a = 'r'
+$a = ['a', 'b']
+
