@@ -3,8 +3,41 @@
 <h2>Noncompliant Code Example</h2>
 <pre>
 file { '/tmp/foo':
- ensure => present,
+ ensure => present,  # Noncompliant
    owner => 'foo',
+}
+
+file {
+  '/tmp/foo1':
+    ensure => present,
+    owner => 'foo';
+
+    '/tmp/foo2':        # Noncompliant
+    ensure => present,
+      owner => 'foo';   # Noncompliant
+}
+
+class abc (
+  $a,
+    $b,      # Noncompliant
+) { ... }
+
+$a = [
+  'a',
+    'b',   # Noncompliant
+  'c',
+]
+
+$a = {
+  'a' => '1',
+    'b' => '2',  # Noncompliant
+  'c' => '3',
+}
+
+file {
+  [ 'abc',             # Noncompliant
+  'def',]:              # Noncompliant
+  ensure => present,
 }
 </pre>
 <h2>Compliant Solution</h2>
@@ -12,6 +45,40 @@ file { '/tmp/foo':
 file { '/tmp/foo':
   ensure => present,
   owner => 'foo',
+}
+
+file {
+  '/tmp/foo1':
+    ensure => present,
+    owner => 'foo';
+
+  '/tmp/foo2':
+    ensure => present,
+    owner => 'foo';
+}
+
+class abc (
+  $a,
+  $b,
+) { ... }
+
+$a = [
+  'a',
+  'b',
+  'c',
+]
+
+$a = {
+  'a' => '1',
+  'b' => '2',
+  'c' => '3',
+}
+
+file {[
+  'abc',
+  'def',
+]:
+  ensure => present,
 }
 </pre>
 
