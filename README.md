@@ -1,9 +1,6 @@
 #SonarQube Puppet Plugin
  [![Build Status](https://travis-ci.org/iwarapter/sonar-puppet.svg?branch=master)](https://travis-ci.org/iwarapter/sonar-puppet)
- [ ![Download](https://api.bintray.com/packages/iwarapter/sonar-plugins/sonar-puppet/images/download.svg) ](https://bintray.com/iwarapter/sonar-plugins/sonar-puppet/_latestVersion)
- 
- [![Stories in Ready](https://badge.waffle.io/iwarapter/sonar-puppet.svg?label=ready&title=Ready)](http://waffle.io/iwarapter/sonar-puppet)
- [![Stories in Ready](https://badge.waffle.io/iwarapter/sonar-puppet.svg?label=In Progress&title=In Progress)](http://waffle.io/iwarapter/sonar-puppet)
+ [ ![Download](https://api.bintray.com/packages/iwarapter/sonar-plugins/sonar-puppet/images/download.svg) ](https://github.com/iwarapter/sonar-puppet/releases/download/1.0/sonar-puppet-plugin-1.0.jar)
 
 ##Description
 
