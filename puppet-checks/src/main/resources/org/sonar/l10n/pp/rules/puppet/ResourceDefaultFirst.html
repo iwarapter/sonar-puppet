@@ -1,0 +1,32 @@
+<p>
+For a better understanding, resource default statements should be placed at the beginning of the file or at least prior to any resource declaration.
+</p>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+class abc {
+
+  file { '/tmp/foo.txt':
+    ensure => present,
+  }
+
+  File {
+    owner => 'user1',
+  }
+
+}
+</pre>
+
+<h2>Compliant Solution</h2>
+<pre>
+class abc {
+
+  File {
+    owner => 'user1',
+  }
+
+  file { '/tmp/foo.txt':
+    ensure => present,
+  }
+}
+</pre>
