@@ -1,5 +1,0 @@
-define config() { }
-
-class foo{
-
-}

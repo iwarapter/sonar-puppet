@@ -22,29 +22,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.pplint;
+package com.iadams.sonarqube.puppet.checks
 
-import org.sonar.api.BatchExtension;
-import org.sonar.api.Properties;
-import org.sonar.api.Property;
-import org.sonar.api.config.Settings;
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
+import spock.lang.Specification
 
-@Properties(@Property(
-  key = PplintConfiguration.PPLINT_KEY,
-  defaultValue = "",
-  name = "pplint executable",
-  description = "Path to the pplint executable to use in pplint analysis. Set to empty to use the default one.",
-  global = true,
-  project = false))
-public class PplintConfiguration implements BatchExtension {
-  public static final String PPLINT_KEY = "sonar.puppet.pplint";
-  private final Settings conf;
+class ResourceDefaultFirstCheckSpec extends Specification {
 
-  public PplintConfiguration(Settings conf) {
-    this.conf = conf;
+  def "validate check no issue"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/resource_default_first_true.pp"),
+      new ResourceDefaultFirstCheck());
+
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .noMore();
   }
 
-  public String getPplintPath() {
-    return conf.getString(PplintConfiguration.PPLINT_KEY);
+  def "validate check issue"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/resource_default_first_false.pp"),
+      new ResourceDefaultFirstCheck());
+
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(11).withMessage("Move this resource default before the first resource declaration.")
+      .noMore();
   }
+
 }

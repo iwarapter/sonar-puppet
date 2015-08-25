@@ -1,16 +1,15 @@
 user { 'tim':
-	ensure => present
+  ensure => present
 }
 
 user { $username:
-	ensure => present
+  ensure => present
 }
 
 user {
   $username :
-    ensure => present
-  ;
+    ensure => present;
+
   "tim" :
-    ensure => present
-  ;
+    ensure => present;
 }

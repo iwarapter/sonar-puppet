@@ -47,13 +47,6 @@ sonarPackaging {
     }
 }
 
-sonarRunner {
-    sonarProperties {
-        property "sonar.tests", sourceSets.test.groovy.srcDirs + sourceSets.integTest.groovy.srcDirs
-        property "sonar.jacoco.itReportPath", "$buildDir/jacoco/integTest.exec"
-    }
-}
-
 pitest {
     targetClasses = ['com.iadams.sonarqube.puppet.*']
     threads = 4

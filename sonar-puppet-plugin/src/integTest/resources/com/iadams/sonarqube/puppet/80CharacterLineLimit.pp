@@ -1,1 +1,0 @@
-$longName = 'a really long string containing more than 80 characters abcdefghijklmnopqrstuvwxyz'
