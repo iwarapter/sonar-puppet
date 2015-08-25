@@ -1,0 +1,84 @@
+<p>Proper indentation is a simple and effective way to improve the code's readability. Consistent indentation among the developers on a team also reduces the differences that are committed to source control systems, making code reviews easier.</p>
+<p>This rule checks that the code is properly indented with two whitespaces.</p>
+<h2>Noncompliant Code Example</h2>
+<pre>
+file { '/tmp/foo':
+ ensure => present,  # Noncompliant
+   owner => 'foo',
+}
+
+file {
+  '/tmp/foo1':
+    ensure => present,
+    owner => 'foo';
+
+    '/tmp/foo2':        # Noncompliant
+    ensure => present,
+      owner => 'foo';   # Noncompliant
+}
+
+class abc (
+  $a,
+    $b,      # Noncompliant
+) { ... }
+
+$a = [
+  'a',
+    'b',   # Noncompliant
+  'c',
+]
+
+$a = {
+  'a' => '1',
+    'b' => '2',  # Noncompliant
+  'c' => '3',
+}
+
+file {
+  [ 'abc',             # Noncompliant
+  'def',]:              # Noncompliant
+  ensure => present,
+}
+</pre>
+<h2>Compliant Solution</h2>
+<pre>
+file { '/tmp/foo':
+  ensure => present,
+  owner => 'foo',
+}
+
+file {
+  '/tmp/foo1':
+    ensure => present,
+    owner => 'foo';
+
+  '/tmp/foo2':
+    ensure => present,
+    owner => 'foo';
+}
+
+class abc (
+  $a,
+  $b,
+) { ... }
+
+$a = [
+  'a',
+  'b',
+  'c',
+]
+
+$a = {
+  'a' => '1',
+  'b' => '2',
+  'c' => '3',
+}
+
+file {[
+  'abc',
+  'def',
+]:
+  ensure => present,
+}
+</pre>
+
