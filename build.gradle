@@ -48,50 +48,6 @@ subprojects {
         testRuntime "org.objenesis:objenesis:2.1"    // allows mocking of classes without default constructor (together with CGLIB)
     }
 
-    sourceSets {
-        integTest {
-            groovy.srcDir file('src/integTest/groovy')
-            resources.srcDir file('src/integTest/resources')
-            compileClasspath = sourceSets.main.output + configurations.testRuntime
-            runtimeClasspath = output + compileClasspath
-        }
-    }
-
-    task integTest(type: Test) {
-        testClassesDir = sourceSets.integTest.output.classesDir
-        classpath = sourceSets.integTest.runtimeClasspath
-        reports.html.destination = file("$buildDir/reports/integ")
-    }
-
-    task testReport(type: TestReport) {
-        destinationDir = file("$buildDir/reports/allTests")
-        // Include the results from the `test` task in all subprojects
-        reportOn test, integTest
-    }
-
-    task jacocoIntegTestReport(type: JacocoReport) {
-        sourceSets sourceSets.main
-        executionData integTest
-        reports {
-            xml.enabled true
-            csv.enabled false
-            html.destination "${buildDir}/reports/jacocoIntegTestReport"
-        }
-    }
-
-    task jacocoCombinedTestReport(type: JacocoReport) {
-        sourceSets sourceSets.main
-        executionData test, integTest
-        reports {
-            xml.enabled true
-            csv.enabled false
-            html.destination "${buildDir}/reports/jacocoCombinedTestReport"
-        }
-    }
-
-    integTest.finalizedBy (jacocoIntegTestReport, jacocoCombinedTestReport)
-
-
     task sourcesJar(type: Jar, dependsOn: classes) {
         classifier = 'sources'
         from sourceSets.main.allSource
