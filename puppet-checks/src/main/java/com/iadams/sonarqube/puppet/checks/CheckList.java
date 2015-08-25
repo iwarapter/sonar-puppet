@@ -61,6 +61,7 @@ public final class CheckList {
       IfStatementFormattingCheck.class,
       IfStatementWithoutElseClauseCheck.class,
       ImportStatementUsedCheck.class,
+      IndentationCheck.class,
       InheritsAcrossNamespaceCheck.class,
       LineLengthCheck.class,
       LintIgnoreCheck.class,
