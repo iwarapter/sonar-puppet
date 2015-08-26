@@ -68,7 +68,7 @@ public class NoopUsageCheck extends PuppetCheckVisitor {
   }
 
   private void checkResourceDefault(AstNode resourceNode) {
-    if (resourceNode.getFirstChild(PuppetGrammar.PARAMS) != null) {
+    if (resourceNode.getChildren(PuppetGrammar.RESOURCE_INST).size() == 0) {
       for (AstNode paramNode : resourceNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
         checkNoopUsage(paramNode);
       }

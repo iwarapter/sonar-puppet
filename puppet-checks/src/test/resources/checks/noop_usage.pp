@@ -25,7 +25,6 @@ Package['foo'] {
   ensure => present,
 }
 
-
 package { 'foo':
 }
 
