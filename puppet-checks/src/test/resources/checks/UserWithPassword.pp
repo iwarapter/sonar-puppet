@@ -1,22 +1,22 @@
 user { 'iain':
-	password => 'cheese'
+  password => 'cheese'
 }
 
 group { 'iain':
-	password => 'cheese'
+  password => 'cheese'
 }
 
 user { 'iain':
-	password2 => 'cheese'
+  password2 => 'cheese'
 }
 
 user {
-	'iain':
-	  password => 'cheese';
+  'iain':
+    password => 'cheese';
   'david':
-		password => 'cheese';
-	'toto':
-		password2 => 'cheese';
+    password => 'cheese';
+  'toto':
+    password2 => 'cheese';
 }
 
 User{

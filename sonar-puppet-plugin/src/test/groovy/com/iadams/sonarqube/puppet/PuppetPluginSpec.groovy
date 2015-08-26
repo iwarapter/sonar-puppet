@@ -29,6 +29,6 @@ import spock.lang.Specification
 class PuppetPluginSpec extends Specification {
   def "GetExtensions"() {
     expect:
-    new PuppetPlugin().getExtensions().size() == 14
+    new PuppetPlugin().getExtensions().size() == 11
   }
 }

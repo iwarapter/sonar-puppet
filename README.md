@@ -14,7 +14,6 @@ This is currently written to support the grammar for [Puppet 3.8], support for t
 - SonarQube Server must be up and running. If it's not the case, see [Setup and Upgrade].
 - [SonarQube Runner] is installed and can be called from the command line.
 - Puppet Plugin is installed on SonarQube Server. See [Installing a Plugin] for more details.
-- (Optional) [Puppet lint] has to be installed, if you want to activate Puppet lint rules. Note that almost all Puppet lint rules have now been rewritten. Their replacements are a lot more robust: fewer false negatives and false positives.
 
 ##Getting Started
 To run an analysis of your Puppet project, we recommend to use [SonarQube Runner].
@@ -69,12 +68,6 @@ The second strategy provides a quality overview of your entire Puppet Code Base 
 
 We recommend you to apply both strategies to get all the benefits.
 
-##Advanced Configuration
-
-Property     | Scope       | Example | Description
------------- | ----------- | ------- | -----------
-sonar.puppet.pplint | System-wide | /usr/local/bin/puppet-lint | Path to the puppet-lint executable to use in puppet lint analysis. Set to empty to use the default one (default is puppet-lint).
-
 ##Metrics
 
 The Puppet terms do not always match with the standard [SonarQube metrics]. Here's the list of slight differences:
@@ -89,7 +82,6 @@ New coding rules can be added using XPath. See the related [documentation].
 To navigate the AST, download the [SSLR Puppet Toolkit].
 
 [Puppet]:https://puppetlabs.com/
-[Puppet lint]:http://puppet-lint.com/
 [Setup and Upgrade]:http://docs.sonarqube.org/display/SONAR/Setup+and+Upgrade
 [SonarQube Runner]:http://docs.sonarqube.org/display/SONAR/Installing+and+Configuring+SonarQube+Runner
 [Installing a Plugin]:http://docs.sonarqube.org/display/SONAR/Installing+a+Plugin

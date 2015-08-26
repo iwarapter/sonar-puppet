@@ -12,12 +12,11 @@ install:
   - unzip sonarqube.zip
   - wget http://repo1.maven.org/maven2/org/codehaus/sonar/runner/sonar-runner-dist/2.4/sonar-runner-dist-2.4.zip
   - unzip sonar-runner-dist-2.4.zip
-  - gem install puppet-lint
   - ls -lar
   - cd -
 
 script:
-  - ./gradlew build integTest localDeploy functionalTest --i -Psonar.pluginDir=$SONAR_HOME/extensions/plugins
+  - ./gradlew build localDeploy functionalTest --i -Psonar.pluginDir=$SONAR_HOME/extensions/plugins
 
 before_install:
  - chmod +x gradlew
