@@ -72,6 +72,7 @@ public final class CheckList {
       NestedClassesOrDefinesCheck.class,
       NestedCasesAndSelectorsCheck.class,
       NestedIfStatementsCheck.class,
+      NoopUsageCheck.class,
       NosonarTagPresenceCheck.class,
       OneIncludePerLineCheck.class,
       ParsingErrorCheck.class,

@@ -1,0 +1,18 @@
+<p>
+    <code>noop</code> metaparameter should be used for test purpose only. Thus, it should be removed from production code.
+</p>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+package { 'foo':
+  ensure => present,
+  noop   => true,
+}
+</pre>
+
+<h2>Compliant Solution</h2>
+<pre>
+package { 'foo':
+  ensure => present,
+}
+</pre>
