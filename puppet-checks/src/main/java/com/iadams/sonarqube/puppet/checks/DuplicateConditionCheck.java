@@ -27,10 +27,11 @@ package com.iadams.sonarqube.puppet.checks;
 import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
+
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Nullable;
+
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -42,7 +43,7 @@ import org.sonar.sslr.ast.AstSelect;
 @Rule(
   key = "S1862",
   priority = Priority.CRITICAL,
-  name = "Related \"if/else if\" statements and \"cases\" in a \"case\" should not have the same condition",
+  name = "Related \"if/elsif\" statements and \"cases\" in a \"case\" should not have the same condition",
   tags = {Tags.BUG, Tags.UNUSED, Tags.PITFALL})
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LOGIC_RELIABILITY)
@@ -58,25 +59,23 @@ public class DuplicateConditionCheck extends PuppetCheckVisitor {
 
   @Override
   public void visitFile(@Nullable AstNode astNode) {
-    ignoreList = new LinkedList<>();
+    ignoreList = new ArrayList<>();
   }
 
   @Override
   public void visitNode(AstNode node) {
+    List<AstNode> conditions = new ArrayList<>();
     if (node.is(PuppetGrammar.IF_STMT)) {
       if (ignoreList.contains(node)) {
         return;
       }
-      List<AstNode> conditions = getConditionsToCompare(node);
-      findSameConditions(conditions);
+      conditions = getConditionsToCompare(node);
     } else {
-      List<AstNode> conditions = new ArrayList<>();
       for(AstNode matcher : node.getChildren(PuppetGrammar.CASE_MATCHER)){
         conditions.addAll(matcher.getFirstChild(PuppetGrammar.CASE_VALUES).getChildren(PuppetGrammar.SELECTLHAND));
       }
-
-      findSameConditions(conditions);
     }
+    findSameConditions(conditions);
   }
 
   private List<AstNode> getConditionsToCompare(AstNode ifStmt) {
@@ -90,8 +89,8 @@ public class DuplicateConditionCheck extends PuppetCheckVisitor {
     AstNode elseNode = ifStmt.getFirstChild(PuppetGrammar.ELSE_STMT);
 
     if (conditions.size() == 1 && elseNode != null) {
-      List<AstNode> statments = elseNode.getChildren(PuppetGrammar.STATEMENT);
-      lookForElseIfs(conditions, statments);
+      List<AstNode> statements = elseNode.getChildren(PuppetGrammar.STATEMENT);
+      lookForElseIfs(conditions, statements);
     }
     return conditions;
   }
