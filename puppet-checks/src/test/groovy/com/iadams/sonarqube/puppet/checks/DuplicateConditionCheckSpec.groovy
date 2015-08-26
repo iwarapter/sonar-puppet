@@ -51,6 +51,8 @@ class DuplicateConditionCheckSpec extends Specification {
       .next().atLine(115).withMessage("This branch duplicates the one on line 109.")
       .next().atLine(127).withMessage("This branch duplicates the one on line 124.")
       .next().atLine(130).withMessage("This branch duplicates the one on line 124.")
+      .next().atLine(141).withMessage("This branch duplicates the one on line 139.")
+      .next().atLine(142).withMessage("This branch duplicates the one on line 140.")
       .noMore();
   }
 }

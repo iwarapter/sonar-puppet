@@ -43,7 +43,7 @@ import org.sonar.sslr.ast.AstSelect;
 @Rule(
   key = "S1862",
   priority = Priority.CRITICAL,
-  name = "Related \"if/elsif\" statements and \"cases\" in a \"case\" should not have the same condition",
+  name = "Related \"if/elsif\" statements or \"cases\" in \"case\" or \"selector\" statement should not have the same condition",
   tags = {Tags.BUG, Tags.UNUSED, Tags.PITFALL})
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.LOGIC_RELIABILITY)
@@ -54,32 +54,36 @@ public class DuplicateConditionCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.IF_STMT, PuppetGrammar.CASE_STMT);
+    subscribeTo(PuppetGrammar.IF_STMT, PuppetGrammar.CASE_STMT, PuppetGrammar.SINTVALUES);
   }
 
   @Override
   public void visitFile(@Nullable AstNode astNode) {
-    ignoreList = new ArrayList<>();
+    ignoreList = new ArrayList<AstNode>();
   }
 
   @Override
   public void visitNode(AstNode node) {
-    List<AstNode> conditions = new ArrayList<>();
+    List<AstNode> conditions = new ArrayList<AstNode>();
     if (node.is(PuppetGrammar.IF_STMT)) {
       if (ignoreList.contains(node)) {
         return;
       }
       conditions = getConditionsToCompare(node);
-    } else {
+    } else if (node.is(PuppetGrammar.CASE_STMT)){
       for(AstNode matcher : node.getChildren(PuppetGrammar.CASE_MATCHER)){
         conditions.addAll(matcher.getFirstChild(PuppetGrammar.CASE_VALUES).getChildren(PuppetGrammar.SELECTLHAND));
+      }
+    } else if (node.is(PuppetGrammar.SINTVALUES)){
+      for(AstNode selectVal : node.getChildren(PuppetGrammar.SELECTVAL)){
+        conditions.addAll(selectVal.getChildren(PuppetGrammar.SELECTLHAND));
       }
     }
     findSameConditions(conditions);
   }
 
   private List<AstNode> getConditionsToCompare(AstNode ifStmt) {
-    List<AstNode> conditions = new ArrayList<>();
+    List<AstNode> conditions= new ArrayList<AstNode>();
     conditions.add(ifStmt.getFirstChild(PuppetGrammar.EXPRESSION).getFirstChild());
 
     for (AstNode elsifNode : ifStmt.getChildren(PuppetGrammar.ELSIF_STMT)) {
