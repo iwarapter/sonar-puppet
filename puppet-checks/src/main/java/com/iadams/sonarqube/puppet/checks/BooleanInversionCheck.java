@@ -35,6 +35,7 @@ import java.util.Map;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
+import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
@@ -45,6 +46,7 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
   tags = {Tags.PITFALL})
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.UNDERSTANDABILITY)
 @SqaleConstantRemediation("2min")
+@ActivatedByDefault
 public class BooleanInversionCheck extends PuppetCheckVisitor {
 
   private static final Map<String, String> OPERATORS = ImmutableMap.<String, String>builder()
