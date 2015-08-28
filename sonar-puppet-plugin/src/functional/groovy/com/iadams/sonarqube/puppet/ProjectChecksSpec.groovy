@@ -59,7 +59,7 @@ class ProjectChecksSpec extends FunctionalSpecBase {
     directory('manifests', new File(modulePath))
     String specPath = directory('spec', new File(modulePath))
     directory('classes', new File(specPath))
-    file("manifests/init.pp", new File(modulePath)) << "class $moduleName { }\n"
+    file("manifests/init.pp", new File(modulePath)) << "class $moduleName { \$a = 1 }\n"
   }
 
   private void createPuppetModuleTestsDir(String moduleName, String baseDir = "$projectDir/modules"){
