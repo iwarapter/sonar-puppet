@@ -29,14 +29,15 @@ import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.iadams.sonarqube.puppet.lexer.PuppetLexer;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.Lexer;
-import net.sourceforge.pmd.cpd.SourceCode;
-import net.sourceforge.pmd.cpd.TokenEntry;
-import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.cpd.Tokens;
 
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.List;
+
+import net.sourceforge.pmd.cpd.SourceCode;
+import net.sourceforge.pmd.cpd.TokenEntry;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.Tokens;
 
 public class PuppetTokenizer implements Tokenizer {
 
@@ -60,7 +61,7 @@ public class PuppetTokenizer implements Tokenizer {
     cpdTokens.add(TokenEntry.getEOF());
   }
 
-  private String getTokenImage(Token token) {
+  private static String getTokenImage(Token token) {
     return token.getValue();
   }
 }

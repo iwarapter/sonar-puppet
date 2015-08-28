@@ -59,11 +59,11 @@ public class CollapsibleIfStatementsCheck extends PuppetCheckVisitor {
     }
   }
 
-  private boolean hasElseOrElsif(AstNode ifNode){
+  private static boolean hasElseOrElsif(AstNode ifNode){
     return ifNode.hasDirectChildren(PuppetGrammar.ELSIF_STMT, PuppetGrammar.ELSE_STMT);
   }
 
-  private AstNode singleIfChild(AstNode statement){
+  private static AstNode singleIfChild(AstNode statement){
     List<AstNode> statements = statement.getChildren(PuppetGrammar.STATEMENT);
 
     if(statements.size() == 1){

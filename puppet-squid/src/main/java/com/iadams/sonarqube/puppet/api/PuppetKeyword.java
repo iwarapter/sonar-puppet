@@ -49,18 +49,21 @@ public enum PuppetKeyword implements TokenType {
 
   private final String value;
 
-  private PuppetKeyword(String value) {
+  PuppetKeyword(String value) {
     this.value = value;
   }
 
+  @Override
   public String getName() {
     return name();
   }
 
+  @Override
   public String getValue() {
     return value;
   }
 
+  @Override
   public boolean hasToBeSkippedFromAst(AstNode node) {
     return false;
   }

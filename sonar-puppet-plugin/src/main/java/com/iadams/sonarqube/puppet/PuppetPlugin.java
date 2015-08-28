@@ -40,9 +40,9 @@ public class PuppetPlugin extends SonarPlugin {
 
   public static final String FILE_SUFFIXES_KEY = "sonar.puppet.file.suffixes";
 
+  @Override
   public List getExtensions() {
     return ImmutableList.of(
-
       PropertyDefinition.builder(FILE_SUFFIXES_KEY)
         .name("File Suffixes")
         .description("Comma-separated list of suffixes of Puppet files to analyze.")

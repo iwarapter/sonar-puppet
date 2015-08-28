@@ -29,40 +29,21 @@ import com.google.common.collect.ImmutableSet;
 import com.iadams.sonarqube.puppet.api.PuppetKeyword;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.Lexer;
-import org.sonar.sslr.channel.Channel;
-import org.sonar.sslr.channel.CodeReader;
 
 import java.util.List;
 import java.util.Set;
 
-import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.regexp;
+import org.sonar.sslr.channel.Channel;
+import org.sonar.sslr.channel.CodeReader;
+
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.REGULAR_EXPRESSION_LITERAL;
+import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.regexp;
 
 public class PuppetRegexpChannel extends Channel<Lexer> {
 
   public static final String REGULAR_EXPRESSION = "/([^/]|(?<=\\\\)/)*/";
 
   private final Channel<Lexer> delegate;
-
-  public PuppetRegexpChannel() {
-    this.delegate = regexp(REGULAR_EXPRESSION_LITERAL, REGULAR_EXPRESSION);
-  }
-
-  @Override
-  public boolean consume(CodeReader code, Lexer output) {
-    if (code.peek() == '/') {
-      Token lastToken = getLastToken(output);
-      if (lastToken == null || lastToken.getType().equals(PuppetKeyword.NODE) || guessNextIsRegexp(lastToken.getValue())) {
-        return delegate.consume(code, output);
-      }
-    }
-    return false;
-  }
-
-  private static Token getLastToken(Lexer output) {
-    List<Token> tokens = output.getTokens();
-    return tokens.isEmpty() ? null : tokens.get(tokens.size() - 1);
-  }
 
   private static final Set<String> WHOLE_TOKENS = ImmutableSet.of(
     // Binary operators which cannot be followed by a division operator:
@@ -116,6 +97,26 @@ public class PuppetRegexpChannel extends Channel<Lexer> {
     // ~ ditto binary operand
     "~"
   };
+
+  public PuppetRegexpChannel() {
+    this.delegate = regexp(REGULAR_EXPRESSION_LITERAL, REGULAR_EXPRESSION);
+  }
+
+  @Override
+  public boolean consume(CodeReader code, Lexer output) {
+    if (code.peek() == '/') {
+      Token lastToken = getLastToken(output);
+      if (lastToken == null || lastToken.getType().equals(PuppetKeyword.NODE) || guessNextIsRegexp(lastToken.getValue())) {
+        return delegate.consume(code, output);
+      }
+    }
+    return false;
+  }
+
+  private static Token getLastToken(Lexer output) {
+    List<Token> tokens = output.getTokens();
+    return tokens.isEmpty() ? null : tokens.get(tokens.size() - 1);
+  }
 
   @VisibleForTesting
   static boolean guessNextIsRegexp(String preceder) {

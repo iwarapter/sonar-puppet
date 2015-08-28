@@ -51,7 +51,7 @@ public class IfStatementWithoutElseClauseCheck extends PuppetCheckVisitor {
 
   @Override
   public void visitNode(AstNode node) {
-    if (node.getChildren(PuppetGrammar.ELSIF_STMT).size() > 0 && node.getFirstChild(PuppetGrammar.ELSE_STMT) == null) {
+    if (!node.getChildren(PuppetGrammar.ELSIF_STMT).isEmpty() && node.getFirstChild(PuppetGrammar.ELSE_STMT) == null) {
       addIssue(node, this, "End this if...elsif construct by an else clause.");
     }
   }

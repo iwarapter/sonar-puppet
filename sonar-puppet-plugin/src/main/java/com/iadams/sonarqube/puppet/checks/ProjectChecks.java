@@ -78,7 +78,13 @@ public class ProjectChecks {
             }
           }
           if (!metadataJsonFileFound) {
-            String path = Directory.fromIOFile(parentFile, project).getPath() != null ? Directory.fromIOFile(parentFile, project).getPath() : parentFile.getName();
+            String path;
+            Directory directory = Directory.fromIOFile(parentFile, project);
+            if (directory != null && directory.getPath() != null) {
+              path = directory.getPath();
+            } else {
+              path = parentFile.getName();
+            }
             addIssue(MetadataJsonFilePresentCheck.RULE_KEY, "Add a \"metadata.json\" file to the \"" + path + "\" Puppet module.");
           }
         } else {
@@ -93,8 +99,12 @@ public class ProjectChecks {
       if (file.isDirectory()) {
         if ("tests".equals(file.getName())) {
           for (File testsSiblings : file.getParentFile().listFiles()) {
-            if (testsSiblings.isDirectory() && "manifests".equals(testsSiblings.getName())) {
-              addIssue(TestsDirectoryPresentCheck.RULE_KEY, "Replace the \"" + Directory.fromIOFile(file, project).getPath() + "\" directory with an \"examples\" directory.");
+            Directory directory = Directory.fromIOFile(file, project);
+            if (testsSiblings.isDirectory()
+              && "manifests".equals(testsSiblings.getName())
+              && directory != null
+              && directory.getPath() != null) {
+              addIssue(TestsDirectoryPresentCheck.RULE_KEY, "Replace the \"" + directory.getPath() + "\" directory with an \"examples\" directory.");
               break;
             }
           }

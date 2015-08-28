@@ -46,7 +46,7 @@ public class PuppetCommentAnalyser extends CommentAnalyser {
       return comment.substring(2);
     } else if (comment.startsWith("/*")) {
       if (comment.endsWith("*/")) {
-        return comment.substring(2, (int) comment.length() - 2);
+        return comment.substring(2, comment.length() - 2);
       }
     } else {
       throw new IllegalArgumentException();

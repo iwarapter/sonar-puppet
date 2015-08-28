@@ -38,17 +38,15 @@ import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.regexp;
 public class PuppetLexer {
 
   public static final String DOUBLE_QUOTED_LITERAL = "\"([^\"\\\\]*+(\\\\[\\s\\S])?+)*+\"";
-
   public static final String SINGLE_QUOTED_LITERAL = "'([^'\\\\]*+(\\\\[\\s\\S])?+)*+'";
-
-  private PuppetLexer() {
-  }
 
   public static final String HASH_LINE_COMMENT = "#[^\\n\\r]*+";
   public static final String SLASH_LINE_COMMENT = "//[^\\n\\r]*+";
   public static final String MULTI_LINE_COMMENT = "/\\*[\\s\\S]*?\\*/";
-
   public static final String COMMENT = "(?:" + HASH_LINE_COMMENT + "|" + SLASH_LINE_COMMENT + "|" + MULTI_LINE_COMMENT + ")";
+
+  private PuppetLexer() {
+  }
 
   public static Lexer create(PuppetConfiguration conf) {
     return Lexer.builder()
@@ -71,7 +69,7 @@ public class PuppetLexer {
 
       .withChannel(commentRegexp(COMMENT))
 
-        // Lets play with matching regex!
+      // Lets play with matching regex!
       .withChannel(new PuppetRegexpChannel())
 
       .withChannel(new PunctuatorChannel(PuppetPunctuator.values()))
