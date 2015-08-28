@@ -134,3 +134,11 @@ case $param {
   #stuff
   }
 }
+
+$rootgroup = $osfamily ? {
+  'Solaris'          => 'wheel',
+  /(Darwin|FreeBSD)/ => 'wheel',
+  'Solaris'          => 'abc',     # Noncompliant
+  /(Darwin|FreeBSD)/ => 'abc',     # Noncompliant
+  default            => 'root',
+}
