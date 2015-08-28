@@ -28,12 +28,27 @@ import com.iadams.sonarqube.functional.FunctionalSpecBase
 
 class ProjectChecksSpec extends FunctionalSpecBase {
 
-  def "check for tests directory in module"() {
+  def "check for project rules no issue"() {
+    when:
+    deleteProject()
+    createPuppetModule('sonarqube')
+    createPuppetModuleManifest('sonarqube')
+    createPuppetModuleReadme('sonarqube')
+
+    runSonarRunner()
+
+    then:
+    analysisFinishedSuccessfully()
+    theFollowingProjectMetricsHaveTheFollowingValue([violations: 0, lines: 2])
+  }
+
+  def "check module with test directory"() {
     when:
     deleteProject()
     createPuppetModule('sonarqube')
     createPuppetModuleTestsDir('sonarqube')
     createPuppetModuleManifest('sonarqube')
+    createPuppetModuleReadme('sonarqube')
 
     runSonarRunner()
 
@@ -46,6 +61,20 @@ class ProjectChecksSpec extends FunctionalSpecBase {
     when:
     deleteProject()
     createPuppetModule('sonarqube')
+    createPuppetModuleReadme('sonarqube')
+
+    runSonarRunner()
+
+    then:
+    analysisFinishedSuccessfully()
+    theFollowingProjectMetricsHaveTheFollowingValue([violations: 1, lines: 2])
+  }
+
+  def "check module without readme"() {
+    when:
+    deleteProject()
+    createPuppetModule('sonarqube')
+    createPuppetModuleManifest('sonarqube')
 
     runSonarRunner()
 
@@ -59,7 +88,7 @@ class ProjectChecksSpec extends FunctionalSpecBase {
     directory('manifests', new File(modulePath))
     String specPath = directory('spec', new File(modulePath))
     directory('classes', new File(specPath))
-    file("manifests/init.pp", new File(modulePath)) << "class $moduleName { }\n"
+    file("manifests/init.pp", new File(modulePath)) << "class $moduleName { \$a = 1 }\n"
   }
 
   private void createPuppetModuleTestsDir(String moduleName, String baseDir = "$projectDir/modules"){
@@ -68,5 +97,9 @@ class ProjectChecksSpec extends FunctionalSpecBase {
 
   private void createPuppetModuleManifest(String moduleName, String baseDir = "$projectDir/modules"){
     file("$moduleName/metadata.json", new File(baseDir))
+  }
+
+  private void createPuppetModuleReadme(String moduleName, String baseDir = "$projectDir/modules"){
+    file("$moduleName/README.md", new File(baseDir))
   }
 }

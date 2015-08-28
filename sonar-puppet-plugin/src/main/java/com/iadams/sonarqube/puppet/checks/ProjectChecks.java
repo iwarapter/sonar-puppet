@@ -63,6 +63,7 @@ public class ProjectChecks {
     if (fileSystem.baseDir() != null) {
       checkTestsDirectoryPresent(fileSystem.baseDir());
       checkMetadataJsonFilePresent(fileSystem.baseDir());
+      checkReadmeFilePresent(fileSystem.baseDir());
     }
   }
 
@@ -83,6 +84,28 @@ public class ProjectChecks {
           }
         } else {
           checkMetadataJsonFilePresent(file);
+        }
+      }
+    }
+  }
+
+  private void checkReadmeFilePresent(File parentFile) {
+    for (File file : parentFile.listFiles()) {
+      if (file.isDirectory()) {
+        if ("manifests".equals(file.getName())) {
+          boolean readmeFileFound = false;
+          for (File testsSiblings : parentFile.listFiles()) {
+            if (testsSiblings.isFile() && ("README.md".equals(testsSiblings.getName()) || "README.markdown".equals(testsSiblings.getName()))) {
+              readmeFileFound = true;
+              break;
+            }
+          }
+          if (!readmeFileFound) {
+            String path = Directory.fromIOFile(parentFile, project).getPath() != null ? Directory.fromIOFile(parentFile, project).getPath() : parentFile.getName();
+            addIssue(ReadmeFilePresentCheck.RULE_KEY, "Add a \"README.md\" file to the \"" + path + "\" Puppet module.");
+          }
+        } else {
+          checkReadmeFilePresent(file);
         }
       }
     }
