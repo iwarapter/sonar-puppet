@@ -22,42 +22,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.checks
+package com.iadams.sonarqube.puppet.checks;
 
-import org.sonar.api.rules.AnnotationRuleParser
-import spock.lang.Specification
-import spock.lang.Unroll
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
+import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.check.Priority;
+import org.sonar.check.Rule;
+import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
-class CheckListSpec extends Specification {
+@Rule(
+  key = ReadmeFilePresentCheck.RULE_KEY,
+  name = "Each Puppet module should contain a \"README.md\" file",
+  priority = Priority.MAJOR,
+  tags = Tags.CONVENTION)
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.UNDERSTANDABILITY)
+@SqaleConstantRemediation("20min")
+@ActivatedByDefault
+public class ReadmeFilePresentCheck extends PuppetCheckVisitor {
 
-  def "each check is defined in list"() {
-    given:
-    def count = new File('src/main/java/com/iadams/sonarqube/puppet/checks/').listFiles().count {
-      it.name.endsWith('Check.java')
-    }
+  public static final String RULE_KEY = "ReadmeFilePresent";
 
-    expect:
-    count == CheckList.getChecks().size()
-  }
-
-  @Unroll
-  def "Check #check.getSimpleName() has test"() {
-    expect:
-    String testName = '/' + check.getName().replace('.', '/') + "Spec.class"
-    assert getClass().getResource(testName)
-
-    where:
-    // The excluded checks are project level checks and have no code.
-    check << CheckList.getChecks() - [MetadataJsonFilePresentCheck.class, ReadmeFilePresentCheck.class, TestsDirectoryPresentCheck.class]
-  }
-
-  @Unroll
-  def "Check #rule.getKey() has description"() {
-    expect:
-    getClass().getResource("/org/sonar/l10n/pp/rules/puppet/" + rule.getKey() + ".html")
-    !rule.getDescription()
-
-    where:
-    rule << new AnnotationRuleParser().parse("repositoryKey", CheckList.checks);
-  }
 }
