@@ -1,9 +1,5 @@
 #SonarQube Puppet Plugin
  [![Build Status](https://travis-ci.org/iwarapter/sonar-puppet.svg?branch=master)](https://travis-ci.org/iwarapter/sonar-puppet)
- [ ![Download](https://api.bintray.com/packages/iwarapter/sonar-plugins/sonar-puppet/images/download.svg) ](https://bintray.com/iwarapter/sonar-plugins/sonar-puppet/_latestVersion)
- 
- [![Stories in Ready](https://badge.waffle.io/iwarapter/sonar-puppet.svg?label=ready&title=Ready)](http://waffle.io/iwarapter/sonar-puppet)
- [![Stories in Ready](https://badge.waffle.io/iwarapter/sonar-puppet.svg?label=In Progress&title=In Progress)](http://waffle.io/iwarapter/sonar-puppet)
 
 ##Description
 
@@ -14,6 +10,9 @@ This is currently written to support the grammar for [Puppet 3.8], support for t
 - SonarQube Server must be up and running. If it's not the case, see [Setup and Upgrade].
 - [SonarQube Runner] is installed and can be called from the command line.
 - Puppet Plugin is installed on SonarQube Server. See [Installing a Plugin] for more details.
+
+##Getting Started in Less Than Two Minutes
+To get started in less than two minutes, you can download the package at https://github.com/racodond/package-test-sonarqube-puppet and follow the instructions in the README file.
 
 ##Getting Started
 To run an analysis of your Puppet project, we recommend to use [SonarQube Runner].
