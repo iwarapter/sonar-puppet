@@ -26,3 +26,8 @@ User{
 User['iain']{
   password => 'wrong',  # Noncompliant
 }
+
+User <| title == 'luke' |> {
+  password => 'wrong',  # Noncompliant
+}
+
