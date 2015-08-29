@@ -42,26 +42,8 @@ file { '/etc/current':
   ensure  => link,
 }
 
-
 file { '/etc/example':
-  ensure  => 'directory',  # Noncompliant
-}
-
-file { '/etc/example':
-  ensure  => 'absent',  # Noncompliant
-}
-
-file { '/etc/example':
-  ensure  => 'false',  # Noncompliant
-}
-
-file { '/etc/example':
-  ensure  => 'file',  # Noncompliant
-}
-
-file { '/etc/current':
-  target  => '/etc/example',
-  ensure  => 'link',  # Noncompliant
+  ensure  => 'directory',
 }
 
 File {
@@ -79,3 +61,4 @@ File['/etc/current'] {
 File {
   ensure => present,
 }
+

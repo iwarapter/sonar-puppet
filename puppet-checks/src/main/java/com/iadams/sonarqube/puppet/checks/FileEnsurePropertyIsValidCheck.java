@@ -89,12 +89,27 @@ public class FileEnsurePropertyIsValidCheck extends PuppetCheckVisitor {
   }
 
   private void checkEnsureValid(AstNode paramNode) {
-    if (paramNode.getTokenValue().equals("ensure")) {
-      AstNode expression = paramNode.getFirstChild(PuppetGrammar.EXPRESSION);
-      if (expression.getFirstChild(PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL, PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL) != null
-        || expression.getFirstChild(PuppetTokenType.NAME) != null && !expression.getFirstChild(PuppetTokenType.NAME).getTokenValue().matches(ACCEPTED_NAMES)) {
-        addIssue(paramNode, this, "Fix the invalid \"ensure\" property.");
+    AstNode expressionNode = paramNode.getFirstChild(PuppetGrammar.EXPRESSION);
+    if ("ensure".equals(paramNode.getFirstChild(PuppetGrammar.PARAM_NAME).getTokenValue())) {
+      checkEnsureValidString(expressionNode);
+      checkEnsureValidName(expressionNode);
+    }
+  }
+
+  private void checkEnsureValidString(AstNode expressionNode) {
+    if (expressionNode.getFirstChild(PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL, PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL) != null) {
+      String value = expressionNode.getFirstChild(PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL, PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL).getTokenValue();
+      String unquotedValue = value.substring(1, value.length() - 1);
+      if (!CheckStringUtils.containsVariable(unquotedValue) && !unquotedValue.matches(ACCEPTED_NAMES)) {
+        addIssue(expressionNode, this, "Fix the invalid \"ensure\" property.");
       }
+    }
+  }
+
+  private void checkEnsureValidName(AstNode expressionNode) {
+    if (expressionNode.getFirstChild(PuppetTokenType.NAME) != null
+      && !expressionNode.getFirstChild(PuppetTokenType.NAME).getTokenValue().matches(ACCEPTED_NAMES)) {
+      addIssue(expressionNode, this, "Fix the invalid \"ensure\" property.");
     }
   }
 
