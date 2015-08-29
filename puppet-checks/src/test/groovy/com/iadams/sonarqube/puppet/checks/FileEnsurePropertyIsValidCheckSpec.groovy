@@ -44,6 +44,7 @@ class FileEnsurePropertyIsValidCheckSpec extends Specification {
       .next().atLine(20).withMessage(MESSAGE)
       .next().atLine(50).withMessage(MESSAGE)
       .next().atLine(58).withMessage(MESSAGE)
+      .next().atLine(66).withMessage(MESSAGE)
       .noMore();
   }
 }

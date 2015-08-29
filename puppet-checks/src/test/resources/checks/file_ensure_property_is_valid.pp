@@ -62,3 +62,11 @@ File {
   ensure => present,
 }
 
+File <<| tag == $tag |>> {
+  ensure => '/etc/example', # Noncompliant
+}
+
+File <<| tag == $tag |>> {
+  ensure => present,
+}
+
