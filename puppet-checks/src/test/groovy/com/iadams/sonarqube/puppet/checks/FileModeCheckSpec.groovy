@@ -59,6 +59,11 @@ class FileModeCheckSpec extends Specification {
       .next().atLine(104).withMessage(MESSAGE_OCTAL)
       .next().atLine(108).withMessage(MESSAGE_DOUBLE_QUOTES)
       .next().atLine(112).withMessage(MESSAGE_INVALID)
+      .next().atLine(120).withMessage(MESSAGE_INVALID)
+      .next().atLine(128).withMessage(MESSAGE_OCTAL)
+      .next().atLine(132).withMessage(MESSAGE_OCTAL)
+      .next().atLine(136).withMessage(MESSAGE_DOUBLE_QUOTES)
+      .next().atLine(140).withMessage(MESSAGE_INVALID)
       .noMore();
   }
 }

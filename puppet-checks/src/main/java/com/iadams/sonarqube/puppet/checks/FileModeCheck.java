@@ -51,53 +51,20 @@ public class FileModeCheck extends PuppetCheckVisitor {
 
   private static final String REGEX = "['|\"]?([0-7]{4}|([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*)['|\"]?";
   private static final Pattern PATTERN = Pattern.compile(REGEX);
+
   private static final String MESSAGE_OCTAL = "Set the file mode to a 4-digit octal value surrounded by single quotes.";
   private static final String MESSAGE_DOUBLE_QUOTES = "Replace double quotes by single quotes.";
   private static final String MESSAGE_INVALID = "Update the file mode to a valid value surrounded by single quotes.";
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.RESOURCE, PuppetGrammar.RESOURCE_OVERRIDE);
+    subscribeTo(PuppetGrammar.PARAM);
   }
 
   @Override
-  public void visitNode(AstNode node) {
-    if (node.is(PuppetGrammar.RESOURCE)) {
-      checkResourceInstance(node);
-      checkResourceDefault(node);
-    } else if (node.is(PuppetGrammar.RESOURCE_OVERRIDE)) {
-      checkResourceOverride(node);
-    }
-  }
-
-  private void checkResourceInstance(AstNode resourceNode) {
-    if ("file".equals(resourceNode.getTokenValue())) {
-      for (AstNode resourceInstNode : resourceNode.getChildren(PuppetGrammar.RESOURCE_INST)) {
-        for (AstNode paramNode : resourceInstNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
-          checkMode(paramNode);
-        }
-      }
-    }
-  }
-
-  private void checkResourceDefault(AstNode resourceNode) {
-    if ("File".equals(resourceNode.getTokenValue())) {
-      for (AstNode paramNode : resourceNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
-        checkMode(paramNode);
-      }
-    }
-  }
-
-  private void checkResourceOverride(AstNode resourceOverrideNode) {
-    if ("File".equals(resourceOverrideNode.getTokenValue())) {
-      for (AstNode paramNode : resourceOverrideNode.getFirstChild(PuppetGrammar.ANY_PARAMS).getChildren(PuppetGrammar.PARAM, PuppetGrammar.ADD_PARAM)) {
-        checkMode(paramNode);
-      }
-    }
-  }
-
-  private void checkMode(AstNode paramNode) {
-    if ("mode".equals(paramNode.getTokenValue())) {
+  public void visitNode(AstNode paramNode) {
+    if ("mode".equals(paramNode.getTokenValue())
+      && "file".equalsIgnoreCase(paramNode.getFirstAncestor(PuppetGrammar.RESOURCE, PuppetGrammar.RESOURCE_OVERRIDE, PuppetGrammar.COLLECTION).getTokenValue())) {
       AstNode expressionNode = paramNode.getFirstChild(PuppetGrammar.EXPRESSION);
       if (expressionNode.getToken().getType().equals(OCTAL_INTEGER) || expressionNode.getToken().getType().equals(INTEGER)) {
         addIssue(expressionNode, this, MESSAGE_OCTAL);

@@ -115,3 +115,31 @@ File['/tmp/foo'] {
 File['/tmp/foo'] {
   mode => "u=${var}",
 }
+
+File <| title == 'luke' |> {
+  mode => '755',  # Noncompliant
+}
+
+File <| title == 'luke' |> {
+  mode => '0755',
+}
+
+File <| title == 'luke' |> {
+  mode => 755,  # Noncompliant
+}
+
+File <| title == 'luke' |> {
+  mode => 0755,  # Noncompliant
+}
+
+File <| title == 'luke' |> {
+  mode => "0755",  # Noncompliant
+}
+
+File <| title == 'luke' |> {
+  mode => "abc",  # Noncompliant
+}
+
+File <| title == 'luke' |> {
+  mode => "u=${var}",
+}
