@@ -69,14 +69,10 @@ define abc {}
 file { 'abc': }
 File {}
 File['abc'] {}
-File <| title == 'luke' |> {}
 
 File {
   ensure => present,
 }
 File['abc'] {
-  ensure => absent,
-}
-File <| title == 'luke' |> {
   ensure => absent,
 }

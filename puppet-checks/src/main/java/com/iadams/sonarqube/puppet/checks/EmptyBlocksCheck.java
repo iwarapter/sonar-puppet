@@ -53,7 +53,6 @@ public class EmptyBlocksCheck extends PuppetCheckVisitor {
 
       PuppetGrammar.RESOURCE,
       PuppetGrammar.RESOURCE_OVERRIDE,
-      PuppetGrammar.COLLECTION,
 
       PuppetGrammar.CASE_MATCHER,
       PuppetGrammar.IF_STMT,
@@ -90,9 +89,6 @@ public class EmptyBlocksCheck extends PuppetCheckVisitor {
     } else if (node.is(PuppetGrammar.RESOURCE_OVERRIDE)
       && node.getFirstChild(PuppetGrammar.ANY_PARAMS).getChildren(PuppetGrammar.PARAM, PuppetGrammar.ADD_PARAM).isEmpty()) {
       addIssue(node, this, "Remove this empty resource override.");
-    } else if (node.is(PuppetGrammar.COLLECTION)
-      && node.getFirstChild(PuppetGrammar.ANY_PARAMS).getChildren(PuppetGrammar.PARAM, PuppetGrammar.ADD_PARAM).isEmpty()) {
-      addIssue(node, this, "Remove this empty resource collector.");
     }
   }
 
