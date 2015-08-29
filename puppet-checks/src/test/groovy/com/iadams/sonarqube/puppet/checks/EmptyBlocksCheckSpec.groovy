@@ -52,6 +52,7 @@ class EmptyBlocksCheckSpec extends Specification {
       .next().atLine(67).withMessage("Remove this empty define.")
       .next().atLine(70).withMessage("Remove this empty resource default statement.")
       .next().atLine(71).withMessage("Remove this empty resource override.")
+      .next().atLine(72).withMessage("Remove this empty resource collector.")
       .noMore();
   }
 }
