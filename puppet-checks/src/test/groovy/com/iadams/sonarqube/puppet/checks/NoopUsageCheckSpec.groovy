@@ -44,6 +44,7 @@ class NoopUsageCheckSpec extends Specification {
       .next().atLine(3).withMessage(MESSAGE)
       .next().atLine(8).withMessage(MESSAGE)
       .next().atLine(13).withMessage(MESSAGE)
+      .next().atLine(18).withMessage(MESSAGE)
       .noMore();
   }
 }
