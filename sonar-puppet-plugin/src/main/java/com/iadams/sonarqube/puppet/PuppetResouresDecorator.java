@@ -34,10 +34,12 @@ import org.sonar.api.resources.ResourceUtils;
 
 public class PuppetResouresDecorator implements Decorator {
 
+  @Override
   public boolean shouldExecuteOnProject(Project project) {
     return true;
   }
 
+  @Override
   public void decorate(Resource resource, DecoratorContext context) {
 
     if (!ResourceUtils.isFile(resource)) {

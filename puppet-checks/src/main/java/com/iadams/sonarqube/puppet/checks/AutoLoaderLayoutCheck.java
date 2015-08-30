@@ -49,6 +49,8 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 @SqaleConstantRemediation("1h")
 public class AutoLoaderLayoutCheck extends PuppetCheckVisitor {
 
+  private static final String MANIFESTS_DIRECTORY = "manifests";
+
   @Override
   public void init() {
     subscribeTo(PuppetGrammar.CLASSDEF, PuppetGrammar.DEFINITION);
@@ -63,17 +65,17 @@ public class AutoLoaderLayoutCheck extends PuppetCheckVisitor {
     String delimiter = File.separator;
     StringBuilder path = new StringBuilder();
     if (splitName.length > 1) {
-      path.append(delimiter).append(module).append(delimiter).append("manifests").append(delimiter)
+      path.append(delimiter).append(module).append(delimiter).append(MANIFESTS_DIRECTORY).append(delimiter)
         .append(Joiner.on(delimiter).join(
           Arrays.copyOfRange(splitName, 1, splitName.length)))
         .append(".pp");
     }
     else {
-      path.append(delimiter).append(name).append(delimiter).append("manifests").append(delimiter).append("init.pp");
+      path.append(delimiter).append(name).append(delimiter).append(MANIFESTS_DIRECTORY).append(delimiter).append("init.pp");
     }
 
-    if(!hasFullModulePath(getContext().getFile().getAbsolutePath(), delimiter)){
-      path.replace(0,1,"");
+    if (!hasFullModulePath(getContext().getFile().getAbsolutePath(), delimiter)) {
+      path.replace(0, 1, "");
     }
 
     if (!getContext().getFile().getAbsolutePath().endsWith(path.toString())) {
@@ -81,9 +83,8 @@ public class AutoLoaderLayoutCheck extends PuppetCheckVisitor {
     }
   }
 
-  private boolean hasFullModulePath(String path, String delimiter){
-    String pathAfterModule = path.substring(path.lastIndexOf("modules")+8);
-
-    return pathAfterModule.substring(pathAfterModule.indexOf(delimiter)+1).startsWith("manifests");
+  private static boolean hasFullModulePath(String path, String delimiter) {
+    String pathAfterModule = path.substring(path.lastIndexOf("modules") + 8);
+    return pathAfterModule.substring(pathAfterModule.indexOf(delimiter) + 1).startsWith(MANIFESTS_DIRECTORY);
   }
 }

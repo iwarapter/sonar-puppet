@@ -33,7 +33,7 @@ import org.sonar.squidbridge.measures.MetricDef;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 
-public class PuppetLinesOfCodeVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> implements AstAndTokenVisitor {
+public class PuppetLinesOfCodeVisitor<G extends Grammar> extends SquidAstVisitor<G> implements AstAndTokenVisitor {
 
   private final MetricDef metric;
   private int lastTokenLine;

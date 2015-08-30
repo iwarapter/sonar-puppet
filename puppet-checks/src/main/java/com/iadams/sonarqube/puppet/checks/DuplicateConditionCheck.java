@@ -107,7 +107,7 @@ public class DuplicateConditionCheck extends PuppetCheckVisitor {
     }
   }
 
-  private AstNode singleIfChild(List<AstNode> statements) {
+  private static AstNode singleIfChild(List<AstNode> statements) {
     if (statements.size() == 1) {
       AstSelect nestedIf = statements.get(0).select()
         .children(PuppetGrammar.COMPOUND_STMT)

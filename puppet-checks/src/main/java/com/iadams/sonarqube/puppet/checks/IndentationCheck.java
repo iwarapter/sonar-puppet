@@ -121,6 +121,7 @@ public class IndentationCheck extends PuppetCheckVisitor {
     }
   }
 
+  @Override
   public void leaveNode(AstNode node) {
     if (node.is(PuppetGrammar.ELSIF_STMT, PuppetGrammar.ELSE_STMT, PuppetGrammar.RESOURCE_INST, PuppetGrammar.FILE_INPUT)) {
       // Do not decrease the indentation level (already decreased by the IF_STMT)

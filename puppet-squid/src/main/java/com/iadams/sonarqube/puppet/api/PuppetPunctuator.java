@@ -74,18 +74,21 @@ public enum PuppetPunctuator implements TokenType {
 
   private final String value;
 
-  private PuppetPunctuator(String word) {
+  PuppetPunctuator(String word) {
     this.value = word;
   }
 
+  @Override
   public String getName() {
     return name();
   }
 
+  @Override
   public String getValue() {
     return value;
   }
 
+  @Override
   public boolean hasToBeSkippedFromAst(AstNode node) {
     return false;
   }

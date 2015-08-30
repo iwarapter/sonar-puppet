@@ -89,7 +89,7 @@ public class FileEnsurePropertyIsValidCheck extends PuppetCheckVisitor {
   }
 
   private void checkEnsureValid(AstNode paramNode) {
-    if (paramNode.getTokenValue().equals("ensure")) {
+    if ("ensure".equals(paramNode.getTokenValue())) {
       AstNode expression = paramNode.getFirstChild(PuppetGrammar.EXPRESSION);
       if (expression.getFirstChild(PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL, PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL) != null
         || expression.getFirstChild(PuppetTokenType.NAME) != null && !expression.getFirstChild(PuppetTokenType.NAME).getTokenValue().matches(ACCEPTED_NAMES)) {

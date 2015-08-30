@@ -66,7 +66,7 @@ public class ResourceDefaultFirstCheck extends PuppetCheckVisitor {
     }
   }
 
-  private List<AstNode> getResourceDefaultNodes(AstNode node) {
+  private static List<AstNode> getResourceDefaultNodes(AstNode node) {
     List<AstNode> resourceDefaults = new ArrayList();
     for (AstNode resourceNode : node.getDescendants(PuppetGrammar.RESOURCE)) {
       if (resourceNode.getFirstChild(PuppetGrammar.RESOURCE_INST) == null) {
@@ -76,12 +76,8 @@ public class ResourceDefaultFirstCheck extends PuppetCheckVisitor {
     return resourceDefaults;
   }
 
-  private int getFirstResourceInstanceLine(AstNode node) {
-    if (node.getDescendants(PuppetGrammar.RESOURCE_INST).size() != 0) {
-      return node.getDescendants(PuppetGrammar.RESOURCE_INST).get(0).getTokenLine();
-    } else {
-      return -1;
-    }
+  private static int getFirstResourceInstanceLine(AstNode node) {
+    return !node.getDescendants(PuppetGrammar.RESOURCE_INST).isEmpty() ? node.getDescendants(PuppetGrammar.RESOURCE_INST).get(0).getTokenLine() : -1;
   }
 
 }
