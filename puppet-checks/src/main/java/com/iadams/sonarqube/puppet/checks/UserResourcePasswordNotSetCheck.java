@@ -48,47 +48,16 @@ public class UserResourcePasswordNotSetCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.RESOURCE, PuppetGrammar.RESOURCE_OVERRIDE);
+    subscribeTo(PuppetGrammar.PARAM);
   }
 
   @Override
-  public void visitNode(AstNode node) {
-    if (node.is(PuppetGrammar.RESOURCE)) {
-      checkResourceInstance(node);
-      checkResourceDefault(node);
-    } else if (node.is(PuppetGrammar.RESOURCE_OVERRIDE)) {
-      checkResourceOverride(node);
-    }
-  }
-
-  private void checkResourceInstance(AstNode resourceNode) {
-    if ("user".equals(resourceNode.getTokenValue())) {
-      for (AstNode instNode : resourceNode.getChildren(PuppetGrammar.RESOURCE_INST)) {
-        for (AstNode paramNode : instNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
-          checkPasswordValid(paramNode);
-        }
-      }
-    }
-  }
-
-  private void checkResourceDefault(AstNode resourceNode) {
-    if ("User".equals(resourceNode.getTokenValue())) {
-      for (AstNode paramNode : resourceNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
-        checkPasswordValid(paramNode);
-      }
-    }
-  }
-
-  private void checkResourceOverride(AstNode resourceOverrideNode) {
-    if ("User".equals(resourceOverrideNode.getTokenValue())) {
-      for (AstNode paramNode : resourceOverrideNode.getFirstChild(PuppetGrammar.ANY_PARAMS).getChildren(PuppetGrammar.PARAM)) {
-        checkPasswordValid(paramNode);
-      }
-    }
-  }
-
-  private void checkPasswordValid(AstNode paramNode) {
-    if ("password".equals(paramNode.getTokenValue())) {
+  public void visitNode(AstNode paramNode) {
+    if ("password".equals(paramNode.getTokenValue())
+      && "user".equalsIgnoreCase(paramNode.getFirstAncestor(
+        PuppetGrammar.RESOURCE,
+        PuppetGrammar.RESOURCE_OVERRIDE,
+        PuppetGrammar.COLLECTION).getTokenValue())) {
       addIssue(paramNode, this, MESSAGE);
     }
   }

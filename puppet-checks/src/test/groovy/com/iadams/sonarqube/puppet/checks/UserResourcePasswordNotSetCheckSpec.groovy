@@ -35,9 +35,9 @@ class UserResourcePasswordNotSetCheckSpec extends Specification {
 
   def "validate rule"() {
     given:
-    UserResourcePasswordNotSetCheck check = new UserResourcePasswordNotSetCheck();
-
-    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/UserWithPassword.pp"), check);
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/UserWithPassword.pp"),
+      new UserResourcePasswordNotSetCheck());
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
@@ -46,6 +46,7 @@ class UserResourcePasswordNotSetCheckSpec extends Specification {
       .next().atLine(17).withMessage(MESSAGE)
       .next().atLine(23).withMessage(MESSAGE)
       .next().atLine(27).withMessage(MESSAGE)
+      .next().atLine(31).withMessage(MESSAGE)
       .noMore();
   }
 }
