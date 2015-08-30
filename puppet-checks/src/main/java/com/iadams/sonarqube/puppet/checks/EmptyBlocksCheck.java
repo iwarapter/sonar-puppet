@@ -110,7 +110,7 @@ public class EmptyBlocksCheck extends PuppetCheckVisitor {
     }
   }
 
-  private boolean hasTrivia(AstNode node) {
+  private static boolean hasTrivia(AstNode node) {
     if (node.getToken().hasTrivia()) {
       return true;
     }

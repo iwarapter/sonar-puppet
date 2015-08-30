@@ -94,7 +94,7 @@ public class IfStatementFormattingCheck extends PuppetCheckVisitor {
     }
   }
 
-  private boolean isOnSameLine(AstNode... nodes) {
+  private static boolean isOnSameLine(AstNode... nodes) {
     Preconditions.checkArgument(nodes.length > 1);
     int lineRef = nodes[0].getTokenLine();
     for (AstNode node : nodes) {

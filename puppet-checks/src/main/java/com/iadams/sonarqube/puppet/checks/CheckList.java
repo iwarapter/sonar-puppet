@@ -34,6 +34,9 @@ public final class CheckList {
 
   public static final String SONARQUBE_WAY_PROFILE = "SonarQube Way";
 
+  private CheckList() {
+  }
+
   public static List<Class> getChecks() {
     return ImmutableList.<Class>of(
       ArrowsAlignmentCheck.class,
@@ -95,6 +98,7 @@ public final class CheckList {
       TrailingWhitespaceCheck.class,
       UnquotedNodeNameCheck.class,
       UnquotedResourceTitleCheck.class,
+      UselessIfStatementParenthesesCheck.class,
       UserResourceLiteralNameCheck.class,
       UserResourcePasswordNotSetCheck.class,
       VariableNamingConventionCheck.class,

@@ -34,6 +34,9 @@ public class CheckStringUtils {
   private static final String REGEX_CONTAINING_ONLY_VARIABLE_NOT_ENCLOSED_IN_BRACES = "(?<!\\\\)\\$(::)?(\\w+::)*\\w+";
   private static final String REGEX_CONTAINING_SPECIAL_CHARACTER = ".*(\"|\\\\n|\\\\t|\\\\r|').*";
 
+  private CheckStringUtils() {
+  }
+
   public static boolean containsVariable(String string) {
     return Pattern.compile(REGEX_CONTAINING_VARIABLE_ENCLOSED_IN_BRACES).matcher(string).matches()
       || Pattern.compile(REGEX_CONTAINING_VARIABLE_NOT_ENCLOSED_IN_BRACES).matcher(string).matches();

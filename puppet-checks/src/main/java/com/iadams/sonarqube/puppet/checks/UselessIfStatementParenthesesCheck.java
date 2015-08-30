@@ -26,6 +26,7 @@ package com.iadams.sonarqube.puppet.checks;
 
 import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
+import com.iadams.sonarqube.puppet.api.PuppetPunctuator;
 import com.sonar.sslr.api.AstNode;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
@@ -35,30 +36,30 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
 @Rule(
-  key = "ResourcePasswordSet",
-  priority = Priority.MAJOR,
-  name = "User resource should not set password",
-  tags = Tags.SECURITY)
+  key = "UselessIfStatementParentheses",
+  name = "Useless parentheses surrounding \"if/elsif\" statement condition should be removed",
+  priority = Priority.MINOR,
+  tags = {Tags.CONVENTION})
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
+@SqaleConstantRemediation("2min")
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.SECURITY_FEATURES)
-@SqaleConstantRemediation("10min")
-public class UserResourcePasswordNotSetCheck extends PuppetCheckVisitor {
-
-  private static final String MESSAGE = "Do not set passwords in user resources.";
+public class UselessIfStatementParenthesesCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.PARAM);
+    subscribeTo(PuppetGrammar.IF_STMT, PuppetGrammar.ELSIF_STMT);
   }
 
   @Override
-  public void visitNode(AstNode paramNode) {
-    if ("password".equals(paramNode.getTokenValue())
-      && "user".equalsIgnoreCase(paramNode.getFirstAncestor(
-        PuppetGrammar.RESOURCE,
-        PuppetGrammar.RESOURCE_OVERRIDE,
-        PuppetGrammar.COLLECTION).getTokenValue())) {
-      addIssue(paramNode, this, MESSAGE);
+  public void visitNode(AstNode node) {
+    if (node.getFirstChild(PuppetGrammar.EXPRESSION).getChildren(PuppetGrammar.UNARY_NOT_EXPRESSION).size() == 1
+      && node.getFirstChild(PuppetGrammar.EXPRESSION).getFirstChild(PuppetGrammar.UNARY_NOT_EXPRESSION).getFirstChild(PuppetPunctuator.LPAREN) != null
+      && node.getFirstChild(PuppetGrammar.EXPRESSION).getFirstChild(PuppetGrammar.UNARY_NOT_EXPRESSION).getFirstChild(PuppetPunctuator.NOT) == null) {
+      addIssue(
+        node.getFirstChild(PuppetGrammar.EXPRESSION).getFirstChild(PuppetGrammar.UNARY_NOT_EXPRESSION),
+        this,
+        "Remove the useless parentheses surrounding the condition.");
     }
   }
+
 }

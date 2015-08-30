@@ -22,74 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.api;
+package com.iadams.sonarqube.puppet.checks
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.TokenType;
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
+import spock.lang.Specification
 
-public enum PuppetPunctuator implements TokenType {
+class UselessIfStatementParenthesesCheckSpec extends Specification {
 
-  DIV("/"),
-  MUL("*"),
-  LBRACK("["),
-  RBRACK("]"),
-  LBRACE("{"),
-  RBRACE("}"),
-  LPAREN("("),
-  RPAREN(")"),
-  ISEQUAL("=="),
-  MATCH("=~"),
-  FARROW("=>"),
-  EQUALS("="),
-  APPENDS("+="),
-  PARROW("+>"),
-  PLUS("+"),
-  GREATEREQUAL(">="),
-  RSHIFT(">>"),
-  GREATERTHAN(">"),
-  LESSEQUAL("<="),
-  LLCOLLECT("<<|"),
-  OUT_EDGE("<-"),
-  OUT_EDGE_SUB("<~"),
-  LCOLLECT("<|"),
-  LSHIFT("<<"),
-  LESSTHAN("<"),
-  NOMATCH("!~"),
-  NOTEQUAL("!="),
-  NOT("!"),
-  RRCOLLECT("|>>"),
-  RCOLLECT("|>"),
-  IN_EDGE("->"),
-  IN_EDGE_SUB("~>"),
-  MINUS("-"),
-  COMMA(","),
-  DOT("."),
-  COLON(":"),
-  AT("@"),
-  SEMIC(";"),
-  QMARK("?"),
-  BACKSLASH("\\"),
-  MODULO("%"),
-  PIPE("|");
+  private static final String MESSAGE = "Remove the useless parentheses surrounding the condition.";
 
-  private final String value;
+  def "validate check"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/useless_if_statement_parentheses.pp"),
+      new UselessIfStatementParenthesesCheck()
+    );
 
-  PuppetPunctuator(String word) {
-    this.value = word;
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(1).withMessage(MESSAGE)
+      .next().atLine(2).withMessage(MESSAGE)
+      .next().atLine(3).withMessage(MESSAGE)
+      .noMore();
   }
 
-  @Override
-  public String getName() {
-    return name();
-  }
-
-  @Override
-  public String getValue() {
-    return value;
-  }
-
-  @Override
-  public boolean hasToBeSkippedFromAst(AstNode node) {
-    return false;
-  }
 }

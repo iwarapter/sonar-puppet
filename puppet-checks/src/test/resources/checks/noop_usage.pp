@@ -13,6 +13,11 @@ Package['foo'] {
   noop   => true,     # Noncompliant
 }
 
+Package <| title == 'luke' |> {
+  ensure => present,
+  noop   => true,     # Noncompliant
+}
+
 package { 'foo':
   ensure => present,
 }
@@ -32,4 +37,7 @@ Package {
 }
 
 Package['foo'] {
+}
+
+Package <| title == 'luke' |> {
 }

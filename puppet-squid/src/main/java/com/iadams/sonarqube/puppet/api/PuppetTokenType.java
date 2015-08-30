@@ -47,14 +47,17 @@ public enum PuppetTokenType implements TokenType {
   DEDENT,
   NEWLINE;
 
+  @Override
   public String getName() {
     return name();
   }
 
+  @Override
   public String getValue() {
     return name();
   }
 
+  @Override
   public boolean hasToBeSkippedFromAst(AstNode node) {
     return false;
   }

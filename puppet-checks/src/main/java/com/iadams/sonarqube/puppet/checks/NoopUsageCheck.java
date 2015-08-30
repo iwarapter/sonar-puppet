@@ -46,42 +46,11 @@ public class NoopUsageCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.RESOURCE, PuppetGrammar.RESOURCE_OVERRIDE);
+    subscribeTo(PuppetGrammar.PARAM);
   }
 
   @Override
-  public void visitNode(AstNode node) {
-    if (node.is(PuppetGrammar.RESOURCE)) {
-      checkResourceInstance(node);
-      checkResourceDefault(node);
-    } else if (node.is(PuppetGrammar.RESOURCE_OVERRIDE)) {
-      checkResourceOverride(node);
-    }
-  }
-
-  private void checkResourceInstance(AstNode resourceNode) {
-    for (AstNode instNode : resourceNode.getChildren(PuppetGrammar.RESOURCE_INST)) {
-      for (AstNode paramNode : instNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
-        checkNoopUsage(paramNode);
-      }
-    }
-  }
-
-  private void checkResourceDefault(AstNode resourceNode) {
-    if (resourceNode.getChildren(PuppetGrammar.RESOURCE_INST).size() == 0) {
-      for (AstNode paramNode : resourceNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
-        checkNoopUsage(paramNode);
-      }
-    }
-  }
-
-  private void checkResourceOverride(AstNode resourceOverrideNode) {
-    for (AstNode paramNode : resourceOverrideNode.getFirstChild(PuppetGrammar.ANY_PARAMS).getChildren(PuppetGrammar.PARAM)) {
-      checkNoopUsage(paramNode);
-    }
-  }
-
-  private void checkNoopUsage(AstNode paramNode) {
+  public void visitNode(AstNode paramNode) {
     if (paramNode.getTokenValue().equals("noop")) {
       addIssue(paramNode, this, "Remove this usage of the \"noop\" metaparameter.");
     }
