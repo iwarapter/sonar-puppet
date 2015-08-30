@@ -38,7 +38,7 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 @Rule(
   key = "FileEnsurePropertyIsValid",
   priority = Priority.CRITICAL,
-  name = "\"ensure\" property of file resource should be valid",
+  name = "\"ensure\" attribute of \"file\" resource should be valid",
   tags = {Tags.BUG})
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.INSTRUCTION_RELIABILITY)
@@ -49,52 +49,33 @@ public class FileEnsurePropertyIsValidCheck extends PuppetCheckVisitor {
 
   @Override
   public void init() {
-    subscribeTo(PuppetGrammar.RESOURCE, PuppetGrammar.RESOURCE_OVERRIDE);
+    subscribeTo(PuppetGrammar.PARAM);
   }
 
   @Override
-  public void visitNode(AstNode node) {
-    if (node.is(PuppetGrammar.RESOURCE)) {
-      checkResourceInstance(node);
-      checkResourceDefault(node);
-    } else if (node.is(PuppetGrammar.RESOURCE_OVERRIDE)) {
-      checkResourceOverride(node);
+  public void visitNode(AstNode paramNode) {
+    AstNode expressionNode = paramNode.getFirstChild(PuppetGrammar.EXPRESSION);
+    if ("ensure".equals(paramNode.getFirstChild(PuppetGrammar.PARAM_NAME).getTokenValue())
+      && "file".equalsIgnoreCase(paramNode.getFirstAncestor(PuppetGrammar.RESOURCE, PuppetGrammar.RESOURCE_OVERRIDE, PuppetGrammar.COLLECTION).getTokenValue())) {
+      checkEnsureValidString(expressionNode);
+      checkEnsureValidName(expressionNode);
     }
   }
 
-  private void checkResourceInstance(AstNode resourceNode) {
-    if ("file".equals(resourceNode.getTokenValue())) {
-      for (AstNode instNode : resourceNode.getChildren(PuppetGrammar.RESOURCE_INST)) {
-        for (AstNode paramNode : instNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
-          checkEnsureValid(paramNode);
-        }
+  private void checkEnsureValidString(AstNode expressionNode) {
+    if (expressionNode.getFirstChild(PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL, PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL) != null) {
+      String value = expressionNode.getFirstChild(PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL, PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL).getTokenValue();
+      String unquotedValue = value.substring(1, value.length() - 1);
+      if (!CheckStringUtils.containsVariable(unquotedValue) && !unquotedValue.matches(ACCEPTED_NAMES)) {
+        addIssue(expressionNode, this, "Fix the invalid \"ensure\" property.");
       }
     }
   }
 
-  private void checkResourceDefault(AstNode resourceNode) {
-    if ("File".equals(resourceNode.getTokenValue())) {
-      for (AstNode paramNode : resourceNode.getFirstChild(PuppetGrammar.PARAMS).getChildren(PuppetGrammar.PARAM)) {
-        checkEnsureValid(paramNode);
-      }
-    }
-  }
-
-  private void checkResourceOverride(AstNode resourceOverrideNode) {
-    if ("File".equals(resourceOverrideNode.getTokenValue())) {
-      for (AstNode paramNode : resourceOverrideNode.getFirstChild(PuppetGrammar.ANY_PARAMS).getChildren(PuppetGrammar.PARAM)) {
-        checkEnsureValid(paramNode);
-      }
-    }
-  }
-
-  private void checkEnsureValid(AstNode paramNode) {
-    if ("ensure".equals(paramNode.getTokenValue())) {
-      AstNode expression = paramNode.getFirstChild(PuppetGrammar.EXPRESSION);
-      if (expression.getFirstChild(PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL, PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL) != null
-        || expression.getFirstChild(PuppetTokenType.NAME) != null && !expression.getFirstChild(PuppetTokenType.NAME).getTokenValue().matches(ACCEPTED_NAMES)) {
-        addIssue(paramNode, this, "Fix the invalid \"ensure\" property.");
-      }
+  private void checkEnsureValidName(AstNode expressionNode) {
+    if (expressionNode.getFirstChild(PuppetTokenType.NAME) != null
+      && !expressionNode.getFirstChild(PuppetTokenType.NAME).getTokenValue().matches(ACCEPTED_NAMES)) {
+      addIssue(expressionNode, this, "Fix the invalid \"ensure\" property.");
     }
   }
 

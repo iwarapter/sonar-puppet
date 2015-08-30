@@ -42,13 +42,9 @@ class FileEnsurePropertyIsValidCheckSpec extends Specification {
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(7).withMessage(MESSAGE)
       .next().atLine(20).withMessage(MESSAGE)
-      .next().atLine(47).withMessage(MESSAGE)
-      .next().atLine(51).withMessage(MESSAGE)
-      .next().atLine(55).withMessage(MESSAGE)
-      .next().atLine(59).withMessage(MESSAGE)
-      .next().atLine(64).withMessage(MESSAGE)
-      .next().atLine(68).withMessage(MESSAGE)
-      .next().atLine(76).withMessage(MESSAGE)
+      .next().atLine(50).withMessage(MESSAGE)
+      .next().atLine(58).withMessage(MESSAGE)
+      .next().atLine(66).withMessage(MESSAGE)
       .noMore();
   }
 }

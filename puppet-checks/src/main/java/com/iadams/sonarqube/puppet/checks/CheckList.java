@@ -81,6 +81,7 @@ public final class CheckList {
       ParsingErrorCheck.class,
       PuppetURLModulesCheck.class,
       QuotedBooleanCheck.class,
+      QuotedEnumerableCheck.class,
       ReadmeFilePresentCheck.class,
       RequiredParametersFirstCheck.class,
       ResourceDefaultFirstCheck.class,

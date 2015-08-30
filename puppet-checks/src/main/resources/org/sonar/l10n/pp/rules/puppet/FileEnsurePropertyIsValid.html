@@ -1,4 +1,4 @@
-<p>Checks that <code>ensure</code> attributes of <code>file</code> resources are valid. Possible values are unquoted:
+<p>Checks that <code>ensure</code> attributes of <code>file</code> resources are valid. Possible values are:
 <ul>
     <li><code>present</code></li>
     <li><code>absent</code></li>
@@ -11,7 +11,7 @@
 <h2>Noncompliant Code Example</h2>
 <pre>
 file { '/var/log/syslog':
-  ensure => 'present',            # Noncompliant: quotes should be removed
+  ensure => pres,                 # Noncompliant: Invalid 'pres' value
 }
 
 file { '/var/log/syslog':
@@ -35,4 +35,5 @@ file { '/var/log/syslog':
 <ul>
     <li><a href="https://docs.puppetlabs.com/references/latest/type.html#file-attribute-ensure">See Puppet Labs Puppet Language File Ensure Reference</a></li>
     <li><a href="https://docs.puppetlabs.com/guides/style_guide.html#symbolic-links">See Puppet Labs Puppet Language Style Guide</a></li>
+    <li>Activate rule <a href="coding_rules#rule_key=puppet:QuotedEnumerable">QuotedEnumerable</a> to ensure that possible values are not quoted.</li>
 </ul>

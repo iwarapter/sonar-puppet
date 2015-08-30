@@ -1,0 +1,23 @@
+<p>
+    For better understandability, string should not be quoted when it is an element of an enumerable set of options.
+</p>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+package { 'foo':
+  ensure => 'present',
+}
+</pre>
+
+<h2>Compliant Solution</h2>
+<pre>
+package { 'foo':
+  ensure => present,
+}
+</pre>
+
+<h2>See</h2>
+<ul>
+    <li><a href="https://docs.puppetlabs.com/references/latest/type.html">Type Reference</a></li>
+    <li><a href="https://docs.puppetlabs.com/references/latest/metaparameter.html">Metaparameter Reference</a></li>
+</ul>
