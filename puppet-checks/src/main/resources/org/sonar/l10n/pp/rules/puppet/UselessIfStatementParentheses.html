@@ -1,0 +1,16 @@
+<p>
+    <code>if/elsif</code> statement condition does not need to be surrounding by parentheses. Thus, for better
+    readability, do not surround <code>if/elsif</code> statement condition by parentheses.
+</p>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+if ($a == 1) {}
+if ($a == 1 or $b == 1) {}
+</pre>
+
+<h2>Compliant Solution</h2>
+<pre>
+if $a == 1 {}
+if $a == 1 or $b == 1 {}
+</pre>

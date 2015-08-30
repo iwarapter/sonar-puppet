@@ -94,6 +94,7 @@ public final class CheckList {
       TrailingWhitespaceCheck.class,
       UnquotedNodeNameCheck.class,
       UnquotedResourceTitleCheck.class,
+      UselessIfStatementParenthesesCheck.class,
       UserResourceLiteralNameCheck.class,
       UserResourcePasswordNotSetCheck.class,
       VariableNamingConventionCheck.class,
