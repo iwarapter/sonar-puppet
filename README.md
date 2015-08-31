@@ -3,7 +3,7 @@
 
 ##Description
 
-This plugin enables analysis of [Puppet] code. It comes with more than 40 rules spanning from style checks (i.e. All arrows in attribute/value list should be aligned) to detection of potential bugs (i.e. Duplicated parameters should be removed).
+This plugin enables analysis of [Puppet] code. It comes with more than 60 rules spanning from style checks (i.e. All arrows in attribute/value list should be aligned) to detection of potential bugs (i.e. Duplicated parameters should be removed).
 This is currently written to support the grammar for [Puppet 3.8], support for the future parser is not currently available.
 
 ##Requirements
@@ -85,7 +85,7 @@ To navigate the AST, download the [SSLR Puppet Toolkit].
 [SonarQube Runner]:http://docs.sonarqube.org/display/SONAR/Installing+and+Configuring+SonarQube+Runner
 [Installing a Plugin]:http://docs.sonarqube.org/display/SONAR/Installing+a+Plugin
 [documentation]:http://docs.sonarqube.org/display/SONAR/Extending+Coding+Rules
-[SSLR Puppet Toolkit]:https://bintray.com/iwarapter/sonar-plugins/sonar-puppet/_latestVersion#files
+[SSLR Puppet Toolkit]:https://github.com/iwarapter/sonar-puppet/releases/latest
 [Puppet 3.8]:https://docs.puppetlabs.com/puppet/3.8/reference/index.html
 [SonarQube metrics]:http://docs.sonarqube.org/display/SONAR/Metric+
 [autoloader layout rule]:https://github.com/iwarapter/sonar-puppet/blob/master/puppet-checks/src/main/resources/org/sonar/l10n/pp/rules/puppet/AutoLoaderLayout.html
