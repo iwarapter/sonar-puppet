@@ -28,13 +28,11 @@ import com.iadams.sonarqube.puppet.checks.CheckList
 import org.sonar.api.batch.SensorContext
 import org.sonar.api.batch.fs.InputFile
 import org.sonar.api.batch.fs.internal.DefaultFileSystem
-import org.sonar.api.batch.fs.internal.DefaultInputDir
 import org.sonar.api.batch.fs.internal.DefaultInputFile
 import org.sonar.api.batch.rule.ActiveRules
 import org.sonar.api.batch.rule.CheckFactory
 import org.sonar.api.batch.rule.internal.ActiveRulesBuilder
 import org.sonar.api.component.ResourcePerspectives
-import org.sonar.api.issue.Issuable
 import org.sonar.api.issue.NoSonarFilter
 import org.sonar.api.measures.CoreMetrics
 import org.sonar.api.measures.FileLinesContext
@@ -90,14 +88,6 @@ class PuppetSquidSensorSpec extends Specification {
 
     fs.add(inputFile)
 
-    Issuable issuable = Mock()
-    Issuable.IssueBuilder issueBuilder = Mock()
-    perspectives.as(_, _) >> issuable
-    issuable.newIssueBuilder() >> issueBuilder
-    issueBuilder.ruleKey(_) >> issueBuilder
-    issueBuilder.line(_) >> issueBuilder
-    issueBuilder.message(_) >> issueBuilder
-
     Project project = new Project("key")
     SensorContext context = Mock()
 
@@ -106,13 +96,9 @@ class PuppetSquidSensorSpec extends Specification {
 
     then:
     1 * context.saveMeasure(_, CoreMetrics.FILES, 1.0)
-    //1 * context.saveMeasure(_, CoreMetrics.LINES, 1.0)
-    /*verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.NCLOC), Mockito.eq(25.0));
-    verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.STATEMENTS), Mockito.eq(23.0));
-    verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.FUNCTIONS), Mockito.eq(4.0));
-    verify(context).saveMeasure(Mockito.any(Resource.class), Mockito.eq(CoreMetrics.COMPLEXITY), Mockito.eq(4.0));*/
+    1 * context.saveMeasure(_, CoreMetrics.LINES, 9.0)
     1 * context.saveMeasure(_, CoreMetrics.CLASSES, 2.0)
     1 * context.saveMeasure(_, CoreMetrics.COMMENT_LINES, 2.0)
-
   }
+
 }
