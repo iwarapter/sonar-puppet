@@ -1,4 +1,5 @@
 dependencies {
+    compile "org.codehaus.sonar:sonar-plugin-api:$sonarVersion"
     compile "org.codehaus.sonar.sslr:sslr-core:$sslrVersion"
     compile 'org.codehaus.sonar.sslr-squid-bridge:sslr-squid-bridge:2.6'
 
