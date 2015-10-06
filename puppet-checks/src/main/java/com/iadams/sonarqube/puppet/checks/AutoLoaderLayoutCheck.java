@@ -49,42 +49,26 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 @SqaleConstantRemediation("1h")
 public class AutoLoaderLayoutCheck extends PuppetCheckVisitor {
 
-  private static final String MANIFESTS_DIRECTORY = "manifests";
-
   @Override
   public void init() {
     subscribeTo(PuppetGrammar.CLASSDEF, PuppetGrammar.DEFINITION);
   }
 
   @Override
-  public void visitNode(AstNode astNode) {
-    String name = astNode.getFirstChild(PuppetGrammar.CLASSNAME).getTokenValue();
-    String[] splitName = name.split("::");
-    String module = splitName[0];
+  public void visitNode(AstNode node) {
+    String[] splitName = node.getFirstChild(PuppetGrammar.CLASSNAME).getTokenValue().split("::");
 
-    String delimiter = File.separator;
     StringBuilder path = new StringBuilder();
+    path = path.append("manifests").append(File.separator);
     if (splitName.length > 1) {
-      path.append(delimiter).append(module).append(delimiter).append(MANIFESTS_DIRECTORY).append(delimiter)
-        .append(Joiner.on(delimiter).join(
-          Arrays.copyOfRange(splitName, 1, splitName.length)))
-        .append(".pp");
-    }
-    else {
-      path.append(delimiter).append(name).append(delimiter).append(MANIFESTS_DIRECTORY).append(delimiter).append("init.pp");
-    }
-
-    if (!hasFullModulePath(getContext().getFile().getAbsolutePath(), delimiter)) {
-      path.replace(0, 1, "");
+      path.append(Joiner.on(File.separator).join(Arrays.copyOfRange(splitName, 1, splitName.length))).append(".pp");
+    } else {
+      path.append("init.pp");
     }
 
     if (!getContext().getFile().getAbsolutePath().endsWith(path.toString())) {
-      addIssueOnFile(this, "\"" + getContext().getFile().getName() + "\" not in autoload module layout");
+      addIssueOnFile(this, "\"" + getContext().getFile().getName() + "\" not in autoload module layout.");
     }
   }
 
-  private static boolean hasFullModulePath(String path, String delimiter) {
-    String pathAfterModule = path.substring(path.lastIndexOf("modules") + 8);
-    return pathAfterModule.substring(pathAfterModule.indexOf(delimiter) + 1).startsWith(MANIFESTS_DIRECTORY);
-  }
 }

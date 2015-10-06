@@ -41,8 +41,7 @@ class AutoLoaderLayoutCheckSpec extends Specification {
     );
 
     expect:
-    CheckMessagesVerifier.verify(file.getCheckMessages())
-      .noMore();
+    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
 
     where:
     puppetFile << [
@@ -61,26 +60,14 @@ class AutoLoaderLayoutCheckSpec extends Specification {
   def "file in wrong location"() {
     given:
     SourceFile file = PuppetAstScanner.scanSingleFile(
-      new File("src/test/resources/checks/autoloader/puppet-foo/manifests/init.pp"),
+      new File("src/test/resources/checks/autoloader/puppet-foo/manifests/barz.pp"),
       new AutoLoaderLayoutCheck()
     );
 
     expect:
     CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().withMessage('"init.pp" not in autoload module layout')
+      .next().withMessage('"barz.pp" not in autoload module layout.')
       .noMore();
   }
 
-  def "files in the wrong location in a full analysis with all modules"(){
-    given:
-    SourceFile file = PuppetAstScanner.scanSingleFile(
-      new File("src/test/resources/checks/autoloader/modules/puppetlabs-apache/manifests/init.pp"),
-      new AutoLoaderLayoutCheck()
-    );
-
-    expect:
-    CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().withMessage('"init.pp" not in autoload module layout')
-      .noMore();
-  }
 }
