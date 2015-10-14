@@ -51,7 +51,7 @@ public class NoopUsageCheck extends PuppetCheckVisitor {
 
   @Override
   public void visitNode(AstNode paramNode) {
-    if (paramNode.getTokenValue().equals("noop")) {
+    if ("noop".equals(paramNode.getTokenValue())) {
       addIssue(paramNode, this, "Remove this usage of the \"noop\" metaparameter.");
     }
   }

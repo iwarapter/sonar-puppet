@@ -54,7 +54,7 @@ public class ParsingErrorCheck extends PuppetCheckVisitor implements AstScannerE
   @Override
   public void processException(Exception e) {
     StringWriter exception = new StringWriter();
-    e.printStackTrace(new PrintWriter(exception));
+    e.printStackTrace(new PrintWriter(exception)); // NOSONAR(squid:S1148): printStackTrace intentionally used
     LOG.debug("Parsing error", e);
     addIssueOnFile(this, e.getMessage());
   }
