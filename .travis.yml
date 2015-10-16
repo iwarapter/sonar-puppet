@@ -4,12 +4,16 @@ jdk:
   - oraclejdk7
 
 env:
-  - PATH=$PATH:/tmp/sonar-runner-2.4/bin SONAR_DL=http://downloads.sonarsource.com/sonarqube/sonarqube-5.1.1.zip SONAR_HOME=/tmp/sonarqube-5.1.1 RAILS_ENV=production
+  - SONAR_HOME=/tmp/sonarqube
+  - PATH=$PATH:/tmp/sonar-runner-2.4/bin SONAR_DL=http://downloads.sonarsource.com/sonarqube/sonarqube-4.5.4.zip RAILS_ENV=production
+  - PATH=$PATH:/tmp/sonar-runner-2.4/bin SONAR_DL=http://downloads.sonarsource.com/sonarqube/sonarqube-5.0.1.zip RAILS_ENV=production
+  - PATH=$PATH:/tmp/sonar-runner-2.4/bin SONAR_DL=http://downloads.sonarsource.com/sonarqube/sonarqube-5.1.1.zip RAILS_ENV=production
+  - PATH=$PATH:/tmp/sonar-runner-2.4/bin SONAR_DL=https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-5.2-RC2.zip RAILS_ENV=production
 
 install:
   - cd /tmp
   - wget -O sonarqube.zip $SONAR_DL
-  - unzip sonarqube.zip
+  - unzip sonarqube.zip -d $SONAR_HOME
   - wget http://repo1.maven.org/maven2/org/codehaus/sonar/runner/sonar-runner-dist/2.4/sonar-runner-dist-2.4.zip
   - unzip sonar-runner-dist-2.4.zip
   - ls -lar
