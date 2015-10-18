@@ -26,6 +26,8 @@ package com.iadams.sonarqube.puppet
 
 import com.iadams.sonarqube.puppet.metrics.FileLinesVisitor
 import com.sonar.sslr.api.Grammar
+import org.junit.Rule
+import org.junit.rules.TemporaryFolder
 import org.sonar.api.batch.fs.InputFile
 import org.sonar.api.batch.fs.internal.DefaultFileSystem
 import org.sonar.api.batch.fs.internal.DefaultInputFile
@@ -43,9 +45,12 @@ class FileLinesVisitorSpec extends Specification {
   DefaultFileSystem fileSystem
   FileLinesContext fileLinesContext
 
+  @Rule
+  TemporaryFolder temporaryFolder
+
   def setup() {
     fileLinesContextFactory = Mock()
-    fileSystem = new DefaultFileSystem()
+    fileSystem = new DefaultFileSystem(temporaryFolder.newFolder())
     fileLinesContext = Mock()
   }
 
@@ -53,7 +58,7 @@ class FileLinesVisitorSpec extends Specification {
     when:
 
     File file = new File(BASE_DIR, "lines.pp")
-    InputFile inputFile = new DefaultInputFile(file.getPath())
+    InputFile inputFile = new DefaultInputFile('',file.getPath())
 
     fileSystem.add(inputFile)
     fileLinesContextFactory.createFor(inputFile) >> fileLinesContext

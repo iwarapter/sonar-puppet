@@ -38,7 +38,7 @@ subprojects {
     }
 
     ext {
-        sonarVersion = '4.5.2'
+        sonarVersion = '5.2-RC2'
         sslrVersion = '1.20'
     }
 
