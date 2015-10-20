@@ -30,13 +30,13 @@ import java.io.File;
 
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.rule.Checks;
-import org.sonar.api.component.Component;
 import org.sonar.api.component.ResourcePerspectives;
 import org.sonar.api.issue.Issuable;
 import org.sonar.api.issue.Issue;
 import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.resources.Directory;
 import org.sonar.api.resources.Project;
+import org.sonar.api.resources.Resource;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.api.rules.ActiveRule;
 import org.sonar.squidbridge.SquidAstVisitor;
@@ -143,7 +143,7 @@ public class ProjectChecks {
     if (activeRule != null) {
       CodeVisitor check = checks.of(activeRule.getRule().ruleKey());
       if (check != null) {
-        Issuable issuable = resourcePerspectives.as(Issuable.class, (Component) project);
+        Issuable issuable = resourcePerspectives.as(Issuable.class, (Resource) project);
         if (issuable != null) {
           Issue issue = issuable.newIssueBuilder().ruleKey(RuleKey.of(CheckList.REPOSITORY_KEY, ruleKey)).message(message).build();
           issuable.addIssue(issue);
