@@ -33,7 +33,7 @@ class FaultyQuoteUsageCheckSpec extends Specification {
 
   private final static String MESSAGE_USE_SINGLE_QUOTES = "Surround the string with single quotes instead of double quotes.";
   private final static String MESSAGE_REMOVE_QUOTES = "Remove quotes surrounding this variable.";
-  private final static String MESSAGE_USE_DOUBLE_QUOTES = "Surround the string with double quotes instead of single quotes and unescaped single quotes inside this string.";
+  private final static String MESSAGE_USE_DOUBLE_QUOTES = "Surround the string with double quotes instead of single quotes and do not escape single quotes inside this string.";
 
   def "validate check"() {
     given:
