@@ -73,7 +73,7 @@ public class FaultyQuoteUsageCheck extends PuppetCheckVisitor {
   private void checkSingleQuotedString(AstNode node) {
     if (node.is(PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL)) {
       String stringWithoutQuotes = node.getTokenValue().substring(1, node.getTokenValue().length() - 1);
-      if (Pattern.compile(".*\\\\'.*").matcher(stringWithoutQuotes).matches()) {
+      if (Pattern.compile("\\\\'").matcher(stringWithoutQuotes).find()) {
         addIssue(node, this, "Surround the string with double quotes instead of single quotes and do not escape single quotes inside this string.");
       }
     }
