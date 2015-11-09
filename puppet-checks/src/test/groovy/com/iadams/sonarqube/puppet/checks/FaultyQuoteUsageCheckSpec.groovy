@@ -50,6 +50,7 @@ class FaultyQuoteUsageCheckSpec extends Specification {
       .next().atLine(6).withMessage(MESSAGE_REMOVE_QUOTES)
       .next().atLine(11).withMessage(MESSAGE_USE_SINGLE_QUOTES)
       .next().atLine(21).withMessage(MESSAGE_USE_DOUBLE_QUOTES)
+      .next().atLine(25).withMessage(MESSAGE_USE_DOUBLE_QUOTES)
       .noMore();
   }
 
