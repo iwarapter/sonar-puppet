@@ -28,31 +28,31 @@ import java.util.regex.Pattern;
 
 public class CheckStringUtils {
 
-  private static final String REGEX_CONTAINING_VARIABLE_ENCLOSED_IN_BRACES = ".*(?<!\\\\)\\$\\{(::)?(\\w+::)*\\w+}.*";
-  private static final String REGEX_CONTAINING_ONLY_VARIABLE_ENCLOSED_IN_BRACES = "(?<!\\\\)\\$\\{(::)?(\\w+::)*\\w+}";
-  private static final String REGEX_CONTAINING_VARIABLE_NOT_ENCLOSED_IN_BRACES = ".*(?<!\\\\)\\$(::)?(\\w+::)*\\w+.*";
-  private static final String REGEX_CONTAINING_ONLY_VARIABLE_NOT_ENCLOSED_IN_BRACES = "(?<!\\\\)\\$(::)?(\\w+::)*\\w+";
-  private static final String REGEX_CONTAINING_SPECIAL_CHARACTER = ".*(\"|\\\\n|\\\\t|\\\\r|').*";
+  private static final Pattern PATTERN_CONTAINING_VARIABLE_ENCLOSED_IN_BRACES = Pattern.compile(".*(?<!\\\\)\\$\\{(::)?(\\w+::)*\\w+}.*", Pattern.DOTALL);
+  private static final Pattern PATTERN_CONTAINING_VARIABLE_NOT_ENCLOSED_IN_BRACES = Pattern.compile(".*(?<!\\\\)\\$(::)?(\\w+::)*\\w+.*", Pattern.DOTALL);
+  private static final Pattern PATTERN_CONTAINING_ONLY_VARIABLE_ENCLOSED_IN_BRACES = Pattern.compile("(?<!\\\\)\\$\\{(::)?(\\w+::)*\\w+}");
+  private static final Pattern PATTERN_CONTAINING_ONLY_VARIABLE_NOT_ENCLOSED_IN_BRACES = Pattern.compile("(?<!\\\\)\\$(::)?(\\w+::)*\\w+");
+  private static final Pattern PATTERN_CONTAINING_SPECIAL_CHARACTER = Pattern.compile("\"|\\\\t|\\\\r|\\\\n|'");
 
   private CheckStringUtils() {
   }
 
   public static boolean containsVariable(String string) {
-    return Pattern.compile(REGEX_CONTAINING_VARIABLE_ENCLOSED_IN_BRACES).matcher(string).matches()
-      || Pattern.compile(REGEX_CONTAINING_VARIABLE_NOT_ENCLOSED_IN_BRACES).matcher(string).matches();
+    return PATTERN_CONTAINING_VARIABLE_ENCLOSED_IN_BRACES.matcher(string).matches()
+      || PATTERN_CONTAINING_VARIABLE_NOT_ENCLOSED_IN_BRACES.matcher(string).matches();
   }
 
   public static boolean containsNotEnclosedVariable(String string) {
-    return Pattern.compile(REGEX_CONTAINING_VARIABLE_NOT_ENCLOSED_IN_BRACES).matcher(string).matches();
+    return PATTERN_CONTAINING_VARIABLE_NOT_ENCLOSED_IN_BRACES.matcher(string).matches();
   }
 
   public static boolean containsOnlyVariable(String string) {
-    return Pattern.compile(REGEX_CONTAINING_ONLY_VARIABLE_ENCLOSED_IN_BRACES).matcher(string).matches()
-      || Pattern.compile(REGEX_CONTAINING_ONLY_VARIABLE_NOT_ENCLOSED_IN_BRACES).matcher(string).matches();
+    return PATTERN_CONTAINING_ONLY_VARIABLE_ENCLOSED_IN_BRACES.matcher(string).matches()
+      || PATTERN_CONTAINING_ONLY_VARIABLE_NOT_ENCLOSED_IN_BRACES.matcher(string).matches();
   }
 
   public static boolean containsSpecialCharacter(String string) {
-    return Pattern.compile(REGEX_CONTAINING_SPECIAL_CHARACTER).matcher(string).matches();
+    return PATTERN_CONTAINING_SPECIAL_CHARACTER.matcher(string).find();
   }
 
 }
