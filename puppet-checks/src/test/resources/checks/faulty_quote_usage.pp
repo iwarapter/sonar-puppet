@@ -25,3 +25,15 @@ file { 'foo':
   text => 'blabla
           \'blabla\'',  # Noncompliant
 }
+
+# Compliant multiline string
+$source = "http://mydomain.com/service//\
+          ${group_id_path}/${name}/${version}/${name}-${version}.hpi"
+
+# Noncompliant multiline string, use single quotes instead
+$source = "http://mydomain.com/service//\
+          abc.hpi"
+
+# Compliant multiline string
+$source = "abc\
+          d\ne"
