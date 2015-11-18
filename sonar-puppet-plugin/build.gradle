@@ -40,8 +40,8 @@ sonarPackaging {
     pluginDescription = 'Enable analysis and reporting on Puppet projects.'
     pluginDevelopers = 'Iain Adams and David RACODON'
     pluginLicense = 'MIT'
-    pluginUrl = 'https://bitbucket.org/iwarapter/sonar-puppet'
-    pluginIssueTrackerUrl = 'https://bitbucket.org/iwarapter/sonar-puppet/issues'
+    pluginUrl = 'https://github.com/iwarapter/sonar-puppet'
+    pluginIssueTrackerUrl = 'https://github.com/iwarapter/sonar-puppet/issues'
     organization {
         name = 'Iain Adams and David RACODON'
     }
