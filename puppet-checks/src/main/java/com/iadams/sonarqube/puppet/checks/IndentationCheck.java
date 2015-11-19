@@ -149,15 +149,15 @@ public class IndentationCheck extends PuppetCheckVisitor {
     int start = 0;
     for (int i = 1; i < issues.size(); i++) {
       if (issues.get(i - 1) + 1 != issues.get(i)) {
-        raiseIssue(issues.get(start), issues.get(i - 1) - issues.get(start));
+        raiseIssue(issues.get(start), issues.get(i - 1) - issues.get(start)+1);
         start = i;
       }
     }
-    raiseIssue(issues.get(start), issues.get(issues.size() - 1) - issues.get(start));
+    raiseIssue(issues.get(start), issues.get(issues.size() - 1) - issues.get(start)+1);
   }
 
   private void raiseIssue(int start, int lines) {
-    if (lines == 0) {
+    if (lines == 1) {
       addIssue(start, this, "Make this line start at column " + (expectedLevel + 1) + ".");
     } else {
       addIssue(start, this, "The following " + lines + " lines should start on column " + (expectedLevel + 1) + ".");
