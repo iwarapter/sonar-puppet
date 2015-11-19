@@ -29,11 +29,10 @@ import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetGrammar;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
-
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -68,8 +67,7 @@ public class IndentationCheck extends PuppetCheckVisitor {
     PuppetGrammar.PARAMS,
     PuppetGrammar.ANY_PARAMS,
     PuppetGrammar.HASH_PAIRS,
-    PuppetGrammar.ARRAY
-    );
+    PuppetGrammar.ARRAY);
 
   private int expectedLevel;
   private Set checkedLines;
@@ -135,13 +133,34 @@ public class IndentationCheck extends PuppetCheckVisitor {
   }
 
   private void checkIndentation(List<? extends AstNode> nodes) {
+    List<Integer> issueLines = new ArrayList<>();
     for (AstNode node : nodes) {
       if (!checkedLines.contains(node.getTokenLine()) && node.getToken().getColumn() != expectedLevel) {
-        addIssue(node, this, "Make this line start at column " + (expectedLevel + 1) + ".");
+        issueLines.add(node.getTokenLine());
       }
       checkedLines.add(node.getToken().getLine());
     }
-
+    if (!issueLines.isEmpty()) {
+      groupIssues(issueLines);
+    }
   }
 
+  private void groupIssues(List<Integer> issues) {
+    int start = 0;
+    for (int i = 1; i < issues.size(); i++) {
+      if (issues.get(i - 1) + 1 != issues.get(i)) {
+        raiseIssue(issues.get(start), issues.get(i - 1) - issues.get(start));
+        start = i;
+      }
+    }
+    raiseIssue(issues.get(start), issues.get(issues.size() - 1) - issues.get(start));
+  }
+
+  private void raiseIssue(int start, int lines) {
+    if (lines == 0) {
+      addIssue(start, this, "Make this line start at column " + (expectedLevel + 1) + ".");
+    } else {
+      addIssue(start, this, "The following " + lines + " lines should start on column " + (expectedLevel + 1) + ".");
+    }
+  }
 }

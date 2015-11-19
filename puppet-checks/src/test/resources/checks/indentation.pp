@@ -289,3 +289,16 @@ class abc {}
 $a = 'r'
 $a = ['a', 'b']
 
+file { '/tmp/readme.txt':
+   ensure => file, # Noncompliant (because of the three spaces instead of two)
+   owner  => '0', # Noncompliant - issue raised above
+   group  => '0', # Noncompliant - issue raised above
+   mode   => '0644', # Noncompliant - issue raised above
+}
+
+file { '/tmp/readme.txt':
+   ensure => file, # Noncompliant (because of the three spaces instead of two)
+   owner  => '0', # Noncompliant - issue raised above
+  group  => '0',
+   mode   => '0644', # Noncompliant
+}
