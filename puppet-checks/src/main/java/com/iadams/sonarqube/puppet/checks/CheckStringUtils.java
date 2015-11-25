@@ -32,7 +32,7 @@ public class CheckStringUtils {
   private static final Pattern PATTERN_CONTAINING_VARIABLE_NOT_ENCLOSED_IN_BRACES = Pattern.compile(".*(?<!\\\\)\\$(::)?(\\w+::)*\\w+.*", Pattern.DOTALL);
   private static final Pattern PATTERN_CONTAINING_ONLY_VARIABLE_ENCLOSED_IN_BRACES = Pattern.compile("(?<!\\\\)\\$\\{(::)?(\\w+::)*\\w+}");
   private static final Pattern PATTERN_CONTAINING_ONLY_VARIABLE_NOT_ENCLOSED_IN_BRACES = Pattern.compile("(?<!\\\\)\\$(::)?(\\w+::)*\\w+");
-  private static final Pattern PATTERN_CONTAINING_SPECIAL_CHARACTER = Pattern.compile("\"|\\\\t|\\\\r|\\\\n|'");
+  private static final Pattern PATTERN_CONTAINING_SPECIAL_CHARACTER = Pattern.compile("\"|\\\\t|\\\\r|\\\\n|'|\\\\\\$");
 
   private CheckStringUtils() {
   }

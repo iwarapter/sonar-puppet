@@ -37,3 +37,6 @@ $source = "http://mydomain.com/service//\
 # Compliant multiline string
 $source = "abc\
           d\ne"
+
+# Compliant
+$sonar_incremental_extra_params = "\${PULL_REQUEST_FROM_REPO_NAME}"
