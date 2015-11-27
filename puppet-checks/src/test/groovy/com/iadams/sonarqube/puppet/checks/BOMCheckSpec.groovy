@@ -22,45 +22,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.api;
+package com.iadams.sonarqube.puppet.checks
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.TokenType;
+import com.iadams.sonarqube.puppet.PuppetAstScanner
+import org.sonar.squidbridge.api.SourceFile
+import org.sonar.squidbridge.checks.CheckMessagesVerifier
+import spock.lang.Specification
 
-public enum PuppetTokenType implements TokenType {
-  FLOAT,
-  INTEGER,
-  HEX_INTEGER,
-  OCTAL_INTEGER,
-  REGULAR_EXPRESSION_LITERAL,
-  EMPTY,
+class BOMCheckSpec extends Specification {
 
-  DOUBLE_QUOTED_STRING_LITERAL,
-  SINGLE_QUOTED_STRING_LITERAL,
+  def "should find a BOM and raise an issue"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/utf8_with_bom.pp"),
+      new BOMCheck()
+    );
 
-  // https://github.com/puppetlabs/puppet-specifications/blob/master/language/lexical_structure.md#identifiers
-  NAME,
-  REF,
-  VARIABLE,
-
-  INDENT,
-  DEDENT,
-  NEWLINE,
-  BOM;
-
-  @Override
-  public String getName() {
-    return name();
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().withMessage("Remove the BOM.")
+      .noMore();
   }
 
-  @Override
-  public String getValue() {
-    return name();
-  }
+  def "should not find a BOM and not raise any issue"() {
+    given:
+    SourceFile file = PuppetAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/arrows_alignment.pp"),
+      new BOMCheck()
+    );
 
-  @Override
-  public boolean hasToBeSkippedFromAst(AstNode node) {
-    return false;
+    expect:
+    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
   }
 
 }

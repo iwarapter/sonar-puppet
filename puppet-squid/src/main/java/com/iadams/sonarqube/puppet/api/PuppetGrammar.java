@@ -148,13 +148,12 @@ public enum PuppetGrammar implements GrammarRuleKey {
   SELECTLHAND,
 
   // Top-level components
-
   FILE_INPUT;
 
   public static LexerfulGrammarBuilder create() {
     LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
 
-    b.rule(FILE_INPUT).is(b.zeroOrMore(b.firstOf(NEWLINE, STATEMENT)), EOF);
+    b.rule(FILE_INPUT).is(b.optional(BOM), b.zeroOrMore(b.firstOf(NEWLINE, STATEMENT)), EOF);
     b.rule(STATEMENT).is(b.firstOf(SIMPLE_STMT, COMPOUND_STMT, EXPRESSION));
 
     grammar(b);
