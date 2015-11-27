@@ -35,12 +35,9 @@ import spock.lang.Unroll
 import static com.iadams.sonarqube.puppet.api.PuppetKeyword.*
 import static com.iadams.sonarqube.puppet.api.PuppetPunctuator.*
 import static com.iadams.sonarqube.puppet.api.PuppetTokenType.*
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.INTEGER
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.VARIABLE;
-import static com.iadams.sonarqube.puppet.api.PuppetTokenType.REGULAR_EXPRESSION_LITERAL;
-import static com.sonar.sslr.test.lexer.LexerMatchers.hasComment;
-import static com.sonar.sslr.test.lexer.LexerMatchers.hasToken;
-import static org.junit.Assert.assertThat;
+import static com.sonar.sslr.test.lexer.LexerMatchers.hasComment
+import static com.sonar.sslr.test.lexer.LexerMatchers.hasToken
+import static org.junit.Assert.assertThat
 
 class PuppetLexerSpec extends Specification {
 
@@ -184,27 +181,27 @@ class PuppetLexerSpec extends Specification {
     containsToken(input, token)
 
     where:
-    input   | token
-    '0777'  | OCTAL_INTEGER
-    '0x777' | HEX_INTEGER
-    '0xdef' | HEX_INTEGER
-    '0Xdef' | HEX_INTEGER
-    '0xDEF' | HEX_INTEGER
-    '0'     | INTEGER
-    '123123'| INTEGER
-    '0.3'   | FLOAT
-    '1.3'   | FLOAT
-    '12.124'| FLOAT
-    '3e5'		| FLOAT
-    '1.2'		| FLOAT
-    '5235.32'	| FLOAT
-    '6.667e-11'	| FLOAT
-    '3.3'		| FLOAT
-    '5E6'		| FLOAT
-    '7E-3'	| FLOAT
-    '5.333E2'| FLOAT
-    '1e2'		| FLOAT
-    '1.1'		| FLOAT
+    input       | token
+    '0777'      | OCTAL_INTEGER
+    '0x777'     | HEX_INTEGER
+    '0xdef'     | HEX_INTEGER
+    '0Xdef'     | HEX_INTEGER
+    '0xDEF'     | HEX_INTEGER
+    '0'         | INTEGER
+    '123123'    | INTEGER
+    '0.3'       | FLOAT
+    '1.3'       | FLOAT
+    '12.124'    | FLOAT
+    '3e5'       | FLOAT
+    '1.2'       | FLOAT
+    '5235.32'   | FLOAT
+    '6.667e-11' | FLOAT
+    '3.3'       | FLOAT
+    '5E6'       | FLOAT
+    '7E-3'      | FLOAT
+    '5.333E2'   | FLOAT
+    '1e2'       | FLOAT
+    '1.1'       | FLOAT
   }
 
   def "example file is lexed correctly"() {
@@ -276,7 +273,7 @@ class PuppetLexerSpec extends Specification {
     containsToken(':', COLON)
   }
 
-  def "node with regex lex correctly"(){
+  def "node with regex lex correctly"() {
     given:
     lexer.lex("node /^www\\d+\$/ {}")
 
@@ -287,7 +284,7 @@ class PuppetLexerSpec extends Specification {
     containsToken('}', RBRACE)
   }
 
-  def "two assignment statements"(){
+  def "two assignment statements"() {
     given:
     lexer.lex('$var1 = some::thing\n$var2 = some::thing')
 
@@ -315,7 +312,7 @@ class PuppetLexerSpec extends Specification {
                   "/\\//"]
   }
 
-  def "strings with regex lex correctly"(){
+  def "strings with regex lex correctly"() {
     given:
     lexer.lex('/(?i-mx:ubuntu|debian)/  => "apa/che2"')
 
@@ -337,4 +334,5 @@ class PuppetLexerSpec extends Specification {
     }
     return false;
   }
+
 }

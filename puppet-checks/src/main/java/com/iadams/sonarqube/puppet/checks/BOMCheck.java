@@ -22,45 +22,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.iadams.sonarqube.puppet.api;
+package com.iadams.sonarqube.puppet.checks;
 
+import com.google.common.base.Charsets;
+import com.iadams.sonarqube.puppet.CharsetAwareVisitor;
+import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
+import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.TokenType;
 
-public enum PuppetTokenType implements TokenType {
-  FLOAT,
-  INTEGER,
-  HEX_INTEGER,
-  OCTAL_INTEGER,
-  REGULAR_EXPRESSION_LITERAL,
-  EMPTY,
+import java.nio.charset.Charset;
 
-  DOUBLE_QUOTED_STRING_LITERAL,
-  SINGLE_QUOTED_STRING_LITERAL,
+import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.check.Priority;
+import org.sonar.check.Rule;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
-  // https://github.com/puppetlabs/puppet-specifications/blob/master/language/lexical_structure.md#identifiers
-  NAME,
-  REF,
-  VARIABLE,
+@Rule(
+  key = "BomUtf8Files",
+  name = "BOM should not be used for UTF-8 files",
+  priority = Priority.MAJOR,
+  tags = {Tags.PITFALL})
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.SOFTWARE_RELATED_PORTABILITY)
+@SqaleConstantRemediation("5min")
+public class BOMCheck extends PuppetCheckVisitor implements CharsetAwareVisitor {
 
-  INDENT,
-  DEDENT,
-  NEWLINE,
-  BOM;
+  private Charset charset;
 
   @Override
-  public String getName() {
-    return name();
+  public void setCharset(Charset charset) {
+    this.charset = charset;
   }
 
   @Override
-  public String getValue() {
-    return name();
+  public void init() {
+    if (charset.equals(Charsets.UTF_8)) {
+      subscribeTo(PuppetTokenType.BOM);
+    }
   }
 
   @Override
-  public boolean hasToBeSkippedFromAst(AstNode node) {
-    return false;
+  public void visitNode(AstNode node) {
+    addIssueOnFile(this, "Remove the BOM.");
   }
 
 }
