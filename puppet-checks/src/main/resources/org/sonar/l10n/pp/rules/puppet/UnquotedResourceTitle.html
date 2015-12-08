@@ -1,15 +1,9 @@
 <p>
-    All resource titles must be quoted. If you are using an array of titles you must quote each title in the array, but
-    cannot quote the array itself.<br/>
-    Note also that variables standing by themselves should not be quoted, unless they are a resource title.
+    All resource titles must be quoted. If you are using an array of titles you must quote each title in the array, but should not quote the array itself.<br/>
 </p>
 <h2>Noncompliant Code Example</h2>
 <pre>
 file { foo:    # Noncompliant
-  ensure => directory,
-}
-
-file { $foo:   # Noncompliant
   ensure => directory,
 }
 
@@ -23,10 +17,6 @@ file { [
 <h2>Compliant Solution</h2>
 <pre>
 file { 'foo':
-  ensure => directory,
-}
-
-file { "${foo}":
   ensure => directory,
 }
 

@@ -1,9 +1,6 @@
 file { foo:    # Noncompliant
 }
 
-file { $foo:   # Noncompliant
-}
-
 file { [
   abc,       # Noncompliant
   $var,      # Noncompliant
@@ -12,9 +9,6 @@ file { [
 }
 
 file { 'foo':
-}
-
-file { "${foo}":
 }
 
 file { [
