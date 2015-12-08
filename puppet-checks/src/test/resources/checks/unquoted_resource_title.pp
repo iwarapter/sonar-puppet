@@ -3,7 +3,7 @@ file { foo:    # Noncompliant
 
 file { [
   abc,       # Noncompliant
-  $var,      # Noncompliant
+  $var,
 ]:
   ensure => directory,
 }
