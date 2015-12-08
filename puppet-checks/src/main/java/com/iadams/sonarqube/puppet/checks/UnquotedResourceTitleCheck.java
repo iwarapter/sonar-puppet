@@ -52,7 +52,7 @@ public class UnquotedResourceTitleCheck extends PuppetCheckVisitor {
 
   @Override
   public void visitNode(AstNode node) {
-    if (node.getFirstChild(PuppetTokenType.NAME) != null || node.getFirstChild(PuppetTokenType.VARIABLE) != null) {
+    if (node.getFirstChild(PuppetTokenType.NAME) != null ) {
       addIssue(node, this, "Quote this resource title.");
     } else if (node.getFirstChild(PuppetGrammar.ARRAY) != null) {
       boolean hasUnquotedTitle = false;
