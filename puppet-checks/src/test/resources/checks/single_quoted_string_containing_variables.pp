@@ -8,3 +8,5 @@ class {'apache':
 class {'apache':
   version => 'abc $ def',
 }
+
+defined('$foo') # compliant, defined takes a variable as a string

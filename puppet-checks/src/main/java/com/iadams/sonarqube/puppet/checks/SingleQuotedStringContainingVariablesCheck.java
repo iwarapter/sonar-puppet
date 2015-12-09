@@ -51,7 +51,7 @@ public class SingleQuotedStringContainingVariablesCheck extends PuppetCheckVisit
 
   @Override
   public void visitNode(AstNode node) {
-    if (CheckStringUtils.containsVariable(node.getTokenValue())) {
+    if (CheckStringUtils.containsVariable(node.getTokenValue()) && !("defined".equals(node.getTokenValue()))) {
       addIssue(node, this, "Use double quotes instead of single quotes for the string to be interpolated.");
     }
   }
