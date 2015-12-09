@@ -1,6 +1,6 @@
 #SonarQube Puppet Plugin
  [![Build Status](https://travis-ci.org/iwarapter/sonar-puppet.svg?branch=master)](https://travis-ci.org/iwarapter/sonar-puppet)
-
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/iwarapter/sonar-puppet?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 ##Description
 
 This plugin enables analysis of [Puppet] code. It comes with more than 60 rules spanning from style checks (i.e. All arrows in attribute/value list should be aligned) to detection of potential bugs (i.e. Duplicated parameters should be removed).
