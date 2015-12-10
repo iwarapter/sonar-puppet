@@ -13,6 +13,10 @@ buildscript {
 apply plugin: org.kt3k.gradle.plugin.CoverallsPlugin
 apply plugin: 'jacoco'
 
+repositories {
+  jcenter()
+}
+
 task jacocoRootReport(type: JacocoReport, group: 'Coverage reports') {
   description = 'Generates an aggregate report from all subprojects'
   dependsOn(subprojects.test)
