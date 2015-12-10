@@ -1,14 +1,22 @@
-apply plugin: "sonar-runner"
-
-repositories {
-    jcenter()
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "org.sonarqube.gradle:gradle-sonarqube-plugin:1.1"
+  }
 }
 
-sonarRunner {
-    sonarProperties {
-        property "sonar.host.url", "http://localhost:9000"
-        property "sonar.jdbc.url", "jdbc:h2:tcp://localhost:9092/sonar"
-        property "sonar.jdbc.username", "sonar"
-        property "sonar.jdbc.password", "sonar"
-    }
+//apply plugin: "org.sonarqube"
+apply plugin: org.sonarqube.gradle.SonarQubePlugin
+
+sonarqube {
+  properties {
+    property "sonar.host.url", "http://localhost:9000"
+    property "sonar.jdbc.url", "jdbc:h2:tcp://localhost:9092/sonar"
+    property "sonar.jdbc.username", "sonar"
+    property "sonar.jdbc.password", "sonar"
+  }
 }
