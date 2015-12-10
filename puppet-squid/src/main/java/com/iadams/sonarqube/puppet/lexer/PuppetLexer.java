@@ -53,6 +53,7 @@ public class PuppetLexer {
       .withCharset(conf.getCharset())
       .withFailIfNoChannelToConsumeOneCharacter(true)
 
+      .withChannel(regexp(PuppetTokenType.BOM, "\uFEFF"))
       .withChannel(regexp(PuppetTokenType.HEX_INTEGER, "0(x|X)[0-9a-fA-F]+"))
       .withChannel(regexp(PuppetTokenType.OCTAL_INTEGER, "0[0-7]+"))
       .withChannel(regexp(PuppetTokenType.FLOAT, "-?(?=\\d+[.eE])(?=\\.?\\d)\\d*\\.?\\d*(?:[eE][+-]?\\d+)?"))
