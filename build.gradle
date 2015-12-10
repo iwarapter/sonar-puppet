@@ -1,79 +1,52 @@
 buildscript {
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
     }
-    dependencies {
-        classpath "nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0"
-        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.1.4'
-    }
+  }
+  dependencies {
+    classpath "gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.12.1"
+    classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.1.4'
+  }
 }
 
 apply from: "$rootDir/gradle/sonar.gradle"
 
 allprojects {
-    group = 'com.iadams.sonarqube'
-    version = '1.3-SNAPSHOT'
+  group = 'com.iadams.sonarqube'
+  version = '1.3-SNAPSHOT'
 }
 
 subprojects {
-    apply plugin: 'groovy'
-    apply plugin: 'maven-publish'
-    apply plugin: "info.solidsoft.pitest"
-    apply from: "$rootDir/gradle/jacoco.gradle"
-    apply from: "$rootDir/gradle/publishing.gradle"
+  apply plugin: 'groovy'
+  apply plugin: "info.solidsoft.pitest"
+  apply from: "$rootDir/gradle/jacoco.gradle"
+  apply from: "$rootDir/gradle/publishing.gradle"
 
-    apply plugin: "com.github.hierynomus.license"
-    license {
-        header rootProject.file('LICENSE')
-        includes(["**/*.java", "**/*.groovy"])
-    }
+  apply plugin: "com.github.hierynomus.license"
+  license {
+    header rootProject.file('LICENSE')
+    includes(["**/*.java", "**/*.groovy"])
+  }
 
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
+  sourceCompatibility = 1.7
+  targetCompatibility = 1.7
 
-    repositories {
-        jcenter()
-    }
+  repositories {
+    jcenter()
+  }
 
-    ext {
-        sonarVersion = '4.5.2'
-        sslrVersion = '1.20'
-    }
+  ext {
+    sonarVersion = '4.5.2'
+    sslrVersion = '1.20'
+  }
 
-    dependencies {
-        testCompile "org.spockframework:spock-core:1.0-groovy-2.3"
-        testRuntime "cglib:cglib-nodep:3.1"          // allows mocking of classes (in addition to interfaces)
-        testRuntime "org.objenesis:objenesis:2.1"    // allows mocking of classes without default constructor (together with CGLIB)
-    }
-
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
-
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        classifier = 'javadoc'
-        from javadoc.destinationDir
-    }
-
-    build.dependsOn sourcesJar
-    build.dependsOn javadocJar
-
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                from components.java
-
-                artifact sourcesJar {
-                    classifier "sources"
-                }
-
-                artifact javadocJar {
-                    classifier "javadoc"
-                }
-            }
-        }
-    }
+  dependencies {
+    testCompile "org.spockframework:spock-core:1.0-groovy-2.3"
+    testRuntime "cglib:cglib-nodep:3.1"          // allows mocking of classes (in addition to interfaces)
+    testRuntime "org.objenesis:objenesis:2.1"
+    // allows mocking of classes without default constructor (together with CGLIB)
+  }
 }
+
+apply from: "$rootDir/gradle/coveralls.gradle"

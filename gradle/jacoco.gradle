@@ -1,11 +1,11 @@
 apply plugin: "jacoco"
 
 jacocoTestReport {
-    reports {
-        xml.enabled true
-        csv.enabled false
-        html.destination "${buildDir}/reports/jacocoTestReport"
-    }
+  reports {
+    xml.enabled true
+    csv.enabled false
+    html.destination "${buildDir}/reports/jacocoTestReport"
+  }
 }
 
 test.finalizedBy jacocoTestReport
