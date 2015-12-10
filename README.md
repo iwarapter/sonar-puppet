@@ -2,6 +2,8 @@
  [![Build Status](https://travis-ci.org/iwarapter/sonar-puppet.svg?branch=master)](https://travis-ci.org/iwarapter/sonar-puppet)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/iwarapter/sonar-puppet?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Coverage Status](https://coveralls.io/repos/iwarapter/sonar-puppet/badge.svg?branch=master&service=github)](https://coveralls.io/github/iwarapter/sonar-puppet?branch=master)
+[![GitHub release](https://img.shields.io/github/release/iwarapter/sonar-puppet.svg)]()
+[![GitHub license](https://img.shields.io/github/license/iwarapter/sonar-puppet.svg)]()
 
 ##Description
 
