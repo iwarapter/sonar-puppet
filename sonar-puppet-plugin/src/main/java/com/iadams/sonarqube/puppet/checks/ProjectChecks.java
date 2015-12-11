@@ -138,7 +138,7 @@ public class ProjectChecks {
     }
   }
 
-  private void addIssue(String ruleKey, String message) {
+  protected void addIssue(String ruleKey, String message) {
     ActiveRule activeRule = rulesProfile.getActiveRule(CheckList.REPOSITORY_KEY, ruleKey);
     if (activeRule != null) {
       CodeVisitor check = checks.of(activeRule.getRule().ruleKey());

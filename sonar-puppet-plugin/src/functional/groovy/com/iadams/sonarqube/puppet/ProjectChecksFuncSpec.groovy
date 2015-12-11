@@ -26,7 +26,7 @@ package com.iadams.sonarqube.puppet
 
 import com.iadams.sonarqube.functional.FunctionalSpecBase
 
-class ProjectChecksSpec extends FunctionalSpecBase {
+class ProjectChecksFuncSpec extends FunctionalSpecBase {
 
   def "check for project rules no issue"() {
     when:

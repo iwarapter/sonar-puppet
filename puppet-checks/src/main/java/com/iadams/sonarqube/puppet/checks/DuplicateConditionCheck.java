@@ -59,12 +59,12 @@ public class DuplicateConditionCheck extends PuppetCheckVisitor {
 
   @Override
   public void visitFile(@Nullable AstNode astNode) {
-    ignoreList = new ArrayList<AstNode>();
+    ignoreList = new ArrayList<>();
   }
 
   @Override
   public void visitNode(AstNode node) {
-    List<AstNode> conditions = new ArrayList<AstNode>();
+    List<AstNode> conditions = new ArrayList<>();
     if (node.is(PuppetGrammar.IF_STMT)) {
       if (ignoreList.contains(node)) {
         return;
@@ -83,7 +83,7 @@ public class DuplicateConditionCheck extends PuppetCheckVisitor {
   }
 
   private List<AstNode> getConditionsToCompare(AstNode ifStmt) {
-    List<AstNode> conditions= new ArrayList<AstNode>();
+    List<AstNode> conditions= new ArrayList<>();
     conditions.add(ifStmt.getFirstChild(PuppetGrammar.EXPRESSION).getFirstChild());
 
     for (AstNode elsifNode : ifStmt.getChildren(PuppetGrammar.ELSIF_STMT)) {

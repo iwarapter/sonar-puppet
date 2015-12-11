@@ -14,9 +14,9 @@ apply plugin: org.sonarqube.gradle.SonarQubePlugin
 
 sonarqube {
   properties {
-    property "sonar.host.url", "http://localhost:9000"
-    property "sonar.jdbc.url", "jdbc:h2:tcp://localhost:9092/sonar"
-    property "sonar.jdbc.username", "sonar"
-    property "sonar.jdbc.password", "sonar"
+    property "sonar.host.url", "http://nemo.sonarqube.org/"
+    property "sonar.analysis.mode", "issues"
+    property "sonar.issuesReport.console.enable", "true"
+    property "sonar.issuesReport.html.enable", "true"
   }
 }

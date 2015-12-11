@@ -26,19 +26,33 @@ package com.iadams.sonarqube.puppet
 
 import com.iadams.sonarqube.functional.FunctionalSpecBase
 
-class ParsingErrorSpec extends FunctionalSpecBase {
+class PuppetResourcesFuncSpec extends FunctionalSpecBase {
 
-  def "run sonar-runner un-parsable file"() {
+  def setup() {
+    copyResources("example_file_resource.pp", "example_file_resource.pp")
+    copyResources("example_user_resource.pp", "example_user_resource.pp")
+  }
+
+  def "puppet resources are recorded on a file"() {
     when:
-    copyResources("parsing_error.pp", "parsing_error.pp")
-    deleteProject()
+    resetDefaultProfile()
     runSonarRunner()
 
     then:
     analysisFinishedSuccessfully()
-    analysisLogContainsErrorsOrWarnings()
-    analysisLogContains(".* ERROR - Unable to parse file: .*/parsing_error.pp")
-    theFollowingProjectMetricsHaveTheFollowingValue([violations: 1, lines: 2])
-    theFollowingFileMetricsHaveTheFollowingValue('parsing_error.pp', [violations: 1])
+    analysisLogDoesNotContainErrorsOrWarnings()
+    theFollowingFileMetricsHaveTheFollowingValue('example_file_resource.pp', [puppet_resources: 1, lines: 3])
+    theFollowingFileMetricsHaveTheFollowingValue('example_user_resource.pp', [puppet_resources: 1, lines: 4])
+  }
+
+  def "puppet resources are recorded on a project"() {
+    when:
+    resetDefaultProfile()
+    runSonarRunner()
+
+    then:
+    analysisFinishedSuccessfully()
+    analysisLogDoesNotContainErrorsOrWarnings()
+    theFollowingProjectMetricsHaveTheFollowingValue([puppet_resources: 2, lines: 7])
   }
 }
