@@ -30,13 +30,10 @@ import com.iadams.sonarqube.puppet.checks.CheckList;
 import com.iadams.sonarqube.puppet.checks.ProjectChecks;
 import com.iadams.sonarqube.puppet.highlighter.PuppetHighlighter;
 import com.iadams.sonarqube.puppet.metrics.FileLinesVisitor;
-import com.iadams.sonarqube.puppet.metrics.PuppetLanguageMetrics;
 import com.sonar.sslr.api.Grammar;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.Sensor;
@@ -147,7 +144,6 @@ public class PuppetSquidSensor implements Sensor {
     context.saveMeasure(sonarFile, CoreMetrics.CLASSES, squidFile.getDouble(PuppetMetric.CLASSES));
     context.saveMeasure(sonarFile, CoreMetrics.COMPLEXITY, squidFile.getDouble(PuppetMetric.COMPLEXITY));
     context.saveMeasure(sonarFile, CoreMetrics.COMMENT_LINES, squidFile.getDouble(PuppetMetric.COMMENT_LINES));
-    context.saveMeasure(sonarFile, PuppetLanguageMetrics.PUPPET_RESOURCES, squidFile.getDouble(PuppetMetric.RESOURCES));
   }
 
   private void saveIssues(InputFile sonarFile, SourceFile squidFile) {
