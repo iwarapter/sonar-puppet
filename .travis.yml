@@ -4,7 +4,12 @@ jdk:
   - oraclejdk7
 
 env:
-  - PATH=$PATH:/tmp/sonar-runner-2.4/bin SONAR_DL=http://downloads.sonarsource.com/sonarqube/sonarqube-5.1.1.zip SONAR_HOME=/tmp/sonarqube-5.1.1 RAILS_ENV=production
+  matrix:
+    - PATH=$PATH:/tmp/sonar-runner-2.4/bin SONAR_DL=https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-4.5.6.zip SONAR_HOME=/tmp/sonarqube-4.5.6 RAILS_ENV=production
+    - PATH=$PATH:/tmp/sonar-runner-2.4/bin SONAR_DL=http://downloads.sonarsource.com/sonarqube/sonarqube-5.0.1.zip SONAR_HOME=/tmp/sonarqube-5.0.1 RAILS_ENV=production
+    - PATH=$PATH:/tmp/sonar-runner-2.4/bin SONAR_DL=https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-5.1.2.zip SONAR_HOME=/tmp/sonarqube-5.1.2 RAILS_ENV=production
+    - PATH=$PATH:/tmp/sonar-runner-2.4/bin SONAR_DL=https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-5.2.zip SONAR_HOME=/tmp/sonarqube-5.2 RAILS_ENV=production
+    - PATH=$PATH:/tmp/sonar-runner-2.4/bin SONAR_DL=https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-5.3-RC1.zip SONAR_HOME=/tmp/sonarqube-5.3-RC1 RAILS_ENV=production
 
 install:
   - cd /tmp
