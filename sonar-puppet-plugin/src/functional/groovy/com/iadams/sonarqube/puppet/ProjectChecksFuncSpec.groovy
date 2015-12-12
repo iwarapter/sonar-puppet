@@ -36,6 +36,7 @@ class ProjectChecksFuncSpec extends FunctionalSpecBase {
     createPuppetModuleReadme('sonarqube')
 
     runSonarRunner()
+    sleep(5000) //analysis needs time to be run on server
 
     then:
     analysisFinishedSuccessfully()
@@ -51,6 +52,7 @@ class ProjectChecksFuncSpec extends FunctionalSpecBase {
     createPuppetModuleReadme('sonarqube')
 
     runSonarRunner()
+    sleep(5000) //analysis needs time to be run on server
 
     then:
     analysisFinishedSuccessfully()
@@ -64,6 +66,7 @@ class ProjectChecksFuncSpec extends FunctionalSpecBase {
     createPuppetModuleReadme('sonarqube')
 
     runSonarRunner()
+    sleep(5000) //analysis needs time to be run on server
 
     then:
     analysisFinishedSuccessfully()
@@ -77,6 +80,7 @@ class ProjectChecksFuncSpec extends FunctionalSpecBase {
     createPuppetModuleManifest('sonarqube')
 
     runSonarRunner()
+    sleep(5000) //analysis needs time to be run on server
 
     then:
     analysisFinishedSuccessfully()

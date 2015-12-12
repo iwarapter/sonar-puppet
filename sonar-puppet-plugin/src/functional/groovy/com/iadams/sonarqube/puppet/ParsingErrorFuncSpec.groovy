@@ -33,6 +33,7 @@ class ParsingErrorFuncSpec extends FunctionalSpecBase {
     copyResources("parsing_error.pp", "parsing_error.pp")
     deleteProject()
     runSonarRunner()
+    sleep(5000) //analysis needs time to be run on server
 
     then:
     analysisFinishedSuccessfully()
