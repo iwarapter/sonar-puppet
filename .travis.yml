@@ -21,7 +21,7 @@ install:
   - cd -
 
 script:
-  - ./gradlew build localDeploy functionalTest --i -Psonar.pluginDir=$SONAR_HOME/extensions/plugins
+  - ./gradlew build localDeploy functionalTest -Psonar.pluginDir=$SONAR_HOME/extensions/plugins
 
 before_install:
  - chmod +x gradlew

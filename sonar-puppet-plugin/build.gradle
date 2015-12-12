@@ -1,54 +1,59 @@
 plugins {
-    id "com.iadams.sonar-packaging" version "0.1.3"
+  id "com.iadams.sonar-packaging" version "0.1.3"
 }
 
 sourceSets {
-    functionalTest {
-        groovy.srcDir file('src/functional/groovy')
-        resources.srcDir file('src/functional/resources')
-        compileClasspath = sourceSets.main.output + configurations.testRuntime
-        runtimeClasspath = output + compileClasspath
-    }
+  functionalTest {
+    groovy.srcDir file('src/functional/groovy')
+    resources.srcDir file('src/functional/resources')
+    compileClasspath = sourceSets.main.output + configurations.testRuntime
+    runtimeClasspath = output + compileClasspath
+  }
 }
 
 task functionalTest(type: Test) {
-    testClassesDir = sourceSets.functionalTest.output.classesDir
-    classpath = sourceSets.functionalTest.runtimeClasspath
-    reports.html.destination = file("$buildDir/reports/functional")
+  testClassesDir = sourceSets.functionalTest.output.classesDir
+  classpath = sourceSets.functionalTest.runtimeClasspath
+  reports.html.destination = file("$buildDir/reports/functional")
+
+  testLogging {
+    events "failed"
+    exceptionFormat "full"
+  }
 }
 
 dependencies {
-    compile project(':puppet-checks')
+  compile project(':puppet-checks')
 
-    provided "org.codehaus.sonar:sonar-plugin-api:$sonarVersion"
+  provided "org.codehaus.sonar:sonar-plugin-api:$sonarVersion"
 
-    testCompile "org.codehaus.sonar:sonar-plugin-api:$sonarVersion"
-    testCompile "org.codehaus.sonar:sonar-testing-harness:$sonarVersion"
-    testCompile 'org.apache.maven:maven-project:2.2.1'
-    testCompile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
-    testCompile 'com.iadams.sonarqube:sonar-functional-test-harness:0.1.4'
+  testCompile "org.codehaus.sonar:sonar-plugin-api:$sonarVersion"
+  testCompile "org.codehaus.sonar:sonar-testing-harness:$sonarVersion"
+  testCompile 'org.apache.maven:maven-project:2.2.1'
+  testCompile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
+  testCompile 'com.iadams.sonarqube:sonar-functional-test-harness:0.1.4'
 
-    testRuntime 'org.slf4j:slf4j-simple:1.7.12'
+  testRuntime 'org.slf4j:slf4j-simple:1.7.12'
 }
 
 sonarPackaging {
-    serverUrl = 'http://localhost:9000'
-    pluginDir = project.hasProperty( 'sonar.pluginDir' ) ? project.getProperty( 'sonar.pluginDir') : null
-    pluginKey = 'puppet'
-    pluginClass = 'com.iadams.sonarqube.puppet.PuppetPlugin'
-    pluginName = 'Puppet'
-    pluginDescription = 'Enable analysis and reporting on Puppet projects.'
-    pluginDevelopers = 'Iain Adams and David RACODON'
-    pluginLicense = 'MIT'
-    pluginUrl = 'https://github.com/iwarapter/sonar-puppet'
-    pluginIssueTrackerUrl = 'https://github.com/iwarapter/sonar-puppet/issues'
-    organization {
-        name = 'Iain Adams and David RACODON'
-    }
+  serverUrl = 'http://localhost:9000'
+  pluginDir = project.hasProperty('sonar.pluginDir') ? project.getProperty('sonar.pluginDir') : null
+  pluginKey = 'puppet'
+  pluginClass = 'com.iadams.sonarqube.puppet.PuppetPlugin'
+  pluginName = 'Puppet'
+  pluginDescription = 'Enable analysis and reporting on Puppet projects.'
+  pluginDevelopers = 'Iain Adams and David RACODON'
+  pluginLicense = 'MIT'
+  pluginUrl = 'https://github.com/iwarapter/sonar-puppet'
+  pluginIssueTrackerUrl = 'https://github.com/iwarapter/sonar-puppet/issues'
+  organization {
+    name = 'Iain Adams and David RACODON'
+  }
 }
 
 pitest {
-    targetClasses = ['com.iadams.sonarqube.puppet.*']
-    threads = 4
-    outputFormats = ['XML', 'HTML']
+  targetClasses = ['com.iadams.sonarqube.puppet.*']
+  threads = 4
+  outputFormats = ['XML', 'HTML']
 }

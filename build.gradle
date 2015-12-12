@@ -47,6 +47,13 @@ subprojects {
     testRuntime "org.objenesis:objenesis:2.1"
     // allows mocking of classes without default constructor (together with CGLIB)
   }
+
+  test {
+    testLogging {
+      events "failed"
+      exceptionFormat "full"
+    }
+  }
 }
 
 apply from: "$rootDir/gradle/coveralls.gradle"
