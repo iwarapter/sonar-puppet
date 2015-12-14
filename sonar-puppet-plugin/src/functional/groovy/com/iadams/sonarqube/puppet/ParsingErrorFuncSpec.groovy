@@ -26,19 +26,20 @@ package com.iadams.sonarqube.puppet
 
 import com.iadams.sonarqube.functional.FunctionalSpecBase
 
-class ParsingErrorSpec extends FunctionalSpecBase {
+class ParsingErrorFuncSpec extends FunctionalSpecBase {
 
   def "run sonar-runner un-parsable file"() {
     when:
     copyResources("parsing_error.pp", "parsing_error.pp")
     deleteProject()
     runSonarRunner()
+    sleep(5000) //analysis needs time to be run on server
 
     then:
     analysisFinishedSuccessfully()
     analysisLogContainsErrorsOrWarnings()
     analysisLogContains(".* ERROR - Unable to parse file: .*/parsing_error.pp")
-    theFollowingProjectMetricsHaveTheFollowingValue([violations: 1, lines: 2])
+    theFollowingProjectMetricsHaveTheFollowingValue([violations: 1, files: 1])
     theFollowingFileMetricsHaveTheFollowingValue('parsing_error.pp', [violations: 1])
   }
 }

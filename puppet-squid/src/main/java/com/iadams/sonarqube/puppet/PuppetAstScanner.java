@@ -69,7 +69,7 @@ public class PuppetAstScanner {
   }
 
   public static AstScanner<Grammar> create(PuppetConfiguration conf, SquidAstVisitor<Grammar>... visitors) {
-    final SquidAstVisitorContextImpl<Grammar> context = new SquidAstVisitorContextImpl<Grammar>(new SourceProject("Puppet Project"));
+    final SquidAstVisitorContextImpl<Grammar> context = new SquidAstVisitorContextImpl<>(new SourceProject("Puppet Project"));
     final Parser<Grammar> parser = PuppetParser.create(conf);
 
     AstScanner.Builder<Grammar> builder = AstScanner.<Grammar>builder(context).setBaseParser(parser);

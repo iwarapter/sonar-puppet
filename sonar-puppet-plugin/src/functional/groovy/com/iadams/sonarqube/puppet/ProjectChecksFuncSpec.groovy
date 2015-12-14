@@ -26,7 +26,7 @@ package com.iadams.sonarqube.puppet
 
 import com.iadams.sonarqube.functional.FunctionalSpecBase
 
-class ProjectChecksSpec extends FunctionalSpecBase {
+class ProjectChecksFuncSpec extends FunctionalSpecBase {
 
   def "check for project rules no issue"() {
     when:
@@ -36,6 +36,7 @@ class ProjectChecksSpec extends FunctionalSpecBase {
     createPuppetModuleReadme('sonarqube')
 
     runSonarRunner()
+    sleep(5000) //analysis needs time to be run on server
 
     then:
     analysisFinishedSuccessfully()
@@ -51,6 +52,7 @@ class ProjectChecksSpec extends FunctionalSpecBase {
     createPuppetModuleReadme('sonarqube')
 
     runSonarRunner()
+    sleep(5000) //analysis needs time to be run on server
 
     then:
     analysisFinishedSuccessfully()
@@ -64,6 +66,7 @@ class ProjectChecksSpec extends FunctionalSpecBase {
     createPuppetModuleReadme('sonarqube')
 
     runSonarRunner()
+    sleep(5000) //analysis needs time to be run on server
 
     then:
     analysisFinishedSuccessfully()
@@ -77,6 +80,7 @@ class ProjectChecksSpec extends FunctionalSpecBase {
     createPuppetModuleManifest('sonarqube')
 
     runSonarRunner()
+    sleep(5000) //analysis needs time to be run on server
 
     then:
     analysisFinishedSuccessfully()
