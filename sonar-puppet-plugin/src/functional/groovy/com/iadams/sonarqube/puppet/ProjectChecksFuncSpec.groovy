@@ -87,7 +87,7 @@ class ProjectChecksFuncSpec extends FunctionalSpecBase {
     theFollowingProjectMetricsHaveTheFollowingValue([violations: 1, lines: 2])
   }
 
-  private void createPuppetModule(String moduleName, String baseDir = "$projectDir/modules"){
+  private void createPuppetModule(String moduleName, String baseDir = "$projectDir/modules") {
     String modulePath = directory(moduleName, new File(baseDir))
     directory('manifests', new File(modulePath))
     String specPath = directory('spec', new File(modulePath))
@@ -95,15 +95,15 @@ class ProjectChecksFuncSpec extends FunctionalSpecBase {
     file("manifests/init.pp", new File(modulePath)) << "class $moduleName { \$a = 1 }\n"
   }
 
-  private void createPuppetModuleTestsDir(String moduleName, String baseDir = "$projectDir/modules"){
+  private void createPuppetModuleTestsDir(String moduleName, String baseDir = "$projectDir/modules") {
     directory("$moduleName/tests", new File(baseDir))
   }
 
-  private void createPuppetModuleManifest(String moduleName, String baseDir = "$projectDir/modules"){
+  private void createPuppetModuleManifest(String moduleName, String baseDir = "$projectDir/modules") {
     file("$moduleName/metadata.json", new File(baseDir))
   }
 
-  private void createPuppetModuleReadme(String moduleName, String baseDir = "$projectDir/modules"){
+  private void createPuppetModuleReadme(String moduleName, String baseDir = "$projectDir/modules") {
     file("$moduleName/README.md", new File(baseDir))
   }
 }

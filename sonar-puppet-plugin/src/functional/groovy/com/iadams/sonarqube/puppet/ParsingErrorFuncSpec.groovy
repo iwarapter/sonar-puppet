@@ -38,7 +38,7 @@ class ParsingErrorFuncSpec extends FunctionalSpecBase {
     then:
     analysisFinishedSuccessfully()
     analysisLogContainsErrorsOrWarnings()
-    analysisLogContains(".* ERROR - Unable to parse file: .*/parsing_error.pp")
+    analysisLogContains("Parse error at line 1 column 13:")
     theFollowingProjectMetricsHaveTheFollowingValue([violations: 1, files: 1])
     theFollowingFileMetricsHaveTheFollowingValue('parsing_error.pp', [violations: 1])
   }
