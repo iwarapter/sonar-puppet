@@ -17,3 +17,8 @@ file { [
 ]:
   ensure => directory,
 }
+
+file { $bar:
+}
+
+

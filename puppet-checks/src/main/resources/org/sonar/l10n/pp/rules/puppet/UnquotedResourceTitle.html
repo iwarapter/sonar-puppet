@@ -1,5 +1,6 @@
 <p>
     All resource titles must be quoted. If you are using an array of titles you must quote each title in the array, but should not quote the array itself.<br/>
+    Note that if the title is just a variable, it doesn't need to be quoted.<br/>
 </p>
 <h2>Noncompliant Code Example</h2>
 <pre>
@@ -9,7 +10,7 @@ file { foo:    # Noncompliant
 
 file { [
     abc,       # Noncompliant
-    $var,      # Noncompliant
+    $var,
   ]:
   ensure => directory,
 }
@@ -20,9 +21,13 @@ file { 'foo':
   ensure => directory,
 }
 
+file { $bar:
+  ensure => directory,
+}
+
 file { [
     'abc',
-    "${var}",
+    $var,
   ]:
   ensure => directory,
 }
