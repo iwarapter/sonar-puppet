@@ -36,6 +36,7 @@ class AbstractSampleSpec extends Specification {
   static boolean isPuppetAvailable() {
     try {
       def p = "puppet --version".execute()
+      p.waitFor()
       def output = p.text
       println "Detected Puppet version: $output"
       return output.contains('3.8.') && p.exitValue() == 0
@@ -51,7 +52,6 @@ class AbstractSampleSpec extends Specification {
     sampleFile.write(sample)
 
     def p = "puppet parser validate ${sampleFile.absolutePath}".execute()
-    p.waitFor()
     p.waitFor()
     assert p.exitValue() == 0: """
         *****
