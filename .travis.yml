@@ -19,6 +19,7 @@ install:
   - unzip sonar-scanner-2.5.zip
   - ls -lar
   - cd -
+  - gem install puppet -v 3.8.6
 
 script:
   - ./gradlew build localDeploy functionalTest -Psonar.pluginDir=$SONAR_HOME/extensions/plugins
