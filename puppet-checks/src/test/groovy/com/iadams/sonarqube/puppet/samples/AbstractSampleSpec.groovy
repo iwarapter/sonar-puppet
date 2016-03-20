@@ -52,6 +52,7 @@ class AbstractSampleSpec extends Specification {
 
     def p = "puppet parser validate ${sampleFile.absolutePath}".execute()
     p.waitFor()
+    p.waitFor()
     assert p.exitValue() == 0: """
         *****
         Failed to execute sample:
