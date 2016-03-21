@@ -4,6 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/iwarapter/sonar-puppet/badge.svg?branch=master&service=github)](https://coveralls.io/github/iwarapter/sonar-puppet?branch=master)
 [![GitHub release](https://img.shields.io/github/release/iwarapter/sonar-puppet.svg)]()
 [![GitHub license](https://img.shields.io/github/license/iwarapter/sonar-puppet.svg)]()
+[![Quality Gate](https://nemo.sonarqube.org/api/badges/gate?key=com.iadams.sonarqube:sonar-puppet-plugin)](https://nemo.sonarqube.org/overview?id=com.iadams.sonarqube%3Asonar-puppet-plugin)
 
 ##Description
 
