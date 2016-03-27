@@ -11,7 +11,7 @@ file { '/tmp/foo':
   purge => 'true',
 }
 
-if $is_virtual == 'false' { ... }
+if $is_virtual == 'false' { }
 </pre>
 
 <h2>Compliant Solution</h2>
@@ -21,7 +21,7 @@ file { '/tmp/foo':
   purge => true,
 }
 
-if $is_virtual == false { ... }
+if $is_virtual == false { }
 </pre>
 
 <h2>See</h2>

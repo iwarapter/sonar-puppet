@@ -53,6 +53,7 @@ subprojects {
       events "failed"
       exceptionFormat "full"
     }
+    maxParallelForks 4
   }
 }
 

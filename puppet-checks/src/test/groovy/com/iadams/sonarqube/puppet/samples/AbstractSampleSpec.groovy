@@ -46,32 +46,43 @@ class AbstractSampleSpec extends Specification {
     }
   }
 
-  void validateSample(def sample) {
+  void validateSample(Sample sample) {
 
     def sampleFile = testProjectDir.newFile()
-    sampleFile.write(sample)
+    sampleFile.write(sample.sampleText)
 
     def p = "puppet parser validate ${sampleFile.absolutePath}".execute()
     p.waitFor()
     assert p.exitValue() == 0: """
-        *****
-        Failed to execute sample:
-        -Sample:
-        ${sampleFile.text}
-        -Problem: ${p.err.text}
-        *****
-        """.stripIndent()
+*****
+Failed to execute sample:
+-Sample File:
+${sample.fileName}
+-Sample:
+${sample.sampleText}
+-Problem:
+${p.err.text}
+*****
+""".stripIndent()
   }
 
-  def findSamples(String filePath) {
-    File file = new File(filePath)
+  def findSamples(File file) {
     def regex = /(?ms).*?<pre>(.*?)<\\/pre>(.*?)/
 
     def samples = []
     file.text.eachMatch(regex) {
-      samples.add(it[1])
+      samples.add(new Sample(file.name, it[1]))
     }
     samples
   }
 
+  class Sample{
+    def fileName
+    def sampleText
+
+    Sample(String fileName, String sampleText){
+      this.fileName = fileName
+      this.sampleText = sampleText
+    }
+  }
 }

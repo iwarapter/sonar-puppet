@@ -7,30 +7,30 @@
 
 <pre>
 if $is_virtual {
-  do_something
+  #do_something
 }
 elsif $operatingsystem == 'Windows' {
-  do_something_else
+  #do_something_else
 }
 </pre>
 
 <h2>Compliant Solution</h2>
 <pre>
 if $is_virtual {
-  do_something
+  #do_something
 }
 elsif $operatingsystem == 'Windows' {
-  do_something_else
+  #do_something_else
 }
 else {
   # Do nothing because...
 }
 
 if $is_virtual {
-  do_something
+  #do_something
 }
 elsif $operatingsystem == 'Windows' {
-  do_something_else
+  #do_something_else
 }
 else {
   fail 'This case is not supported...'

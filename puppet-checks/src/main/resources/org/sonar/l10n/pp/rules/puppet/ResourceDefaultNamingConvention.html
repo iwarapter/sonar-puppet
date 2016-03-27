@@ -8,18 +8,18 @@
 </nobr>. If not, the catalog compilation does not fail and the resource default statement is useless because it does not match any resource type.</p>
 <h2>Noncompliant Code Example</h2>
 <pre>
-Foo:bar {
+Foo::BAR {
   ensure => present,
 }
 </pre>
 <h2>Compliant Solution</h2>
 <pre>
-Foo:Bar {
+Foo::Bar {
   ensure => present,
 }
 </pre>
 <h2>See</h2>
 <ul>
-    <li><a href="https://docs.puppetlabs.com/puppet/latest/reference/lang_defaults.html#syntax">Resource default
+    <li><a href="https://docs.puppetlabs.com/puppet/3.8/reference/lang_defaults.html#syntax">Resource default
         statement syntax</a></li>
 </ul>

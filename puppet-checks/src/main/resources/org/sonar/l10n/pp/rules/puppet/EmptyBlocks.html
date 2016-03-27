@@ -21,7 +21,7 @@ Note that no issue is raised if an empty <code>case</code> matcher, <code>elsif<
 
 <pre>
 class abc {}     # Noncompliant: Remove this empty class
-define abc {}    # Noncompliant: Remove this empty define
+define def {}    # Noncompliant: Remove this empty define
 
 File {}                # Noncompliant: Remove this useless resource default statement
 File['/tmp/log'] {}    # Noncompliant: Remove this useless resource override
@@ -29,7 +29,7 @@ File['/tmp/log'] {}    # Noncompliant: Remove this useless resource override
 if !$isValidRole {}    # Noncompliant: Remove this useless 'if' statement
 
 if $isValidRole {
-  $userRole = 'admin',
+  $userRole = 'admin'
 }
 else {                 # Noncompliant: Empty on purpose or missing piece of code? Either remove this 'else' statement or add a comment
 }
@@ -54,7 +54,7 @@ case $operatingsystem {
 }
 
 if $isValidRole {
-  $userRole = 'admin',
+  $userRole = 'admin'
 }
 else {
   # Do nothing because...

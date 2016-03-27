@@ -29,15 +29,15 @@ import spock.lang.Unroll
 
 import static com.iadams.sonarqube.puppet.samples.AbstractSampleSpec.isPuppetAvailable
 
-class UnquotedResourceTitleSampleSpec extends AbstractSampleSpec {
+class PuppetSamplesSpec extends AbstractSampleSpec {
 
   @Unroll
   @Requires({ isPuppetAvailable() })
-  def "the puppet code is valid in sample"() {
+  def "validating sample in #sample.fileName"() {
     expect:
     validateSample(sample)
 
     where:
-    sample << findSamples('src/main/resources/org/sonar/l10n/pp/rules/puppet/UnquotedResourceTitle.html')
+    sample << new File('src/main/resources/org/sonar/l10n/pp/rules/puppet/').listFiles().collectMany {findSamples(it)}
   }
 }
