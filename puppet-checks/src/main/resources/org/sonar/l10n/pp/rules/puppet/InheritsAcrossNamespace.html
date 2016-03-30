@@ -8,20 +8,20 @@
 
 <h2>Noncompliant Code Example</h2>
 <pre>
-class ssh inherits server { ... }
+class ssh inherits server { }
 
-class ssh::client inherits workstation { ... }
+class ssh::client inherits workstation { }
 
-class wordpress inherits apache { ... }
+class wordpress inherits apache { }
 </pre>
 
 <h2>Compliant Solution</h2>
 <pre>
-class ssh { ... }
+class ssh { }
 
-class ssh::client inherits ssh { ... }
+class ssh::client inherits ssh { }
 
-class ssh::server inherits ssh { ... }
+class ssh::server inherits ssh { }
 </pre>
 
 <h2>See</h2>

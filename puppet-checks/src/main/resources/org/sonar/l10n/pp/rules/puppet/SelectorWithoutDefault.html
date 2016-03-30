@@ -17,15 +17,13 @@ $rootgroup = $osfamily ? {
 $rootgroup = $osfamily ? {
   'Solaris' => 'wheel',
   'Debian'  => 'root',
-  default   => fail "This module is not supported for ${osfamily}"
+  default   => fail("This module is not supported for ${osfamily}")
 }
 
 $rootgroup = $osfamily ? {
   'Solaris' => 'wheel',
   'Debian'  => 'root',
-  default   => {
-    # Do nothing because...
-  }
+  default   => 'some default value',
 }
 </pre>
 
