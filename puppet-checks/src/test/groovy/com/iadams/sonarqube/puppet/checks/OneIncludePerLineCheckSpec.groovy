@@ -44,6 +44,7 @@ class OneIncludePerLineCheckSpec extends Specification {
       .next().atLine(2).withMessage(MESSAGE)
       .next().atLine(3).withMessage(MESSAGE)
       .next().atLine(6).withMessage(MESSAGE)
+      .next().atLine(8).withMessage(MESSAGE)
       .noMore();
   }
 }

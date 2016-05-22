@@ -52,7 +52,7 @@ public class OneIncludePerLineCheck extends PuppetCheckVisitor {
 
   @Override
   public void visitNode(AstNode node) {
-    if ("include".equals(node.getTokenValue()) && !node.getFirstChild(PuppetGrammar.FUNCVALUES).getChildren(PuppetPunctuator.COMMA).isEmpty()) {
+    if ("include".equals(node.getTokenValue()) && node.hasDescendant(PuppetPunctuator.COMMA)) {
       addIssue(node, this, "Split this include statement into multiple lines.");
     }
   }
