@@ -14,7 +14,7 @@ apply from: "$rootDir/gradle/sonar.gradle"
 
 allprojects {
   group = 'com.iadams.sonarqube'
-  version = '1.4'
+  version = '1.5-SNAPSHOT'
 }
 
 subprojects {
