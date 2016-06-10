@@ -32,6 +32,20 @@ class my_class (
 ) { }
 </pre>
 
+<h2>Exception</h2>
+<p>If a resource expression includes more than one resource body, the trailing comma is not mandatory.</p>
+<pre>
+file {
+    'foo':
+      ensure => link,
+      target => '/tmp/foo',; # Compliant
+
+    'bar':
+      ensure => link,
+      target => '/tmp/bar';  # Compliant
+}
+</pre>
+
 <h2>See</h2>
 <ul>
     <li><a href="https://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation-and-whitespace">See Puppet Labs

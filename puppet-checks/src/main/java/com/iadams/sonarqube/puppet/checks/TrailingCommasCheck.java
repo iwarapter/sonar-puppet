@@ -65,9 +65,27 @@ public class TrailingCommasCheck extends PuppetCheckVisitor {
   }
 
   private void checkTrailingCommas(AstNode node, PuppetGrammar parentType, PuppetGrammar... childType) {
-    if (node.is(parentType) && node.getChildren(childType).size() != node.getChildren(PuppetPunctuator.COMMA).size()) {
-      addIssue(node.getChildren(childType).get(node.getChildren(childType).size() - 1), this, "Add the missing trailing comma.");
+    if (hasNotAllTrailingCommas(node, parentType, childType)) {
+      if (node.is(PuppetGrammar.PARAMS, PuppetGrammar.PARAMS)) {
+        if (hasNotTrailingSemiColon(node)) {
+          createIssue(node, childType);
+        }
+      } else {
+        createIssue(node, childType);
+      }
     }
+  }
+
+  private boolean hasNotAllTrailingCommas(AstNode node, PuppetGrammar parentType, PuppetGrammar... childType) {
+    return node.is(parentType) && node.getChildren(childType).size() != node.getChildren(PuppetPunctuator.COMMA).size();
+  }
+
+  private boolean hasNotTrailingSemiColon(AstNode node) {
+    return node.getNextAstNode() == null || !node.getNextAstNode().is(PuppetPunctuator.SEMIC);
+  }
+
+  private void createIssue(AstNode node, PuppetGrammar... childType) {
+    addIssue(node.getChildren(childType).get(node.getChildren(childType).size() - 1), this, "Add the missing trailing comma.");
   }
 
 }
