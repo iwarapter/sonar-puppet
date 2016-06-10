@@ -130,3 +130,33 @@ class a (
   $abc,
   $def = 'abc'  # Noncompliant
 ) {}
+
+class a {
+  sonarqube::plugin {
+    'sonar-css-plugin':
+      abc => 'abc',
+      version => $css; # Compliant
+    'sonar-java-plugin':
+      abc => 'abc',
+      version => $java; # Compliant
+  }
+}
+
+class a {
+  sonarqube::plugin {
+    'sonar-css-plugin':
+      abc => 'abc',
+      version => $css,; # Compliant
+    'sonar-java-plugin':
+      abc => 'abc',
+      version => $java,; # Compliant
+  }
+}
+
+class a {
+  sonarqube::plugin {
+    'sonar-css-plugin':
+      abc => 'abc',
+      version => $css # Noncompliant
+  }
+}

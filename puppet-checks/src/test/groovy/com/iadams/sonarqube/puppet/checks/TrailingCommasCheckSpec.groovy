@@ -55,6 +55,7 @@ class TrailingCommasCheckSpec extends Specification {
       .next().atLine(122).withMessage(MESSAGE)
       .next().atLine(126).withMessage(MESSAGE)
       .next().atLine(131).withMessage(MESSAGE)
+      .next().atLine(160).withMessage(MESSAGE)
       .noMore();
   }
 
