@@ -17,7 +17,7 @@ task functionalTest(type: Test) {
   reports.html.destination = file("$buildDir/reports/functional")
 
   testLogging {
-    events "failed"
+    events "passed", "failed"
     exceptionFormat "full"
   }
 }

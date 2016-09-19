@@ -10,6 +10,10 @@ env:
     - PATH=$PATH:/tmp/sonar-scanner-2.5/bin SONAR_DL=https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-5.1.2.zip SONAR_HOME=/tmp/sonarqube-5.1.2 RAILS_ENV=production
     - PATH=$PATH:/tmp/sonar-scanner-2.5/bin SONAR_DL=https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-5.2.zip SONAR_HOME=/tmp/sonarqube-5.2 RAILS_ENV=production
     - PATH=$PATH:/tmp/sonar-scanner-2.5/bin SONAR_DL=https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-5.3.zip SONAR_HOME=/tmp/sonarqube-5.3 RAILS_ENV=production
+    - PATH=$PATH:/tmp/sonar-scanner-2.5/bin SONAR_DL=https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-5.4.zip SONAR_HOME=/tmp/sonarqube-5.4 RAILS_ENV=production
+    - PATH=$PATH:/tmp/sonar-scanner-2.5/bin SONAR_DL=https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-5.5.zip SONAR_HOME=/tmp/sonarqube-5.5 RAILS_ENV=production
+    - PATH=$PATH:/tmp/sonar-scanner-2.5/bin SONAR_DL=https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-5.6.2.zip SONAR_HOME=/tmp/sonarqube-5.6.2 RAILS_ENV=production
+    - PATH=$PATH:/tmp/sonar-scanner-2.5/bin SONAR_DL=https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-6.0.zip SONAR_HOME=/tmp/sonarqube-6.0 RAILS_ENV=production
 
 install:
   - cd /tmp
