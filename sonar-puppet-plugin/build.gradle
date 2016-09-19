@@ -19,6 +19,7 @@ task functionalTest(type: Test) {
   testLogging {
     events "passed", "failed"
     exceptionFormat "full"
+    showStandardStreams = true
   }
 }
 
