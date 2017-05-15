@@ -28,6 +28,7 @@ import com.google.common.collect.Sets;
 import com.iadams.sonarqube.puppet.api.PuppetMetric;
 import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.*;
+import java.util.Map;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.measures.CoreMetrics;
@@ -41,14 +42,27 @@ import java.util.Set;
 public class FileLinesVisitor extends SquidAstVisitor<Grammar> implements AstAndTokenVisitor {
 
   private final FileLinesContextFactory fileLinesContextFactory;
+
+  private boolean seenFirstToken;
+
+  private final boolean ignoreHeaderComments;
+
+  private Set<Integer> noSonar = Sets.newHashSet();
+  private Set<Integer> linesOfCode = Sets.newHashSet();
+  private Set<Integer> linesOfComments = Sets.newHashSet();
+  private Set<Integer> linesOfDocstring = Sets.newHashSet();
   private final FileSystem fileSystem;
+  private final Map<InputFile, Set<Integer>> allLinesOfCode;
 
-  private final Set<Integer> linesOfCode = Sets.newHashSet();
-  private final Set<Integer> linesOfComments = Sets.newHashSet();
-
-  public FileLinesVisitor(FileLinesContextFactory fileLinesContextFactory, FileSystem fileSystem) {
+  public FileLinesVisitor(
+    FileLinesContextFactory fileLinesContextFactory,
+    FileSystem fileSystem,
+    Map<InputFile, Set<Integer>> linesOfCode,
+    boolean ignoreHeaderComments) {
     this.fileLinesContextFactory = fileLinesContextFactory;
     this.fileSystem = fileSystem;
+    this.allLinesOfCode = linesOfCode;
+    this.ignoreHeaderComments = ignoreHeaderComments;
   }
 
   @Override

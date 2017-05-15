@@ -24,20 +24,13 @@
  */
 package com.iadams.sonarqube.puppet.checks
 
-import com.sonar.sslr.api.Grammar
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import org.sonar.api.batch.fs.internal.DefaultFileSystem
-import org.sonar.api.batch.rule.ActiveRules
-import org.sonar.api.batch.rule.CheckFactory
-import org.sonar.api.batch.rule.Checks
+import org.sonar.api.batch.fs.internal.DefaultInputDir
+import org.sonar.api.batch.fs.internal.DefaultInputFile
 import org.sonar.api.batch.rule.internal.ActiveRulesBuilder
-import org.sonar.api.component.ResourcePerspectives
-import org.sonar.api.profiles.RulesProfile
-import org.sonar.api.resources.Project
-import org.sonar.api.resources.ProjectFileSystem
+import org.sonar.api.batch.sensor.internal.SensorContextTester
 import org.sonar.api.rule.RuleKey
-import org.sonar.squidbridge.SquidAstVisitor
 import spock.lang.Specification
 
 class ProjectChecksSpec extends Specification {
@@ -45,59 +38,51 @@ class ProjectChecksSpec extends Specification {
   @Rule
   TemporaryFolder testProjectDir = new TemporaryFolder()
 
-  ProjectChecks projectChecks;
-  DefaultFileSystem fs = new DefaultFileSystem()
-  Project project
-  Checks<SquidAstVisitor<Grammar>> checks
-  Map<String, String> issues;
+  private SensorContextTester context
+
+  ProjectChecks projectChecks
 
   def setup() {
-    fs.setBaseDir(testProjectDir.root)
-    ProjectFileSystem pfs = Mock()
-    project = Mock()
-    project.getFileSystem() >> pfs
-    pfs.getBasedir() >> fs.baseDir()
-    ActiveRules activeRules = (new ActiveRulesBuilder())
-      .create(RuleKey.of(CheckList.REPOSITORY_KEY, ReadmeFilePresentCheck.RULE_KEY))
-      .activate()
-      .build();
-    CheckFactory checkFactory = new CheckFactory(activeRules)
-    checks = checkFactory
-      .<SquidAstVisitor<Grammar>> create(CheckList.REPOSITORY_KEY)
-      .addAnnotatedChecks(CheckList.getChecks());
-
-    issues = new HashMap<>();
-
-    projectChecks = Spy(ProjectChecks, constructorArgs: [project, fs, Mock(RulesProfile), checks, Mock(ResourcePerspectives)])
-    projectChecks.addIssue(_, _) >> { String ruleKey, String message -> issues.put(ruleKey, message) }
+    context = SensorContextTester.create(testProjectDir.root)
+    context.activeRules = new ActiveRulesBuilder()
+      .create(RuleKey.of(CheckList.REPOSITORY_KEY, ReadmeFilePresentCheck.RULE_KEY)).activate()
+      .create(RuleKey.of(CheckList.REPOSITORY_KEY, MetadataJsonFilePresentCheck.RULE_KEY)).activate()
+      .create(RuleKey.of(CheckList.REPOSITORY_KEY, TestsDirectoryPresentCheck.RULE_KEY)).activate()
+      .build()
+    projectChecks = new ProjectChecks(context)
   }
 
   def "readme file present check"() {
     given:
     testProjectDir.newFolder('manifests')
     testProjectDir.newFile('metadata.json')
+    context.fileSystem().add(new DefaultInputDir("myProjectKey", 'manifests').setModuleBaseDir(testProjectDir.root.toPath()))
+    context.fileSystem().add(new DefaultInputFile("myProjectKey", "metadata.json").setModuleBaseDir(testProjectDir.root.toPath()).initMetadata('stuff'))
 
     when:
     projectChecks.reportProjectIssues()
 
     then:
     noExceptionThrown()
-    issues.size() == 1
-    issues.containsKey(ReadmeFilePresentCheck.RULE_KEY)
+    context.allIssues().size() == 1
+    context.allIssues()[0].ruleKey() == RuleKey.of(CheckList.REPOSITORY_KEY, ReadmeFilePresentCheck.RULE_KEY)
   }
 
   def "manifest file present check"() {
     given:
     testProjectDir.newFolder('manifests')
     testProjectDir.newFile('README.md')
+    context.fileSystem().add(new DefaultInputDir("myProjectKey", 'manifests').setModuleBaseDir(testProjectDir.root.toPath()))
+    context.fileSystem().add(new DefaultInputFile("myProjectKey", "README.md").setModuleBaseDir(testProjectDir.root.toPath()).initMetadata('stuff'))
 
     when:
     projectChecks.reportProjectIssues()
 
     then:
     noExceptionThrown()
-    issues.size() == 1
-    issues.containsKey(MetadataJsonFilePresentCheck.RULE_KEY)
+    context.allIssues().size() == 1
+    context.allIssues()[0].ruleKey() == RuleKey.of(CheckList.REPOSITORY_KEY, MetadataJsonFilePresentCheck.RULE_KEY)
+    context.allIssues()[0].primaryLocation().message()
   }
 
 
@@ -107,13 +92,14 @@ class ProjectChecksSpec extends Specification {
     testProjectDir.newFolder('tests')
     testProjectDir.newFile('README.md')
     testProjectDir.newFile('metadata.json')
+    context.fileSystem().add(new DefaultInputDir("myProjectKey", 'tests').setModuleBaseDir(testProjectDir.root.toPath()))
 
     when:
     projectChecks.reportProjectIssues()
 
     then:
     noExceptionThrown()
-    issues.size() == 1
-    issues.containsKey(TestsDirectoryPresentCheck.RULE_KEY)
+    context.allIssues().size() == 1
+    context.allIssues()[0].ruleKey() == RuleKey.of(CheckList.REPOSITORY_KEY, TestsDirectoryPresentCheck.RULE_KEY)
   }
 }

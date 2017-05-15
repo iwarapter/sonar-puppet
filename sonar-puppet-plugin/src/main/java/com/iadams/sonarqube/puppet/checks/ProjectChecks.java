@@ -24,50 +24,39 @@
  */
 package com.iadams.sonarqube.puppet.checks;
 
-import com.sonar.sslr.api.Grammar;
-
 import java.io.File;
 
-import org.sonar.api.batch.fs.FileSystem;
-import org.sonar.api.batch.rule.Checks;
-import org.sonar.api.component.ResourcePerspectives;
-import org.sonar.api.issue.Issuable;
-import org.sonar.api.issue.Issue;
-import org.sonar.api.profiles.RulesProfile;
-import org.sonar.api.resources.Directory;
-import org.sonar.api.resources.Project;
-import org.sonar.api.resources.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.sonar.api.batch.fs.InputComponent;
+import org.sonar.api.batch.fs.InputDir;
+import org.sonar.api.batch.sensor.SensorContext;
+import org.sonar.api.batch.sensor.issue.NewIssue;
+import org.sonar.api.batch.sensor.issue.NewIssueLocation;
 import org.sonar.api.rule.RuleKey;
-import org.sonar.api.rules.ActiveRule;
-import org.sonar.squidbridge.SquidAstVisitor;
-import org.sonar.squidbridge.api.CodeVisitor;
 
 public class ProjectChecks {
 
-  private final Project project;
-  private final FileSystem fileSystem;
-  private final RulesProfile rulesProfile;
-  private final Checks<SquidAstVisitor<Grammar>> checks;
-  private final ResourcePerspectives resourcePerspectives;
+  private final SensorContext context;
 
-  public ProjectChecks(Project project, FileSystem fileSystem, RulesProfile rulesProfile, Checks<SquidAstVisitor<Grammar>> checks,
-    ResourcePerspectives resourcePerspectives) {
-    this.project = project;
-    this.fileSystem = fileSystem;
-    this.rulesProfile = rulesProfile;
-    this.checks = checks;
-    this.resourcePerspectives = resourcePerspectives;
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProjectChecks.class);
+  private static final int readmeCheckDepth = 4;
+  private static final int metadataCheckDepth = 4;
+  private static final int testsCheckDepth = 4;
+
+  public ProjectChecks(SensorContext context) {
+    this.context = context;
   }
 
   public void reportProjectIssues() {
-    if (fileSystem.baseDir() != null) {
-      checkTestsDirectoryPresent(fileSystem.baseDir());
-      checkMetadataJsonFilePresent(fileSystem.baseDir());
-      checkReadmeFilePresent(fileSystem.baseDir());
+    if (context.fileSystem().baseDir() != null) {
+      checkTestsDirectoryPresent(context.fileSystem().baseDir(), 0);
+      checkMetadataJsonFilePresent(context.fileSystem().baseDir(), 0);
+      checkReadmeFilePresent(context.fileSystem().baseDir(), 0);
     }
   }
 
-  private void checkMetadataJsonFilePresent(File parentFile) {
+  private void checkMetadataJsonFilePresent(File parentFile, int depth) {
     for (File file : parentFile.listFiles()) {
       if (file.isDirectory()) {
         if ("manifests".equals(file.getName())) {
@@ -79,23 +68,24 @@ public class ProjectChecks {
             }
           }
           if (!metadataJsonFileFound) {
-            String path;
-            Directory directory = Directory.fromIOFile(parentFile, project);
-            if (directory != null && directory.getPath() != null) {
-              path = directory.getPath();
+            InputDir inputDir = context.fileSystem().inputDir(parentFile);
+            if (inputDir == null) {
+              addIssue(MetadataJsonFilePresentCheck.RULE_KEY, "Add a \"metadata.json\" file to the \"" + context.module().key() + "\" Puppet module.", context.module());
             } else {
-              path = parentFile.getName();
+              addIssue(MetadataJsonFilePresentCheck.RULE_KEY, "Add a \"metadata.json\" file to the \"" + inputDir.relativePath() + "\" Puppet module.", inputDir);
             }
-            addIssue(MetadataJsonFilePresentCheck.RULE_KEY, "Add a \"metadata.json\" file to the \"" + path + "\" Puppet module.");
           }
         } else {
-          checkMetadataJsonFilePresent(file);
+          depth++;
+          if (depth < metadataCheckDepth) {
+            checkMetadataJsonFilePresent(file, depth);
+          }
         }
       }
     }
   }
 
-  private void checkReadmeFilePresent(File parentFile) {
+  private void checkReadmeFilePresent(File parentFile, int depth) {
     for (File file : parentFile.listFiles()) {
       if (file.isDirectory()) {
         if ("manifests".equals(file.getName())) {
@@ -107,49 +97,63 @@ public class ProjectChecks {
             }
           }
           if (!readmeFileFound) {
-            String path = Directory.fromIOFile(parentFile, project).getPath() != null ? Directory.fromIOFile(parentFile, project).getPath() : parentFile.getName();
-            addIssue(ReadmeFilePresentCheck.RULE_KEY, "Add a \"README.md\" file to the \"" + path + "\" Puppet module.");
-          }
-        } else {
-          checkReadmeFilePresent(file);
-        }
-      }
-    }
-  }
-
-  private void checkTestsDirectoryPresent(File parentFile) {
-    for (File file : parentFile.listFiles()) {
-      if (file.isDirectory()) {
-        if ("tests".equals(file.getName())) {
-          for (File testsSiblings : file.getParentFile().listFiles()) {
-            Directory directory = Directory.fromIOFile(file, project);
-            if (testsSiblings.isDirectory()
-              && "manifests".equals(testsSiblings.getName())
-              && directory != null
-              && directory.getPath() != null) {
-              addIssue(TestsDirectoryPresentCheck.RULE_KEY, "Replace the \"" + directory.getPath() + "\" directory with an \"examples\" directory.");
-              break;
+            InputDir inputDir = context.fileSystem().inputDir(parentFile);
+            if (inputDir == null) {
+              addIssue(ReadmeFilePresentCheck.RULE_KEY, "Add a \"README.md\" file to the \"" + context.module().key() + "\" Puppet module.", context.module());
+            } else {
+              addIssue(ReadmeFilePresentCheck.RULE_KEY, "Add a \"README.md\" file to the \"" + inputDir.relativePath() + "\" Puppet module.", inputDir);
             }
           }
         } else {
-          checkTestsDirectoryPresent(file);
+          depth++;
+          if (depth < readmeCheckDepth) {
+            checkReadmeFilePresent(file, depth);
+          }
         }
       }
     }
   }
 
-  protected void addIssue(String ruleKey, String message) {
-    ActiveRule activeRule = rulesProfile.getActiveRule(CheckList.REPOSITORY_KEY, ruleKey);
-    if (activeRule != null) {
-      CodeVisitor check = checks.of(activeRule.getRule().ruleKey());
-      if (check != null) {
-        Issuable issuable = resourcePerspectives.as(Issuable.class, (Resource) project);
-        if (issuable != null) {
-          Issue issue = issuable.newIssueBuilder().ruleKey(RuleKey.of(CheckList.REPOSITORY_KEY, ruleKey)).message(message).build();
-          issuable.addIssue(issue);
+  private void checkTestsDirectoryPresent(File parentFile, int depth) {
+    for (File file : parentFile.listFiles()) {
+      if (file.isDirectory()) {
+        if ("tests".equals(file.getName())) {
+          LOGGER.info("Path: " + file.getPath());
+          for (File testsSiblings : file.getParentFile().listFiles()) {
+            InputDir inputDir = context.fileSystem().inputDir(file);
+            if (testsSiblings.isDirectory()
+              && "manifests".equals(testsSiblings.getName())) {
+              if (inputDir == null) {
+                addIssue(TestsDirectoryPresentCheck.RULE_KEY, "Replace the \"tests\" directory with an \"examples\" directory.", context.module());
+                break;
+              } else {
+                addIssue(TestsDirectoryPresentCheck.RULE_KEY, "Replace the \"" + inputDir.path() + "\" directory with an \"examples\" directory.", inputDir);
+                break;
+              }
+            }
+          }
+        } else {
+          depth++;
+          if (depth < testsCheckDepth) {
+            checkTestsDirectoryPresent(file, depth);
+          }
         }
       }
     }
+  }
+
+  protected void addIssue(String ruleKey, String message, InputComponent inputComponent) {
+    LOGGER.info("Adding issue: " + ruleKey + " " + message);
+    NewIssue newIssue = context
+      .newIssue()
+      .forRule(RuleKey.of(CheckList.REPOSITORY_KEY, ruleKey));
+
+    newIssue.at(newLocation(inputComponent, newIssue, message)).save();
+  }
+
+  private static NewIssueLocation newLocation(InputComponent input, NewIssue issue, String message) {
+    return issue.newLocation()
+      .on(input).message(message);
   }
 
 }

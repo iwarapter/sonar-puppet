@@ -5,7 +5,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "org.sonarqube.gradle:gradle-sonarqube-plugin:1.1"
+    classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.4"
   }
 }
 
@@ -14,7 +14,7 @@ apply plugin: org.sonarqube.gradle.SonarQubePlugin
 
 sonarqube {
   properties {
-    property "sonar.host.url", "http://nemo.sonarqube.org/"
+    property "sonar.host.url", "https://sonarqube.com/"
     property "sonar.analysis.mode", "issues"
     property "sonar.issuesReport.console.enable", "true"
     property "sonar.issuesReport.html.enable", "true"

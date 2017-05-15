@@ -35,32 +35,35 @@ import org.sonar.api.measures.FileLinesContextFactory
 import org.sonar.squidbridge.SquidAstVisitor
 import spock.lang.Specification
 
+import java.nio.file.Paths
+
 class FileLinesVisitorSpec extends Specification {
 
   static final File BASE_DIR = new File("src/test/resources/metrics")
 
   FileLinesContextFactory fileLinesContextFactory
-  DefaultFileSystem fileSystem
+  DefaultFileSystem fileSystem = new DefaultFileSystem(Paths.get(""))
   FileLinesContext fileLinesContext
 
   def setup() {
-    fileLinesContextFactory = Mock()
-    fileSystem = new DefaultFileSystem()
-    fileLinesContext = Mock()
+    fileLinesContextFactory = Mock(FileLinesContextFactory)
+    fileSystem = new DefaultFileSystem(BASE_DIR)
+    fileLinesContext = Mock(FileLinesContext)
   }
 
   def "check metrics calculate correctly"() {
     when:
 
     File file = new File(BASE_DIR, "lines.pp")
-    InputFile inputFile = new DefaultInputFile(file.getPath())
+    InputFile inputFile = new DefaultInputFile("moduleKey",file.getPath())
 
     fileSystem.add(inputFile)
     fileLinesContextFactory.createFor(inputFile) >> fileLinesContext
 
-    SquidAstVisitor<Grammar> visitor = new FileLinesVisitor(fileLinesContextFactory, fileSystem);
+    HashMap<InputFile, Set<Integer>> linesOfCode = new HashMap<>()
+    SquidAstVisitor<Grammar> visitor = new FileLinesVisitor(fileLinesContextFactory, fileSystem, linesOfCode, false)
 
-    PuppetAstScanner.scanSingleFile(file, visitor);
+    PuppetAstScanner.scanSingleFile(file, visitor)
 
     then:
     1 * fileLinesContext.setIntValue(CoreMetrics.NCLOC_DATA_KEY, 1, 0)
