@@ -8,4 +8,5 @@ sslr-puppet-toolkit/build/*
 .DS_Store
 *.iml
 log.txt
+gradle.properties
 *~
