@@ -25,6 +25,7 @@
 package com.iadams.sonarqube.puppet.checks;
 
 import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
+import com.sonar.sslr.api.AstNode;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -43,5 +44,4 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 public class TestsDirectoryPresentCheck extends PuppetCheckVisitor {
 
   public static final String RULE_KEY = "TestsDirectoryPresent";
-
 }

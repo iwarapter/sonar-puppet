@@ -25,13 +25,13 @@ task functionalTest(type: Test) {
 dependencies {
   compile project(':puppet-checks')
 
-  provided "org.codehaus.sonar:sonar-plugin-api:$sonarVersion"
+  provided "org.sonarsource.sonarqube:sonar-plugin-api:$sonarVersion"
 
-  testCompile "org.codehaus.sonar:sonar-plugin-api:$sonarVersion"
-  testCompile "org.codehaus.sonar:sonar-testing-harness:$sonarVersion"
+  testCompile "org.sonarsource.sonarqube:sonar-plugin-api:$sonarVersion"
+  testCompile "org.sonarsource.sonarqube:sonar-testing-harness:$sonarVersion"
   testCompile 'org.apache.maven:maven-project:2.2.1'
   testCompile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
-  testCompile 'com.iadams.sonarqube:sonar-functional-test-harness:0.1.7'
+  testCompile 'com.iadams.sonarqube:sonar-functional-test-harness:0.1.8'
 
   testRuntime 'org.slf4j:slf4j-simple:1.7.12'
 }

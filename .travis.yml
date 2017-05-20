@@ -1,28 +1,41 @@
+sudo: required
+
 language: java
 
-jdk:
-  - oraclejdk7
+services: docker
+
+jdk: oraclejdk8
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
 
 env:
   matrix:
-    - PATH=$PATH:/tmp/sonar-scanner-2.5/bin SONAR_DL=https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-4.5.6.zip SONAR_HOME=/tmp/sonarqube-4.5.6 RAILS_ENV=production
-    - PATH=$PATH:/tmp/sonar-scanner-2.5/bin SONAR_DL=http://downloads.sonarsource.com/sonarqube/sonarqube-5.0.1.zip SONAR_HOME=/tmp/sonarqube-5.0.1 RAILS_ENV=production
-    - PATH=$PATH:/tmp/sonar-scanner-2.5/bin SONAR_DL=https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-5.1.2.zip SONAR_HOME=/tmp/sonarqube-5.1.2 RAILS_ENV=production
-    - PATH=$PATH:/tmp/sonar-scanner-2.5/bin SONAR_DL=https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-5.2.zip SONAR_HOME=/tmp/sonarqube-5.2 RAILS_ENV=production
-    - PATH=$PATH:/tmp/sonar-scanner-2.5/bin SONAR_DL=https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-5.3.zip SONAR_HOME=/tmp/sonarqube-5.3 RAILS_ENV=production
+    - SONARQUBE_VERSION=5.6.6 PATH=/tmp/sonar-scanner-2.5/bin:$PATH
+    - SONARQUBE_VERSION=6.0 PATH=/tmp/sonar-scanner-2.5/bin:$PATH
+    - SONARQUBE_VERSION=6.1 PATH=/tmp/sonar-scanner-2.5/bin:$PATH
+    - SONARQUBE_VERSION=6.2 PATH=/tmp/sonar-scanner-2.5/bin:$PATH
+    - SONARQUBE_VERSION=6.3 PATH=/tmp/sonar-scanner-2.5/bin:$PATH
 
 install:
+  - echo "FROM sonarqube:${SONARQUBE_VERSION}-alpine" > Dockerfile.ci
+  - echo "COPY sonar-puppet-plugin/build/libs/* /opt/sonarqube/extensions/plugins/" >> Dockerfile.ci
   - cd /tmp
-  - wget -O sonarqube.zip $SONAR_DL
-  - unzip sonarqube.zip
   - wget https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-2.5.zip
   - unzip sonar-scanner-2.5.zip
-  - ls -lar
   - cd -
   - gem install puppet -v 3.8.6
 
 script:
-  - ./gradlew build localDeploy functionalTest -Psonar.pluginDir=$SONAR_HOME/extensions/plugins
+  - ./gradlew build 
+  - docker build -t sonar-puppet -f Dockerfile.ci .
+  - docker run -d --name sonarqube -p 9000:9000 -p 9092:9092 sonar-puppet
+  - ./gradlew functionalTest
 
 before_install:
  - chmod +x gradlew

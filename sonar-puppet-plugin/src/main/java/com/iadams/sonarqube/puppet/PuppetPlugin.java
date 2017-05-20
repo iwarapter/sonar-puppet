@@ -25,7 +25,6 @@
 package com.iadams.sonarqube.puppet;
 
 import com.google.common.collect.ImmutableList;
-import com.iadams.sonarqube.puppet.colorizer.PuppetColorizer;
 import com.iadams.sonarqube.puppet.cpd.PuppetCpdMapping;
 import java.util.List;
 import org.sonar.api.SonarPlugin;
@@ -48,7 +47,6 @@ public class PuppetPlugin extends SonarPlugin {
         .build(),
 
       Puppet.class,
-      PuppetColorizer.class,
       PuppetCpdMapping.class,
       PuppetProfile.class,
       PuppetSquidSensor.class,

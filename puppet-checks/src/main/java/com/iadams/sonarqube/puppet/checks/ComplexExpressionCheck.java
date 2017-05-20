@@ -73,6 +73,7 @@ public class ComplexExpressionCheck extends PuppetCheckVisitor {
           node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size() - max,
                 max),
         (double) node.getDescendants(PuppetGrammar.BOOL_OPERATOR).size() - max);
+
     }
   }
 

@@ -1,9 +1,9 @@
 dependencies {
-    compile "org.codehaus.sonar:sonar-plugin-api:$sonarVersion"
-    compile "org.codehaus.sonar.sslr:sslr-core:$sslrVersion"
-    compile 'org.codehaus.sonar.sslr-squid-bridge:sslr-squid-bridge:2.6'
+    compile "org.sonarsource.sonarqube:sonar-plugin-api:$sonarVersion"
+    compile "org.sonarsource.sslr:sslr-core:$sslrVersion"
+    compile 'org.sonarsource.sslr-squid-bridge:sslr-squid-bridge:2.6.1'
 
-    testCompile "org.codehaus.sonar.sslr:sslr-testing-harness:$sslrVersion"
+    testCompile "org.sonarsource.sslr:sslr-testing-harness:$sslrVersion"
     testCompile 'org.apache.maven:maven-project:2.2.1'
 
     testRuntime 'org.slf4j:slf4j-simple:1.7.12'
