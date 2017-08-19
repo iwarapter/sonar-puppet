@@ -31,26 +31,53 @@ import spock.lang.Specification
 
 class PuppetURLModulesCheckSpec extends Specification {
 
-  private static final String MESSAGE = "Add \"modules/\" to the path.";
+  private static final String MESSAGE_TEMPLATE = "Add \"modules/\" to the path%s."
 
   def "validate rule"() {
     given:
     SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/puppet_url_modules.pp"),
-      new PuppetURLModulesCheck());
+      new PuppetURLModulesCheck())
 
     expect:
+    def message = String.format(MESSAGE_TEMPLATE, "")
     CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(2).withMessage(MESSAGE)
-      .next().atLine(6).withMessage(MESSAGE)
-      .next().atLine(10).withMessage(MESSAGE)
-      .next().atLine(18).withMessage(MESSAGE)
-      .next().atLine(22).withMessage(MESSAGE)
-      .next().atLine(26).withMessage(MESSAGE)
-      .next().atLine(34).withMessage(MESSAGE)
-      .next().atLine(38).withMessage(MESSAGE)
-      .next().atLine(42).withMessage(MESSAGE)
-      .next().atLine(50).withMessage(MESSAGE)
-      .next().atLine(78).withMessage(MESSAGE)
-      .noMore();
+      .next().atLine(2).withMessage(message)
+      .next().atLine(6).withMessage(message)
+      .next().atLine(10).withMessage(message)
+      .next().atLine(18).withMessage(message)
+      .next().atLine(22).withMessage(message)
+      .next().atLine(26).withMessage(message)
+      .next().atLine(34).withMessage(message)
+      .next().atLine(38).withMessage(message)
+      .next().atLine(42).withMessage(message)
+      .next().atLine(50).withMessage(message)
+      .next().atLine(78).withMessage(message)
+      .next().atLine(80).withMessage(message)
+      .noMore()
+  }
+
+  def "validate rule custom"() {
+    given:
+    def paths = "company-foo,"
+    def check = new PuppetURLModulesCheck()
+    check.mountPoints = paths
+    SourceFile file = PuppetAstScanner.scanSingleFile(new File("src/test/resources/checks/puppet_url_modules.pp"),
+      check)
+
+    expect:
+    def message = String.format(MESSAGE_TEMPLATE, " (Or " + paths + ")")
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(2).withMessage(message)
+      .next().atLine(6).withMessage(message)
+      .next().atLine(10).withMessage(message)
+      .next().atLine(18).withMessage(message)
+      .next().atLine(22).withMessage(message)
+      .next().atLine(26).withMessage(message)
+      .next().atLine(34).withMessage(message)
+      .next().atLine(38).withMessage(message)
+      .next().atLine(42).withMessage(message)
+      .next().atLine(50).withMessage(message)
+      .next().atLine(78).withMessage(message)
+      .noMore()
   }
 }
