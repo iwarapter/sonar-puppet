@@ -77,6 +77,7 @@ file { '/etc/apache/apache2.conf':
 
 $source = "puppet:///apache2/etc/apache/apache2.conf"  # Noncompliant
 $source = "puppet:///${var}/etc/apache/apache2.conf"
+$source = "puppet:///company-foo/apache2/etc/apache/apache2.conf"  # Noncompliant when no custom
 
 file { '/etc/apache/apache2.conf':
   source => $source,

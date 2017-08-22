@@ -27,9 +27,14 @@ package com.iadams.sonarqube.puppet.checks;
 import com.iadams.sonarqube.puppet.PuppetCheckVisitor;
 import com.iadams.sonarqube.puppet.api.PuppetTokenType;
 import com.sonar.sslr.api.AstNode;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.commons.lang.StringUtils;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
+import org.sonar.check.RuleProperty;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
@@ -44,6 +49,11 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 @ActivatedByDefault
 public class PuppetURLModulesCheck extends PuppetCheckVisitor {
 
+  private static final String PREFIX = "puppet:///";
+
+  @RuleProperty(key = "mountPoints", description = "Comma-separated list of additional mount points in complement of 'modules' and variable usage.", defaultValue = "")
+  public String mountPoints = "";
+
   @Override
   public void init() {
     subscribeTo(PuppetTokenType.DOUBLE_QUOTED_STRING_LITERAL, PuppetTokenType.SINGLE_QUOTED_STRING_LITERAL);
@@ -51,10 +61,23 @@ public class PuppetURLModulesCheck extends PuppetCheckVisitor {
 
   @Override
   public void visitNode(AstNode node) {
-    if (node.getTokenValue().substring(1).startsWith("puppet:///")
-      && !node.getTokenValue().substring(1).startsWith("puppet:///modules/")
-      && !node.getTokenValue().substring(1).startsWith("puppet:///$")) {
-      addIssue(node, this, "Add \"modules/\" to the path.");
+    if (node.getTokenValue().substring(1).startsWith(PREFIX)) {
+      List<String> validPaths = new ArrayList<>(Arrays.asList(PREFIX + "modules/", PREFIX + "$"));
+      if (StringUtils.isNotBlank(mountPoints)) {
+        for (String pathCustom : mountPoints.split(",")) {
+          if (StringUtils.isNotBlank(pathCustom)) {
+            validPaths.add(PREFIX + pathCustom + "/");
+          }
+        }
+      }
+      if (!StringUtils.startsWithAny(node.getTokenValue().substring(1), validPaths.toArray(new String[validPaths.size()]))) {
+        String message = "Add \"modules/\" to the path";
+        if (validPaths.size() > 2) {
+          message += " (Or " + mountPoints + ")";
+        }
+        message += ".";
+        addIssue(node, this, message);
+      }
     }
   }
 
