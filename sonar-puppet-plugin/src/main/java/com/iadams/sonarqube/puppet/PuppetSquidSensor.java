@@ -132,7 +132,8 @@ public final class PuppetSquidSensor implements Sensor {
   }
 
   private void saveMeasures(InputFile sonarFile, SourceFile squidFile) {
-    saveMetricOnFile(sonarFile, CoreMetrics.FILES, squidFile.getInt(PuppetMetric.FILES));
+    // Sonarqube 7.7: java.lang.UnsupportedOperationException: Metric 'files' should not be computed by a Sensor
+    // saveMetricOnFile(sonarFile, CoreMetrics.FILES, squidFile.getInt(PuppetMetric.FILES));
     saveMetricOnFile(sonarFile, CoreMetrics.LINES, squidFile.getInt(PuppetMetric.LINES));
     saveMetricOnFile(sonarFile, CoreMetrics.NCLOC, squidFile.getInt(PuppetMetric.LINES_OF_CODE));
     saveMetricOnFile(sonarFile, CoreMetrics.STATEMENTS, squidFile.getInt(PuppetMetric.STATEMENTS));
