@@ -89,7 +89,8 @@ class PuppetSquidSensorSpec extends Specification {
 
     expect:
     context.measure(key, CoreMetrics.NCLOC).value() == 14
-    context.measure(key, CoreMetrics.FILES).value() == 1
+    // Sonarqube 7.7: java.lang.UnsupportedOperationException: Metric 'files' should not be computed by a Sensor
+    // context.measure(key, CoreMetrics.FILES).value() == 1
     context.measure(key, CoreMetrics.STATEMENTS).value() == 7
     context.measure(key, CoreMetrics.CLASSES).value() == 2
     context.measure(key, CoreMetrics.COMPLEXITY).value() == 9
