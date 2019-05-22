@@ -36,15 +36,16 @@ import spock.lang.Specification
 
 class PuppetAstScannerSpec extends Specification {
 
-  def "files"() {
-    given:
-    AstScanner<Grammar> scanner = PuppetAstScanner.create(new PuppetConfiguration(Charsets.UTF_8))
-    scanner.scanFiles(ImmutableList.of(new File("src/test/resources/metrics/lines_of_code.pp"), new File("src/test/resources/metrics/comments.pp")))
-    SourceProject project = (SourceProject) scanner.getIndex().search(new QueryByType(SourceProject.class)).iterator().next()
-
-    expect:
-    project.getInt(PuppetMetric.FILES) == 2
-  }
+// Sonarqube 7.7: java.lang.UnsupportedOperationException: Metric 'files' should not be computed by a Sensor
+//  def "files"() {
+//    given:
+//    AstScanner<Grammar> scanner = PuppetAstScanner.create(new PuppetConfiguration(Charsets.UTF_8))
+//    scanner.scanFiles(ImmutableList.of(new File("src/test/resources/metrics/lines_of_code.pp"), new File("src/test/resources/metrics/comments.pp")))
+//    SourceProject project = (SourceProject) scanner.getIndex().search(new QueryByType(SourceProject.class)).iterator().next()
+//
+//    expect:
+//    project.getInt(PuppetMetric.FILES) == 2
+//  }
 
   def "comments"() {
     given:
